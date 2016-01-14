@@ -14,4 +14,4 @@ Operating software for controlling the wireless sensors in a Dog Agility Competi
 	command> quit
 	```
 
-3. Make a Debug build of DogAgilityCompetitionManagement and run it
+3. Make a Debug build of [DogAgilityCompetitionManagement.sln](https://github.com/bkoelman/DogAgilityCompetitionManagement/blob/master/src/DogAgilityCompetitionManagement.sln) and run it
