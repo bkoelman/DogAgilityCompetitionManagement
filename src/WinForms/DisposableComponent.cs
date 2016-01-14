@@ -1,0 +1,53 @@
+﻿using System;
+using System.ComponentModel;
+using DogAgilityCompetition.Circe;
+using JetBrains.Annotations;
+
+namespace DogAgilityCompetition.WinForms
+{
+    /// <summary>
+    /// Wraps a disposable object that gets disposed when its parent WinForms form closes.
+    /// </summary>
+    public sealed class DisposableComponent<T> : IComponent
+        where T : class, IDisposable
+    {
+        public DisposableComponent([NotNull] T disposable, [CanBeNull] ref IContainer container)
+        {
+            Guard.NotNull(disposable, nameof(disposable));
+
+            Component = disposable;
+
+            if (container == null)
+            {
+                // The container is managed by the Forms designer and instantiated only when the form/control
+                // contains components. Because we are not a component the designer knows about, we need to
+                // ensure a container ourselves in order for Dispose to be called from generated code.
+                container = new Container();
+            }
+            container.Add(this);
+        }
+
+        [NotNull]
+        public T Component { get; }
+
+        public void Dispose()
+        {
+            Component.Dispose();
+            Disposed?.Invoke(this, EventArgs.Empty);
+        }
+
+        [CanBeNull]
+        public ISite Site
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+            }
+        }
+
+        public event EventHandler Disposed;
+    }
+}

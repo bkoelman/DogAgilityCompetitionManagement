@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetworkConfiguration xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <Displays />
+  <Gates />
+  <IsMaximized>true</IsMaximized>
+  <Mediator>
+    <ComPortName i:nil="true" />
+    <DeviceAddress>FF0000</DeviceAddress>
+    <IsMinimized>true</IsMinimized>
+    <IsPoweredOn>true</IsPoweredOn>
+    <MediatorStatus>0</MediatorStatus>
+    <ProtocolVersion i:nil="true" />
+    <WindowHeight>271</WindowHeight>
+    <WindowLocationX>0</WindowLocationX>
+    <WindowLocationY>0</WindowLocationY>
+    <WindowWidth>293</WindowWidth>
+  </Mediator>
+  <Remotes>
+    <Remote>
+      <BatteryStatus>255</BatteryStatus>
+      <DeviceAddress>FFFFFF</DeviceAddress>
+      <Features>All</Features>
+      <IsInNetwork>true</IsInNetwork>
+      <IsMinimized>false</IsMinimized>
+      <IsPoweredOn>true</IsPoweredOn>
+      <RolesAssigned>Keypad StartTimer FinishTimer IntermediateTimer1</RolesAssigned>
+      <SignalStrength>255</SignalStrength>
+      <WindowHeight>577</WindowHeight>
+      <WindowLocationX>0</WindowLocationX>
+      <WindowLocationY>0</WindowLocationY>
+      <WindowWidth>294</WindowWidth>
+    </Remote>
+  </Remotes>
+</NetworkConfiguration>

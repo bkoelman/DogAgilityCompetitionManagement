@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3B7BD73D-A741-41D1-8316-0877AED6958F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DogAgilityCompetition.Circe</RootNamespace>
+    <AssemblyName>DogAgilityCompetition.Circe</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assertions.cs" />
+    <Compile Include="CodeTimer.cs" />
+    <Compile Include="Controller\VisualizeFieldSet.cs" />
+    <Compile Include="Controller\VisualizeFieldSetBuilder.cs" />
+    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="Guard.cs" />
+    <Compile Include="Controller\ControllerConnectionState.cs" />
+    <Compile Include="Controller\CirceControllerSessionManager.cs" />
+    <Compile Include="Controller\ClockSynchronizationCompletedEventArgs.cs" />
+    <Compile Include="Controller\ClockSynchronizationMonitor.cs" />
+    <Compile Include="Controller\ClockSynchronizationResult.cs" />
+    <Compile Include="Controller\ControllerConnectionStateEventArgs.cs" />
+    <Compile Include="Mediator\DeviceStatusChangeLogger.cs" />
+    <Compile Include="Mediator\IWirelessDevice.cs" />
+    <Compile Include="Mediator\MediatorConnectionState.cs" />
+    <Compile Include="Mediator\MediatorConnectionStateEventArgs.cs" />
+    <Compile Include="Mediator\CirceMediatorSessionManager.cs" />
+    <Compile Include="Protocol\Operations\LogOperation.cs" />
+    <Compile Include="Protocol\PacketFormatDelimiters.cs" />
+    <Compile Include="Protocol\Parameters\BinaryParameter.cs" />
+    <Compile Include="SerialConnectionException.cs" />
+    <Compile Include="Session\DeviceAction.cs" />
+    <Compile Include="Session\DeviceStatus.cs" />
+    <Compile Include="Controller\DeviceTracker.cs" />
+    <Compile Include="Controller\NotConnectedToMediatorException.cs" />
+    <Compile Include="Controller\SessionGuard.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="ISystemLogger.cs" />
+    <Compile Include="LockTracker.cs" />
+    <Compile Include="Log4NetSystemLogger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\ByteArrayExtensions.cs" />
+    <Compile Include="Protocol\ClockSynchronizationStatus.cs" />
+    <Compile Include="Protocol\DeviceCapabilities.cs" />
+    <Compile Include="Protocol\DeviceRoles.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="Protocol\Exceptions\ChecksumMismatchException.cs" />
+    <Compile Include="Protocol\Exceptions\OperationValidationException.cs" />
+    <Compile Include="Protocol\Exceptions\PacketFormatException.cs" />
+    <Compile Include="Protocol\Exceptions\ParameterValueFormatException.cs" />
+    <Compile Include="Protocol\Exceptions\UnknownOperationException.cs" />
+    <Compile Include="Protocol\IOperationAcceptor.cs" />
+    <Compile Include="Protocol\KnownMediatorStatusCode.cs" />
+    <Compile Include="Protocol\Operation.cs" />
+    <Compile Include="Protocol\OperationFactory.cs" />
+    <Compile Include="Protocol\Operations\AlertOperation.cs" />
+    <Compile Include="Protocol\Operations\DeviceSetupOperation.cs" />
+    <Compile Include="Protocol\Operations\KeepAliveOperation.cs" />
+    <Compile Include="Protocol\Operations\LoginOperation.cs" />
+    <Compile Include="Protocol\Operations\LogoutOperation.cs" />
+    <Compile Include="Protocol\Operations\NetworkSetupOperation.cs" />
+    <Compile Include="Protocol\Operations\NotifyActionOperation.cs" />
+    <Compile Include="Protocol\Operations\NotifyStatusOperation.cs" />
+    <Compile Include="Protocol\Operations\SynchronizeClocksOperation.cs" />
+    <Compile Include="Protocol\Operations\VisualizeOperation.cs" />
+    <Compile Include="Protocol\WirelessNetworkAddressCollection.cs" />
+    <Compile Include="Protocol\PacketAssembler.cs" />
+    <Compile Include="Protocol\PacketFormat.cs" />
+    <Compile Include="Protocol\PacketReader.cs" />
+    <Compile Include="Protocol\PacketWriter.cs" />
+    <Compile Include="Protocol\Parameter.cs" />
+    <Compile Include="Protocol\ParameterFactory.cs" />
+    <Compile Include="Protocol\Parameters\BooleanParameter.cs" />
+    <Compile Include="Protocol\Parameters\IntegerParameter.cs" />
+    <Compile Include="Protocol\Parameters\NetworkAddressParameter.cs" />
+    <Compile Include="Protocol\Parameters\VersionParameter.cs" />
+    <Compile Include="Protocol\ParameterType.cs" />
+    <Compile Include="Protocol\RawDeviceKeys.cs" />
+    <Compile Include="Protocol\WirelessNetworkAddress.cs" />
+    <Compile Include="Session\ActionQueue.cs" />
+    <Compile Include="Session\CirceComConnection.cs" />
+    <Compile Include="Session\ComPortRotator.cs" />
+    <Compile Include="Session\ComPortSelector.cs" />
+    <Compile Include="Session\FreshBoolean.cs" />
+    <Compile Include="Session\FreshDateTime.cs" />
+    <Compile Include="Session\FreshEnum.cs" />
+    <Compile Include="Session\FreshInt32.cs" />
+    <Compile Include="Session\FreshNotNullableReference.cs" />
+    <Compile Include="Session\FreshNullableBoolean.cs" />
+    <Compile Include="Session\FreshReference.cs" />
+    <Compile Include="Session\IncomingOperationEventArgs.cs" />
+    <Compile Include="Session\SystemPortProvider.cs" />
+    <Compile Include="ObjectFormatter.cs" />
+    <Compile Include="SystemContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.Analyzers.dll" />
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.Common.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.CSharp.dll" />
+    <Analyzer Include="..\packages\ResharperCodeContractNullability.1.0.4\analyzers\dotnet\cs\CodeContractNullability.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

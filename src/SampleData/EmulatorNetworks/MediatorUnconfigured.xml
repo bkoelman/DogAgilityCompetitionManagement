@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetworkConfiguration xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <Displays />
+  <Gates />
+  <IsMaximized>false</IsMaximized>
+  <Mediator>
+    <ComPortName i:nil="true" />
+    <DeviceAddress>000000</DeviceAddress>
+    <IsMinimized>false</IsMinimized>
+    <IsPoweredOn>true</IsPoweredOn>
+    <MediatorStatus>1</MediatorStatus>
+    <ProtocolVersion i:nil="true" />
+    <WindowHeight>0</WindowHeight>
+    <WindowLocationX>0</WindowLocationX>
+    <WindowLocationY>0</WindowLocationY>
+    <WindowWidth>0</WindowWidth>
+  </Mediator>
+  <Remotes />
+</NetworkConfiguration>

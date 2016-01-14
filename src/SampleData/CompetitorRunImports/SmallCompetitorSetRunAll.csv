@@ -1,0 +1,14 @@
+﻿CompetitorNumber,CompetitorName,DogName,CountryCode,IntermediateTime1,IntermediateTime2,IntermediateTime3,FinishTime,FaultCount,RefusalCount,IsEliminated,Placement
+20,Marissa,Kida,NL,0.499,,,1.203,0,0,False,1
+1,Annelies,Seena,NL,1.110,,,2.302,0,0,False,2
+27,Marina,Jess,NL,,,,3.312,0,0,False,3
+7,Wilbert,Bryce,NL,2.074,,,4.246,0,0,False,4
+21,Margreet,Blizzard,NL,2.172,,,5.172,0,0,False,5
+2,Ben,Rain,NL,3.282,,,3.969,0,5,False,6
+24,Carla,Jill,NL,,,,9.445,0,5,False,7
+3,Feline,Cadie,NL,,,,5.703,10,0,False,8
+4,Marissa,Yentl,NL,5.922,,,6.656,0,10,False,9
+25,Anouk,Ikey,NL,1.329,,,8.732,20,0,False,10
+6,Alwin,Mekx,NL,2.703,,,,0,0,True,11
+26,Johan,Djintie,NL,,,,7.625,0,5,True,12
+5,Elly-may,Benthe,NL,,,,,15,15,True,13

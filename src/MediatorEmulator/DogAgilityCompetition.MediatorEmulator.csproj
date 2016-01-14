@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19EF7550-7BCC-4416-9C92-6123E9D383B9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DogAgilityCompetition.MediatorEmulator</RootNamespace>
+    <AssemblyName>DogAgilityCompetitionMediatorEmulator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icons\AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine\BooleanExtensions.cs" />
+    <Compile Include="Engine\ISimpleVisualizationActor.cs" />
+    <Compile Include="Engine\MostRecentlyUsedContainer.cs" />
+    <Compile Include="Engine\RandomSettingsGenerator.cs" />
+    <Compile Include="Engine\RemoteEmulatorFeatures.cs" />
+    <Compile Include="Engine\Storage\NetworkConfigurationFile.cs" />
+    <Compile Include="Engine\Storage\RegistrySettingsProvider.cs" />
+    <Compile Include="Engine\Storage\Serialization\DisplaySettingsXml.cs" />
+    <Compile Include="Engine\Storage\IWindowSettings.cs" />
+    <Compile Include="Engine\Storage\Serialization\MediatorSettingsXml.cs" />
+    <Compile Include="Engine\Storage\Serialization\NetworkConfigurationXml.cs" />
+    <Compile Include="Engine\Storage\Serialization\RemoteSettingsXml.cs" />
+    <Compile Include="Engine\VisualizeOperationDispatcher.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StartupArguments.cs" />
+    <Compile Include="UI\Controls\DisplayStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\DisplayStatusControl.Designer.cs">
+      <DependentUpon>DisplayStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\KeyPadControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\KeyPadControl.Designer.cs">
+      <DependentUpon>KeyPadControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\EmulatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\EmulatorForm.Designer.cs">
+      <DependentUpon>EmulatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Engine\NetworkAddressGenerator.cs" />
+    <Compile Include="Engine\Storage\Serialization\GateSettingsXml.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Forms\ComPortSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\ComPortSelectionForm.Designer.cs">
+      <DependentUpon>ComPortSelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\LogMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\LogMessageForm.Designer.cs">
+      <DependentUpon>LogMessageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\RemoteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\RemoteForm.Designer.cs">
+      <DependentUpon>RemoteForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\MediatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\MediatorForm.Designer.cs">
+      <DependentUpon>MediatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\ProtocolVersionSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\ProtocolVersionSelectionForm.Designer.cs">
+      <DependentUpon>ProtocolVersionSelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\MediatorStatusSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\MediatorStatusSelectionForm.Designer.cs">
+      <DependentUpon>MediatorStatusSelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\DisplayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\DisplayForm.Designer.cs">
+      <DependentUpon>DisplayForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\GateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\GateForm.Designer.cs">
+      <DependentUpon>GateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\HardwareStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\HardwareStatusControl.Designer.cs">
+      <DependentUpon>HardwareStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\NetworkStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\NetworkStatusControl.Designer.cs">
+      <DependentUpon>NetworkStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\PowerStatusControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PowerStatusControl.Designer.cs">
+      <DependentUpon>PowerStatusControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MdiChildWindow.cs" />
+    <EmbeddedResource Include="UI\Controls\DisplayStatusControl.resx">
+      <DependentUpon>DisplayStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\KeyPadControl.resx">
+      <DependentUpon>KeyPadControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\EmulatorForm.resx">
+      <DependentUpon>EmulatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ComPortSelectionForm.resx">
+      <DependentUpon>ComPortSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\LogMessageForm.resx">
+      <DependentUpon>LogMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\RemoteForm.resx">
+      <DependentUpon>RemoteForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\MediatorForm.resx">
+      <DependentUpon>MediatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\GateForm.resx">
+      <DependentUpon>GateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\HardwareStatusControl.resx">
+      <DependentUpon>HardwareStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\NetworkStatusControl.resx">
+      <DependentUpon>NetworkStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\PowerStatusControl.resx">
+      <DependentUpon>PowerStatusControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ProtocolVersionSelectionForm.resx">
+      <DependentUpon>ProtocolVersionSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\MediatorStatusSelectionForm.resx">
+      <DependentUpon>MediatorStatusSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\DisplayForm.resx">
+      <DependentUpon>DisplayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Circe\DogAgilityCompetition.Circe.csproj">
+      <Project>{3b7bd73d-a741-41d1-8316-0877aed6958f}</Project>
+      <Name>DogAgilityCompetition.Circe</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WinForms\DogAgilityCompetition.WinForms.csproj">
+      <Project>{e4ed1740-5efc-46c9-a952-cc3712295756}</Project>
+      <Name>DogAgilityCompetition.WinForms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\DisplayIcon.ico" />
+    <Content Include="Resources\Icons\EmulatorIcon.ico" />
+    <Content Include="Resources\Icons\GateIcon.ico" />
+    <Content Include="Resources\Icons\MediatorIcon.ico" />
+    <Content Include="Resources\Icons\RemoteIcon.ico" />
+    <None Include="Resources\PlayButton.png" />
+    <None Include="Resources\PauseButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.Analyzers.dll" />
+    <Analyzer Include="..\packages\Desktop.Analyzers.1.1.0\analyzers\dotnet\cs\Desktop.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.Common.dll" />
+    <Analyzer Include="..\packages\Microsoft.AnalyzerPowerPack.1.1.0\analyzers\dotnet\cs\Microsoft.AnalyzerPowerPack.CSharp.dll" />
+    <Analyzer Include="..\packages\ResharperCodeContractNullability.1.0.4\analyzers\dotnet\cs\CodeContractNullability.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Runtime.InteropServices.Analyzers.1.1.0\analyzers\dotnet\cs\System.Runtime.InteropServices.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.Analyzers.dll" />
+    <Analyzer Include="..\packages\System.Security.Cryptography.Hashing.Algorithms.Analyzers.1.1.0\analyzers\dotnet\cs\System.Security.Cryptography.Hashing.Algorithms.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

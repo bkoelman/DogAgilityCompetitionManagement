@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NetworkConfiguration xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <Displays>
+    <Display>
+      <BatteryStatus>124</BatteryStatus>
+      <DeviceAddress>000009</DeviceAddress>
+      <IsInNetwork>false</IsInNetwork>
+      <IsMinimized>false</IsMinimized>
+      <IsPoweredOn>false</IsPoweredOn>
+      <RolesAssigned />
+      <SignalStrength>154</SignalStrength>
+      <WindowHeight>343</WindowHeight>
+      <WindowLocationX>490</WindowLocationX>
+      <WindowLocationY>332</WindowLocationY>
+      <WindowWidth>304</WindowWidth>
+    </Display>
+  </Displays>
+  <Gates>
+    <Gate>
+      <BatteryStatus>164</BatteryStatus>
+      <DeviceAddress>000006</DeviceAddress>
+      <IsAligned>false</IsAligned>
+      <IsInNetwork>false</IsInNetwork>
+      <IsMinimized>false</IsMinimized>
+      <IsPoweredOn>false</IsPoweredOn>
+      <RolesAssigned />
+      <SignalStrength>187</SignalStrength>
+      <WindowHeight>0</WindowHeight>
+      <WindowLocationX>0</WindowLocationX>
+      <WindowLocationY>264</WindowLocationY>
+      <WindowWidth>0</WindowWidth>
+    </Gate>
+    <Gate>
+      <BatteryStatus>200</BatteryStatus>
+      <DeviceAddress>000007</DeviceAddress>
+      <IsAligned>false</IsAligned>
+      <IsInNetwork>false</IsInNetwork>
+      <IsMinimized>false</IsMinimized>
+      <IsPoweredOn>false</IsPoweredOn>
+      <RolesAssigned />
+      <SignalStrength>100</SignalStrength>
+      <WindowHeight>0</WindowHeight>
+      <WindowLocationX>312</WindowLocationX>
+      <WindowLocationY>0</WindowLocationY>
+      <WindowWidth>0</WindowWidth>
+    </Gate>
+  </Gates>
+  <IsMaximized>false</IsMaximized>
+  <Mediator>
+    <ComPortName i:nil="true" />
+    <DeviceAddress>000005</DeviceAddress>
+    <IsMinimized>false</IsMinimized>
+    <IsPoweredOn>false</IsPoweredOn>
+    <MediatorStatus>0</MediatorStatus>
+    <ProtocolVersion i:nil="true" />
+    <WindowHeight>271</WindowHeight>
+    <WindowLocationX>0</WindowLocationX>
+    <WindowLocationY>0</WindowLocationY>
+    <WindowWidth>312</WindowWidth>
+  </Mediator>
+  <Remotes>
+    <Remote>
+      <BatteryStatus>210</BatteryStatus>
+      <DeviceAddress>000008</DeviceAddress>
+      <Features>All</Features>
+      <IsInNetwork>false</IsInNetwork>
+      <IsMinimized>false</IsMinimized>
+      <IsPoweredOn>false</IsPoweredOn>
+      <RolesAssigned />
+      <SignalStrength>223</SignalStrength>
+      <WindowHeight>0</WindowHeight>
+      <WindowLocationX>798</WindowLocationX>
+      <WindowLocationY>0</WindowLocationY>
+      <WindowWidth>0</WindowWidth>
+    </Remote>
+  </Remotes>
+</NetworkConfiguration>
