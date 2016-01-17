@@ -1,5 +1,5 @@
 # Dog Agility Competition Management
-Operating software for controlling the wireless sensors in a Dog Agility Competition.
+Operating software for controlling the wireless sensors in a [Dog Agility Competition](https://en.wikipedia.org/wiki/Dog_agility).
 
 # Running without loopback cable
 
