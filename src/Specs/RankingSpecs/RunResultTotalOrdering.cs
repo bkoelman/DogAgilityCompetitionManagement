@@ -263,10 +263,9 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
         [NotNull]
         private static CompetitionRunResult CreateCompetitorFor([NotNull] string name, bool hasFinished,
-            bool isEliminated,
-            bool otherHasFinished, bool penaltyTimeIsGreater, bool overrunTimeIsGreater, bool otherPenaltyTimeIsGreater,
-            bool otherOverrunTimeIsGreater, bool finishTimeIsGreater, bool competitorNumberIsGreater,
-            bool otherFinishTimeIsGreater, bool otherCompetitorNumberIsGreater)
+            bool isEliminated, bool otherHasFinished, bool penaltyTimeIsGreater, bool overrunTimeIsGreater,
+            bool otherPenaltyTimeIsGreater, bool otherOverrunTimeIsGreater, bool finishTimeIsGreater,
+            bool competitorNumberIsGreater, bool otherFinishTimeIsGreater, bool otherCompetitorNumberIsGreater)
         {
             int competitorNumber = !competitorNumberIsGreater && !otherCompetitorNumberIsGreater
                 ? LowOrSameCompetitorNumber
@@ -355,9 +354,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         }
 
         private static void AssertCompetitorsAreCompatibleWithProposedScenario(
-            [NotNull] CompetitionRunResult xCompetitor,
-            [NotNull] CompetitionRunResult yCompetitor, [NotNull] OrderingScenario scenario,
-            [NotNull] CompetitionClassModel model)
+            [NotNull] CompetitionRunResult xCompetitor, [NotNull] CompetitionRunResult yCompetitor,
+            [NotNull] OrderingScenario scenario, [NotNull] CompetitionClassModel model)
         {
             var xCalculator = new CompetitorAssessmentCalculator(xCompetitor, model);
             var yCalculator = new CompetitorAssessmentCalculator(yCompetitor, model);

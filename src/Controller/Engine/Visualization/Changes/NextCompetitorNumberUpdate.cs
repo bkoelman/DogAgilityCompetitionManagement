@@ -15,7 +15,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
         public override void ApplyTo(IVisualizationActor actor)
         {
             Guard.NotNull(actor, nameof(actor));
-
             actor.SetNextCompetitorNumber(Value);
         }
     }

@@ -88,7 +88,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // competitorNumberCaptionLabel
             // 
             this.competitorNumberCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.competitorNumberCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.competitorNumberCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.competitorNumberCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.competitorNumberCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.competitorNumberCaptionLabel.Name = "competitorNumberCaptionLabel";
@@ -110,7 +110,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // countryCodeCaptionLabel
             // 
             this.countryCodeCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.countryCodeCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.countryCodeCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.countryCodeCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.countryCodeCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.countryCodeCaptionLabel.Name = "countryCodeCaptionLabel";
@@ -132,7 +132,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // dogNameCaptionLabel
             // 
             this.dogNameCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dogNameCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dogNameCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dogNameCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.dogNameCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.dogNameCaptionLabel.Name = "dogNameCaptionLabel";
@@ -156,7 +156,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // competitorNameCaptionLabel
             // 
             this.competitorNameCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.competitorNameCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.competitorNameCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.competitorNameCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.competitorNameCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.competitorNameCaptionLabel.Name = "competitorNameCaptionLabel";
@@ -179,7 +179,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // finishTimeCaptionLabel
             // 
             this.finishTimeCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.finishTimeCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.finishTimeCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.finishTimeCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.finishTimeCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.finishTimeCaptionLabel.Name = "finishTimeCaptionLabel";
@@ -202,7 +202,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // faultsCaptionLabel
             // 
             this.faultsCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.faultsCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.faultsCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.faultsCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.faultsCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.faultsCaptionLabel.Name = "faultsCaptionLabel";
@@ -225,7 +225,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // refusalsCaptionLabel
             // 
             this.refusalsCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.refusalsCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refusalsCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.refusalsCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.refusalsCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.refusalsCaptionLabel.Name = "refusalsCaptionLabel";
@@ -248,7 +248,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // placementCaptionLabel
             // 
             this.placementCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.placementCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.placementCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.placementCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.placementCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.placementCaptionLabel.Name = "placementCaptionLabel";
@@ -272,7 +272,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             this.gradeLabel.AutoEllipsis = true;
             this.gradeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gradeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gradeLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gradeLabel.Location = new System.Drawing.Point(0, 0);
             this.gradeLabel.Name = "gradeLabel";
             this.gradeLabel.Size = new System.Drawing.Size(378, 110);
@@ -296,7 +296,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             this.classTypeLabel.AutoEllipsis = true;
             this.classTypeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.classTypeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.classTypeLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.classTypeLabel.Location = new System.Drawing.Point(0, 0);
             this.classTypeLabel.Name = "classTypeLabel";
             this.classTypeLabel.Size = new System.Drawing.Size(334, 110);
@@ -318,7 +318,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // standardParcoursTimeCaptionLabel
             // 
             this.standardParcoursTimeCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.standardParcoursTimeCaptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.standardParcoursTimeCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.standardParcoursTimeCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
             this.standardParcoursTimeCaptionLabel.Location = new System.Drawing.Point(0, 0);
             this.standardParcoursTimeCaptionLabel.Name = "standardParcoursTimeCaptionLabel";
@@ -341,7 +341,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // standardParcoursTimeValueLabel
             // 
             this.standardParcoursTimeValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.standardParcoursTimeValueLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.standardParcoursTimeValueLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.standardParcoursTimeValueLabel.Location = new System.Drawing.Point(0, 0);
             this.standardParcoursTimeValueLabel.Name = "standardParcoursTimeValueLabel";
             this.standardParcoursTimeValueLabel.Size = new System.Drawing.Size(150, 110);
