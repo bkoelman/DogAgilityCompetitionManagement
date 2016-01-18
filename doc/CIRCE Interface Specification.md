@@ -92,7 +92,7 @@ The following table lists the operations, including their operation code, that a
 
 **Table: Operations from controller to mediator**
 
-| Operation               | Definition                                                                                                                             |
+| Operation               | Description                                                                                                                             |
 |:------------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
 | Login (01)              | This operation is used by a controller to start communications with a mediator. It is sent before any operations.                      |
 | Logout (02)             | This operation is used by a controller to end communications with a mediator.                                                          |
@@ -108,7 +108,7 @@ The following table lists the operations, including their operation code, that a
 
 **Table: Operations from mediator to controller**
 
-| Operation          | Definition                                                                                                                |
+| Operation          | Description                                                                                                                |
 |:-------------------|:--------------------------------------------------------------------------------------------------------------------------|
 | Keep Alive (51)    | This operation is used by a mediator to respond to login and to keep the connection alive.                                |
 | Notify Status (52) | This operation is used by a mediator to describe the current status of a single device in the wireless network.           |
@@ -538,8 +538,6 @@ The table below lists the values and meanings of the parameter Mediator Status (
 # <a name="examples"></a>Example sessions
 
 This chapter contains examples of some key usage scenarios.
-
-***Note:*** *The examples may show the packet bytes on several lines to fit it on the page. In real life, the packet bytes are on one line.*
 
 ## <a name="example-assigning-unique-network-addresses"></a>Assigning unique network addresses
 
