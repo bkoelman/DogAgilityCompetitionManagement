@@ -83,8 +83,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardParcoursTimeValueLabel.Text = classInfo?.StandardParcoursTime != null
-                ? $"{classInfo.StandardParcoursTime.Value.TotalSeconds:0}"
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
+                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
                 : string.Empty;
         }
 

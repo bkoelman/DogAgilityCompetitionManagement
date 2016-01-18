@@ -37,8 +37,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.countryCodeLabel = new SingleLineLabel();
             this.dogNamePanel = new System.Windows.Forms.Panel();
             this.dogNameLabel = new SingleLineLabel();
-            this.competitorNamePanel = new System.Windows.Forms.Panel();
-            this.competitorNameLabel = new SingleLineLabel();
+            this.handlerNamePanel = new System.Windows.Forms.Panel();
+            this.handlerNameLabel = new SingleLineLabel();
             this.finishTimePanel = new System.Windows.Forms.Panel();
             this.finishTimeLabel = new SingleLineLabel();
             this.faultsPanel = new System.Windows.Forms.Panel();
@@ -50,7 +50,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.competitorNumberPanel.SuspendLayout();
             this.countryCodePanel.SuspendLayout();
             this.dogNamePanel.SuspendLayout();
-            this.competitorNamePanel.SuspendLayout();
+            this.handlerNamePanel.SuspendLayout();
             this.finishTimePanel.SuspendLayout();
             this.faultsPanel.SuspendLayout();
             this.refusalsPanel.SuspendLayout();
@@ -127,30 +127,30 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.dogNameLabel.Text = "Pluto";
             this.dogNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // competitorNamePanel
+            // handlerNamePanel
             // 
-            this.competitorNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.handlerNamePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.competitorNamePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(194)))));
-            this.competitorNamePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.competitorNamePanel.Controls.Add(this.competitorNameLabel);
-            this.competitorNamePanel.Location = new System.Drawing.Point(443, 0);
-            this.competitorNamePanel.Name = "competitorNamePanel";
-            this.competitorNamePanel.Size = new System.Drawing.Size(214, 50);
-            this.competitorNamePanel.TabIndex = 29;
+            this.handlerNamePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(194)))));
+            this.handlerNamePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.handlerNamePanel.Controls.Add(this.handlerNameLabel);
+            this.handlerNamePanel.Location = new System.Drawing.Point(443, 0);
+            this.handlerNamePanel.Name = "handlerNamePanel";
+            this.handlerNamePanel.Size = new System.Drawing.Size(214, 50);
+            this.handlerNamePanel.TabIndex = 29;
             // 
-            // competitorNameLabel
+            // handlerNameLabel
             // 
-            this.competitorNameLabel.AutoEllipsis = true;
-            this.competitorNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.competitorNameLabel.Font = new System.Drawing.Font("Arial Narrow", 28.6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.competitorNameLabel.Location = new System.Drawing.Point(0, 0);
-            this.competitorNameLabel.Name = "competitorNameLabel";
-            this.competitorNameLabel.Size = new System.Drawing.Size(212, 48);
-            this.competitorNameLabel.TabIndex = 3;
-            this.competitorNameLabel.Text = "Benny Willemse";
-            this.competitorNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.handlerNameLabel.AutoEllipsis = true;
+            this.handlerNameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.handlerNameLabel.Font = new System.Drawing.Font("Arial Narrow", 28.6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.handlerNameLabel.Location = new System.Drawing.Point(0, 0);
+            this.handlerNameLabel.Name = "handlerNameLabel";
+            this.handlerNameLabel.Size = new System.Drawing.Size(212, 48);
+            this.handlerNameLabel.TabIndex = 3;
+            this.handlerNameLabel.Text = "Benny Willemse";
+            this.handlerNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // finishTimePanel
             // 
@@ -252,7 +252,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.Controls.Add(this.refusalsPanel);
             this.Controls.Add(this.faultsPanel);
             this.Controls.Add(this.finishTimePanel);
-            this.Controls.Add(this.competitorNamePanel);
+            this.Controls.Add(this.handlerNamePanel);
             this.Controls.Add(this.dogNamePanel);
             this.Controls.Add(this.countryCodePanel);
             this.Controls.Add(this.competitorNumberPanel);
@@ -261,7 +261,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.competitorNumberPanel.ResumeLayout(false);
             this.countryCodePanel.ResumeLayout(false);
             this.dogNamePanel.ResumeLayout(false);
-            this.competitorNamePanel.ResumeLayout(false);
+            this.handlerNamePanel.ResumeLayout(false);
             this.finishTimePanel.ResumeLayout(false);
             this.faultsPanel.ResumeLayout(false);
             this.refusalsPanel.ResumeLayout(false);
@@ -278,8 +278,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private SingleLineLabel countryCodeLabel;
         private Panel dogNamePanel;
         private SingleLineLabel dogNameLabel;
-        private Panel competitorNamePanel;
-        private SingleLineLabel competitorNameLabel;
+        private Panel handlerNamePanel;
+        private SingleLineLabel handlerNameLabel;
         private Panel finishTimePanel;
         private SingleLineLabel finishTimeLabel;
         private Panel faultsPanel;

@@ -18,8 +18,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [NotNull]
         public AlertSource FirstPlace { get; }
 
+        /// <summary>
+        /// A run with no faults and finished within Standard Course Time.
+        /// </summary>
         [NotNull]
-        public AlertSource FlawlessFinishInStandardParcoursTime { get; }
+        public AlertSource CleanRunInStandardCourseTime { get; }
 
         [NotNull]
         public AlertSource ReadyToStart { get; private set; }
@@ -32,18 +35,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             AlertSource.None, AlertSource.None, AlertSource.None);
 
         public CompetitionAlerts([NotNull] AlertSource eliminated, [NotNull] AlertSource firstPlace,
-            [NotNull] AlertSource flawlessFinishInStandardParcoursTime, [NotNull] AlertSource readyToStart,
+            [NotNull] AlertSource cleanRunInStandardCourseTime, [NotNull] AlertSource readyToStart,
             [NotNull] AlertSource customItemA)
         {
             Guard.NotNull(eliminated, nameof(eliminated));
             Guard.NotNull(firstPlace, nameof(firstPlace));
-            Guard.NotNull(flawlessFinishInStandardParcoursTime, nameof(flawlessFinishInStandardParcoursTime));
+            Guard.NotNull(cleanRunInStandardCourseTime, nameof(cleanRunInStandardCourseTime));
             Guard.NotNull(readyToStart, nameof(readyToStart));
             Guard.NotNull(customItemA, nameof(customItemA));
 
             Eliminated = eliminated;
             FirstPlace = firstPlace;
-            FlawlessFinishInStandardParcoursTime = flawlessFinishInStandardParcoursTime;
+            CleanRunInStandardCourseTime = cleanRunInStandardCourseTime;
             ReadyToStart = readyToStart;
             CustomItemA = customItemA;
         }
@@ -52,7 +55,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             Eliminated.Dispose();
             FirstPlace.Dispose();
-            FlawlessFinishInStandardParcoursTime.Dispose();
+            CleanRunInStandardCourseTime.Dispose();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
         [DataMember]
         [CanBeNull]
-        public AlertSourceXml FlawlessFinishInStandardParcoursTime { get; set; }
+        public AlertSourceXml CleanRunInStandardCourseTime { get; set; }
 
         [DataMember]
         [CanBeNull]
@@ -39,8 +39,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             {
                 Eliminated = AlertSourceXml.ToXmlObject(source.Eliminated),
                 FirstPlace = AlertSourceXml.ToXmlObject(source.FirstPlace),
-                FlawlessFinishInStandardParcoursTime =
-                    AlertSourceXml.ToXmlObject(source.FlawlessFinishInStandardParcoursTime),
+                CleanRunInStandardCourseTime =
+                    AlertSourceXml.ToXmlObject(source.CleanRunInStandardCourseTime),
                 ReadyToStart = AlertSourceXml.ToXmlObject(source.ReadyToStart),
                 CustomItemA = AlertSourceXml.ToXmlObject(source.CustomItemA)
             };
@@ -53,7 +53,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
                 ? CompetitionAlerts.Empty
                 : new CompetitionAlerts(AlertSourceXml.FromXmlObject(source.Eliminated),
                     AlertSourceXml.FromXmlObject(source.FirstPlace),
-                    AlertSourceXml.FromXmlObject(source.FlawlessFinishInStandardParcoursTime),
+                    AlertSourceXml.FromXmlObject(source.CleanRunInStandardCourseTime),
                     AlertSourceXml.FromXmlObject(source.ReadyToStart), AlertSourceXml.FromXmlObject(source.CustomItemA));
         }
     }

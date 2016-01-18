@@ -490,7 +490,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 runData.Timings = new CompetitionRunTimings(passageTime);
                 SetState(CompetitionClassState.StartPassed);
 
-                runData.EliminationTracker.StartMonitorParcoursTime(modelSnapshot.ClassInfo.MaximumParcoursTime);
+                runData.EliminationTracker.StartMonitorCourseTime(modelSnapshot.ClassInfo.MaximumCourseTime);
 
                 using (var collector = new VisualizationUpdateCollector(visualizer))
                 {
@@ -573,7 +573,7 @@ namespace DogAgilityCompetition.Controller.Engine
                         TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
                         Log.Info($"Passed Finish at {elapsed}.");
 
-                        runData.EliminationTracker.StopMonitorParcoursTime();
+                        runData.EliminationTracker.StopMonitorCourseTime();
                         collector.Include(PrimaryTimeStopAndSet.FromTimeSpanWithAccuracy(elapsed));
                     }
                 });
@@ -688,7 +688,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private void CompleteActiveRun([NotNull] VisualizationUpdateCollector collector)
         {
-            runData.EliminationTracker.StopMonitorParcoursTime();
+            runData.EliminationTracker.StopMonitorCourseTime();
             PersistRunResultToCache();
 
             int competitorNumber = AssertCurrentCompetitorNumberNotNull();
@@ -714,17 +714,17 @@ namespace DogAgilityCompetition.Controller.Engine
             }
 
             CompetitionRunTimings timings = AssertRunDataTimingsNotNull();
-            if (modelSnapshot.ClassInfo.StandardParcoursTime != null && timings.FinishTime != null)
+            if (modelSnapshot.ClassInfo.StandardCourseTime != null && timings.FinishTime != null)
             {
                 TimeSpanWithAccuracy elapsed = timings.FinishTime.ElapsedSince(timings.StartTime);
-                if (elapsed.TimeValue > modelSnapshot.ClassInfo.StandardParcoursTime.Value)
+                if (elapsed.TimeValue > modelSnapshot.ClassInfo.StandardCourseTime.Value)
                 {
                     return;
                 }
             }
 
             // Make sure we do not show picture for FirstPlace while at the same time
-            // play the sound for FlawlessFinishInStandardParcoursTime.
+            // play the sound for CleanRunInStandardCourseTime.
             bool firstPlaceAnimated = false;
 
             if (MatchesConditionsForFirstPlaceAlert())
@@ -743,16 +743,15 @@ namespace DogAgilityCompetition.Controller.Engine
 
             if (!firstPlaceAnimated)
             {
-                if (modelSnapshot.Alerts.FlawlessFinishInStandardParcoursTime.Picture.EffectiveItem != null)
+                if (modelSnapshot.Alerts.CleanRunInStandardCourseTime.Picture.EffectiveItem != null)
                 {
                     collector.Include(
-                        new StartAnimation(
-                            modelSnapshot.Alerts.FlawlessFinishInStandardParcoursTime.Picture.EffectiveItem));
+                        new StartAnimation(modelSnapshot.Alerts.CleanRunInStandardCourseTime.Picture.EffectiveItem));
                 }
-                if (modelSnapshot.Alerts.FlawlessFinishInStandardParcoursTime.Sound.EffectivePath != null)
+                if (modelSnapshot.Alerts.CleanRunInStandardCourseTime.Sound.EffectivePath != null)
                 {
                     collector.Include(
-                        new PlaySound(modelSnapshot.Alerts.FlawlessFinishInStandardParcoursTime.Sound.EffectivePath));
+                        new PlaySound(modelSnapshot.Alerts.CleanRunInStandardCourseTime.Sound.EffectivePath));
                 }
             }
         }

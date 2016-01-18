@@ -6,7 +6,7 @@
     public static class ImportExportColumns
     {
         public const string CompetitorNumber = "CompetitorNumber";
-        public const string CompetitorName = "CompetitorName";
+        public const string HandlerName = "HandlerName";
         public const string DogName = "DogName";
         public const string CountryCode = "CountryCode";
         public const string IntermediateTime1 = "IntermediateTime1";

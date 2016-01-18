@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             new List<string>
             {
                 ImportExportColumns.CompetitorNumber,
-                ImportExportColumns.CompetitorName,
+                ImportExportColumns.HandlerName,
                 ImportExportColumns.DogName,
                 ImportExportColumns.CountryCode,
                 ImportExportColumns.IntermediateTime1,
@@ -50,7 +50,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                         using (IDelimitedValuesWriterRow row = valuesWriter.CreateRow())
                         {
                             row.SetCell(ImportExportColumns.CompetitorNumber, runResult.Competitor.Number);
-                            row.SetCell(ImportExportColumns.CompetitorName, runResult.Competitor.Name);
+                            row.SetCell(ImportExportColumns.HandlerName, runResult.Competitor.HandlerName);
                             row.SetCell(ImportExportColumns.DogName, runResult.Competitor.DogName);
                             row.SetCell(ImportExportColumns.CountryCode, runResult.Competitor.CountryCode);
 

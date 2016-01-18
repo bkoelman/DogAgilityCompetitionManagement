@@ -15,6 +15,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     public sealed partial class DisplayStatusControl : UserControl, ISimpleVisualizationActor
     {
         private const string MilliDashes = "---";
+        private const string EliminationText = "-E-";
 
         [CanBeNull]
         private string lastMillisecondsValue;
@@ -22,7 +23,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [CanBeNull]
         private DateTime? startTime;
 
-        private bool IsEliminated => primaryTimeMillisecondsLabel.Text == @"dis";
+        private bool IsEliminated => primaryTimeMillisecondsLabel.Text == EliminationText;
 
         public DisplayStatusControl()
         {
@@ -95,7 +96,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         void ISimpleVisualizationActor.SetElimination(bool isEliminated)
         {
             primaryTimeMillisecondsLabel.Text = isEliminated
-                ? @"dis"
+                ? EliminationText
                 : (startTime != null ? MilliDashes : lastMillisecondsValue);
         }
 

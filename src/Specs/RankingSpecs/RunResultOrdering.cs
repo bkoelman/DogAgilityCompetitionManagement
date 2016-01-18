@@ -113,7 +113,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             CompetitionClassModel model = new CompetitionClassModel()
                 .ChangeClassInfo(new CompetitionClassInfo()
-                    .ChangeStandardParcoursTime(StandardParcoursTime));
+                    .ChangeStandardCourseTime(StandardCourseTime));
             var comparer = new CompetitionRunResultRankingComparer(model, RankingComparisonMode.OnlyPhasePenaltyOverrun);
 
             foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DontCare))
@@ -185,7 +185,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         private const int LowCompetitorNumber = 3;
         private const int HighCompetitorNumber = 7;
 
-        private static readonly TimeSpan StandardParcoursTime = TimeSpan.FromSeconds(40);
+        private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(40);
 
         [NotNull]
         private static CompetitionRunResult CreateCompetitorForPenaltyOverrun(bool penaltyTimeIsGreater,
@@ -201,7 +201,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new RecordedTimeBuilder()
                     .At(startTime).Build())
                 .ChangeFinishTime(new RecordedTimeBuilder()
-                    .At(startTime + overrunTime + StandardParcoursTime).Build()));
+                    .At(startTime + overrunTime + StandardCourseTime).Build()));
 
             int fr = (int) ((penaltyTime - overrunTime).TotalSeconds);
             result = result.ChangeFaultCount(fr);

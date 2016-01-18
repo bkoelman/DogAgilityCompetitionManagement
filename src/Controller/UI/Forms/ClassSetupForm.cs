@@ -48,11 +48,11 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             classTypeTextBox.Text = originalVersion.ClassInfo.Type;
             inspectorNameTextBox.Text = originalVersion.ClassInfo.InspectorName;
             ringNameTextBox.Text = originalVersion.ClassInfo.RingName;
-            standardParcoursTimeTextBox.Text = originalVersion.ClassInfo.StandardParcoursTime != null
-                ? $"{originalVersion.ClassInfo.StandardParcoursTime.Value.TotalSeconds:0}"
+            standardCourseTimeTextBox.Text = originalVersion.ClassInfo.StandardCourseTime != null
+                ? $"{originalVersion.ClassInfo.StandardCourseTime.Value.TotalSeconds:0}"
                 : string.Empty;
-            maximumParcoursTimeTextBox.Text = originalVersion.ClassInfo.MaximumParcoursTime != null
-                ? $"{originalVersion.ClassInfo.MaximumParcoursTime.Value.TotalSeconds:0}"
+            maximumCourseTimeTextBox.Text = originalVersion.ClassInfo.MaximumCourseTime != null
+                ? $"{originalVersion.ClassInfo.MaximumCourseTime.Value.TotalSeconds:0}"
                 : string.Empty;
             trackLengthTextBox.Text =
                 originalVersion.ClassInfo.TrackLengthInMeters?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
@@ -60,10 +60,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
             eliminatedPictureAlert.Item = originalVersion.Alerts.Eliminated.Picture;
             firstPlacePictureAlert.Item = originalVersion.Alerts.FirstPlace.Picture;
-            flawlessFinishInSptPictureAlert.Item = originalVersion.Alerts.FlawlessFinishInStandardParcoursTime.Picture;
+            cleanRunInSctPictureAlert.Item = originalVersion.Alerts.CleanRunInStandardCourseTime.Picture;
             eliminatedSoundAlert.Item = originalVersion.Alerts.Eliminated.Sound;
             firstPlaceSoundAlert.Item = originalVersion.Alerts.FirstPlace.Sound;
-            flawlessFinishInSptSoundAlert.Item = originalVersion.Alerts.FlawlessFinishInStandardParcoursTime.Sound;
+            cleanRunInSctSoundAlert.Item = originalVersion.Alerts.CleanRunInStandardCourseTime.Sound;
             readyToStartSoundAlert.Item = originalVersion.Alerts.ReadyToStart.Sound;
             customItemASoundAlert.Item = originalVersion.Alerts.CustomItemA.Sound;
 
@@ -140,14 +140,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void StandardParcoursTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void StandardCourseTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
         {
-            ValidateNullOrPositiveIntegerTextBox(standardParcoursTimeTextBox);
+            ValidateNullOrPositiveIntegerTextBox(standardCourseTimeTextBox);
         }
 
-        private void MaximumParcoursTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void MaximumCourseTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
         {
-            ValidateNullOrPositiveIntegerTextBox(maximumParcoursTimeTextBox);
+            ValidateNullOrPositiveIntegerTextBox(maximumCourseTimeTextBox);
         }
 
         private void TrackLengthTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
@@ -188,8 +188,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                         .ChangeType(classTypeTextBox.Text.Trim())
                         .ChangeInspectorName(inspectorNameTextBox.Text.Trim())
                         .ChangeRingName(ringNameTextBox.Text.Trim())
-                        .ChangeStandardParcoursTime(NullableTimeSpanFromTextBox(standardParcoursTimeTextBox))
-                        .ChangeMaximumParcoursTime(NullableTimeSpanFromTextBox(maximumParcoursTimeTextBox))
+                        .ChangeStandardCourseTime(NullableTimeSpanFromTextBox(standardCourseTimeTextBox))
+                        .ChangeMaximumCourseTime(NullableTimeSpanFromTextBox(maximumCourseTimeTextBox))
                         .ChangeTrackLengthInMeters(NullableIntFromTextBox(trackLengthTextBox)))
                     .ChangeRunResults(competitorsGrid.DataSource)
                     .SafeChangeLastCompletedCompetitorNumber(hasImportedCompetitors
@@ -202,7 +202,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                     .ChangeAlerts(
                         new CompetitionAlerts(new AlertSource(eliminatedPictureAlert.Item, eliminatedSoundAlert.Item),
                             new AlertSource(firstPlacePictureAlert.Item, firstPlaceSoundAlert.Item),
-                            new AlertSource(flawlessFinishInSptPictureAlert.Item, flawlessFinishInSptSoundAlert.Item),
+                            new AlertSource(cleanRunInSctPictureAlert.Item, cleanRunInSctSoundAlert.Item),
                             new AlertSource(AlertPictureSourceItem.None, readyToStartSoundAlert.Item),
                             new AlertSource(AlertPictureSourceItem.None, customItemASoundAlert.Item)))
                     .RecalculatePlacements();

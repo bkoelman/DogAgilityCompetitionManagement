@@ -48,7 +48,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.runResultsGrid = new System.Windows.Forms.DataGridView();
             this.PlacementColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.competitorNumberDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.competitorNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.handlerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DogNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CountryCodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IntermediateTime1Column = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -59,16 +59,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.RefusalCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsEliminatedColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.competitionRunResultRowBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.runResultsGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.competitionRunResultRowBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -83,7 +73,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.runResultsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.PlacementColumn,
             this.competitorNumberDataGridViewTextBoxColumn,
-            this.competitorNameDataGridViewTextBoxColumn,
+            this.handlerNameDataGridViewTextBoxColumn,
             this.DogNameColumn,
             this.CountryCodeColumn,
             this.IntermediateTime1Column,
@@ -124,13 +114,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.competitorNumberDataGridViewTextBoxColumn.ReadOnly = true;
             this.competitorNumberDataGridViewTextBoxColumn.Width = 70;
             // 
-            // competitorNameDataGridViewTextBoxColumn
+            // handlerNameDataGridViewTextBoxColumn
             // 
-            this.competitorNameDataGridViewTextBoxColumn.DataPropertyName = "CompetitorName";
-            this.competitorNameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.competitorNameDataGridViewTextBoxColumn.Name = "competitorNameDataGridViewTextBoxColumn";
-            this.competitorNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.competitorNameDataGridViewTextBoxColumn.Width = 150;
+            this.handlerNameDataGridViewTextBoxColumn.DataPropertyName = "HandlerName";
+            this.handlerNameDataGridViewTextBoxColumn.HeaderText = "Handler name";
+            this.handlerNameDataGridViewTextBoxColumn.Name = "handlerNameDataGridViewTextBoxColumn";
+            this.handlerNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.handlerNameDataGridViewTextBoxColumn.Width = 150;
             // 
             // DogNameColumn
             // 
@@ -221,97 +211,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.competitionRunResultRowBindingSource.AllowNew = false;
             this.competitionRunResultRowBindingSource.DataSource = typeof(CompetitionRunResultRowInGrid);
             // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "DogName";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Competitor";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 65;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "CountryCode";
-            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 55;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "IntermediateTime1";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn3.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridViewTextBoxColumn3.HeaderText = "Dog name";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "IntermediateTime2";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle9;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Country";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Width = 55;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "IntermediateTime3";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn5.DefaultCellStyle = dataGridViewCellStyle10;
-            this.dataGridViewTextBoxColumn5.HeaderText = "Intermediate1";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "FinishTime";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle11;
-            this.dataGridViewTextBoxColumn6.HeaderText = "Intermediate 2";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn7
-            // 
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "FaultCount";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle12;
-            this.dataGridViewTextBoxColumn7.HeaderText = "Intermediate 3";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn8
-            // 
-            this.dataGridViewTextBoxColumn8.DataPropertyName = "RefusalCount";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle13;
-            this.dataGridViewTextBoxColumn8.HeaderText = "Finish";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
-            this.dataGridViewTextBoxColumn8.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "PlacementText";
-            this.dataGridViewTextBoxColumn9.HeaderText = "Faults";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            this.dataGridViewTextBoxColumn9.Width = 50;
-            // 
-            // dataGridViewTextBoxColumn10
-            // 
-            this.dataGridViewTextBoxColumn10.HeaderText = "Refusals";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            this.dataGridViewTextBoxColumn10.ReadOnly = true;
-            this.dataGridViewTextBoxColumn10.Width = 60;
-            // 
             // CompetitionRunResultsGrid
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,20 +227,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         #endregion
 
         private DataGridView runResultsGrid;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private BindingSource competitionRunResultRowBindingSource;
         private DataGridViewTextBoxColumn PlacementColumn;
         private DataGridViewTextBoxColumn competitorNumberDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn competitorNameDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn handlerNameDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn DogNameColumn;
         private DataGridViewTextBoxColumn CountryCodeColumn;
         private DataGridViewTextBoxColumn IntermediateTime1Column;

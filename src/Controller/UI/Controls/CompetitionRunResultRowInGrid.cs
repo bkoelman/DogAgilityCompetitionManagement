@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         public int CompetitorNumber { get; private set; }
 
         [NotNull]
-        public string CompetitorName { get; private set; }
+        public string HandlerName { get; private set; }
 
         [NotNull]
         public string DogName { get; private set; }
@@ -122,15 +122,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [NotNull]
         public string PlacementText { get; private set; }
 
-        private CompetitionRunResultRowInGrid([NotNull] CompetitionRunResult original, [NotNull] string competitorName,
+        private CompetitionRunResultRowInGrid([NotNull] CompetitionRunResult original, [NotNull] string handlerName,
             [NotNull] string dogName)
         {
             Guard.NotNull(original, nameof(original));
-            Guard.NotNullNorEmpty(competitorName, nameof(competitorName));
+            Guard.NotNullNorEmpty(handlerName, nameof(handlerName));
             Guard.NotNullNorEmpty(dogName, nameof(dogName));
 
             this.original = original;
-            CompetitorName = competitorName;
+            HandlerName = handlerName;
             DogName = dogName;
             PlacementText = string.Empty;
         }
@@ -147,7 +147,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             Guard.NotNull(source, nameof(source));
 
-            return new CompetitionRunResultRowInGrid(source, source.Competitor.Name, source.Competitor.DogName)
+            return new CompetitionRunResultRowInGrid(source, source.Competitor.HandlerName, source.Competitor.DogName)
             {
                 CompetitorNumber = source.Competitor.Number,
                 CountryCode = source.Competitor.CountryCode,

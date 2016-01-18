@@ -28,10 +28,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public string RingName { get; }
 
         [CanBeNull]
-        public TimeSpan? StandardParcoursTime { get; }
+        public TimeSpan? StandardCourseTime { get; }
 
         [CanBeNull]
-        public TimeSpan? MaximumParcoursTime { get; }
+        public TimeSpan? MaximumCourseTime { get; }
 
         [CanBeNull]
         public int? TrackLengthInMeters { get; }
@@ -41,15 +41,15 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         }
 
         private CompetitionClassInfo([CanBeNull] string grade, [CanBeNull] string type, [CanBeNull] string inspectorName,
-            [CanBeNull] string ringName, [CanBeNull] TimeSpan? standardParcoursTime,
-            [CanBeNull] TimeSpan? maximumParcoursTime, [CanBeNull] int? trackLengthInMeters)
+            [CanBeNull] string ringName, [CanBeNull] TimeSpan? standardCourseTime,
+            [CanBeNull] TimeSpan? maximumCourseTime, [CanBeNull] int? trackLengthInMeters)
         {
             Grade = grade;
             Type = type;
             InspectorName = string.IsNullOrWhiteSpace(inspectorName) ? null : inspectorName;
             RingName = ringName;
-            StandardParcoursTime = standardParcoursTime;
-            MaximumParcoursTime = maximumParcoursTime;
+            StandardCourseTime = standardCourseTime;
+            MaximumCourseTime = maximumCourseTime;
             TrackLengthInMeters = trackLengthInMeters;
         }
 
@@ -58,8 +58,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             grade = string.IsNullOrWhiteSpace(grade) ? null : grade;
 
-            return new CompetitionClassInfo(grade, Type, InspectorName, RingName, StandardParcoursTime,
-                MaximumParcoursTime, TrackLengthInMeters);
+            return new CompetitionClassInfo(grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
+                TrackLengthInMeters);
         }
 
         [NotNull]
@@ -67,8 +67,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             type = string.IsNullOrWhiteSpace(type) ? null : type;
 
-            return new CompetitionClassInfo(Grade, type, InspectorName, RingName, StandardParcoursTime,
-                MaximumParcoursTime, TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
+                TrackLengthInMeters);
         }
 
         [NotNull]
@@ -76,8 +76,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             inspectorName = string.IsNullOrWhiteSpace(inspectorName) ? null : inspectorName;
 
-            return new CompetitionClassInfo(Grade, Type, inspectorName, RingName, StandardParcoursTime,
-                MaximumParcoursTime, TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, inspectorName, RingName, StandardCourseTime, MaximumCourseTime,
+                TrackLengthInMeters);
         }
 
         [NotNull]
@@ -85,32 +85,32 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             string value = string.IsNullOrWhiteSpace(ringName) ? null : ringName;
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, value, StandardParcoursTime, MaximumParcoursTime,
+            return new CompetitionClassInfo(Grade, Type, InspectorName, value, StandardCourseTime, MaximumCourseTime,
                 TrackLengthInMeters);
         }
 
         [NotNull]
-        public CompetitionClassInfo ChangeStandardParcoursTime([CanBeNull] TimeSpan? standardParcoursTime)
+        public CompetitionClassInfo ChangeStandardCourseTime([CanBeNull] TimeSpan? standardCourseTime)
         {
-            if (standardParcoursTime != null)
+            if (standardCourseTime != null)
             {
-                Guard.GreaterOrEqual(standardParcoursTime.Value, nameof(standardParcoursTime), TimeSpan.FromSeconds(1));
+                Guard.GreaterOrEqual(standardCourseTime.Value, nameof(standardCourseTime), TimeSpan.FromSeconds(1));
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, standardParcoursTime,
-                MaximumParcoursTime, TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, standardCourseTime, MaximumCourseTime,
+                TrackLengthInMeters);
         }
 
         [NotNull]
-        public CompetitionClassInfo ChangeMaximumParcoursTime([CanBeNull] TimeSpan? maximumParcoursTime)
+        public CompetitionClassInfo ChangeMaximumCourseTime([CanBeNull] TimeSpan? maximumCourseTime)
         {
-            if (maximumParcoursTime != null)
+            if (maximumCourseTime != null)
             {
-                Guard.GreaterOrEqual(maximumParcoursTime.Value, nameof(maximumParcoursTime), TimeSpan.FromSeconds(1));
+                Guard.GreaterOrEqual(maximumCourseTime.Value, nameof(maximumCourseTime), TimeSpan.FromSeconds(1));
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardParcoursTime,
-                maximumParcoursTime, TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, maximumCourseTime,
+                TrackLengthInMeters);
         }
 
         [NotNull]
@@ -121,8 +121,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 Guard.GreaterOrEqual(trackLengthInMeters.Value, nameof(trackLengthInMeters), 1);
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardParcoursTime,
-                MaximumParcoursTime, trackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
+                trackLengthInMeters);
         }
 
         [Pure]
@@ -136,13 +136,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 formatter.Append(() => InspectorName, () => InspectorName);
                 formatter.Append(() => RingName, () => RingName);
 
-                if (StandardParcoursTime != null)
+                if (StandardCourseTime != null)
                 {
-                    formatter.Append(() => StandardParcoursTime.Value.TotalSeconds, () => StandardParcoursTime);
+                    formatter.Append(() => StandardCourseTime.Value.TotalSeconds, () => StandardCourseTime);
                 }
-                if (MaximumParcoursTime != null)
+                if (MaximumCourseTime != null)
                 {
-                    formatter.Append(() => MaximumParcoursTime.Value.TotalSeconds, () => MaximumParcoursTime);
+                    formatter.Append(() => MaximumCourseTime.Value.TotalSeconds, () => MaximumCourseTime);
                 }
 
                 formatter.Append(() => TrackLengthInMeters, () => TrackLengthInMeters);

@@ -16,7 +16,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
         [DataMember]
         [CanBeNull]
-        public string Name { get; set; }
+        public string HandlerName { get; set; }
 
         [DataMember]
         [CanBeNull]
@@ -34,7 +34,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             return new CompetitorXml
             {
                 Number = source.Number,
-                Name = source.Name,
+                HandlerName = source.HandlerName,
                 DogName = source.DogName,
                 CountryCode = source.CountryCode
             };
@@ -44,7 +44,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         public static Competitor FromXmlObject([NotNull] CompetitorXml source)
         {
             Guard.NotNull(source, nameof(source));
-            string name = AssertCompetitorNameNotEmpty(source);
+            string name = AssertHandlerNameNotEmpty(source);
             string dogName = AssertDogNameNotEmpty(source);
 
             return new Competitor(source.Number, name, dogName).ChangeCountryCode(source.CountryCode);
@@ -52,13 +52,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
         [AssertionMethod]
         [NotNull]
-        private static string AssertCompetitorNameNotEmpty([NotNull] CompetitorXml source)
+        private static string AssertHandlerNameNotEmpty([NotNull] CompetitorXml source)
         {
-            if (string.IsNullOrWhiteSpace(source.Name))
+            if (string.IsNullOrWhiteSpace(source.HandlerName))
             {
-                throw new InvalidDataException("Competitor name is missing or empty in XML file.");
+                throw new InvalidDataException("Competitor handler name is missing or empty in XML file.");
             }
-            return source.Name;
+            return source.HandlerName;
         }
 
         [AssertionMethod]

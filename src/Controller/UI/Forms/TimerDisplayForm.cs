@@ -74,8 +74,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardParcoursTimeValueLabel.Text = classInfo?.StandardParcoursTime != null
-                ? $"{classInfo.StandardParcoursTime.Value.TotalSeconds:0}"
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
+                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
                 : string.Empty;
         }
 
@@ -153,7 +153,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             currentCompetitorNumberLabel.Text = competitor != null
                 ? TextFormatting.FormatCompetitorNumber(competitor.Number)
                 : string.Empty;
-            currentCompetitorNameLabel.Text = competitor?.Name ?? string.Empty;
+            currentHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             currentDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
 
@@ -172,7 +172,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             nextCompetitorNumberLabel.Text = competitor != null
                 ? TextFormatting.FormatCompetitorNumber(competitor.Number)
                 : string.Empty;
-            nextCompetitorNameLabel.Text = competitor?.Name ?? string.Empty;
+            nextHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             nextDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
 
@@ -192,7 +192,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 prevCompetitorNumberLabel.Text =
                     TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
-                prevCompetitorNameLabel.Text = competitorRunResult.Competitor.Name;
+                prevHandlerNameLabel.Text = competitorRunResult.Competitor.HandlerName;
                 prevDogNameLabel.Text = competitorRunResult.Competitor.DogName;
                 prevTimeLabel.Text =
                     TextFormatting.FormatTime(
@@ -213,7 +213,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             else
             {
                 prevCompetitorNumberLabel.Text = string.Empty;
-                prevCompetitorNameLabel.Text = string.Empty;
+                prevHandlerNameLabel.Text = string.Empty;
                 prevDogNameLabel.Text = string.Empty;
                 prevTimeLabel.Text = string.Empty;
                 prevFaultsValueLabel.Text = string.Empty;

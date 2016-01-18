@@ -19,7 +19,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public int Number { get; }
 
         [NotNull]
-        public string Name { get; }
+        public string HandlerName { get; }
 
         [NotNull]
         public string DogName { get; }
@@ -27,19 +27,20 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [CanBeNull]
         public string CountryCode { get; }
 
-        public Competitor(int number, [NotNull] string name, [NotNull] string dogName)
-            : this(number, name, dogName, null)
+        public Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName)
+            : this(number, handlerName, dogName, null)
         {
         }
 
-        private Competitor(int number, [NotNull] string name, [NotNull] string dogName, [CanBeNull] string countryCode)
+        private Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName,
+            [CanBeNull] string countryCode)
         {
             Guard.InRangeInclusive(number, nameof(number), 1, CompetitorNumberMaximumValue);
-            Guard.NotNullNorWhiteSpace(name, nameof(name));
+            Guard.NotNullNorWhiteSpace(handlerName, nameof(handlerName));
             Guard.NotNullNorWhiteSpace(dogName, nameof(dogName));
 
             Number = number;
-            Name = name;
+            HandlerName = handlerName;
             DogName = dogName;
             CountryCode = string.IsNullOrWhiteSpace(countryCode) ? null : countryCode;
         }
@@ -47,7 +48,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [NotNull]
         public Competitor ChangeCountryCode([CanBeNull] string countryCode)
         {
-            return new Competitor(Number, Name, DogName, countryCode);
+            return new Competitor(Number, HandlerName, DogName, countryCode);
         }
 
         [Pure]
@@ -55,7 +56,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             var textBuilder = new StringBuilder();
             textBuilder.Append("Competitor ");
-            textBuilder.Append(Name);
+            textBuilder.Append(HandlerName);
             textBuilder.Append(" (");
             textBuilder.Append(Number);
             textBuilder.Append(") with ");
@@ -72,7 +73,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
         public bool Equals([CanBeNull] Competitor other)
         {
-            return !ReferenceEquals(other, null) && other.Number == Number && other.Name == Name &&
+            return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName &&
                 other.DogName == DogName && other.CountryCode == CountryCode;
         }
 
@@ -83,7 +84,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
         public override int GetHashCode()
         {
-            return Number.GetHashCode() ^ Name.GetHashCode() ^ DogName.GetHashCode() ^
+            return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^
                 (CountryCode ?? string.Empty).GetHashCode();
         }
 

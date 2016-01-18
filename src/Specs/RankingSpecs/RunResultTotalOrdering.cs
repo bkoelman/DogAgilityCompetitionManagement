@@ -29,7 +29,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         private const int LowOrSameCompetitorNumber = 3;
         private const int HighCompetitorNumber = 7;
 
-        private static readonly TimeSpan StandardParcoursTime = TimeSpan.FromSeconds(80);
+        private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(80);
 
         [TestMethod]
         public void RunExploded()
@@ -103,7 +103,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             CompetitionClassModel model = new CompetitionClassModel()
                 .ChangeClassInfo(new CompetitionClassInfo()
-                    .ChangeStandardParcoursTime(StandardParcoursTime));
+                    .ChangeStandardCourseTime(StandardCourseTime));
             var comparer = new CompetitionRunResultRankingComparer(model, RankingComparisonMode.Regular);
 
             foreach (OrderingScenario scenario in exploded)
@@ -241,9 +241,9 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 return true;
             }
 
-            // Formula: OverrunTime = ( FinishTime - StandardParcoursTime ) ranged [0, ->>
+            // Formula: OverrunTime = ( FinishTime - StandardCourseTime ) ranged [0, ->>
 
-            // Because StandardParcoursTime is a constant, same finish time implies same overrun time.
+            // Because StandardCourseTime is a constant, same finish time implies same overrun time.
             bool hasSameFinishTime = !xFinishTimeIsGreater && !yFinishTimeIsGreater;
             if (hasSameFinishTime && (yOverrunTimeIsGreater || xOverrunTimeIsGreater))
             {
@@ -253,7 +253,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             if ((xFinishTimeIsGreater && yOverrunTimeIsGreater) ||
                 (yFinishTimeIsGreater && xOverrunTimeIsGreater))
             {
-                // Because StandardParcoursTime is a constant, greater finish time implies 
+                // Because StandardCourseTime is a constant, greater finish time implies 
                 // greater overrun time (or same when zero; lower is not possible).
                 return true;
             }
@@ -308,7 +308,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 }
                 else
                 {
-                    finishTimeAbsolute += StandardParcoursTime;
+                    finishTimeAbsolute += StandardCourseTime;
                 }
 
                 result = result.ChangeTimings(new CompetitionRunTimings(
@@ -318,8 +318,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                         .At(finishTimeAbsolute).Build()));
 
                 TimeSpan finishTimeElapsed = finishTimeAbsolute - startTime;
-                TimeSpan actualOverrunTime = finishTimeElapsed > StandardParcoursTime
-                    ? finishTimeElapsed - StandardParcoursTime
+                TimeSpan actualOverrunTime = finishTimeElapsed > StandardCourseTime
+                    ? finishTimeElapsed - StandardCourseTime
                     : TimeSpan.Zero;
 
                 int fr = (int) ((penaltyTime - actualOverrunTime).TotalSeconds);

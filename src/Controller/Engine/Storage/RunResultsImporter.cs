@@ -21,7 +21,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             new List<string>
             {
                 ImportExportColumns.CompetitorNumber,
-                ImportExportColumns.CompetitorName,
+                ImportExportColumns.HandlerName,
                 ImportExportColumns.DogName,
                 ImportExportColumns.CountryCode
             }.AsReadOnly();
@@ -212,20 +212,20 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         private static Competitor GetCompetitorFrom([NotNull] IDelimitedValuesReaderRow row)
         {
             int competitorNumber = row.GetCell<int>(ImportExportColumns.CompetitorNumber);
-            string competitorName = row.GetCell<string>(ImportExportColumns.CompetitorName);
+            string handlerName = row.GetCell<string>(ImportExportColumns.HandlerName);
             string dogName = row.GetCell<string>(ImportExportColumns.DogName);
             string countryCode = row.GetCell<string>(ImportExportColumns.CountryCode);
 
-            if (string.IsNullOrWhiteSpace(competitorName))
+            if (string.IsNullOrWhiteSpace(handlerName))
             {
-                throw new InvalidDataException("Competitor name is missing.");
+                throw new InvalidDataException("Handler name is missing.");
             }
             if (string.IsNullOrWhiteSpace(dogName))
             {
                 throw new InvalidDataException("Dog name is missing.");
             }
 
-            return new Competitor(competitorNumber, competitorName, dogName).ChangeCountryCode(countryCode);
+            return new Competitor(competitorNumber, handlerName, dogName).ChangeCountryCode(countryCode);
         }
 
         [CanBeNull]

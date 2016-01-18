@@ -186,7 +186,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             competitorTextBox.Text = runResult == null
                 ? string.Empty
-                : runResult.Competitor.Number + " - " + runResult.Competitor.Name + " - " + runResult.Competitor.DogName;
+                : runResult.Competitor.Number + " - " + runResult.Competitor.HandlerName + " - " +
+                    runResult.Competitor.DogName;
         }
 
         private void SetScreenValueForFinishTime([CanBeNull] CompetitionRunResult runResult)

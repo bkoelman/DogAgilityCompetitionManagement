@@ -45,8 +45,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.standardParcoursTimeTextBox = new System.Windows.Forms.TextBox();
-            this.maximumParcoursTimeTextBox = new System.Windows.Forms.TextBox();
+            this.standardCourseTimeTextBox = new System.Windows.Forms.TextBox();
+            this.maximumCourseTimeTextBox = new System.Windows.Forms.TextBox();
             this.intermediateCountUpDown = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -72,12 +72,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label18 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.evenlySplitContainer2 = new DogAgilityCompetition.Controller.UI.Controls.EvenlySplitContainer();
-            this.flawlessFinishInSptPictureAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionPictureAlert();
+            this.cleanRunInSctPictureAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionPictureAlert();
             this.eliminatedPictureAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionPictureAlert();
             this.firstPlacePictureAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionPictureAlert();
             this.customItemASoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
             this.readyToStartSoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
-            this.flawlessFinishInSptSoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
+            this.cleanRunInSctSoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
             this.eliminatedSoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
             this.firstPlaceSoundAlert = new DogAgilityCompetition.Controller.UI.Controls.CompetitionSoundAlert();
             this.label16 = new System.Windows.Forms.Label();
@@ -137,8 +137,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // evenlySplitContainer1.Panel2
             // 
             this.evenlySplitContainer1.Panel2.Controls.Add(this.label1);
-            this.evenlySplitContainer1.Panel2.Controls.Add(this.standardParcoursTimeTextBox);
-            this.evenlySplitContainer1.Panel2.Controls.Add(this.maximumParcoursTimeTextBox);
+            this.evenlySplitContainer1.Panel2.Controls.Add(this.standardCourseTimeTextBox);
+            this.evenlySplitContainer1.Panel2.Controls.Add(this.maximumCourseTimeTextBox);
             this.evenlySplitContainer1.Panel2.Controls.Add(this.intermediateCountUpDown);
             this.evenlySplitContainer1.Panel2.Controls.Add(this.label2);
             this.evenlySplitContainer1.Panel2.Controls.Add(this.label5);
@@ -228,29 +228,29 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(151, 13);
+            this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "&Standard Parcours Time (SPT)";
+            this.label1.Text = "&Standard Course Time (SCT)";
             // 
-            // standardParcoursTimeTextBox
+            // standardCourseTimeTextBox
             // 
-            this.standardParcoursTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.standardCourseTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.standardParcoursTimeTextBox.Location = new System.Drawing.Point(170, 6);
-            this.standardParcoursTimeTextBox.Name = "standardParcoursTimeTextBox";
-            this.standardParcoursTimeTextBox.Size = new System.Drawing.Size(183, 20);
-            this.standardParcoursTimeTextBox.TabIndex = 1;
-            this.standardParcoursTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.StandardParcoursTimeTextBox_Validating);
+            this.standardCourseTimeTextBox.Location = new System.Drawing.Point(170, 6);
+            this.standardCourseTimeTextBox.Name = "standardCourseTimeTextBox";
+            this.standardCourseTimeTextBox.Size = new System.Drawing.Size(183, 20);
+            this.standardCourseTimeTextBox.TabIndex = 1;
+            this.standardCourseTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.StandardCourseTimeTextBox_Validating);
             // 
-            // maximumParcoursTimeTextBox
+            // maximumCourseTimeTextBox
             // 
-            this.maximumParcoursTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.maximumCourseTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.maximumParcoursTimeTextBox.Location = new System.Drawing.Point(170, 32);
-            this.maximumParcoursTimeTextBox.Name = "maximumParcoursTimeTextBox";
-            this.maximumParcoursTimeTextBox.Size = new System.Drawing.Size(183, 20);
-            this.maximumParcoursTimeTextBox.TabIndex = 4;
-            this.maximumParcoursTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.MaximumParcoursTimeTextBox_Validating);
+            this.maximumCourseTimeTextBox.Location = new System.Drawing.Point(170, 32);
+            this.maximumCourseTimeTextBox.Name = "maximumCourseTimeTextBox";
+            this.maximumCourseTimeTextBox.Size = new System.Drawing.Size(183, 20);
+            this.maximumCourseTimeTextBox.TabIndex = 4;
+            this.maximumCourseTimeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.MaximumCourseTimeTextBox_Validating);
             // 
             // intermediateCountUpDown
             // 
@@ -274,9 +274,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 35);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(154, 13);
+            this.label2.Size = new System.Drawing.Size(145, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "&Maximum Parcours Time (MPT)";
+            this.label2.Text = "&Maximum Course Time (MCT)";
             // 
             // label5
             // 
@@ -540,7 +540,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             // evenlySplitContainer2.Panel1
             // 
-            this.evenlySplitContainer2.Panel1.Controls.Add(this.flawlessFinishInSptPictureAlert);
+            this.evenlySplitContainer2.Panel1.Controls.Add(this.cleanRunInSctPictureAlert);
             this.evenlySplitContainer2.Panel1.Controls.Add(this.eliminatedPictureAlert);
             this.evenlySplitContainer2.Panel1.Controls.Add(this.firstPlacePictureAlert);
             // 
@@ -548,23 +548,23 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             this.evenlySplitContainer2.Panel2.Controls.Add(this.customItemASoundAlert);
             this.evenlySplitContainer2.Panel2.Controls.Add(this.readyToStartSoundAlert);
-            this.evenlySplitContainer2.Panel2.Controls.Add(this.flawlessFinishInSptSoundAlert);
+            this.evenlySplitContainer2.Panel2.Controls.Add(this.cleanRunInSctSoundAlert);
             this.evenlySplitContainer2.Panel2.Controls.Add(this.eliminatedSoundAlert);
             this.evenlySplitContainer2.Panel2.Controls.Add(this.firstPlaceSoundAlert);
             this.evenlySplitContainer2.Size = new System.Drawing.Size(759, 131);
             this.evenlySplitContainer2.SplitterDistance = 379;
             this.evenlySplitContainer2.TabIndex = 5;
             // 
-            // flawlessFinishInSptPictureAlert
+            // cleanRunInSctPictureAlert
             // 
-            this.flawlessFinishInSptPictureAlert.AlertName = "Flawless finish in SPT";
-            this.flawlessFinishInSptPictureAlert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cleanRunInSctPictureAlert.AlertName = "Clean run in SCT";
+            this.cleanRunInSctPictureAlert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flawlessFinishInSptPictureAlert.ErrorProvider = this.errorProvider;
-            this.flawlessFinishInSptPictureAlert.Location = new System.Drawing.Point(3, 54);
-            this.flawlessFinishInSptPictureAlert.Name = "flawlessFinishInSptPictureAlert";
-            this.flawlessFinishInSptPictureAlert.Size = new System.Drawing.Size(373, 22);
-            this.flawlessFinishInSptPictureAlert.TabIndex = 2;
+            this.cleanRunInSctPictureAlert.ErrorProvider = this.errorProvider;
+            this.cleanRunInSctPictureAlert.Location = new System.Drawing.Point(3, 54);
+            this.cleanRunInSctPictureAlert.Name = "cleanRunInSctPictureAlert";
+            this.cleanRunInSctPictureAlert.Size = new System.Drawing.Size(373, 22);
+            this.cleanRunInSctPictureAlert.TabIndex = 2;
             // 
             // eliminatedPictureAlert
             // 
@@ -608,15 +608,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.readyToStartSoundAlert.Size = new System.Drawing.Size(370, 22);
             this.readyToStartSoundAlert.TabIndex = 3;
             // 
-            // flawlessFinishInSptSoundAlert
+            // cleanRunInSctSoundAlert
             // 
-            this.flawlessFinishInSptSoundAlert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cleanRunInSctSoundAlert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flawlessFinishInSptSoundAlert.ErrorProvider = this.errorProvider;
-            this.flawlessFinishInSptSoundAlert.Location = new System.Drawing.Point(3, 54);
-            this.flawlessFinishInSptSoundAlert.Name = "flawlessFinishInSptSoundAlert";
-            this.flawlessFinishInSptSoundAlert.Size = new System.Drawing.Size(370, 22);
-            this.flawlessFinishInSptSoundAlert.TabIndex = 2;
+            this.cleanRunInSctSoundAlert.ErrorProvider = this.errorProvider;
+            this.cleanRunInSctSoundAlert.Location = new System.Drawing.Point(3, 54);
+            this.cleanRunInSctSoundAlert.Name = "cleanRunInSctSoundAlert";
+            this.cleanRunInSctSoundAlert.Size = new System.Drawing.Size(370, 22);
+            this.cleanRunInSctSoundAlert.TabIndex = 2;
             // 
             // eliminatedSoundAlert
             // 
@@ -652,9 +652,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(6, 78);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(109, 13);
+            this.label15.Size = new System.Drawing.Size(87, 13);
             this.label15.TabIndex = 2;
-            this.label15.Text = "Flawless finish in SPT";
+            this.label15.Text = "Clean run in SCT";
             // 
             // label14
             // 
@@ -712,9 +712,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private GroupBox groupBox1;
         private Label label1;
-        private TextBox standardParcoursTimeTextBox;
+        private TextBox standardCourseTimeTextBox;
         private Label label2;
-        private TextBox maximumParcoursTimeTextBox;
+        private TextBox maximumCourseTimeTextBox;
         private Label label4;
         private Label label3;
         private TextBox trackLengthTextBox;
@@ -752,10 +752,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private Label label17;
         private CompetitionPictureAlert firstPlacePictureAlert;
         private CompetitionSoundAlert firstPlaceSoundAlert;
-        private CompetitionPictureAlert flawlessFinishInSptPictureAlert;
+        private CompetitionPictureAlert cleanRunInSctPictureAlert;
         private CompetitionPictureAlert eliminatedPictureAlert;
         private CompetitionSoundAlert readyToStartSoundAlert;
-        private CompetitionSoundAlert flawlessFinishInSptSoundAlert;
+        private CompetitionSoundAlert cleanRunInSctSoundAlert;
         private CompetitionSoundAlert eliminatedSoundAlert;
         private Label label18;
         private CompetitionSoundAlert customItemASoundAlert;

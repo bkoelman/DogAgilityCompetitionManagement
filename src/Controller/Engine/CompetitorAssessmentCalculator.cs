@@ -37,22 +37,22 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         /// <summary>
-        /// Gets the amount of time that FinishTime is above Standard Parcours Time.
+        /// Gets the amount of time that FinishTime is above Standard Course Time.
         /// </summary>
         /// <value>
-        /// The amount of time, or <see cref="TimeSpan.Zero" /> when competitor finished within Standard Parcours Time -or- did not
+        /// The amount of time, or <see cref="TimeSpan.Zero" /> when competitor finished within Standard Course Time -or- did not
         /// pass the finish gate.
         /// </value>
         public TimeSpan OverrunTime
         {
             get
             {
-                if (modelSnapshot.ClassInfo.StandardParcoursTime == null)
+                if (modelSnapshot.ClassInfo.StandardCourseTime == null)
                 {
                     return TimeSpan.Zero;
                 }
 
-                TimeSpan delta = FinishTime - modelSnapshot.ClassInfo.StandardParcoursTime.Value;
+                TimeSpan delta = FinishTime - modelSnapshot.ClassInfo.StandardCourseTime.Value;
                 return ZeroWhenNegative(delta);
             }
         }
@@ -63,8 +63,8 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         /// <summary>
-        /// Gets the total amount of non-measured additional time, consisting of the time for faults, refusals and Standard
-        /// Parcours Time overrun. This does not include the measured time at which competitor passed the finish gate.
+        /// Gets the total amount of non-measured additional time, consisting of the time for faults, refusals and Standard Course
+        /// Time overrun. This does not include the measured time at which competitor passed the finish gate.
         /// </summary>
         /// <value>
         /// The total amount of non-measured additional time.

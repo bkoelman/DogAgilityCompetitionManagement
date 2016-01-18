@@ -29,7 +29,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 competitorNumberPanel.BackColor = value;
                 countryCodePanel.BackColor = value;
                 dogNamePanel.BackColor = value;
-                competitorNamePanel.BackColor = value;
+                handlerNamePanel.BackColor = value;
                 finishTimePanel.BackColor = value;
                 faultsPanel.BackColor = value;
                 refusalsPanel.BackColor = value;
@@ -48,7 +48,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             competitorNumberLabel.Text = string.Empty;
             countryCodeLabel.Text = string.Empty;
             dogNameLabel.Text = string.Empty;
-            competitorNameLabel.Text = string.Empty;
+            handlerNameLabel.Text = string.Empty;
             finishTimeLabel.Text = string.Empty;
             faultsLabel.Text = string.Empty;
             refusalsLabel.Text = string.Empty;
@@ -62,7 +62,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             competitorNumberLabel.Text = TextFormatting.FormatCompetitorNumber(runResult.Competitor.Number);
             countryCodeLabel.Text = runResult.Competitor.CountryCode;
             dogNameLabel.Text = runResult.Competitor.DogName;
-            competitorNameLabel.Text = runResult.Competitor.Name;
+            handlerNameLabel.Text = runResult.Competitor.HandlerName;
             finishTimeLabel.Text =
                 TextFormatting.FormatTime(
                     runResult.Timings?.FinishTime?.ElapsedSince(runResult.Timings.StartTime).TimeValue);

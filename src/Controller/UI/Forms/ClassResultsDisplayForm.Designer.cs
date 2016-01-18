@@ -39,8 +39,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.countryCodeCaptionLabel = new System.Windows.Forms.Label();
             this.dogNameCaptionPanel = new System.Windows.Forms.Panel();
             this.dogNameCaptionLabel = new System.Windows.Forms.Label();
-            this.competitorNameCaptionPanel = new System.Windows.Forms.Panel();
-            this.competitorNameCaptionLabel = new System.Windows.Forms.Label();
+            this.handlerNameCaptionPanel = new System.Windows.Forms.Panel();
+            this.handlerNameCaptionLabel = new System.Windows.Forms.Label();
             this.finishTimeCaptionPanel = new System.Windows.Forms.Panel();
             this.finishTimeCaptionLabel = new System.Windows.Forms.Label();
             this.faultsCaptionPanel = new System.Windows.Forms.Panel();
@@ -53,10 +53,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.gradeLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
             this.classTypePanel = new System.Windows.Forms.Panel();
             this.classTypeLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
-            this.standardParcoursTimeCaptionPanel = new System.Windows.Forms.Panel();
-            this.standardParcoursTimeCaptionLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
-            this.standardParcoursTimeValuePanel = new System.Windows.Forms.Panel();
-            this.standardParcoursTimeValueLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
+            this.standardCourseTimeCaptionPanel = new System.Windows.Forms.Panel();
+            this.standardCourseTimeCaptionLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
+            this.standardCourseTimeValuePanel = new System.Windows.Forms.Panel();
+            this.standardCourseTimeValueLabel = new DogAgilityCompetition.Controller.UI.Controls.SingleLineLabel();
             this.scrollingPanel = new DogAgilityCompetition.Controller.UI.Controls.AutoScrollingPanel();
             this.runHistoryLine0003 = new DogAgilityCompetition.Controller.UI.Controls.RunHistoryLine();
             this.runHistoryLine0002 = new DogAgilityCompetition.Controller.UI.Controls.RunHistoryLine();
@@ -64,15 +64,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.competitorNumberCaptionPanel.SuspendLayout();
             this.countryCodeCaptionPanel.SuspendLayout();
             this.dogNameCaptionPanel.SuspendLayout();
-            this.competitorNameCaptionPanel.SuspendLayout();
+            this.handlerNameCaptionPanel.SuspendLayout();
             this.finishTimeCaptionPanel.SuspendLayout();
             this.faultsCaptionPanel.SuspendLayout();
             this.refusalsCaptionPanel.SuspendLayout();
             this.placementCaptionPanel.SuspendLayout();
             this.gradePanel.SuspendLayout();
             this.classTypePanel.SuspendLayout();
-            this.standardParcoursTimeCaptionPanel.SuspendLayout();
-            this.standardParcoursTimeValuePanel.SuspendLayout();
+            this.standardCourseTimeCaptionPanel.SuspendLayout();
+            this.standardCourseTimeValuePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // competitorNumberCaptionPanel
@@ -141,29 +141,29 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.dogNameCaptionLabel.Text = "Dog";
             this.dogNameCaptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // competitorNameCaptionPanel
+            // handlerNameCaptionPanel
             // 
-            this.competitorNameCaptionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.handlerNameCaptionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.competitorNameCaptionPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.competitorNameCaptionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.competitorNameCaptionPanel.Controls.Add(this.competitorNameCaptionLabel);
-            this.competitorNameCaptionPanel.Location = new System.Drawing.Point(445, 2);
-            this.competitorNameCaptionPanel.Name = "competitorNameCaptionPanel";
-            this.competitorNameCaptionPanel.Size = new System.Drawing.Size(156, 43);
-            this.competitorNameCaptionPanel.TabIndex = 40;
+            this.handlerNameCaptionPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.handlerNameCaptionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.handlerNameCaptionPanel.Controls.Add(this.handlerNameCaptionLabel);
+            this.handlerNameCaptionPanel.Location = new System.Drawing.Point(445, 2);
+            this.handlerNameCaptionPanel.Name = "handlerNameCaptionPanel";
+            this.handlerNameCaptionPanel.Size = new System.Drawing.Size(156, 43);
+            this.handlerNameCaptionPanel.TabIndex = 40;
             // 
-            // competitorNameCaptionLabel
+            // handlerNameCaptionLabel
             // 
-            this.competitorNameCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.competitorNameCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.competitorNameCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
-            this.competitorNameCaptionLabel.Location = new System.Drawing.Point(0, 0);
-            this.competitorNameCaptionLabel.Name = "competitorNameCaptionLabel";
-            this.competitorNameCaptionLabel.Size = new System.Drawing.Size(154, 41);
-            this.competitorNameCaptionLabel.TabIndex = 3;
-            this.competitorNameCaptionLabel.Text = "Handler";
-            this.competitorNameCaptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.handlerNameCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.handlerNameCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.handlerNameCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.handlerNameCaptionLabel.Location = new System.Drawing.Point(0, 0);
+            this.handlerNameCaptionLabel.Name = "handlerNameCaptionLabel";
+            this.handlerNameCaptionLabel.Size = new System.Drawing.Size(154, 41);
+            this.handlerNameCaptionLabel.TabIndex = 3;
+            this.handlerNameCaptionLabel.Text = "Handler";
+            this.handlerNameCaptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // finishTimeCaptionPanel
             // 
@@ -304,50 +304,50 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.classTypeLabel.Text = "Agility";
             this.classTypeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // standardParcoursTimeCaptionPanel
+            // standardCourseTimeCaptionPanel
             // 
-            this.standardParcoursTimeCaptionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.standardParcoursTimeCaptionPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.standardParcoursTimeCaptionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.standardParcoursTimeCaptionPanel.Controls.Add(this.standardParcoursTimeCaptionLabel);
-            this.standardParcoursTimeCaptionPanel.Location = new System.Drawing.Point(722, 295);
-            this.standardParcoursTimeCaptionPanel.Name = "standardParcoursTimeCaptionPanel";
-            this.standardParcoursTimeCaptionPanel.Size = new System.Drawing.Size(168, 112);
-            this.standardParcoursTimeCaptionPanel.TabIndex = 62;
+            this.standardCourseTimeCaptionPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.standardCourseTimeCaptionPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.standardCourseTimeCaptionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.standardCourseTimeCaptionPanel.Controls.Add(this.standardCourseTimeCaptionLabel);
+            this.standardCourseTimeCaptionPanel.Location = new System.Drawing.Point(722, 295);
+            this.standardCourseTimeCaptionPanel.Name = "standardCourseTimeCaptionPanel";
+            this.standardCourseTimeCaptionPanel.Size = new System.Drawing.Size(168, 112);
+            this.standardCourseTimeCaptionPanel.TabIndex = 62;
             // 
-            // standardParcoursTimeCaptionLabel
+            // standardCourseTimeCaptionLabel
             // 
-            this.standardParcoursTimeCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.standardParcoursTimeCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.standardParcoursTimeCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
-            this.standardParcoursTimeCaptionLabel.Location = new System.Drawing.Point(0, 0);
-            this.standardParcoursTimeCaptionLabel.Name = "standardParcoursTimeCaptionLabel";
-            this.standardParcoursTimeCaptionLabel.Size = new System.Drawing.Size(166, 110);
-            this.standardParcoursTimeCaptionLabel.TabIndex = 3;
-            this.standardParcoursTimeCaptionLabel.Text = "SPT";
-            this.standardParcoursTimeCaptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.standardCourseTimeCaptionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.standardCourseTimeCaptionLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.standardCourseTimeCaptionLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.standardCourseTimeCaptionLabel.Location = new System.Drawing.Point(0, 0);
+            this.standardCourseTimeCaptionLabel.Name = "standardCourseTimeCaptionLabel";
+            this.standardCourseTimeCaptionLabel.Size = new System.Drawing.Size(166, 110);
+            this.standardCourseTimeCaptionLabel.TabIndex = 3;
+            this.standardCourseTimeCaptionLabel.Text = "SCT";
+            this.standardCourseTimeCaptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // standardParcoursTimeValuePanel
+            // standardCourseTimeValuePanel
             // 
-            this.standardParcoursTimeValuePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.standardParcoursTimeValuePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.standardParcoursTimeValuePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.standardParcoursTimeValuePanel.Controls.Add(this.standardParcoursTimeValueLabel);
-            this.standardParcoursTimeValuePanel.Location = new System.Drawing.Point(892, 295);
-            this.standardParcoursTimeValuePanel.Name = "standardParcoursTimeValuePanel";
-            this.standardParcoursTimeValuePanel.Size = new System.Drawing.Size(152, 112);
-            this.standardParcoursTimeValuePanel.TabIndex = 63;
+            this.standardCourseTimeValuePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.standardCourseTimeValuePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(194)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.standardCourseTimeValuePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.standardCourseTimeValuePanel.Controls.Add(this.standardCourseTimeValueLabel);
+            this.standardCourseTimeValuePanel.Location = new System.Drawing.Point(892, 295);
+            this.standardCourseTimeValuePanel.Name = "standardCourseTimeValuePanel";
+            this.standardCourseTimeValuePanel.Size = new System.Drawing.Size(152, 112);
+            this.standardCourseTimeValuePanel.TabIndex = 63;
             // 
-            // standardParcoursTimeValueLabel
+            // standardCourseTimeValueLabel
             // 
-            this.standardParcoursTimeValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.standardParcoursTimeValueLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.standardParcoursTimeValueLabel.Location = new System.Drawing.Point(0, 0);
-            this.standardParcoursTimeValueLabel.Name = "standardParcoursTimeValueLabel";
-            this.standardParcoursTimeValueLabel.Size = new System.Drawing.Size(150, 110);
-            this.standardParcoursTimeValueLabel.TabIndex = 3;
-            this.standardParcoursTimeValueLabel.Text = "45";
-            this.standardParcoursTimeValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.standardCourseTimeValueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.standardCourseTimeValueLabel.Font = new System.Drawing.Font("Arial Narrow", 65.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.standardCourseTimeValueLabel.Location = new System.Drawing.Point(0, 0);
+            this.standardCourseTimeValueLabel.Name = "standardCourseTimeValueLabel";
+            this.standardCourseTimeValueLabel.Size = new System.Drawing.Size(150, 110);
+            this.standardCourseTimeValueLabel.TabIndex = 3;
+            this.standardCourseTimeValueLabel.Text = "45";
+            this.standardCourseTimeValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // scrollingPanel
             // 
@@ -395,8 +395,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1046, 409);
             this.Controls.Add(this.scrollingPanel);
-            this.Controls.Add(this.standardParcoursTimeValuePanel);
-            this.Controls.Add(this.standardParcoursTimeCaptionPanel);
+            this.Controls.Add(this.standardCourseTimeValuePanel);
+            this.Controls.Add(this.standardCourseTimeCaptionPanel);
             this.Controls.Add(this.classTypePanel);
             this.Controls.Add(this.gradePanel);
             this.Controls.Add(this.runHistoryLine0003);
@@ -405,7 +405,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.Controls.Add(this.refusalsCaptionPanel);
             this.Controls.Add(this.faultsCaptionPanel);
             this.Controls.Add(this.finishTimeCaptionPanel);
-            this.Controls.Add(this.competitorNameCaptionPanel);
+            this.Controls.Add(this.handlerNameCaptionPanel);
             this.Controls.Add(this.dogNameCaptionPanel);
             this.Controls.Add(this.countryCodeCaptionPanel);
             this.Controls.Add(this.competitorNumberCaptionPanel);
@@ -417,15 +417,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.competitorNumberCaptionPanel.ResumeLayout(false);
             this.countryCodeCaptionPanel.ResumeLayout(false);
             this.dogNameCaptionPanel.ResumeLayout(false);
-            this.competitorNameCaptionPanel.ResumeLayout(false);
+            this.handlerNameCaptionPanel.ResumeLayout(false);
             this.finishTimeCaptionPanel.ResumeLayout(false);
             this.faultsCaptionPanel.ResumeLayout(false);
             this.refusalsCaptionPanel.ResumeLayout(false);
             this.placementCaptionPanel.ResumeLayout(false);
             this.gradePanel.ResumeLayout(false);
             this.classTypePanel.ResumeLayout(false);
-            this.standardParcoursTimeCaptionPanel.ResumeLayout(false);
-            this.standardParcoursTimeValuePanel.ResumeLayout(false);
+            this.standardCourseTimeCaptionPanel.ResumeLayout(false);
+            this.standardCourseTimeValuePanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -438,8 +438,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private Label countryCodeCaptionLabel;
         private Panel dogNameCaptionPanel;
         private Label dogNameCaptionLabel;
-        private Panel competitorNameCaptionPanel;
-        private Label competitorNameCaptionLabel;
+        private Panel handlerNameCaptionPanel;
+        private Label handlerNameCaptionLabel;
         private Panel finishTimeCaptionPanel;
         private Label finishTimeCaptionLabel;
         private Panel faultsCaptionPanel;
@@ -455,10 +455,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private SingleLineLabel gradeLabel;
         private Panel classTypePanel;
         private SingleLineLabel classTypeLabel;
-        private Panel standardParcoursTimeCaptionPanel;
-        private SingleLineLabel standardParcoursTimeCaptionLabel;
-        private Panel standardParcoursTimeValuePanel;
-        private SingleLineLabel standardParcoursTimeValueLabel;
+        private Panel standardCourseTimeCaptionPanel;
+        private SingleLineLabel standardCourseTimeCaptionLabel;
+        private Panel standardCourseTimeValuePanel;
+        private SingleLineLabel standardCourseTimeValueLabel;
         private AutoScrollingPanel scrollingPanel;
     }
 }

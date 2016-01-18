@@ -53,8 +53,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private static string ProposeFileNameFor([NotNull] CompetitionClassModel model)
         {
             return $"{model.ClassInfo.Grade}-{model.ClassInfo.Type}_" +
-                $"SPT-{model.ClassInfo.StandardParcoursTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
-                $"MPT-{model.ClassInfo.MaximumParcoursTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
+                $"SCT-{model.ClassInfo.StandardCourseTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
+                $"MCT-{model.ClassInfo.MaximumCourseTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
                 $"TL-{model.ClassInfo.TrackLengthInMeters}_" +
                 $"DT-{SystemContext.UtcNow().ToString("yyyyMMdd-HHmmss")}.csv";
         }

@@ -40,11 +40,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
         [DataMember]
         [CanBeNull]
-        public TimeSpan? StandardParcoursTime { get; set; }
+        public TimeSpan? StandardCourseTime { get; set; }
 
         [DataMember]
         [CanBeNull]
-        public TimeSpan? MaximumParcoursTime { get; set; }
+        public TimeSpan? MaximumCourseTime { get; set; }
 
         [DataMember]
         [CanBeNull]
@@ -73,8 +73,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
                 ClassType = source.ClassInfo.Type,
                 InspectorName = source.ClassInfo.InspectorName,
                 RingName = source.ClassInfo.RingName,
-                StandardParcoursTime = source.ClassInfo.StandardParcoursTime,
-                MaximumParcoursTime = source.ClassInfo.MaximumParcoursTime,
+                StandardCourseTime = source.ClassInfo.StandardCourseTime,
+                MaximumCourseTime = source.ClassInfo.MaximumCourseTime,
                 TrackLengthInMeters = source.ClassInfo.TrackLengthInMeters,
                 IntermediateTimerCount = source.IntermediateTimerCount,
                 StartFinishMinDelayForSingleSensor = source.StartFinishMinDelayForSingleSensor,
@@ -96,8 +96,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
                             .ChangeType(source.ClassType)
                             .ChangeInspectorName(source.InspectorName)
                             .ChangeRingName(source.RingName)
-                            .ChangeStandardParcoursTime(source.StandardParcoursTime)
-                            .ChangeMaximumParcoursTime(source.MaximumParcoursTime)
+                            .ChangeStandardCourseTime(source.StandardCourseTime)
+                            .ChangeMaximumCourseTime(source.MaximumCourseTime)
                             .ChangeTrackLengthInMeters(source.TrackLengthInMeters))
                     .ChangeIntermediateTimerCount(source.IntermediateTimerCount)
                     .ChangeStartFinishMinDelayForSingleSensor(source.StartFinishMinDelayForSingleSensor)
