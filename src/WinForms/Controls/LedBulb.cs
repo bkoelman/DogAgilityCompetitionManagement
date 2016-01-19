@@ -111,8 +111,8 @@ namespace DogAgilityCompetition.WinForms.Controls
         private void DrawControl([NotNull] Graphics g, bool on)
         {
             // Is the bulb on or off?
-            Color lightColor = (on) ? Color : Color.FromArgb(150, DarkColor);
-            Color darkColor = (on) ? DarkColor : DarkDarkColor;
+            Color lightColor = on ? Color : Color.FromArgb(150, DarkColor);
+            Color darkColor = on ? DarkColor : DarkDarkColor;
 
             // Calculate the dimensions of the bulb.
             int width = Width - (Padding.Left + Padding.Right);

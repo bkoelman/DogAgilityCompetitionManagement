@@ -24,7 +24,7 @@ namespace DogAgilityCompetition.WinForms
 
             if (m.Msg == WinUserConstants.WmSysCommand)
             {
-                int wParam = (m.WParam.ToInt32() & 0xFFF0);
+                int wParam = m.WParam.ToInt32() & 0xFFF0;
                 if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize ||
                     wParam == WinUserConstants.ScRestore)
                 {

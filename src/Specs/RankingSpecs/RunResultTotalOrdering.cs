@@ -322,7 +322,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                     ? finishTimeElapsed - StandardCourseTime
                     : TimeSpan.Zero;
 
-                int fr = (int) ((penaltyTime - actualOverrunTime).TotalSeconds);
+                int fr = (int) (penaltyTime - actualOverrunTime).TotalSeconds;
                 int refusals = GetRefusalsFor(fr, isEliminated);
                 result = result.ChangeRefusalCount(refusals);
 

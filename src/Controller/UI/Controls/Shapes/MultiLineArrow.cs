@@ -100,7 +100,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             [NotNull]
             public Builder Left(float length)
             {
-                return Right((-length));
+                return Right(-length);
             }
 
             [NotNull]

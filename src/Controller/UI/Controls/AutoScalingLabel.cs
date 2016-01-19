@@ -113,7 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                 float heightRatio = layoutSize.Height / extent.Height;
                 float widthRatio = layoutSize.Width / extent.Width;
-                float ratio = (heightRatio < widthRatio) ? heightRatio : widthRatio;
+                float ratio = heightRatio < widthRatio ? heightRatio : widthRatio;
 
                 float newSize = font.Size * ratio;
 

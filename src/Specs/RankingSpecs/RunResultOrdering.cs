@@ -203,7 +203,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 .ChangeFinishTime(new RecordedTimeBuilder()
                     .At(startTime + overrunTime + StandardCourseTime).Build()));
 
-            int fr = (int) ((penaltyTime - overrunTime).TotalSeconds);
+            int fr = (int) (penaltyTime - overrunTime).TotalSeconds;
             result = result.ChangeFaultCount(fr);
 
             return result;

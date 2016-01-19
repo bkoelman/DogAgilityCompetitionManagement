@@ -278,7 +278,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                 if (e.ColumnIndex == BlinkColumn.Index && AllowBlink(rowState))
                 {
-                    var cell = ((DataGridViewDisableButtonCell) dataGridView.Rows[e.RowIndex].Cells[BlinkColumn.Index]);
+                    var cell = (DataGridViewDisableButtonCell) dataGridView.Rows[e.RowIndex].Cells[BlinkColumn.Index];
                     cell.Enabled = false;
 
                     var args = new AlertEventArgs(rowState.Status.DeviceAddress, taskCancelTokenSource.Token);
