@@ -7,17 +7,17 @@ using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.RankingSpecs
 {
     /// <summary>
     /// Basic tests for ordering of competitor run results.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class RunResultOrdering
     {
-        [TestMethod]
+        [Test]
         public void RunCompletion1()
         {
             // Arrange
@@ -86,7 +86,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result;
         }
 
-        [TestMethod]
+        [Test]
         public void PenaltyOverrun2()
         {
             // Arrange
@@ -209,7 +209,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result;
         }
 
-        [TestMethod]
+        [Test]
         public void FinishNumber3()
         {
             // Arrange

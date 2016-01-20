@@ -5,18 +5,18 @@ using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
     /// Integration tests (require USB loop-back cable) for a CIRCE logical session, from a Controller perspective.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class CirceControllerSessionEvents
     {
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_keep_alive_with_incorrect_version_is_received_it_must_disconnect()
         {
             // Arrange
@@ -40,8 +40,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_keep_alive_with_unconfigured_mediator_status_is_received_it_must_disconnect()
         {
             // Arrange
@@ -65,8 +65,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_keep_alive_operation_is_received_it_must_raise_event_for_mediator_status_change()
         {
             // Arrange
@@ -99,8 +99,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_notify_status_operation_is_received_it_must_raise_event_for_added_device()
         {
             // Arrange
@@ -154,8 +154,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_notify_status_operation_is_received_twice_it_must_raise_event_for_changed_device()
         {
             // Arrange
@@ -209,8 +209,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_notify_status_operation_is_no_longer_received_it_must_raise_event_for_removed_device()
         {
             // Arrange
@@ -244,8 +244,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_notify_action_operation_is_received_it_must_raise_event_for_action()
         {
             // Arrange
@@ -282,8 +282,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_alert_is_requested_it_must_send_operation()
         {
             // Arrange
@@ -318,8 +318,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_network_setup_is_requested_it_must_send_operation()
         {
             // Arrange
@@ -358,8 +358,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_clock_synchronization_is_requested_it_must_send_operation()
         {
             // Arrange
@@ -391,8 +391,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_visualize_is_requested_it_must_send_operation()
         {
             var destinations = new[] { new WirelessNetworkAddress("AABBCC"), new WirelessNetworkAddress("DDEEFF") };
@@ -445,8 +445,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_connection_becomes_idle_it_must_send_logout_operation()
         {
             // Arrange
@@ -472,8 +472,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             }
         }
 
-        [TestMethod]
-        [TestCategory("UsbLoopback")]
+        [Test]
+        [Category("UsbLoopback")]
         public void When_connection_becomes_idle_it_must_reconnect()
         {
             // Arrange

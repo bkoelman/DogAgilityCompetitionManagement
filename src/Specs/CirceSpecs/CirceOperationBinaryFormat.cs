@@ -5,17 +5,17 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
     /// Tests for reading/writing all CIRCE operations to/from binary form.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class CirceOperationBinaryFormat
     {
-        [TestMethod]
+        [Test]
         public void When_writing_login_operation_it_must_be_correct()
         {
             // Arrange
@@ -35,7 +35,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_login_operation_it_must_be_correct()
         {
             // Arrange
@@ -58,7 +58,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_logout_operation_it_must_be_correct()
         {
             // Arrange
@@ -78,7 +78,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_logout_operation_it_must_be_correct()
         {
             // Arrange
@@ -100,7 +100,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_alert_operation_it_must_be_correct()
         {
             // Arrange
@@ -131,7 +131,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_alert_operation_it_must_be_correct()
         {
             // Arrange
@@ -164,7 +164,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_network_setup_operation_it_must_be_correct()
         {
             // Arrange
@@ -208,7 +208,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_network_setup_operation_it_must_be_correct()
         {
             // Arrange
@@ -254,7 +254,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_device_setup_operation_it_must_be_correct()
         {
             // Arrange
@@ -309,7 +309,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_device_setup_operation_it_must_be_correct()
         {
             // Arrange
@@ -367,7 +367,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_keep_alive_operation_it_must_be_correct()
         {
             // Arrange
@@ -409,7 +409,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_keep_alive_operation_it_must_be_correct()
         {
             // Arrange
@@ -453,7 +453,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_notify_status_operation_it_must_be_correct()
         {
             // Arrange
@@ -538,7 +538,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_notify_status_operation_it_must_be_correct()
         {
             // Arrange
@@ -625,7 +625,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_notify_action_operation_it_must_be_correct()
         {
             // Arrange
@@ -675,7 +675,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_notify_action_operation_it_must_be_correct()
         {
             // Arrange
@@ -727,7 +727,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_visualize_operation_it_must_be_correct()
         {
             // Arrange
@@ -841,7 +841,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             });
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_visualize_operation_it_must_be_correct()
         {
             // Arrange

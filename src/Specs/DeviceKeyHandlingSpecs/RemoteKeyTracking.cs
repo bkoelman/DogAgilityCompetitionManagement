@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
-using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Guard = DogAgilityCompetition.Circe.Guard;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
     /// <summary />
-    [TestClass]
+    [TestFixture]
     public sealed partial class RemoteKeyTracking
     {
         [NotNull]
@@ -21,7 +21,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
         [CanBeNull]
         private static readonly TimeSpan? NullTime = null;
 
-        [TestMethod]
+        [Test]
         public void When_no_raw_keys_are_included_it_must_raise_event_without_keys()
         {
             // Arrange
@@ -40,7 +40,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_raw_keys_and_no_time_are_included_it_must_raise_event_without_keys_and_time()
         {
             // Arrange

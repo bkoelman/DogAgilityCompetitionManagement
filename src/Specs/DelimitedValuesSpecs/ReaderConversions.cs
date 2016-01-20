@@ -3,17 +3,17 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for type conversions in <see cref="DelimitedValuesReader" />.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class ReaderConversions
     {
-        [TestMethod]
+        [Test]
         public void When_reading_cell_value_as_nullable_boolean_it_should_succeed()
         {
             // Arrange
@@ -35,7 +35,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell3.Should().Be(null);
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_cell_value_it_should_respect_culture()
         {
             // Arrange
@@ -56,7 +56,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(3.5m);
         }
 
-        [TestMethod]
+        [Test]
         public void When_reading_cell_value_with_custom_converter_it_should_succeed()
         {
             // Arrange

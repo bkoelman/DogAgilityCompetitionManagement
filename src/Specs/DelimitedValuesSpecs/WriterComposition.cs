@@ -4,17 +4,17 @@ using System.IO;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for validation and escaping cells in <see cref="DelimitedValuesWriter" />.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class WriterComposition
     {
-        [TestMethod]
+        [Test]
         public void When_no_rows_are_written_it_should_succeed()
         {
             // Act
@@ -32,7 +32,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("A" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_header_and_no_rows_are_written_it_should_succeed()
         {
             // Act
@@ -49,7 +49,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be(string.Empty);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_column_names_are_used_it_should_fail()
         {
             // Act
@@ -61,7 +61,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ArgumentNullException>().And.ParamName.Should().Be("columnNames");
         }
 
-        [TestMethod]
+        [Test]
         public void When_empty_list_of_column_names_is_used_it_should_fail()
         {
             // Act
@@ -73,7 +73,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ArgumentException>().WithMessage("List of column names cannot be empty.*");
         }
 
-        [TestMethod]
+        [Test]
         public void When_empty_column_names_are_used_it_should_fail()
         {
             // Act
@@ -85,7 +85,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ArgumentException>().WithMessage("Column names cannot be null, empty or whitespace.*");
         }
 
-        [TestMethod]
+        [Test]
         public void When_duplicate_column_names_are_used_it_should_fail()
         {
             // Act
@@ -97,7 +97,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ArgumentException>().WithMessage("Column 'A' occurs multiple times.*");
         }
 
-        [TestMethod]
+        [Test]
         public void When_unspecified_column_names_are_assigned_a_cell_value_it_should_fail()
         {
             // Arrange
@@ -118,7 +118,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ArgumentException>().WithMessage("Column with name 'B' does not exist.*");
         }
 
-        [TestMethod]
+        [Test]
         public void When_using_invariant_culture_it_should_use_comma_as_default_field_separator()
         {
             // Arrange
@@ -137,7 +137,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("A,B" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_culture_uses_comma_as_decimal_separator_it_should_use_semicolon_as_default_field_separator()
         {
             // Arrange
@@ -157,7 +157,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("A;B" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_leading_whitespace_it_should_escape_cell()
         {
             // Arrange
@@ -182,7 +182,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("' X'" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_trailing_whitespace_it_should_escape_cell()
         {
             // Arrange
@@ -207,7 +207,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("'X '" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_carriage_return_it_should_escape_cell()
         {
             // Arrange
@@ -232,7 +232,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("'X\r'" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_line_feed_it_should_escape_cell()
         {
             // Arrange
@@ -257,7 +257,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("'X\n'" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_field_separator_it_should_escape_cell()
         {
             // Arrange
@@ -284,7 +284,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("'X|Y'|Z" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_text_qualifier_it_should_escape_cell()
         {
             // Arrange
@@ -309,7 +309,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("'Bed ''n Breakfast'" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_is_not_assigned_a_value_it_should_become_an_empty_cell()
         {
             // Arrange

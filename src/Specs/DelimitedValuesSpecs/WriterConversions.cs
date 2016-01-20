@@ -5,17 +5,17 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for type conversions in <see cref="DelimitedValuesWriter" />.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class WriterConversions
     {
-        [TestMethod]
+        [Test]
         public void When_writing_cell_value_as_nullable_boolean_it_should_succeed()
         {
             // Arrange
@@ -40,7 +40,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("True,,False" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_cell_value_it_should_respect_culture()
         {
             // Arrange
@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             output.ToString().Should().Be("3,5" + Environment.NewLine);
         }
 
-        [TestMethod]
+        [Test]
         public void When_writing_cell_value_with_custom_converter_it_should_succeed()
         {
             // Arrange

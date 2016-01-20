@@ -6,17 +6,17 @@ using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for lifetime management in <see cref="DelimitedValuesWriter" />.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class WriterDisposal
     {
-        [TestMethod]
+        [Test]
         public void When_creating_row_after_disposal_it_should_fail()
         {
             // Arrange
@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ObjectDisposedException>();
         }
 
-        [TestMethod]
+        [Test]
         public void When_completing_row_creation_after_disposal_it_should_fail()
         {
             // Arrange
@@ -46,7 +46,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<ObjectDisposedException>();
         }
 
-        [TestMethod]
+        [Test]
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public void When_disposing_row_nultiple_times_it_should_write_the_row_only_once()
         {
@@ -88,7 +88,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             return lines;
         }
 
-        [TestMethod]
+        [Test]
         public void When_not_closing_underlying_reader_it_should_flush_on_disposal()
         {
             // Arrange

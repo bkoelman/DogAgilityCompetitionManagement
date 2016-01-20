@@ -2,7 +2,7 @@
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     {
         // Note: For description of these scenarios, see file: "Key change detection.xlsx"
 
-        [TestMethod]
+        [Test]
         public void Scenario1()
         {
             var tracker = new RemoteKeyTracker();
@@ -38,7 +38,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Scenario2()
         {
             var tracker = new RemoteKeyTracker();
@@ -117,7 +117,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Scenario3()
         {
             var tracker = new RemoteKeyTracker();
@@ -214,7 +214,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Scenario4()
         {
             var tracker = new RemoteKeyTracker();
@@ -311,7 +311,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Scenario5()
         {
             var tracker = new RemoteKeyTracker();
@@ -371,7 +371,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Scenario6()
         {
             var tracker = new RemoteKeyTracker();

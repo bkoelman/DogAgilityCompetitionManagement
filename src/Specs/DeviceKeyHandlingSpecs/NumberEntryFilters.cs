@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Guard = DogAgilityCompetition.Circe.Guard;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
     /// <summary>
     /// Tests how numeric key presses on wireless remote controls result in forming a competitor number.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class NumberEntryFilters
     {
         [NotNull]
@@ -33,7 +33,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         #region Tests for pressing modifier keys
 
-        [TestMethod]
+        [Test]
         public void When_pressing_current_competitor_it_must_start_number_building()
         {
             // Arrange
@@ -50,7 +50,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_next_competitor_while_entering_current_competitor_it_must_ignore()
         {
             // Arrange
@@ -67,7 +67,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_next_competitor_while_others_are_entering_current_competitor_it_must_ignore()
         {
             // Arrange
@@ -84,7 +84,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_next_competitor_while_others_are_entering_next_competitor_it_must_join_number_building
             ()
         {
@@ -108,7 +108,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         #region Tests for pressing keys
 
-        [TestMethod]
+        [Test]
         public void When_pressing_digit_only_key_while_number_building_is_active_it_must_accept_digit()
         {
             // Arrange
@@ -126,7 +126,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_digit_only_key_while_others_are_building_a_different_number_it_must_ignore()
         {
             // Arrange
@@ -144,7 +144,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_digit_only_key_while_compatible_with_number_entry_of_others_it_must_accept_digit()
         {
             // Arrange
@@ -164,7 +164,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_digit_only_key_while_number_building_is_not_active_it_must_ignore()
         {
             // Arrange
@@ -180,7 +180,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_command_only_key_while_number_building_is_active_it_must_accept_command()
         {
             // Arrange
@@ -199,7 +199,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_command_only_key_while_others_are_building_a_number_it_must_accept_command()
         {
             // Arrange
@@ -217,7 +217,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_command_only_key_while_number_building_is_not_active_it_must_accept_command()
         {
             // Arrange
@@ -234,7 +234,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_multi_functional_key_while_number_building_is_active_it_must_accept_digit()
         {
             // Arrange
@@ -252,7 +252,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_multi_functional_key_while_others_are_building_a_different_number_it_must_ignore()
         {
             // Arrange
@@ -270,7 +270,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_multi_functional_key_while_compatible_with_number_entry_of_others_it_must_accept_digit
             ()
         {
@@ -291,7 +291,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_pressing_multi_functional_key_while_number_building_is_not_active_it_must_accept_command()
         {
             // Arrange
@@ -309,7 +309,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void
             When_pressing_multi_functional_key_while_no_modifiers_are_down_but_others_are_entering_current_competitor_it_must_accept_command
             ()
@@ -332,7 +332,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void When_entering_multiple_digits_a_number_must_be_cooperatively_formed()
         {
             // Arrange
@@ -355,7 +355,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_entering_more_than_four_digits_the_additional_digits_must_be_ignored()
         {
             // Arrange
@@ -378,7 +378,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         #region Tests for releasing modifier keys
 
-        [TestMethod]
+        [Test]
         public void When_releasing_current_competitor_without_numbers_it_must_cancel_number_building()
         {
             // Arrange
@@ -396,7 +396,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_releasing_next_competitor_it_must_end_number_building()
         {
             // Arrange
@@ -415,7 +415,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_releasing_next_competitor_while_others_are_entering_current_competitor_it_must_ignore()
         {
             // Arrange
@@ -433,7 +433,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_releasing_next_competitor_while_number_entry_is_no_longer_active_it_must_ignore()
         {
             // Arrange
@@ -452,7 +452,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void
             When_releasing_current_competitor_while_others_are_building_current_competitor_number_it_must_end_number_building
             ()
@@ -478,7 +478,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         #region Tests for missing keys
 
-        [TestMethod]
+        [Test]
         public void When_no_keys_are_included_it_should_accept_command()
         {
             var filter = new NumberEntryFilter();
@@ -493,7 +493,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_time_and_no_keys_are_included_it_should_accept_command()
         {
             var filter = new NumberEntryFilter();

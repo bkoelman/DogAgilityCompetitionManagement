@@ -7,14 +7,14 @@ using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.RankingSpecs
 {
     /// <summary>
     /// Tests for total/complete ordering of competitor run results.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class RunResultTotalOrdering
     {
         private static readonly TimeSpan LowOrSameExtraFinishTime = TimeSpan.FromSeconds(5);
@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
         private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(80);
 
-        [TestMethod]
+        [Test]
         public void RunExploded()
         {
             // Arrange

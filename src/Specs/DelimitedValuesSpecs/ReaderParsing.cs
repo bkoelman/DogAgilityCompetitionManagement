@@ -2,26 +2,26 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Guard = DogAgilityCompetition.Circe.Guard;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for cell data parsing in <see cref="DelimitedValuesReader" />.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public sealed class ReaderParsing
     {
         [NotNull]
         private static readonly string DefaultTextQualifier =
             new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
 
-        [TestMethod]
+        [Test]
         public void When_source_is_empty_it_should_fail()
         {
             // Arrange
@@ -35,7 +35,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_single_line_break_it_should_fail()
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_only_line_breaks_it_should_fail()
         {
             // Arrange
@@ -63,7 +63,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Source contains no columns.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_multiple_column_names_they_must_be_exposed()
         {
             // Arrange
@@ -81,7 +81,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             columnNames[2].Should().Be("C3");
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_duplicate_column_names_it_should_fail()
         {
             // Act
@@ -93,7 +93,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Column 'A' occurs multiple times.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_field_separator_is_specified_it_must_autodetect_tab_as_separator()
         {
             // Act
@@ -108,7 +108,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.ColumnNames.Should().HaveCount(3);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_field_separator_is_specified_it_must_autodetect_semicolon_as_separator()
         {
             // Act
@@ -123,7 +123,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.ColumnNames.Should().HaveCount(3);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_field_separator_is_specified_it_must_autodetect_comma_as_separator()
         {
             // Act
@@ -138,7 +138,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.ColumnNames.Should().HaveCount(3);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_field_separator_is_specified_it_must_autodetect_colon_as_separator()
         {
             // Act
@@ -153,7 +153,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.ColumnNames.Should().HaveCount(3);
         }
 
-        [TestMethod]
+        [Test]
         public void When_no_field_separator_is_specified_it_must_autodetect_pipe_as_separator()
         {
             // Act
@@ -168,7 +168,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.ColumnNames.Should().HaveCount(3);
         }
 
-        [TestMethod]
+        [Test]
         public void
             When_no_field_separator_is_specified_it_must_give_semicolon_precendence_over_comma_during_autodetection()
         {
@@ -189,7 +189,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             row.GetCell("A").Should().Be("1");
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_unquoted_text_before_quoted_text_it_should_fail()
         {
             // Arrange
@@ -208,7 +208,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .WithMessage("Text qualifier must be the first non-whitespace character of a cell.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_cell_contains_unquoted_text_after_quoted_text_it_should_fail()
         {
             // Arrange
@@ -227,7 +227,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .WithMessage("Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_quoted_cell_contains_like_breaks_they_must_be_preserved()
         {
             // Arrange
@@ -246,7 +246,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(cellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void When_quoted_cell_contains_field_separators_they_must_be_preserved()
         {
             // Arrange
@@ -268,7 +268,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(cellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void When_quoted_cell_contains_text_qualifiers_they_must_be_unescaped()
         {
             // Arrange
@@ -290,7 +290,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(cellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void When_quoted_cell_surrounds_text_qualifiers_they_must_be_unescaped()
         {
             // Arrange
@@ -312,7 +312,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(cellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void When_cells_are_empty_they_must_be_exposed_as_empty()
         {
             // Arrange
@@ -335,7 +335,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell3.Should().Be(emptyCellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_uneven_number_of_quotes_it_should_fail()
         {
             // Arrange
@@ -353,7 +353,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing closing text qualifier.");
         }
 
-        [TestMethod]
+        [Test]
         public void When_unquoted_cell_contains_leading_whitespace_it_must_be_discarded()
         {
             // Arrange
@@ -371,7 +371,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             row.GetCell(columnHeaderName).Should().Be("A");
         }
 
-        [TestMethod]
+        [Test]
         public void When_unquoted_cell_contains_trailing_whitespace_it_must_be_discarded()
         {
             // Arrange
@@ -389,7 +389,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             row.GetCell(columnHeaderName).Should().Be("A");
         }
 
-        [TestMethod]
+        [Test]
         public void When_quoted_cell_contains_leading_and_trailing_whitespace_it_must_be_preserved()
         {
             // Arrange
@@ -407,7 +407,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             row.GetCell(columnHeaderName).Should().Be("  A ");
         }
 
-        [TestMethod]
+        [Test]
         public void When_source_contains_uneven_number_of_quotes_it_should_not_read_entire_source()
         {
             // Arrange
