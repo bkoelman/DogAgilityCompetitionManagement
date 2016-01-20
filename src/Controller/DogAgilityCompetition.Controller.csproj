@@ -65,6 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="Engine\AlertPictureSourceItem.cs" />
     <Compile Include="Engine\AlertSoundSourceItem.cs" />
     <Compile Include="Engine\AlertSourceItem.cs" />

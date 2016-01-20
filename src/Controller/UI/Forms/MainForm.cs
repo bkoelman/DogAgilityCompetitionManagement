@@ -89,6 +89,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             InitializeComponent();
             EnsureHandleCreated();
 
+            Text += AssemblyReader.GetInformationalVersion();
+
             // ReSharper disable once ObjectCreationAsStatement
             // Reason: Assignment is unneeded because this registers a callback to the allocated object.
             new DisposableComponent<DisposableHolder>(new DisposableHolder(EmulatorProcessKill), ref components);

@@ -45,6 +45,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.startupArguments = startupArguments;
             InitializeComponent();
 
+            Text += AssemblyReader.GetInformationalVersion();
+
             sessionManager = new DisposableComponent<CirceMediatorSessionManager>(new CirceMediatorSessionManager(),
                 ref components);
         }

@@ -71,7 +71,12 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             if (comPortName == null || newAddress == null)
             {
+                string title = "Dog Agility Competition Management - Device Configurer" +
+                    AssemblyReader.GetInformationalVersion();
                 string exeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+
+                Console.WriteLine(title);
+                Console.WriteLine();
                 Console.WriteLine("Usage:");
                 Console.WriteLine($" {exeName} port=com-port [old=old-address] new=new-address [cap=capabilities]");
                 Console.WriteLine();
