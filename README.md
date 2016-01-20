@@ -1,6 +1,8 @@
 # Dog Agility Competition Management
 Operating software for controlling the wireless sensors in a [Dog Agility Competition](https://en.wikipedia.org/wiki/Dog_agility).
 
+[![Build status](https://ci.appveyor.com/api/projects/status/ydxgqsn30m7n92wf?svg=true)](https://ci.appveyor.com/project/bkoelman/dogagilitycompetitionmanagement)
+
 # Running without loopback cable
 
 1. Download and install
