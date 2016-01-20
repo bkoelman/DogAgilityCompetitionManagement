@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DogAgilityCompetition.DeviceConfigurer</RootNamespace>
-    <AssemblyName>DogAgilityCompetitionDeviceConfigurer</AssemblyName>
+    <AssemblyName>devcfg</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="Phases\AssignmentPhase.cs" />
     <Compile Include="AssignmentStateMachine.cs" />
     <Compile Include="CirceSpecExamples.cs" />

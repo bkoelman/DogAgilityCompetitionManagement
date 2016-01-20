@@ -78,6 +78,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
     <Compile Include="Builders\RecordedTimeBuilder.cs" />
     <Compile Include="Facilities\CirceUsbLoopbackTestRunner.cs" />
     <Compile Include="CirceSpecs\CirceControllerSessionEvents.cs" />

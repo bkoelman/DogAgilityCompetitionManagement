@@ -39,8 +39,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             {
                 Eliminated = AlertSourceXml.ToXmlObject(source.Eliminated),
                 FirstPlace = AlertSourceXml.ToXmlObject(source.FirstPlace),
-                CleanRunInStandardCourseTime =
-                    AlertSourceXml.ToXmlObject(source.CleanRunInStandardCourseTime),
+                CleanRunInStandardCourseTime = AlertSourceXml.ToXmlObject(source.CleanRunInStandardCourseTime),
                 ReadyToStart = AlertSourceXml.ToXmlObject(source.ReadyToStart),
                 CustomItemA = AlertSourceXml.ToXmlObject(source.CustomItemA)
             };

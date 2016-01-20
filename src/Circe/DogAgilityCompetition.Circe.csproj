@@ -54,6 +54,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyVersion.cs">
+      <Link>Properties\AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyReader.cs" />
     <Compile Include="Assertions.cs" />
     <Compile Include="CodeTimer.cs" />
     <Compile Include="Controller\VisualizeFieldSet.cs" />
