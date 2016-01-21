@@ -135,6 +135,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                         new CompetitionRunResult(new Competitor(27, "Marina", "Jess").ChangeCountryCode("NL"))
                     };
                     hasImportedCompetitors = true;
+
+                    gradeTextBox.Text = "B1 small";
+                    classTypeTextBox.Text = "Agility";
+                    inspectorNameTextBox.Text = "John Doe";
+                    ringNameTextBox.Text = "R1";
+                    standardCourseTimeTextBox.Text = "45";
+                    maximumCourseTimeTextBox.Text = "65";
+                    trackLengthTextBox.Text = "57";
 #endif
                 }
             }

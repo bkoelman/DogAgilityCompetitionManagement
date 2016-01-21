@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
@@ -52,11 +53,40 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [NotNull]
         private static string ProposeFileNameFor([NotNull] CompetitionClassModel model)
         {
-            return $"{model.ClassInfo.Grade}-{model.ClassInfo.Type}_" +
-                $"SCT-{model.ClassInfo.StandardCourseTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
-                $"MCT-{model.ClassInfo.MaximumCourseTime?.TotalSeconds.ToString(CultureInfo.InvariantCulture) ?? string.Empty}_" +
-                $"TL-{model.ClassInfo.TrackLengthInMeters}_" +
-                $"DT-{SystemContext.UtcNow().ToString("yyyyMMdd-HHmmss")}.csv";
+            var textBuilder = new StringBuilder();
+
+            AddToBuilder(model.ClassInfo.Grade, textBuilder);
+            AddToBuilder(model.ClassInfo.Type, textBuilder);
+            AddToBuilder(SystemContext.UtcNow().ToString("yyyyMMdd-HHmmss"), textBuilder);
+            textBuilder.Append(".csv");
+
+            return textBuilder.ToString();
+        }
+
+        private static void AddToBuilder([CanBeNull] string value, [NotNull] StringBuilder textBuilder)
+        {
+            string safeValue = MakeSafeForFileName(value);
+            if (!string.IsNullOrEmpty(safeValue))
+            {
+                if (textBuilder.Length > 0)
+                {
+                    textBuilder.Append("-");
+                }
+                textBuilder.Append(safeValue);
+            }
+        }
+
+        [CanBeNull]
+        private static string MakeSafeForFileName([CanBeNull] string text)
+        {
+            if (text != null)
+            {
+                foreach (char ch in Path.GetInvalidFileNameChars())
+                {
+                    text = text.Replace(ch.ToString(), string.Empty);
+                }
+            }
+            return text;
         }
 
         private void RefreshButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
