@@ -64,38 +64,38 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsY),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DontCare)
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             var finishNumberScenarios = new List<OrderingScenario>
             {
                 // Bits: FinishTime X > Y, CompetitorNumber X > Y, FinishTime Y > X, CompetitorNumber Y > X
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DontCare)
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             IEnumerable<OrderingScenario> exploded = ExplodeCombinations(runCompletionScenarios, penaltyOverrunScenarios,
@@ -161,7 +161,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             [NotNull] OrderingScenario secondaryScenario, [NotNull] OrderingScenario tertiaryScenario)
         {
             OrderExpect result = CombineResult(primaryScenario, secondaryScenario, tertiaryScenario);
-            if (result != OrderExpect.DontCare)
+            if (result != OrderExpect.DoNotCare)
             {
                 ulong sequence = CreateBitSequenceFor(primaryScenario, secondaryScenario, tertiaryScenario);
                 var combined = new OrderingScenario(12, sequence, result);
@@ -177,11 +177,11 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         private static OrderExpect CombineResult([NotNull] OrderingScenario primaryScenario,
             [NotNull] OrderingScenario secondaryScenario, [NotNull] OrderingScenario tertiaryScenario)
         {
-            if (primaryScenario.Result == OrderExpect.DontCare ||
-                secondaryScenario.Result == OrderExpect.DontCare ||
-                tertiaryScenario.Result == OrderExpect.DontCare)
+            if (primaryScenario.Result == OrderExpect.DoNotCare ||
+                secondaryScenario.Result == OrderExpect.DoNotCare ||
+                tertiaryScenario.Result == OrderExpect.DoNotCare)
             {
-                return OrderExpect.DontCare;
+                return OrderExpect.DoNotCare;
             }
 
             return primaryScenario.Result != OrderExpect.IsEven

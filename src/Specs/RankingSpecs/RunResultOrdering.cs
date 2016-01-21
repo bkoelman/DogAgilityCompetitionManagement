@@ -45,7 +45,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
                 RankingComparisonMode.OnlyPhaseCompletion);
 
-            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DontCare))
+            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
             {
                 CompetitionRunResult xCompetitor = CreateCompetitorForCompletion(scenario[0], scenario[1]);
                 CompetitionRunResult yCompetitor = CreateCompetitorForCompletion(scenario[2], scenario[3]);
@@ -98,17 +98,17 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsY),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DontCare)
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             CompetitionClassModel model = new CompetitionClassModel()
@@ -116,7 +116,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                     .ChangeStandardCourseTime(StandardCourseTime));
             var comparer = new CompetitionRunResultRankingComparer(model, RankingComparisonMode.OnlyPhasePenaltyOverrun);
 
-            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DontCare))
+            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
             {
                 CompetitionRunResult xCompetitor = CreateCompetitorForPenaltyOverrun(scenario[0], scenario[1]);
                 CompetitionRunResult yCompetitor = CreateCompetitorForPenaltyOverrun(scenario[2], scenario[3]);
@@ -216,28 +216,28 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var scenarios = new List<OrderingScenario>
             {
                 // Bits: FinishTime X > Y, CompetitorNumber X > Y, FinishTime Y > X, CompetitorNumber Y > X
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DontCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
                 new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DontCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DontCare)
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
                 RankingComparisonMode.OnlyPhaseFinishNumber);
 
-            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DontCare))
+            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
             {
                 CompetitionRunResult xCompetitor = CreateCompetitorForFinishWithNumber(scenario[0], scenario[1]);
                 CompetitionRunResult yCompetitor = CreateCompetitorForFinishWithNumber(scenario[2], scenario[3]);

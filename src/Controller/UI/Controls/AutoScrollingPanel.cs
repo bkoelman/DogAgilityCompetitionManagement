@@ -136,7 +136,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             Reset();
         }
 
-        protected override void OnPaint([NotNull] PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             Guard.NotNull(e, nameof(e));
             base.OnPaint(e);

@@ -23,6 +23,6 @@
         /// <summary>
         /// Outcome is irrelevant. Usually due to a scenario that cannot occur.
         /// </summary>
-        DontCare
+        DoNotCare
     }
 }

@@ -82,7 +82,7 @@ namespace DogAgilityCompetition.MediatorEmulator
 
         private static Point ParseLocation([NotNull] string value)
         {
-            int[] parts = TrySplitIntoTwoCoords(value);
+            int[] parts = TrySplitIntoTwoCoordinates(value);
             if (parts != null)
             {
                 return new Point(parts[1], parts[0]);
@@ -93,7 +93,7 @@ namespace DogAgilityCompetition.MediatorEmulator
 
         private static Size ParseSize([NotNull] string value)
         {
-            int[] parts = TrySplitIntoTwoCoords(value);
+            int[] parts = TrySplitIntoTwoCoordinates(value);
             if (parts != null)
             {
                 return new Size(parts[1], parts[0]);
@@ -103,7 +103,7 @@ namespace DogAgilityCompetition.MediatorEmulator
         }
 
         [CanBeNull]
-        private static int[] TrySplitIntoTwoCoords([NotNull] string value)
+        private static int[] TrySplitIntoTwoCoordinates([NotNull] string value)
         {
             string[] args = value.Split('x');
             if (args.Length == 2)

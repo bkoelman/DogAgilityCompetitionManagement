@@ -260,8 +260,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                     { '|', line.Count(c => c == '|') }
                 };
 
-                int highestOccurence = charCounts.Max(pair => pair.Value);
-                return charCounts.First(pair => pair.Value == highestOccurence).Key;
+                int highestOccurrence = charCounts.Max(pair => pair.Value);
+                return charCounts.First(pair => pair.Value == highestOccurrence).Key;
             }
 
             [NotNull]

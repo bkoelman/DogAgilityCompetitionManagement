@@ -59,7 +59,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             EnableStabilization = true;
         }
 
-        protected override void OnPaint([NotNull] PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             Guard.NotNull(e, nameof(e));
 

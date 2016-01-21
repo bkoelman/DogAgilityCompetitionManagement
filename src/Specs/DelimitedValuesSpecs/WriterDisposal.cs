@@ -48,7 +48,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
         [Test]
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public void When_disposing_row_nultiple_times_it_should_write_the_row_only_once()
+        public void When_disposing_row_multiple_times_it_should_write_the_row_only_once()
         {
             // Arrange
             var output = new StringWriter();

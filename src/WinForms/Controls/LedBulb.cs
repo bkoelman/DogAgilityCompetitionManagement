@@ -87,7 +87,7 @@ namespace DogAgilityCompetition.WinForms.Controls
         /// <summary>
         /// Handles the Paint event for this UserControl.
         /// </summary>
-        protected override void OnPaint([NotNull] PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             Guard.NotNull(e, nameof(e));
 
