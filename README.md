@@ -3,6 +3,9 @@ Operating software for controlling the wireless sensors in a [Dog Agility Compet
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ydxgqsn30m7n92wf?svg=true)](https://ci.appveyor.com/project/bkoelman/dogagilitycompetitionmanagement)
 
+# CIRCE Protocol
+See [CIRCE Interface Specification](doc/CIRCE%20Interface%20Specification.md)
+
 # Running without loopback cable
 
 1. Download and install
@@ -16,4 +19,4 @@ Operating software for controlling the wireless sensors in a [Dog Agility Compet
 	command> quit
 	```
 
-3. Make a Debug build of [DogAgilityCompetitionManagement.sln](https://github.com/bkoelman/DogAgilityCompetitionManagement/blob/master/src/DogAgilityCompetitionManagement.sln) and run it
+3. Make a Debug build of [DogAgilityCompetitionManagement.sln](src/DogAgilityCompetitionManagement.sln) and run it
