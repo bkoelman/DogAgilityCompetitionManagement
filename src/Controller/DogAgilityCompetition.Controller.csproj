@@ -85,9 +85,10 @@
     <Compile Include="Engine\DeviceCommandEventArgs.cs" />
     <Compile Include="Engine\DeviceEventArgs.cs" />
     <Compile Include="Engine\DeviceTimeEventArgs.cs" />
+    <Compile Include="Engine\EliminationTracker.cs" />
     <Compile Include="Engine\GatePassage.cs" />
     <Compile Include="Engine\EliminationEventArgs.cs" />
-    <Compile Include="Engine\EliminationTracker.cs" />
+    <Compile Include="Engine\CourseTimeTracker.cs" />
     <Compile Include="Engine\EqualitySupport.cs" />
     <Compile Include="Engine\RankingComparisonMode.cs" />
     <Compile Include="Engine\ExceptionFactory.cs" />

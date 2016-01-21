@@ -490,7 +490,8 @@ namespace DogAgilityCompetition.Controller.Engine
                 runData.Timings = new CompetitionRunTimings(passageTime);
                 SetState(CompetitionClassState.StartPassed);
 
-                runData.EliminationTracker.StartMonitorCourseTime(modelSnapshot.ClassInfo.MaximumCourseTime);
+                runData.CourseTimeTracker.StartMonitorCourseTime(modelSnapshot.ClassInfo.StandardCourseTime,
+                    modelSnapshot.ClassInfo.MaximumCourseTime);
 
                 using (var collector = new VisualizationUpdateCollector(visualizer))
                 {
@@ -573,7 +574,7 @@ namespace DogAgilityCompetition.Controller.Engine
                         TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
                         Log.Info($"Passed Finish at {elapsed}.");
 
-                        runData.EliminationTracker.StopMonitorCourseTime();
+                        runData.CourseTimeTracker.StopMonitorCourseTime();
                         collector.Include(PrimaryTimeStopAndSet.FromTimeSpanWithAccuracy(elapsed));
                     }
                 });
@@ -688,7 +689,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private void CompleteActiveRun([NotNull] VisualizationUpdateCollector collector)
         {
-            runData.EliminationTracker.StopMonitorCourseTime();
+            runData.CourseTimeTracker.StopMonitorCourseTime();
 
             if (!runData.HasFinished)
             {
@@ -1087,8 +1088,10 @@ namespace DogAgilityCompetition.Controller.Engine
             public CompetitionRunTimings Timings { get; set; }
 
             [NotNull]
-            public EliminationTracker EliminationTracker { get; } =
-                new EliminationTracker(CompetitionRunResult.RefusalStepSize, CompetitionRunResult.EliminationThreshold);
+            public CourseTimeTracker CourseTimeTracker { get; } = new CourseTimeTracker();
+
+            [NotNull]
+            public EliminationTracker EliminationTracker { get; }
 
             public int FaultCount { get; set; }
 
@@ -1096,6 +1099,12 @@ namespace DogAgilityCompetition.Controller.Engine
                 => FaultCount != 0 || EliminationTracker.RefusalCount != 0 || EliminationTracker.IsEliminated;
 
             public bool HasFinished => Timings?.FinishTime != null;
+
+            public CompetitionRunData()
+            {
+                EliminationTracker = new EliminationTracker(CompetitionRunResult.RefusalStepSize,
+                    CompetitionRunResult.EliminationThreshold, CourseTimeTracker);
+            }
 
             [NotNull]
             public CompetitionRunResult ToRunResultFor([NotNull] Competitor competitor)
@@ -1174,7 +1183,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
             public void Dispose()
             {
-                EliminationTracker.Dispose();
+                CourseTimeTracker.Dispose();
             }
 
             private bool isShowingExistingRunResult;
@@ -1195,6 +1204,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 Timings = null;
                 FaultCount = 0;
 
+                CourseTimeTracker.StopMonitorCourseTime();
                 EliminationTracker.Reset();
 
                 isShowingExistingRunResult = hasExistingRunResult;

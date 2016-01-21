@@ -1,28 +1,20 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
-    public sealed class EliminationTracker : IDisposable
+    public sealed class EliminationTracker
     {
         [NotNull]
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static readonly TimeSpan InfiniteTime = TimeSpan.FromMilliseconds(-1);
-
         private readonly int refusalStepSize;
         private readonly int eliminationThreshold;
 
-        [NotNull]
-        private readonly Timer maximumCourseTimeTimer;
-
-        private bool maximumCourseTimeElapsed; // Protected by stateLock
-
+        private bool hasMaximumCourseTimeElapsed; // Protected by stateLock
         private bool isManuallyEliminated; // Protected by stateLock
-
         private int refusalCount; // Protected by stateLock
 
         [NotNull]
@@ -50,7 +42,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         private bool UnsafeIsEliminated
-            => isManuallyEliminated || refusalCount >= MaxRefusalsValue || maximumCourseTimeElapsed;
+            => isManuallyEliminated || refusalCount >= MaxRefusalsValue || hasMaximumCourseTimeElapsed;
 
         public bool IsManuallyEliminated
         {
@@ -88,17 +80,20 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public EliminationTracker(int refusalStepSize, int eliminationThreshold)
+        public EliminationTracker(int refusalStepSize, int eliminationThreshold,
+            [NotNull] CourseTimeTracker courseTimeTracker)
         {
+            Guard.NotNull(courseTimeTracker, nameof(courseTimeTracker));
+
             this.refusalStepSize = refusalStepSize;
             this.eliminationThreshold = eliminationThreshold;
 
-            maximumCourseTimeTimer = new Timer(state => MaximumCourseTimeTimerTick());
+            courseTimeTracker.MaximumCourseTimeElapsed += (sender, args) => HandleMaximumCourseTimeElapsed();
         }
 
-        private void MaximumCourseTimeTimerTick()
+        private void HandleMaximumCourseTimeElapsed()
         {
-            RaiseEventsOnChangeWithLock(() => { maximumCourseTimeElapsed = true; });
+            RaiseEventsOnChangeWithLock(() => { hasMaximumCourseTimeElapsed = true; });
         }
 
         public void IncreaseRefusals()
@@ -123,25 +118,10 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        public void StartMonitorCourseTime([CanBeNull] TimeSpan? maximumCourseTime)
-        {
-            if (maximumCourseTime != null)
-            {
-                maximumCourseTimeTimer.Change(maximumCourseTime.Value, InfiniteTime);
-            }
-        }
-
-        public void StopMonitorCourseTime()
-        {
-            maximumCourseTimeTimer.Change(Timeout.Infinite, Timeout.Infinite);
-        }
-
         public void Reset()
         {
             // Note: Intentionally not raising any events here, because caller wants to 
             // combine multiple changes in single network packet (performance optimization).
-
-            StopMonitorCourseTime();
 
             using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
             {
@@ -149,16 +129,11 @@ namespace DogAgilityCompetition.Controller.Engine
                 {
                     lockTracker.Acquired();
 
-                    maximumCourseTimeElapsed = false;
+                    hasMaximumCourseTimeElapsed = false;
                     isManuallyEliminated = false;
                     refusalCount = 0;
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            maximumCourseTimeTimer.Dispose();
         }
 
         private void RaiseEventsOnChangeWithLock([NotNull] Action action)
