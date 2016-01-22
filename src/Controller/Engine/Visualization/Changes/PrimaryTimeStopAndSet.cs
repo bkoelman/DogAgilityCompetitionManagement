@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
     /// <summary>
-    /// A visualization change that freezes/clears the running timer to a specific value.
+    /// A visualization change that freezes the running timer to a specific value or clears it.
     /// </summary>
     public sealed class PrimaryTimeStopAndSet : NullableVisualizationChange<TimeSpan?>
     {

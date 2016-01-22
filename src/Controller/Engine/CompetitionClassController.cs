@@ -689,6 +689,12 @@ namespace DogAgilityCompetition.Controller.Engine
         private void CompleteActiveRun([NotNull] VisualizationUpdateCollector collector)
         {
             runData.EliminationTracker.StopMonitorCourseTime();
+
+            if (!runData.HasFinished)
+            {
+                collector.Include(new PrimaryTimeStopAndSet(null));
+            }
+
             PersistRunResultToCache();
 
             int competitorNumber = AssertCurrentCompetitorNumberNotNull();
@@ -1088,6 +1094,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
             public bool HasFaultsOrRefusalsOrIsEliminated
                 => FaultCount != 0 || EliminationTracker.RefusalCount != 0 || EliminationTracker.IsEliminated;
+
+            public bool HasFinished => Timings?.FinishTime != null;
 
             [NotNull]
             public CompetitionRunResult ToRunResultFor([NotNull] Competitor competitor)
