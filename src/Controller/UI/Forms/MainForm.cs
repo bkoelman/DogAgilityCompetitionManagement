@@ -515,17 +515,11 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [CanBeNull]
         private static string GetEmulatorExePath()
         {
-            string devEmulatorExePath =
-                Path.GetFullPath(Path.Combine(Environment.CurrentDirectory,
-                    @"..\..\..\MediatorEmulator\bin\Debug\DogAgilityCompetitionMediatorEmulator.exe"));
-
             string emulatorExePath =
                 Path.GetFullPath(Path.Combine(Environment.CurrentDirectory,
                     @".\DogAgilityCompetitionMediatorEmulator.exe"));
 
-            return File.Exists(devEmulatorExePath)
-                ? devEmulatorExePath
-                : File.Exists(emulatorExePath) ? emulatorExePath : null;
+            return File.Exists(emulatorExePath) ? emulatorExePath : null;
         }
 
         [CanBeNull]
