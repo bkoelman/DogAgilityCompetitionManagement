@@ -290,7 +290,7 @@ namespace DogAgilityCompetition.Controller.Engine
             ExecuteExclusiveIfStateIn(statesAllowed,
                 () =>
                     VisualizationUpdateCollector.Single(visualizer,
-                        VisualizationChangeFactory.CompetitorNumberBlink(isCurrentCompetitor, true)));
+                        VisualizationChangeFactory.CompetitorNumberBlinkOn(isCurrentCompetitor)));
         }
 
         [NotNull]
@@ -366,7 +366,7 @@ namespace DogAgilityCompetition.Controller.Engine
                         UpdateNextCompetitorVisualization(collector);
                     }
 
-                    collector.Include(VisualizationChangeFactory.CompetitorNumberBlink(isCurrentCompetitor, false));
+                    collector.Include(VisualizationChangeFactory.CompetitorNumberBlinkOff(isCurrentCompetitor));
                 }
             });
         }
@@ -692,7 +692,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
             if (!runData.HasFinished)
             {
-                collector.Include(new PrimaryTimeStopAndSet(null));
+                collector.Include(PrimaryTimeStopAndSet.Hidden);
             }
 
             PersistRunResultToCache();

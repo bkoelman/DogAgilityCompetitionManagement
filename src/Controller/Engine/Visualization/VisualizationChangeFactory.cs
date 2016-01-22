@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
@@ -18,16 +17,16 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
             return new VisualizationChange[]
             {
-                new ClassInfoUpdate(null),
-                new PrimaryTimeStopAndSet(null),
-                new SecondaryTimeUpdate(null, false),
-                new FaultCountUpdate(null),
-                new RefusalCountUpdate(null),
-                new EliminationUpdate(false),
-                new CurrentCompetitorUpdate(null),
-                new NextCompetitorUpdate(null),
-                new PreviousCompetitorRunUpdate(null),
-                new RankingsUpdate(new CompetitionRunResult[0])
+                ClassInfoUpdate.Hidden,
+                PrimaryTimeStopAndSet.Hidden,
+                SecondaryTimeUpdate.Hidden,
+                FaultCountUpdate.Hidden,
+                RefusalCountUpdate.Hidden,
+                EliminationUpdate.Off,
+                CurrentCompetitorUpdate.Hidden,
+                NextCompetitorUpdate.Hidden,
+                PreviousCompetitorRunUpdate.Hidden,
+                RankingsUpdate.Hidden
             };
         }
 
@@ -37,11 +36,11 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
             return new VisualizationChange[]
             {
-                new PrimaryTimeStopAndSet(null),
-                new SecondaryTimeUpdate(null, false),
-                new FaultCountUpdate(null),
-                new RefusalCountUpdate(null),
-                new EliminationUpdate(false)
+                PrimaryTimeStopAndSet.Hidden,
+                SecondaryTimeUpdate.Hidden,
+                FaultCountUpdate.Hidden,
+                RefusalCountUpdate.Hidden,
+                EliminationUpdate.Off
             };
         }
 
@@ -51,11 +50,11 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
             return new VisualizationChange[]
             {
-                new PrimaryTimeStopAndSet(TimeSpan.Zero),
-                new SecondaryTimeUpdate(null, false),
-                new FaultCountUpdate(0),
-                new RefusalCountUpdate(0),
-                new EliminationUpdate(false)
+                PrimaryTimeStopAndSet.Zero,
+                SecondaryTimeUpdate.Hidden,
+                FaultCountUpdate.Zero,
+                RefusalCountUpdate.Zero,
+                EliminationUpdate.Off
             };
         }
 
@@ -84,7 +83,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
                 }
             }
 
-            var changes = new List<VisualizationChange>
+            return new List<VisualizationChange>
             {
                 new EliminationUpdate(existingRunResult.IsEliminated),
                 new FaultCountUpdate(existingRunResult.FaultCount),
@@ -92,15 +91,22 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
                 PrimaryTimeStopAndSet.FromTimeSpanWithAccuracy(finishTimeElapsed),
                 SecondaryTimeUpdate.FromTimeSpanWithAccuracy(intermediateTimeElapsed, false)
             };
-            return changes;
         }
 
         [NotNull]
-        public static VisualizationChange CompetitorNumberBlink(bool isCurrentCompetitor, bool isEnabled)
+        public static VisualizationChange CompetitorNumberBlinkOn(bool isCurrentCompetitor)
         {
             return isCurrentCompetitor
-                ? (VisualizationChange) new CurrentCompetitorNumberBlink(isEnabled)
-                : new NextCompetitorNumberBlink(isEnabled);
+                ? (VisualizationChange) CurrentCompetitorNumberBlink.On
+                : NextCompetitorNumberBlink.On;
+        }
+
+        [NotNull]
+        public static VisualizationChange CompetitorNumberBlinkOff(bool isCurrentCompetitor)
+        {
+            return isCurrentCompetitor
+                ? (VisualizationChange) CurrentCompetitorNumberBlink.Off
+                : NextCompetitorNumberBlink.Off;
         }
 
         [NotNull]

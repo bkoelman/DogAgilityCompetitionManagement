@@ -1,4 +1,5 @@
 using DogAgilityCompetition.Circe;
+using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -7,6 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class EliminationUpdate : NotNullableVisualizationChange<bool>
     {
+        [NotNull]
+        public static EliminationUpdate Off => new EliminationUpdate(false);
+
         public EliminationUpdate(bool value)
             : base(value)
         {

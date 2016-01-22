@@ -10,6 +10,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class RankingsUpdate : NotNullableVisualizationChange<IReadOnlyCollection<CompetitionRunResult>>
     {
+        [NotNull]
+        public static RankingsUpdate Hidden => new RankingsUpdate(new CompetitionRunResult[0]);
+
         public RankingsUpdate([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> value)
             : base(value)
         {

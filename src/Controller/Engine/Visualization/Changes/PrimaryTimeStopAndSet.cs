@@ -9,6 +9,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class PrimaryTimeStopAndSet : NullableVisualizationChange<TimeSpan?>
     {
+        [NotNull]
+        public static PrimaryTimeStopAndSet Hidden => new PrimaryTimeStopAndSet(null);
+
+        [NotNull]
+        public static PrimaryTimeStopAndSet Zero => new PrimaryTimeStopAndSet(TimeSpan.Zero);
+
         public PrimaryTimeStopAndSet([CanBeNull] TimeSpan? value)
             : base(value)
         {

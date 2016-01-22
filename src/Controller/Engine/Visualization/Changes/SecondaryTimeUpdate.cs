@@ -11,6 +11,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     {
         public bool DoBlink { get; }
 
+        [NotNull]
+        public static SecondaryTimeUpdate Hidden => new SecondaryTimeUpdate(null, false);
+
         public SecondaryTimeUpdate([CanBeNull] TimeSpan? value, bool doBlink)
             : base(value)
         {

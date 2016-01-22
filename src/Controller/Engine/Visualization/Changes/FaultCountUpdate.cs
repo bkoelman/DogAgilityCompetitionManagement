@@ -8,6 +8,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class FaultCountUpdate : NullableVisualizationChange<int?>
     {
+        [NotNull]
+        public static FaultCountUpdate Hidden => new FaultCountUpdate(null);
+
+        [NotNull]
+        public static FaultCountUpdate Zero => new FaultCountUpdate(0);
+
         public FaultCountUpdate([CanBeNull] int? value)
             : base(value)
         {

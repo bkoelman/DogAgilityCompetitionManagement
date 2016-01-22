@@ -1,4 +1,5 @@
 using DogAgilityCompetition.Circe;
+using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -7,6 +8,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class NextCompetitorNumberBlink : NotNullableVisualizationChange<bool>
     {
+        [NotNull]
+        public static NextCompetitorNumberBlink On => new NextCompetitorNumberBlink(true);
+
+        [NotNull]
+        public static NextCompetitorNumberBlink Off => new NextCompetitorNumberBlink(false);
+
         public NextCompetitorNumberBlink(bool value)
             : base(value)
         {
