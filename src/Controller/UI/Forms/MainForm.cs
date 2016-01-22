@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
@@ -515,9 +516,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [CanBeNull]
         private static string GetEmulatorExePath()
         {
-            string emulatorExePath =
-                Path.GetFullPath(Path.Combine(Environment.CurrentDirectory,
-                    @".\DogAgilityCompetitionMediatorEmulator.exe"));
+            string emulatorExePath = GetPathForFileInApplicationFolder("DogAgilityCompetitionMediatorEmulator.exe");
 
             return File.Exists(emulatorExePath) ? emulatorExePath : null;
         }
@@ -525,9 +524,16 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [CanBeNull]
         private static string GetEmulatorXmlPath()
         {
-            string emulatorXmlPath =
-                Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @".\RemoteForDebug.xml"));
+            string emulatorXmlPath = GetPathForFileInApplicationFolder("RemoteForDebug.xml");
             return File.Exists(emulatorXmlPath) ? emulatorXmlPath : null;
+        }
+
+        [NotNull]
+        private static string GetPathForFileInApplicationFolder([NotNull] string fileName)
+        {
+            string applicationPath = Assembly.GetEntryAssembly().Location;
+            string applicationFolder = Path.GetDirectoryName(applicationPath);
+            return Path.GetFullPath(Path.Combine(applicationFolder, fileName));
         }
 
         private void EmulatorProcessOnExited([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
