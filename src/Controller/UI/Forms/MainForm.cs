@@ -534,21 +534,21 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             this.EnsureOnMainThread(() =>
             {
-                EmulatorProcessKill();
+                if (emulatorProcess != null)
+                {
+                    emulatorProcess.Dispose();
+                    emulatorProcess = null;
+                }
+
                 emulatorLinkLabel.Text = @"Turn emulator on";
             });
         }
 
         private void EmulatorProcessKill()
         {
-            if (emulatorProcess != null)
+            if (emulatorProcess != null && !emulatorProcess.HasExited)
             {
-                if (!emulatorProcess.HasExited)
-                {
-                    emulatorProcess.Kill();
-                }
-                emulatorProcess.Dispose();
-                emulatorProcess = null;
+                emulatorProcess.Kill();
             }
         }
 
