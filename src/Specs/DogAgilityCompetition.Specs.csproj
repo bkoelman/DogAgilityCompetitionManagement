@@ -82,10 +82,13 @@
       <Link>Properties\AssemblyVersion.cs</Link>
     </Compile>
     <Compile Include="Builders\RecordedTimeBuilder.cs" />
+    <Compile Include="Facilities\EventArgsWithNameForRemoteKeyTrackerExtensions.cs" />
+    <Compile Include="Facilities\TrackerEventListener.cs" />
+    <Compile Include="Facilities\RawDeviceKeyExtensions.cs" />
     <Compile Include="Facilities\CirceUsbLoopbackTestRunner.cs" />
     <Compile Include="CirceSpecs\CirceControllerSessionEvents.cs" />
     <Compile Include="CirceSpecs\CirceOperationBinaryFormat.cs" />
-    <Compile Include="DeviceKeyHandlingSpecs\RemoteKeyTracking.Scenarios.cs" />
+    <Compile Include="DeviceKeyHandlingSpecs\KeyScenarios.cs" />
     <Compile Include="Facilities\CirceUsbLoopbackTestRunner`1.cs" />
     <Compile Include="Builders\DelimitedValuesReaderBuilder.cs" />
     <Compile Include="Builders\DelimitedValuesReaderSettingsBuilder.cs" />
@@ -124,8 +127,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DeviceKeyHandlingSpecs\Inside NumberEntryFilter.xlsx" />
-    <None Include="DeviceKeyHandlingSpecs\Key change detection.xlsx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

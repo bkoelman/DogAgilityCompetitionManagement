@@ -1,7 +1,10 @@
-﻿using DogAgilityCompetition.Circe.Protocol;
+﻿using System;
+using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
+using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
@@ -9,9 +12,15 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     /// <summary>
     /// Tests how the up/down state of keys on wireless remote controls is tracked.
     /// </summary>
-    public sealed partial class RemoteKeyTracking
+    public sealed class KeyScenarios
     {
-        // Note: For description of these scenarios, see file: "Key change detection.xlsx"
+        [NotNull]
+        private static readonly WirelessNetworkAddress Source = new WirelessNetworkAddress("ABCDEF");
+
+        [CanBeNull]
+        private static readonly TimeSpan? NullTime = null;
+
+        // Note: For an explanation of these scenarios, see file: "\doc\Interpreting numeric input from remote control keys.md"
 
         [Test]
         public void Scenario1()
