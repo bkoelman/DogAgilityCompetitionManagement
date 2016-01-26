@@ -106,7 +106,7 @@
 | None      | Current        | None      | Current | | Number entry is not active |
 | None      | Next           | None      | None    | | Number entry is not active |
 | None      | Current + Next | None      | Current | | Number entry is not active |
-| InCurrent | None           | InCurrent | None    | UnknownActio n(...)<sup>2</sup> | Key represents a command |
+| InCurrent | None           | InCurrent | None    | UnknownAction (...)<sup>2</sup> | Key represents a command |
 | InCurrent | Current        | InCurrent | Current | DigitReceived (isCurrent: true)<sup>1</sup> | Match for number entry |
 | InCurrent | Next           | InCurrent | None    | | Incompatible for number entry |
 | InCurrent | Current + Next | InCurrent | Current | DigitReceived (isCurrent: true)<sup>1</sup> | Compatible for number entry |
