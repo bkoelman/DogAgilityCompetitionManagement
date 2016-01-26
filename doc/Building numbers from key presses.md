@@ -3,8 +3,8 @@
 
 *ModifierKeyDown: Current*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | InCurrent<sup>2</sup> | Current<sup>1</sup>        | CompetitorSelecting (isCurrent: true) | Start number building |
 | None      | Current        | InCurrent<sup>2</sup> | Current                    | CompetitorSelecting (isCurrent: true) | Invalid (modifier is already down) |
 | None      | Next           | InCurrent<sup>2</sup> | Current + Next<sup>1</sup> | CompetitorSelecting (isCurrent: true) | Start number building |
@@ -20,8 +20,8 @@
 
 *ModifierKeyDown: Next*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | InNext<sup>2</sup> | Next<sup>1</sup>           | CompetitorSelecting (isCurrent: false) | Start number building |
 | None      | Current        | InNext<sup>2</sup> | Current + Next<sup>1</sup> | CompetitorSelecting (isCurrent: false) | Start number building |
 | None      | Next           | InNext<sup>2</sup> | Next                       | CompetitorSelecting (isCurrent: false) | Invalid (modifier is already down) |
@@ -43,8 +43,8 @@
 
 *ModifierKeyUp: Current*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | None             | None             | | Invalid (modifier was not down) |
 | None      | Current        | None             | None<sup>1</sup> | | |
 | None      | Next           | None             | Next             | | Invalid (modifier was not down) |
@@ -60,8 +60,8 @@
 
 *ModifierKeyUp: Next*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | None             | None                | | Invalid (modifier was not down) |
 | None      | Current        | None             | Current             | | Invalid (modifier was not down) |
 | None      | Next           | None             | None<sup>1</sup>    | | |
@@ -83,8 +83,8 @@
 
 *KeyDown: 7 (category: digit-only keys)*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | None      | None    | | Key has no command representation |
 | None      | Current        | None      | Current | | Number entry is not active |
 | None      | Next           | None      | None    | | Number entry is not active |
@@ -100,8 +100,8 @@
 
 *KeyDown: 2 = PassIntermediate (category: multi-functional keys)*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | None      | None    | UnknownAction (...)<sup>2</sup> | Key represents a command |
 | None      | Current        | None      | Current | | Number entry is not active |
 | None      | Next           | None      | None    | | Number entry is not active |
@@ -117,8 +117,8 @@
 
 *KeyDown: PassStart (category: command keys)*
 
-| Global state (pre) | Local modifiers down (pre) | Global state (post) | Local modifiers down (post) | Raise event | Comments |
-|:-------------------|:---------------------------|:--------------------|:----------------------------|:------------|:---------|
+| Global state (pre) | Local keys &darr; (pre) | Global state (post) | Local keys &darr; (post) | Raise event | Comments |
+|:-------------------|:------------------------|:--------------------|:-------------------------|:------------|:---------|
 | None      | None           | None      | None    | UnknownAction (...)<sup>2</sup> | Key represents a command |
 | None      | Current        | None      | Current | UnknownAction (...)<sup>2</sup> | Key represents a command |
 | None      | Next           | None      | None    | UnknownAction (...)<sup>2</sup> | Key represents a command |
