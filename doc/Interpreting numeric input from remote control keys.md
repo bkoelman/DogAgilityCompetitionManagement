@@ -6,7 +6,7 @@
 * [K+] = Release key K
 
 **Network packet** 
-* X = lost packet
+* ~~data~~ = lost packet
 
 **RemoteKeyTracker**
 * Performs key change detection
@@ -76,17 +76,17 @@
 
 | User action | Network packet | RemoteKeyTracker | NumberEntryFilter | Remarks |
 |:------------|:---------------|:-----------------|:------------------|:--------|
-| [Cur-] | X [Cur]             |                        | | |
-| [Nex-] | X [Cur] + [Nex]     |                        | | |
+| [Cur-] | ~~[Cur]~~           |                        | | |
+| [Nex-] | ~~[Cur] + [Nex]~~   |                        | | |
 | [1-]   | [Cur] + [Nex] + [1] | &darr; [Nex] | State &rarr; [InNext], CompetitorSelecting(isCurrent: false) | Precedence rule: [Nex], [Cur] |
 |        |                     | &darr; [Cur] | | Precedence rule: ModifierDown, KeyDown, KeyUp, ModifierUp |
 |        |                     | &darr; [1]           | DigitReceived(isCurrent: false, number=1) | |
 | [1+]   | [Cur] + [Nex]       | &uarr; [1]             | | |
 | [2-]   | [Cur] + [Nex] + [2] | &darr; [2]           | DigitReceived(isCurrent: false, number=12) | |
 | [2+]   | [Cur] + [Nex]       | &uarr; [2]             | | |
-| [Cur+] | X [Nex]             | | | |
-| [3-]   | X [Nex] + [3]       | | | We cannot know about the [3] keypress |
-| [3+]   | X [Nex]             | | | |
+| [Cur+] | ~~[Nex]~~           | | | |
+| [3-]   | ~~[Nex] + [3]~~     | | | We cannot know about the [3] keypress |
+| [3+]   | ~~[Nex]~~           | | | |
 | [Nex+] | []                  | &uarr; [Nex]   | CompetitorSelected(isCurrent: false, number=12), State &rarr; [None] | Precedence rule: [Nex], [Cur] |
 |        |                     | &uarr; [Cur]   | | Discarded due to state |
 
@@ -94,12 +94,12 @@
 
 | User action | Network packet | RemoteKeyTracker | NumberEntryFilter | Remarks |
 |:------------|:---------------|:-----------------|:------------------|:--------|
-| [Cur-] | X [Cur]       |                        | | |
-| [1-]   | X [Cur] + [1] |                        | | We cannot know about the [1] keypress |
-| [1+]   | [Cur]         | &darr; [Cur] | State &rarr; [InCurrent], CompetitorSelecting(isCurrent: true) | |
-| [Cur+] | X []          |                        | | Missed, causing incorrect state below |
-| [2-]   | [2]           | &darr; [2]           | DigitReceived(isCurrent: true, number=2) | Should have been [SetIntermediate] |
-|        |               | &uarr; [Cur]   | | |
-| [2+]   | []            | &uarr; [2]             | | |
-| [Cur-] | [Cur]         | &darr; [Cur] | | Discard, modifier seems already down |
-| [Cur+] | []            | &uarr; [Cur]   | CompetitorSelected(isCurrent: true, number=2), State &rarr; [None] | State has been corrected |
+| [Cur-] | ~~[Cur]~~       |                        | | |
+| [1-]   | ~~[Cur] + [1]~~ |                        | | We cannot know about the [1] keypress |
+| [1+]   | [Cur]           | &darr; [Cur] | State &rarr; [InCurrent], CompetitorSelecting(isCurrent: true) | |
+| [Cur+] | ~~[]~~          |                        | | Missed, causing incorrect state below |
+| [2-]   | [2]             | &darr; [2]           | DigitReceived(isCurrent: true, number=2) | Should have been [SetIntermediate] |
+|        |                 | &uarr; [Cur]   | | |
+| [2+]   | []              | &uarr; [2]             | | |
+| [Cur-] | [Cur]           | &darr; [Cur] | | Discard, modifier seems already down |
+| [Cur+] | []              | &uarr; [Cur]   | CompetitorSelected(isCurrent: true, number=2), State &rarr; [None] | State has been corrected |
