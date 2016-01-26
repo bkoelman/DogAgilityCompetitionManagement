@@ -36,6 +36,7 @@
 | InNext    | Current + Next | InNext             | Current + Next             |  | Invalid (modifier is already down) |
 
 **Conclusion - Rules for ModifierKeyDown:**
+
 1. Add incoming modifier to [Local modifiers down] when not already exists.
 2. When [Global state (pre)] is None, switch to state that matches incoming modifier and raise event.
 
@@ -76,6 +77,7 @@
 | InNext    | Current + Next | None<sup>2</sup> | Current<sup>1</sup> | CompetitorSelected (isCurrent: false) | Stop number building |
 
 **Conclusion - Rules for ModifierKeyUp:**
+
 1. Remove incoming modifier from [Local modifiers down] when exists.
 2. When [Global state (pre)] matches incoming modifier, switch to None and raise event.
 
@@ -133,5 +135,6 @@
 | InNext    | Current + Next | None      | Current | UnknownAction (...)<sup>2</sup> | Key represents a command |
 
 **Conclusion - Rules for KeyDown:**
+
 1. Raise DigitReceived when key category is not command keys -and- a modifier is down that matches global state.
 2. Raise UnknownAction when key category is command keys -or- { key category is multi-functional keys -and- no modifiers are down }
