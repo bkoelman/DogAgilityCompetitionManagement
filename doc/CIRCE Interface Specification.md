@@ -344,7 +344,7 @@ Note that for bandwidth efficiency, only changes must be sent by a controller. F
 
 The controller may choose to include the Destination Address parameter multiple times, each time with the unique network address of the specific display device.
 
-The Eliminated parameter has lowest precedence. The Start Timer parameter has precedence over the Primary Timer Value parameter. The Primary Timer Value parameterhas precedence over the Secondary Timer Value parameter. The controller must send parameters with lowest precedence first and prevent conflicts.
+The Eliminated parameter has lowest precedence. The Start Timer parameter has precedence over the Primary Timer Value parameter. The Primary Timer Value parameter has precedence over the Secondary Timer Value parameter. The controller must send parameters with lowest precedence first and prevent conflicts.
 
 ***Note:*** *Due to hardware constraints in packet length, currently this operation is sent for each destination individually.*
 
