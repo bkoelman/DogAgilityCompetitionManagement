@@ -15,11 +15,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
             Guard.NotNull(changeSet, nameof(changeSet));
 
-            ResolveTimePrecedence(changeSet);
+            ResolvePrimaryTimePrecedence(changeSet);
             ResolveEliminationPrecedence(changeSet);
         }
 
-        private static void ResolveTimePrecedence([NotNull] [ItemNotNull] ICollection<VisualizationChange> changeSet)
+        private static void ResolvePrimaryTimePrecedence(
+            [NotNull] [ItemNotNull] ICollection<VisualizationChange> changeSet)
         {
             StartPrimaryTimer startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
             PrimaryTimeStopAndSet setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();

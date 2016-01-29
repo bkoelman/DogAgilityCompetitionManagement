@@ -68,7 +68,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         }
 
         [NotNull]
-        public static Version CurrentProtocolVersion => new Version(0, 2, 1);
+        public static Version CurrentProtocolVersion => new Version(0, 2, 2);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KeepAliveOperation" /> class.

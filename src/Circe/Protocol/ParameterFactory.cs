@@ -25,7 +25,8 @@ namespace DogAgilityCompetition.Circe.Protocol
                 { ParameterType.Integer.CurrentCompetitorNumber, new IntegerParameterDefinition(28, 0, 999) },
                 { ParameterType.Integer.NextCompetitorNumber, new IntegerParameterDefinition(29, 0, 999) },
                 { ParameterType.Integer.StartTimer, new IntegerParameterDefinition(30, 1, 1) },
-                { ParameterType.Integer.TimerValue, new IntegerParameterDefinition(31, 0, 999999) },
+                { ParameterType.Integer.PrimaryTimerValue, new IntegerParameterDefinition(31, 0, 999999) },
+                { ParameterType.Integer.SecondaryTimerValue, new IntegerParameterDefinition(38, 0, 999999) },
                 { ParameterType.Integer.FaultCount, new IntegerParameterDefinition(32, 0, 99) },
                 { ParameterType.Integer.RefusalCount, new IntegerParameterDefinition(33, 0, 99) },
                 { ParameterType.Integer.PreviousPlacement, new IntegerParameterDefinition(35, 0, 999) }

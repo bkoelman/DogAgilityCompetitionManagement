@@ -17,11 +17,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         private const string MillisecDashes = "---";
         private const string EliminationText = "-E-";
 
-        [CanBeNull]
-        private string lastMillisecondsValue;
+        private static readonly TimeSpan FreezeSecondaryTimeDuration = TimeSpan.FromSeconds(2);
 
         [CanBeNull]
-        private DateTime? startTime;
+        private string primaryTimeMillisecondsMeasured;
+
+        [CanBeNull]
+        private DateTime? primaryTimeStartedAt;
+
+        [CanBeNull]
+        private SecondaryTime? secondaryTime;
 
         private bool IsEliminated => primaryTimeMillisecondsLabel.Text == EliminationText;
 
@@ -45,42 +50,64 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            if (startTime != null)
+            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+            if (primaryTimeStartedAt != null && !isSecondaryTimeVisible)
             {
-                TimeSpan timePassed = SystemContext.UtcNow() - startTime.Value;
+                TimeSpan timePassed = SystemContext.UtcNow() - primaryTimeStartedAt.Value;
                 UpdatePrimaryTime(timePassed, false);
             }
         }
 
-        private void UpdatePrimaryTime([CanBeNull] TimeSpan? time, bool showMilliseconds)
+        private void UpdatePrimaryTime([CanBeNull] TimeSpan? primaryTime, bool showMilliseconds)
         {
-            primaryTimeSecondsLabel.Text = TextFormatting.FormatSeconds(time);
+            primaryTimeSecondsLabel.Text = TextFormatting.FormatSeconds(primaryTime);
 
             if (!IsEliminated)
             {
-                primaryTimeMillisecondsLabel.Text = showMilliseconds ? lastMillisecondsValue : MillisecDashes;
+                primaryTimeMillisecondsLabel.Text = showMilliseconds ? primaryTimeMillisecondsMeasured : MillisecDashes;
             }
         }
 
         void ISimpleVisualizationActor.StartPrimaryTimer()
         {
-            startTime = SystemContext.UtcNow();
+            secondaryTime = null;
+
+            primaryTimeStartedAt = SystemContext.UtcNow();
             DisplayRefreshTimer_Tick(this, EventArgs.Empty);
             displayRefreshTimer.Enabled = true;
         }
 
         void ISimpleVisualizationActor.StopAndSetOrClearPrimaryTime(TimeSpan? time)
         {
-            StopPrimaryTimer();
+            StopTimers();
 
-            lastMillisecondsValue = TextFormatting.FormatMilliseconds(time);
+            primaryTimeMillisecondsMeasured = TextFormatting.FormatMilliseconds(time);
             UpdatePrimaryTime(time, true);
         }
 
-        private void StopPrimaryTimer()
+        private void StopTimers()
         {
             displayRefreshTimer.Enabled = false;
-            startTime = null;
+            primaryTimeStartedAt = null;
+            secondaryTime = null;
+        }
+
+        void ISimpleVisualizationActor.SetOrClearSecondaryTime(TimeSpan? time)
+        {
+            if (time == null)
+            {
+                secondaryTime = null;
+            }
+            else
+            {
+                secondaryTime = new SecondaryTime(time.Value);
+                primaryTimeSecondsLabel.Text = TextFormatting.FormatSeconds(secondaryTime.Value.TimeValue);
+
+                if (!IsEliminated)
+                {
+                    primaryTimeMillisecondsLabel.Text = TextFormatting.FormatMilliseconds(secondaryTime.Value.TimeValue);
+                }
+            }
         }
 
         void ISimpleVisualizationActor.SetOrClearFaultCount(int? count)
@@ -95,9 +122,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         void ISimpleVisualizationActor.SetElimination(bool isEliminated)
         {
+            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+
             primaryTimeMillisecondsLabel.Text = isEliminated
                 ? EliminationText
-                : (startTime != null ? MillisecDashes : lastMillisecondsValue);
+                : (isSecondaryTimeVisible
+                    ? TextFormatting.FormatMilliseconds(secondaryTime.Value.TimeValue)
+                    : (primaryTimeStartedAt != null ? MillisecDashes : primaryTimeMillisecondsMeasured));
         }
 
         void ISimpleVisualizationActor.SetOrClearCurrentCompetitorNumber(int? number)
@@ -149,6 +180,21 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             public static string FormatMilliseconds([CanBeNull] TimeSpan? time)
             {
                 return time == null ? string.Empty : $"{time.Value.Milliseconds:000}";
+            }
+        }
+
+        private struct SecondaryTime
+        {
+            private readonly DateTime startedAt;
+
+            public TimeSpan TimeValue { get; }
+
+            public bool IsVisible => startedAt.Add(FreezeSecondaryTimeDuration) >= SystemContext.UtcNow();
+
+            public SecondaryTime(TimeSpan timeValue)
+            {
+                startedAt = SystemContext.UtcNow();
+                TimeValue = timeValue;
             }
         }
     }

@@ -27,7 +27,8 @@ namespace DogAgilityCompetition.Circe.Protocol
             CurrentCompetitorNumber,
             NextCompetitorNumber,
             StartTimer,
-            TimerValue,
+            PrimaryTimerValue,
+            SecondaryTimerValue,
             FaultCount,
             RefusalCount,
             PreviousPlacement

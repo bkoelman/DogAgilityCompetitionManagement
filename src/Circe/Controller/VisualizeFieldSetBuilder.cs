@@ -20,6 +20,9 @@ namespace DogAgilityCompetition.Circe.Controller
         private TimeSpan? primaryTimerValue;
 
         [CanBeNull]
+        private TimeSpan? secondaryTimerValue;
+
+        [CanBeNull]
         private int? currentFaultCount;
 
         [CanBeNull]
@@ -34,7 +37,8 @@ namespace DogAgilityCompetition.Circe.Controller
         public VisualizeFieldSet Build()
         {
             return new VisualizeFieldSet(currentCompetitorNumber, nextCompetitorNumber, startPrimaryTimer,
-                primaryTimerValue, currentFaultCount, currentRefusalCount, currentIsEliminated, previousPlacement);
+                primaryTimerValue, secondaryTimerValue, currentFaultCount, currentRefusalCount, currentIsEliminated,
+                previousPlacement);
         }
 
         [NotNull]
@@ -62,6 +66,13 @@ namespace DogAgilityCompetition.Circe.Controller
         public VisualizeFieldSetBuilder WithPrimaryTimerValue(TimeSpan value)
         {
             primaryTimerValue = value;
+            return this;
+        }
+
+        [NotNull]
+        public VisualizeFieldSetBuilder WithSecondaryTimerValue(TimeSpan value)
+        {
+            secondaryTimerValue = value;
             return this;
         }
 

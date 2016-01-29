@@ -22,6 +22,14 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         void StopAndSetOrClearPrimaryTime([CanBeNull] TimeSpan? time);
 
         /// <summary>
+        /// Changes the display of secondary time value.
+        /// </summary>
+        /// <param name="time">
+        /// The time value to display, or <c>null</c> to hide.
+        /// </param>
+        void SetOrClearSecondaryTime([CanBeNull] TimeSpan? time);
+
+        /// <summary>
         /// Changes the fault count with the specified value.
         /// </summary>
         /// <param name="count">

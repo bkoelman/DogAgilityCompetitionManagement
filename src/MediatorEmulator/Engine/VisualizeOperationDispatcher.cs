@@ -42,6 +42,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         public void ClearAll()
         {
             actor.StopAndSetOrClearPrimaryTime(null);
+            actor.SetOrClearSecondaryTime(null);
             actor.SetOrClearFaultCount(null);
             actor.SetOrClearRefusalCount(null);
             actor.SetElimination(false);
@@ -56,13 +57,16 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
 
             invokeContext.EnsureOnMainThread(() =>
             {
-                // Important: Dispatch elimination change before handling time changes.
+                // Important: Dispatch Elimination Change before handling time changes.
                 DispatchEliminated(operation);
                 DispatchCurrentCompetitorNumber(operation);
                 DispatchNextCompetitorNumber(operation);
 
-                // Important: Dispatch Timer Value before Start Timer (they should never occur both, but just in case).
-                DispatchTimerValue(operation);
+                // Important: Dispatch Secondary Timer Value before Primary Timer Value (can occur when competitor has previous results before start of run)
+                DispatchSecondaryTimerValue(operation);
+
+                // Important: Dispatch Primary Timer Value before Start Timer (they should never occur both, but just in case).
+                DispatchPrimaryTimerValue(operation);
                 DispatchStartTimer(operation);
 
                 DispatchFaults(operation);
@@ -109,12 +113,21 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchTimerValue([NotNull] VisualizeOperation operation)
+        private void DispatchPrimaryTimerValue([NotNull] VisualizeOperation operation)
         {
-            if (operation.TimerValue != null)
+            if (operation.PrimaryTimerValue != null)
             {
-                TimeSpan? time = operation.TimerValue == CirceHiddenTime ? null : operation.TimerValue;
+                TimeSpan? time = operation.PrimaryTimerValue == CirceHiddenTime ? null : operation.PrimaryTimerValue;
                 actor.StopAndSetOrClearPrimaryTime(time);
+            }
+        }
+
+        private void DispatchSecondaryTimerValue([NotNull] VisualizeOperation operation)
+        {
+            if (operation.SecondaryTimerValue != null)
+            {
+                TimeSpan? time = operation.SecondaryTimerValue == CirceHiddenTime ? null : operation.SecondaryTimerValue;
+                actor.SetOrClearSecondaryTime(time);
             }
         }
 

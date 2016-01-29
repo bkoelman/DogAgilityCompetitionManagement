@@ -401,6 +401,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 .WithNextCompetitorNumber(125)
                 .WithPrimaryTimerIsActive(true)
                 .WithPrimaryTimerValue(25.Seconds().And(993.Milliseconds()))
+                .WithSecondaryTimerValue(16.Seconds().And(123.Milliseconds()))
                 .WithCurrentFaultCount(5)
                 .WithCurrentRefusalCount(10)
                 .WithElimination(true)
@@ -437,7 +438,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.Result.CurrentCompetitorNumber.Should().Be(visualizeFieldSet.CurrentCompetitorNumber);
                 testRunner.Result.NextCompetitorNumber.Should().Be(visualizeFieldSet.NextCompetitorNumber);
                 testRunner.Result.StartTimer.Should().Be(visualizeFieldSet.StartPrimaryTimer);
-                testRunner.Result.TimerValue.Should().Be(visualizeFieldSet.PrimaryTimerValue);
+                testRunner.Result.PrimaryTimerValue.Should().Be(visualizeFieldSet.PrimaryTimerValue);
+                testRunner.Result.SecondaryTimerValue.Should().Be(visualizeFieldSet.SecondaryTimerValue);
                 testRunner.Result.FaultCount.Should().Be(visualizeFieldSet.CurrentFaultCount);
                 testRunner.Result.RefusalCount.Should().Be(visualizeFieldSet.CurrentRefusalCount);
                 testRunner.Result.Eliminated.Should().Be(visualizeFieldSet.CurrentIsEliminated);

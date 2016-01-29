@@ -42,6 +42,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
 
         void IVisualizationActor.SetOrClearSecondaryTime(TimeSpan? time, bool doBlink)
         {
+            builder.WithSecondaryTimerValue(time ?? CirceHiddenTime);
         }
 
         void IVisualizationActor.SetOrClearFaultCount(int? count)

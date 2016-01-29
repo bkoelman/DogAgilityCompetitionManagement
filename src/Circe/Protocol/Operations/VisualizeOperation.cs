@@ -47,8 +47,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             ParameterType.Integer.StartTimer, false);
 
         [NotNull]
-        private readonly IntegerParameter timerValueParameter = ParameterFactory.Create(
-            ParameterType.Integer.TimerValue, false);
+        private readonly IntegerParameter primaryTimerValueParameter =
+            ParameterFactory.Create(ParameterType.Integer.PrimaryTimerValue, false);
+
+        [NotNull]
+        private readonly IntegerParameter secondaryTimerValueParameter =
+            ParameterFactory.Create(ParameterType.Integer.SecondaryTimerValue, false);
 
         [NotNull]
         private readonly IntegerParameter faultCountParameter = ParameterFactory.Create(
@@ -121,19 +125,20 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         }
 
         /// <summary>
-        /// Optional. Gets or sets the time value (in milliseconds) to display for current competitor, or 999999 to hide it.
+        /// Optional. Gets or sets the primary time value (in milliseconds) to display for current competitor, or 999999 to hide
+        /// it.
         /// </summary>
         [CanBeNull]
-        public TimeSpan? TimerValue
+        public TimeSpan? PrimaryTimerValue
         {
             get
             {
-                if (timerValueParameter.Value == null)
+                if (primaryTimerValueParameter.Value == null)
                 {
                     return null;
                 }
 
-                double milliseconds = (double) timerValueParameter.Value;
+                double milliseconds = (double) primaryTimerValueParameter.Value;
 
                 // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
                 // rounds the input value to whole milliseconds.
@@ -143,12 +148,46 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             {
                 if (value == null)
                 {
-                    timerValueParameter.Value = null;
+                    primaryTimerValueParameter.Value = null;
                 }
                 else
                 {
                     int milliseconds = (int) Math.Round(value.Value.TotalMilliseconds, MidpointRounding.AwayFromZero);
-                    timerValueParameter.Value = milliseconds;
+                    primaryTimerValueParameter.Value = milliseconds;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Optional. Gets or sets the secondary time value (in milliseconds) to display for current competitor, or 999999 to hide
+        /// it.
+        /// </summary>
+        [CanBeNull]
+        public TimeSpan? SecondaryTimerValue
+        {
+            get
+            {
+                if (secondaryTimerValueParameter.Value == null)
+                {
+                    return null;
+                }
+
+                double milliseconds = (double) secondaryTimerValueParameter.Value;
+
+                // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
+                // rounds the input value to whole milliseconds.
+                return TimeSpan.FromMilliseconds(milliseconds);
+            }
+            set
+            {
+                if (value == null)
+                {
+                    secondaryTimerValueParameter.Value = null;
+                }
+                else
+                {
+                    int milliseconds = (int) Math.Round(value.Value.TotalMilliseconds, MidpointRounding.AwayFromZero);
+                    secondaryTimerValueParameter.Value = milliseconds;
                 }
             }
         }
@@ -229,7 +268,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             Parameters.Add(currentCompetitorNumberParameter);
             Parameters.Add(nextCompetitorNumberParameter);
             Parameters.Add(startTimerParameter);
-            Parameters.Add(timerValueParameter);
+            Parameters.Add(primaryTimerValueParameter);
+            Parameters.Add(secondaryTimerValueParameter);
             Parameters.Add(faultCountParameter);
             Parameters.Add(refusalCountParameter);
             Parameters.Add(previousPlacementParameter);

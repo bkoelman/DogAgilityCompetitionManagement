@@ -25,6 +25,9 @@ namespace DogAgilityCompetition.Circe.Controller
         public TimeSpan? PrimaryTimerValue { get; }
 
         [CanBeNull]
+        public TimeSpan? SecondaryTimerValue { get; }
+
+        [CanBeNull]
         public int? CurrentFaultCount { get; }
 
         [CanBeNull]
@@ -39,18 +42,19 @@ namespace DogAgilityCompetition.Circe.Controller
         public bool IsEmpty
             =>
                 CurrentCompetitorNumber == null && NextCompetitorNumber == null && !StartPrimaryTimer &&
-                    PrimaryTimerValue == null && CurrentFaultCount == null && CurrentRefusalCount == null &&
-                    CurrentIsEliminated == null && PreviousPlacement == null;
+                    PrimaryTimerValue == null && SecondaryTimerValue == null && CurrentFaultCount == null &&
+                    CurrentRefusalCount == null && CurrentIsEliminated == null && PreviousPlacement == null;
 
         public VisualizeFieldSet([CanBeNull] int? currentCompetitorNumber, [CanBeNull] int? nextCompetitorNumber,
-            bool startPrimaryTimer, [CanBeNull] TimeSpan? primaryTimerValue, [CanBeNull] int? currentFaultCount,
-            [CanBeNull] int? currentRefusalCount, [CanBeNull] bool? currentIsEliminated,
-            [CanBeNull] int? previousPlacement)
+            bool startPrimaryTimer, [CanBeNull] TimeSpan? primaryTimerValue, [CanBeNull] TimeSpan? secondaryTimerValue,
+            [CanBeNull] int? currentFaultCount, [CanBeNull] int? currentRefusalCount,
+            [CanBeNull] bool? currentIsEliminated, [CanBeNull] int? previousPlacement)
         {
             CurrentCompetitorNumber = currentCompetitorNumber;
             NextCompetitorNumber = nextCompetitorNumber;
             StartPrimaryTimer = startPrimaryTimer;
             PrimaryTimerValue = primaryTimerValue;
+            SecondaryTimerValue = secondaryTimerValue;
             CurrentFaultCount = currentFaultCount;
             CurrentRefusalCount = currentRefusalCount;
             CurrentIsEliminated = currentIsEliminated;
@@ -75,6 +79,9 @@ namespace DogAgilityCompetition.Circe.Controller
                 TimeSpan? tempPrimaryTimerValue = PrimaryTimerValue;
                 formatter.Append(() => tempPrimaryTimerValue, () => tempPrimaryTimerValue);
 
+                TimeSpan? tempSecondaryTimerValue = SecondaryTimerValue;
+                formatter.Append(() => tempSecondaryTimerValue, () => tempSecondaryTimerValue);
+
                 int? tempCurrentFaultCount = CurrentFaultCount;
                 formatter.Append(() => tempCurrentFaultCount, () => tempCurrentFaultCount);
 
@@ -95,9 +102,9 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             return other.CurrentCompetitorNumber == CurrentCompetitorNumber &&
                 other.NextCompetitorNumber == NextCompetitorNumber && other.StartPrimaryTimer == StartPrimaryTimer &&
-                other.PrimaryTimerValue == PrimaryTimerValue && other.CurrentFaultCount == CurrentFaultCount &&
-                other.CurrentRefusalCount == CurrentRefusalCount && other.CurrentIsEliminated == CurrentIsEliminated &&
-                other.PreviousPlacement == PreviousPlacement;
+                other.PrimaryTimerValue == PrimaryTimerValue && other.SecondaryTimerValue == SecondaryTimerValue &&
+                other.CurrentFaultCount == CurrentFaultCount && other.CurrentRefusalCount == CurrentRefusalCount &&
+                other.CurrentIsEliminated == CurrentIsEliminated && other.PreviousPlacement == PreviousPlacement;
         }
 
         [Pure]
@@ -111,8 +118,9 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             return GetHashCodeForNullable(CurrentCompetitorNumber) ^ GetHashCodeForNullable(NextCompetitorNumber) ^
                 StartPrimaryTimer.GetHashCode() ^ GetHashCodeForNullable(PrimaryTimerValue) ^
-                GetHashCodeForNullable(CurrentFaultCount) ^ GetHashCodeForNullable(CurrentRefusalCount) ^
-                GetHashCodeForNullable(CurrentIsEliminated) ^ GetHashCodeForNullable(PreviousPlacement);
+                GetHashCodeForNullable(SecondaryTimerValue) ^ GetHashCodeForNullable(CurrentFaultCount) ^
+                GetHashCodeForNullable(CurrentRefusalCount) ^ GetHashCodeForNullable(CurrentIsEliminated) ^
+                GetHashCodeForNullable(PreviousPlacement);
         }
 
         private static int GetHashCodeForNullable<T>([CanBeNull] T? value) where T : struct

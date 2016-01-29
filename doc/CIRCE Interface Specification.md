@@ -42,6 +42,7 @@
 
 | Revision  | Release date | Author   | Modification                                                                             |
 |:----------|:-------------|:---------|:-----------------------------------------------------------------------------------------|
+| **0.2.2** | 2016-01-29   | bkoelman | <ul><li>Renamed Timer Value parameter to Primary Timer Value</li><li>Added parameter Secondary Timer Value</li></ul> |
 | **0.2.1** | 2015-05-30   | bkoelman | <ul><li>Changed parameter Timer Value into Start Timer</li></ul> |
 | **0.2.0** | 2015-03-20   | bkoelman | <ul><li>Reversed values of Eliminated parameter</li><li>Changed all time values to length 6</li><li>Added new optional parameter VersionMismatch</li></ul> |
 | **0.1.9** | 2015-03-06   | bkoelman | <ul><li>Added operation Log for hardware debugging</li></ul> |
@@ -343,7 +344,7 @@ Note that for bandwidth efficiency, only changes must be sent by a controller. F
 
 The controller may choose to include the Destination Address parameter multiple times, each time with the unique network address of the specific display device.
 
-The Eliminated parameter has lowest precedence. The Start Timer parameter has precedence over the Timer Value parameter. The controller must send parameters with lowest precedence first and prevent conflicts.
+The Eliminated parameter has lowest precedence. The Start Timer parameter has precedence over the Primary Timer Value parameter. The Primary Timer Value parameterhas precedence over the Secondary Timer Value parameter. The controller must send parameters with lowest precedence first and prevent conflicts.
 
 ***Note:*** *Due to hardware constraints in packet length, currently this operation is sent for each destination individually.*
 
@@ -356,11 +357,12 @@ The Eliminated parameter has lowest precedence. The Start Timer parameter has pr
 | 028    | Current Competitor Number | 0..1        |
 | 029    | Next Competitor Number    | 0..1        |
 | 030    | Start Timer               | 0..1        |
-| 031    | Timer Value               | 0..1        |
+| 031    | Primary Timer Value       | 0..1        |
 | 032    | Fault Count               | 0..1        |
 | 033    | Refusal Count             | 0..1        |
 | 034    | Eliminated                | 0..1        |
 | 035    | Previous Placement        | 0..1        |
+| 038    | Secondary Timer Value     | 0..1        |
 
 ## <a name="operation-keep-alive"></a>Keep Alive (51)
 
@@ -513,13 +515,14 @@ The table below specifies the CIRCE parameters and their values.
 | Current Competitor Number | 028 | 4          | Integer | 0 - 999    | The value to display for current competitor number, or 0 to hide it. |
 | Next Competitor Number    | 029 | 4          | Integer | 0 - 999    | The value to display for next competitor number, or 0 to hide it. |
 | Start Timer               | 030 | 1          | Integer | 1          | Resets timer to zero and starts it. |
-| Timer Value               | 031 | 6          | Integer | 0 - 999999 | The time value (in milliseconds) to display for current competitor, or 999999 to hide it. When used, implicitly stops running timer. |
+| Primary Timer Value       | 031 | 6          | Integer | 0 - 999999 | The primary time value (in milliseconds) to display for current competitor, or 999999 to hide it. When used, implicitly stops running timer. |
 | Fault Count               | 032 | 2          | Integer | 0 - 99     | The value to display for fault count, or 99 to hide it. |
 | Refusal Count             | 033 | 2          | Integer | 0 - 99     | The value to display for refusal count, or 99 to hide it. |
 | Eliminated                | 034 | 1          | Integer | 0 or 1     | Toggles display of the elimination indicator. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - Hide elimination indicator</li><li>1 - Display elimination indicator</li></ul> |
 | Previous Placement        | 035 | 3          | Integer | 0 - 999    | The value to display for placement of previous competitor, or 0 to hide it. |
 | Log Data                  | 036 | -          | Binary  |            | Contains encoded binary data to log. |
 | Has Version Mismatch      | 037 | 1          | Integer | 0 or 1     | Indicates whether the version of a device matches the mediator version. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - False (versions match)</li><li>1 - True (versions do not match)</li></ul> |                                                                         
+| Secondary Timer Value     | 038 | 6          | Integer | 0 - 999999 | The secondary time value (in milliseconds) to display for current competitor, or 999999 to hide it. |
 
 
 # <a name="status-codes"></a>Status codes
