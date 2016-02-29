@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="AgilityRuleSet" ToolsVersion="14.0">
   <Include Path="minimumrecommendedrules.ruleset" Action="Default" />
+  <Rules AnalyzerId="CodeContractNullability" RuleNamespace="CodeContractNullability">
+    <Rule Id="XNUL" Action="None" />
+  </Rules>
   <Rules AnalyzerId="Microsoft.AnalyzerPowerPack.CSharp" RuleNamespace="Microsoft.AnalyzerPowerPack.CSharp">
     <Rule Id="CA1033" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="Microsoft.AnalyzerPowerPack.Common" RuleNamespace="Microsoft.AnalyzerPowerPack.Common">
     <Rule Id="CA1012" Action="Warning" />
-    <Rule Id="CA1052" Action="Warning" />
     <Rule Id="CA1053" Action="Warning" />
     <Rule Id="CA1708" Action="Warning" />
     <Rule Id="CA2235" Action="None" />
