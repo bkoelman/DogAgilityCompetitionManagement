@@ -135,7 +135,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// The token to signal cancellation.
         /// </param>
         /// <returns>
-        /// The <see cref="Task" /> the represents the enqueued action.
+        /// The <see cref="Task" /> that represents the enqueued action.
         /// </returns>
         [NotNull]
         public Task Enqueue([NotNull] Action action, CancellationToken cancelToken)
