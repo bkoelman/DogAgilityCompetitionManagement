@@ -240,8 +240,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             private static MultiLineArrow CreateArrowAtLeftSide(PointF from, PointF to, int depth)
             {
                 return
-                    new MultiLineArrow.Builder(@from).Left(ArrowLength * depth)
-                        .Up(@from.Y - to.Y)
+                    new MultiLineArrow.Builder(from).Left(ArrowLength * depth)
+                        .Up(from.Y - to.Y)
                         .Right(ArrowLength * depth)
                         .Build();
             }
@@ -250,8 +250,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             private static MultiLineArrow CreateArrowAtRightSide(PointF from, PointF to, int depth)
             {
                 return
-                    new MultiLineArrow.Builder(@from).Right(ArrowLength * depth)
-                        .Up(@from.Y - to.Y)
+                    new MultiLineArrow.Builder(from).Right(ArrowLength * depth)
+                        .Up(from.Y - to.Y)
                         .Left(ArrowLength * depth)
                         .Build();
             }

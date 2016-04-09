@@ -17,6 +17,8 @@ namespace DogAgilityCompetition.Circe.Session
     public sealed class FreshNotNullableReference<T> : FreshReference<T>
         where T : class
     {
+        // ReSharper disable once AnnotationConflictInHierarchy
+        // Reason: This class is more constrained than its base.
         [NotNull]
         public override T Value
         {

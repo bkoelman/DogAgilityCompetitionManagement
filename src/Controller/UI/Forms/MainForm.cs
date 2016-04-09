@@ -187,9 +187,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             networkSetupForm.SessionManager = sessionManager.Component;
         }
 
-        private DialogResult ShowError([NotNull] string message)
+        private void ShowError([NotNull] string message)
         {
-            return MessageBox.Show(this, message, @"Error - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, message, @"Error - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void MainForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)

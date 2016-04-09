@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe
 {
     /// <summary />
+    // Resharper bug "The type parameter T could be declared as covariant" tracked at: https://youtrack.jetbrains.com/issue/RSRP-453088
     public delegate T? GetOptionalValueCallback<T>() where T : struct;
 
     /// <summary />

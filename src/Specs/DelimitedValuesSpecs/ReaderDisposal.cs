@@ -21,8 +21,11 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once UnusedVariable
-            Action action = () => { int dummy = reader.LineNumber; };
+            Action action = () =>
+            {
+                // ReSharper disable once UnusedVariable
+                int dummy = reader.LineNumber;
+            };
 
             // Assert
             action.ShouldThrow<ObjectDisposedException>();
@@ -36,8 +39,11 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once UnusedVariable
-            Action action = () => { string dummy = reader.Line; };
+            Action action = () =>
+            {
+                // ReSharper disable once UnusedVariable
+                string dummy = reader.Line;
+            };
 
             // Assert
             action.ShouldThrow<ObjectDisposedException>();
