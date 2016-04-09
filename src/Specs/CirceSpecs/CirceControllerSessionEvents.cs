@@ -141,16 +141,16 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DeviceAddress.Should().Be(deviceAddress);
-                testRunner.Result.IsInNetwork.Should().Be(getMembership);
-                testRunner.Result.Capabilities.Should().Be(capabilities);
-                testRunner.Result.Roles.Should().Be(roles);
-                testRunner.Result.SignalStrength.Should().Be(signalStrength);
-                testRunner.Result.BatteryStatus.Should().Be(batteryStatus);
-                testRunner.Result.IsAligned.Should().Be(isAligned);
-                testRunner.Result.ClockSynchronization.Should().Be(clockSynchronization);
-                testRunner.Result.HasVersionMismatch.Should().Be(hasVersionMismatch);
+                DeviceStatus deviceStatusNotNull = testRunner.Result.ShouldNotBeNull();
+                deviceStatusNotNull.DeviceAddress.Should().Be(deviceAddress);
+                deviceStatusNotNull.IsInNetwork.Should().Be(getMembership);
+                deviceStatusNotNull.Capabilities.Should().Be(capabilities);
+                deviceStatusNotNull.Roles.Should().Be(roles);
+                deviceStatusNotNull.SignalStrength.Should().Be(signalStrength);
+                deviceStatusNotNull.BatteryStatus.Should().Be(batteryStatus);
+                deviceStatusNotNull.IsAligned.Should().Be(isAligned);
+                deviceStatusNotNull.ClockSynchronization.Should().Be(clockSynchronization);
+                deviceStatusNotNull.HasVersionMismatch.Should().Be(hasVersionMismatch);
             }
         }
 
@@ -197,15 +197,15 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DeviceAddress.Should().Be(deviceAddress);
-                testRunner.Result.IsInNetwork.Should().Be(getMembership);
-                testRunner.Result.Capabilities.Should().Be(capabilities);
-                testRunner.Result.Roles.Should().Be(roles);
-                testRunner.Result.SignalStrength.Should().Be(signalStrength);
-                testRunner.Result.BatteryStatus.Should().Be(batteryStatus);
-                testRunner.Result.IsAligned.Should().Be(isAligned);
-                testRunner.Result.ClockSynchronization.Should().Be(clockSynchronization);
+                DeviceStatus deviceStatusNotNull = testRunner.Result.ShouldNotBeNull();
+                deviceStatusNotNull.DeviceAddress.Should().Be(deviceAddress);
+                deviceStatusNotNull.IsInNetwork.Should().Be(getMembership);
+                deviceStatusNotNull.Capabilities.Should().Be(capabilities);
+                deviceStatusNotNull.Roles.Should().Be(roles);
+                deviceStatusNotNull.SignalStrength.Should().Be(signalStrength);
+                deviceStatusNotNull.BatteryStatus.Should().Be(batteryStatus);
+                deviceStatusNotNull.IsAligned.Should().Be(isAligned);
+                deviceStatusNotNull.ClockSynchronization.Should().Be(clockSynchronization);
             }
         }
 
@@ -275,10 +275,10 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DeviceAddress.Should().Be(deviceAddress);
-                testRunner.Result.InputKeys.Should().Be(inputKeys);
-                testRunner.Result.SensorTime.Should().Be(sensorTime);
+                DeviceAction deviceActionNotNull = testRunner.Result.ShouldNotBeNull();
+                deviceActionNotNull.DeviceAddress.Should().Be(deviceAddress);
+                deviceActionNotNull.InputKeys.Should().Be(inputKeys);
+                deviceActionNotNull.SensorTime.Should().Be(sensorTime);
             }
         }
 
@@ -313,8 +313,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DestinationAddress.Should().Be(deviceAddress);
+                AlertOperation operationNotNull = testRunner.Result.ShouldNotBeNull();
+                operationNotNull.DestinationAddress.Should().Be(deviceAddress);
             }
         }
 
@@ -351,10 +351,10 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DestinationAddress.Should().Be(deviceAddress);
-                testRunner.Result.SetMembership.Should().Be(setMembership);
-                testRunner.Result.Roles.Should().Be(roles);
+                NetworkSetupOperation operationNotNull = testRunner.Result.ShouldNotBeNull();
+                operationNotNull.DestinationAddress.Should().Be(deviceAddress);
+                operationNotNull.SetMembership.Should().Be(setMembership);
+                operationNotNull.Roles.Should().Be(roles);
             }
         }
 
@@ -433,17 +433,17 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 // Assert
                 succeeded.Should().Be(true, "<USB loopback cable must be connected and COM port must be correct.>");
-                testRunner.Result.Should().NotBeNull();
-                testRunner.Result.DestinationAddresses.Should().Equal(destinations);
-                testRunner.Result.CurrentCompetitorNumber.Should().Be(visualizeFieldSet.CurrentCompetitorNumber);
-                testRunner.Result.NextCompetitorNumber.Should().Be(visualizeFieldSet.NextCompetitorNumber);
-                testRunner.Result.StartTimer.Should().Be(visualizeFieldSet.StartPrimaryTimer);
-                testRunner.Result.PrimaryTimerValue.Should().Be(visualizeFieldSet.PrimaryTimerValue);
-                testRunner.Result.SecondaryTimerValue.Should().Be(visualizeFieldSet.SecondaryTimerValue);
-                testRunner.Result.FaultCount.Should().Be(visualizeFieldSet.CurrentFaultCount);
-                testRunner.Result.RefusalCount.Should().Be(visualizeFieldSet.CurrentRefusalCount);
-                testRunner.Result.Eliminated.Should().Be(visualizeFieldSet.CurrentIsEliminated);
-                testRunner.Result.PreviousPlacement.Should().Be(visualizeFieldSet.PreviousPlacement);
+                VisualizeOperation operationNotNull = testRunner.Result.ShouldNotBeNull();
+                operationNotNull.DestinationAddresses.Should().Equal(destinations);
+                operationNotNull.CurrentCompetitorNumber.Should().Be(visualizeFieldSet.CurrentCompetitorNumber);
+                operationNotNull.NextCompetitorNumber.Should().Be(visualizeFieldSet.NextCompetitorNumber);
+                operationNotNull.StartTimer.Should().Be(visualizeFieldSet.StartPrimaryTimer);
+                operationNotNull.PrimaryTimerValue.Should().Be(visualizeFieldSet.PrimaryTimerValue);
+                operationNotNull.SecondaryTimerValue.Should().Be(visualizeFieldSet.SecondaryTimerValue);
+                operationNotNull.FaultCount.Should().Be(visualizeFieldSet.CurrentFaultCount);
+                operationNotNull.RefusalCount.Should().Be(visualizeFieldSet.CurrentRefusalCount);
+                operationNotNull.Eliminated.Should().Be(visualizeFieldSet.CurrentIsEliminated);
+                operationNotNull.PreviousPlacement.Should().Be(visualizeFieldSet.PreviousPlacement);
             }
         }
 

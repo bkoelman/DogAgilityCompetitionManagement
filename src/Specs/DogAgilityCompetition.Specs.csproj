@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="Builders\RecordedTimeBuilder.cs" />
     <Compile Include="Facilities\EventArgsWithNameForRemoteKeyTrackerExtensions.cs" />
+    <Compile Include="Facilities\AssertionsExtensions.cs" />
     <Compile Include="Facilities\TrackerEventListener.cs" />
     <Compile Include="Facilities\RawDeviceKeyExtensions.cs" />
     <Compile Include="Facilities\CirceUsbLoopbackTestRunner.cs" />
