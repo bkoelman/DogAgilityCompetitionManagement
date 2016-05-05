@@ -151,9 +151,9 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 from secondaryScenario in secondaryScenarios
                 from tertiaryScenario in tertiaryScenarios
                 select CreateCombinedScenario(primaryScenario, secondaryScenario, tertiaryScenario)
-                into scenario12
-                where scenario12 != null
-                select scenario12;
+                into combined
+                where combined != null
+                select combined;
         }
 
         [CanBeNull]
