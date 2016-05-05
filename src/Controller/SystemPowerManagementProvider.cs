@@ -31,10 +31,10 @@ namespace DogAgilityCompetition.Controller
         /// </remarks>
         public static void Disable()
         {
-            const NativeMethods.ExecutionState flags =
-                NativeMethods.ExecutionState.Continuous | NativeMethods.ExecutionState.SystemRequired |
-                    NativeMethods.ExecutionState.DisplayRequired;
-            NativeMethods.ExecutionState previousState = NativeMethods.SetThreadExecutionState(flags);
+            const NativeMethods.ExecutionStates flags =
+                NativeMethods.ExecutionStates.Continuous | NativeMethods.ExecutionStates.SystemRequired |
+                    NativeMethods.ExecutionStates.DisplayRequired;
+            NativeMethods.ExecutionStates previousState = NativeMethods.SetThreadExecutionState(flags);
             ThrowWhenFailed(previousState);
         }
 
@@ -43,13 +43,13 @@ namespace DogAgilityCompetition.Controller
         /// </summary>
         public static void Restore()
         {
-            NativeMethods.ExecutionState previousState =
-                NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.Continuous);
+            NativeMethods.ExecutionStates previousState =
+                NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionStates.Continuous);
             ThrowWhenFailed(previousState);
         }
 
         [AssertionMethod]
-        private static void ThrowWhenFailed(NativeMethods.ExecutionState previousState)
+        private static void ThrowWhenFailed(NativeMethods.ExecutionStates previousState)
         {
             if (previousState == 0)
             {
@@ -60,11 +60,11 @@ namespace DogAgilityCompetition.Controller
         private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern ExecutionState SetThreadExecutionState(ExecutionState flags);
+            public static extern ExecutionStates SetThreadExecutionState(ExecutionStates flags);
 
             [Flags]
 #pragma warning disable CA2217 // Do not mark Enum with FlagsAttribute
-            public enum ExecutionState : uint
+            public enum ExecutionStates : uint
 #pragma warning restore CA2217 // Do not mark Enum with FlagsAttribute
             {
                 SystemRequired = 0x00000001,
