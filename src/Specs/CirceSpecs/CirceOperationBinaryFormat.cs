@@ -4,6 +4,7 @@ using System.Text;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -25,7 +26,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -55,7 +56,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Assert
             var expected = new LoginOperation();
 
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -97,7 +98,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             // Assert
             var expected = new LogoutOperation();
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -110,7 +111,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -161,7 +162,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             // Assert
             var expected = new AlertOperation(new WirelessNetworkAddress("ABCDEF"));
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -175,7 +176,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -251,7 +252,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Assert
             var expected = new NetworkSetupOperation(new WirelessNetworkAddress("ABCDEF"), true,
                 DeviceRoles.StartTimer | DeviceRoles.FinishTimer | DeviceRoles.Keypad);
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -270,7 +271,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -364,7 +365,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                         DeviceCapabilities.IntermediateSensor | DeviceCapabilities.FinishSensor
             };
 
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -377,7 +378,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('5'),
@@ -450,7 +451,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             // Assert
             var expected = new KeepAliveOperation(new Version(123, 456, 789), 1);
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -469,7 +470,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('5'),
@@ -622,7 +623,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 IsAligned = true,
                 ClockSynchronization = ClockSynchronizationStatus.RequiresSync
             };
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -639,7 +640,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('5'),
@@ -724,7 +725,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 InputKeys = RawDeviceKeys.Key2OrPassIntermediate | RawDeviceKeys.Key7,
                 SensorTime = TimeSpan.FromMilliseconds(456.75)
             };
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         [Test]
@@ -752,7 +753,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             byte[] buffer = PacketWriter.Write(operation, false);
 
             // Assert
-            buffer.ShouldBeEquivalentTo(new byte[]
+            buffer.Should().BeEquivalentTo(new byte[]
             {
                 2,
                 ByteFor('0'),
@@ -977,7 +978,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 PreviousPlacement = 23
             };
 
-            operation.ShouldBeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
+            operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
         private static byte ByteFor(char ch)

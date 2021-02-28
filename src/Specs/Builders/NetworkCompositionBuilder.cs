@@ -1,7 +1,7 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
-using FluentAssertions;
+using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders

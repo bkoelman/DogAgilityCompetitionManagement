@@ -512,15 +512,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        protected override void OnPaint(PaintEventArgs pe)
+        protected override void OnPaint(PaintEventArgs e)
         {
-            Guard.NotNull(pe, nameof(pe));
-            base.OnPaint(pe);
+            Guard.NotNull(e, nameof(e));
+            base.OnPaint(e);
 
-            PaintShapeShadows(pe.Graphics);
-            PaintShapeFills(pe.Graphics);
-            PaintShapeBorders(pe.Graphics);
-            PaintErrorIcon(pe.Graphics);
+            PaintShapeShadows(e.Graphics);
+            PaintShapeFills(e.Graphics);
+            PaintShapeBorders(e.Graphics);
+            PaintErrorIcon(e.Graphics);
         }
 
         private void PaintShapeShadows([NotNull] Graphics graphics)

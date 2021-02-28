@@ -5,6 +5,7 @@ using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.CirceSpecs

@@ -4,6 +4,7 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Guard = DogAgilityCompetition.Circe.Guard;

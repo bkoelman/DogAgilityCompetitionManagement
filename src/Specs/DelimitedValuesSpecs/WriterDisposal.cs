@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.ShouldThrow<ObjectDisposedException>();
+            action.Should().Throw<ObjectDisposedException>();
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = row.Dispose;
 
             // Assert
-            action.ShouldThrow<ObjectDisposedException>();
+            action.Should().Throw<ObjectDisposedException>();
         }
 
         [Test]

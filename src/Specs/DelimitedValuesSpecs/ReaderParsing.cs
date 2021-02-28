@@ -32,7 +32,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => new DelimitedValuesReader(source);
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
+            action.Should().Throw<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => new DelimitedValuesReader(source);
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
+            action.Should().Throw<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => new DelimitedValuesReader(source);
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Source contains no columns.");
+            action.Should().Throw<DelimitedValuesParseException>().WithMessage("Source contains no columns.");
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Column 'A' occurs multiple times.");
+            action.Should().Throw<DelimitedValuesParseException>().WithMessage("Column 'A' occurs multiple times.");
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => reader.Take(1).ToArray();
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>()
+            action.Should().Throw<DelimitedValuesParseException>()
                 .WithMessage("Text qualifier must be the first non-whitespace character of a cell.");
         }
 
@@ -223,7 +223,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => reader.Take(1).ToArray();
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>()
+            action.Should().Throw<DelimitedValuesParseException>()
                 .WithMessage("Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
         }
 
@@ -350,7 +350,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => reader.SkipWhile(x => true).ToArray();
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>().WithMessage("Missing closing text qualifier.");
+            action.Should().Throw<DelimitedValuesParseException>().WithMessage("Missing closing text qualifier.");
         }
 
         [Test]
@@ -431,7 +431,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => reader.SkipWhile(x => true).ToArray();
 
             // Assert
-            action.ShouldThrow<DelimitedValuesParseException>();
+            action.Should().Throw<DelimitedValuesParseException>();
         }
 
         private sealed class ReaderThatFailsAfterReadingTooMuch : TextReader

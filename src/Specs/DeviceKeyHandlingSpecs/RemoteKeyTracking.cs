@@ -4,6 +4,7 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 

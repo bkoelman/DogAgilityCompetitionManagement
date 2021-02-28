@@ -4,6 +4,7 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
@@ -30,7 +31,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             Action action = () => requirements.ChangeStartFinishMinDelayForSingleSensor(negativeTime);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>();
+            action.Should().Throw<ArgumentOutOfRangeException>();
         }
 
         [Test]
@@ -150,7 +151,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
                 DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>();
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
