@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -15,10 +14,6 @@ namespace DogAgilityCompetition.Circe.Controller
     /// Performs collective clock synchronization on a set of wireless devices. Signals when last succeeded clock
     /// synchronization happened too long ago.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
-        Justification =
-            "Reason for not disposing CancellationTokenSource, see http://blogs.msdn.com/b/pfxteam/archive/2012/03/25/10287435.aspx"
-        )]
     public sealed class ClockSynchronizationMonitor
     {
         [NotNull]

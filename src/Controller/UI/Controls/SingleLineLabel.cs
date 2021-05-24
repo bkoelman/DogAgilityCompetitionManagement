@@ -41,11 +41,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             IntPtr hdc = e.Graphics.GetHdc();
             try
             {
-                using (IDisposable graphics = reflected.WindowsGraphicsFromHdc(hdc))
-                {
-                    nearestColor = reflected.WindowsGraphicsGetNearestColor(graphics,
-                        Enabled ? ForeColor : reflected.ControlDisabledColor);
-                }
+                // The original code uses internal type DeviceContextHdcScope, which is a 'ref struct'.
+                // Because ref structs cannot be boxed, they can't be instantiated through reflection.
+                // https://github.com/dotnet/runtime/issues/1955
+
+                Color inColor = Enabled ? ForeColor : reflected.ControlDisabledColor;
+                Color outColor = ColorTranslator.FromWin32(reflected.InteropGetNearestColor(hdc, ColorTranslator.ToWin32(inColor)));
+
+                nearestColor = outColor.ToArgb() != inColor.ToArgb() ? outColor : inColor;
             }
             finally
             {
@@ -107,10 +110,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             private static readonly MethodInfo LayoutUtilsDeflateRectMethod;
 
             [NotNull]
-            private static readonly MethodInfo WindowsGraphicsFromHdcMethod;
+            private static readonly ConstructorInfo InteropHdcConstructor;
 
             [NotNull]
-            private static readonly MethodInfo WindowsGraphicsGetNearestColorMethod;
+            private static readonly MethodInfo InteropGetNearestColorMethod;
 
             [NotNull]
             private static readonly MethodInfo ControlDisabledColorPropertyGetMethod;
@@ -144,19 +147,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 LayoutUtilsDeflateRectMethod =
                     Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
 
-                Type windowsGraphicsType =
-                    Require(typeof (Label).Assembly.GetType("System.Windows.Forms.Internal.WindowsGraphics", true));
-                WindowsGraphicsFromHdcMethod =
-                    Require(windowsGraphicsType.GetMethod("FromHdc", BindingFlags.Public | BindingFlags.Static));
-                WindowsGraphicsGetNearestColorMethod =
-                    Require(windowsGraphicsType.GetMethod("GetNearestColor", BindingFlags.Public | BindingFlags.Instance));
+                Type hdcType = Require(typeof(Message).Assembly.GetType("Interop+Gdi32+HDC", true));
+                InteropHdcConstructor = Require(hdcType.GetConstructor(new[] { typeof (IntPtr) }));
+
+                Type gdi32Type = Require(typeof (Message).Assembly.GetType("Interop+Gdi32", true));
+                InteropGetNearestColorMethod = Require(gdi32Type.GetMethod("GetNearestColor",
+                    BindingFlags.Public | BindingFlags.Static, null, new[] { hdcType, typeof (int) }, null));
 
                 PropertyInfo controlDisabledColorProperty =
                     Require(typeof (Control).GetProperty("DisabledColor", BindingFlags.NonPublic | BindingFlags.Instance));
                 ControlDisabledColorPropertyGetMethod = Require(controlDisabledColorProperty.GetGetMethod(true));
 
                 ShowToolTipField =
-                    Require(typeof (Label).GetField("showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
+                    Require(typeof (Label).GetField("_showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
 
                 CreateStringFormatMethod =
                     Require(typeof (Label).GetMethod("CreateStringFormat",
@@ -171,7 +174,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                         BindingFlags.NonPublic | BindingFlags.Static));
 
                 ControlEventPaintField =
-                    Require(typeof (Control).GetField("EventPaint", BindingFlags.NonPublic | BindingFlags.Static));
+                    Require(typeof (Control).GetField("s_paintEvent", BindingFlags.NonPublic | BindingFlags.Static));
             }
 
             [NotNull]
@@ -214,15 +217,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return (Rectangle) LayoutUtilsDeflateRectMethod.Invoke(null, new object[] { clientRectangle, padding });
             }
 
-            [NotNull]
-            public IDisposable WindowsGraphicsFromHdc(IntPtr hdc)
+            public int InteropGetNearestColor(IntPtr handle, int color)
             {
-                return (IDisposable) WindowsGraphicsFromHdcMethod.Invoke(null, new object[] { hdc });
-            }
-
-            public Color WindowsGraphicsGetNearestColor([NotNull] IDisposable graphics, Color color)
-            {
-                return (Color) WindowsGraphicsGetNearestColorMethod.Invoke(graphics, new object[] { color });
+                object hdc = InteropHdcConstructor.Invoke(new object[] { handle });
+                return (int) InteropGetNearestColorMethod.Invoke(null, new object[] { hdc, color });
             }
 
             [NotNull]

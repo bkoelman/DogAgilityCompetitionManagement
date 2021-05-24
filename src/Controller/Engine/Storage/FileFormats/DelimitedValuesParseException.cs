@@ -16,7 +16,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         {
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private DelimitedValuesParseException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

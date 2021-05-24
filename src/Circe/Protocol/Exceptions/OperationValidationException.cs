@@ -38,14 +38,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             return $"{operation.GetType().Name} ({operation.Code}): {message}";
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private OperationValidationException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             Operation = (Operation) info.GetValue("Operation", typeof (Operation));
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             Guard.NotNull(info, nameof(info));

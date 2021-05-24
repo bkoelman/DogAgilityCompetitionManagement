@@ -50,7 +50,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             return $"Invalid checksum (stored=0x{stored:X2}, calculated=0x{calculated:X2}).";
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private ChecksumMismatchException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
@@ -58,7 +57,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Calculated = info.GetInt32("Calculated");
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             Guard.NotNull(info, nameof(info));

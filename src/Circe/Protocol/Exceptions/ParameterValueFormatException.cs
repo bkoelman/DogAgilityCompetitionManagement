@@ -32,7 +32,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         {
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private ParameterValueFormatException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

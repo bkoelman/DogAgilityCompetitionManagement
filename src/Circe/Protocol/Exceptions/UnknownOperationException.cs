@@ -31,14 +31,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Code = code;
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private UnknownOperationException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             Code = info.GetInt32("Code");
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             Guard.NotNull(info, nameof(info));

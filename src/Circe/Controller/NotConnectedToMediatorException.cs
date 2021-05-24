@@ -16,7 +16,6 @@ namespace DogAgilityCompetition.Circe.Controller
         {
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private NotConnectedToMediatorException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

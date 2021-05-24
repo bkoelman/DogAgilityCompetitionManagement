@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -21,7 +20,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
     /// This reader is compatible with Microsoft Excel .csv format, although parsing is slightly more strict. See
     /// http://creativyst.com/Doc/Articles/CSV/CSV01.htm#CSVAndExcel
     /// </remarks>
-    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public sealed class DelimitedValuesReader : IEnumerable<IDelimitedValuesReaderRow>, IDisposable
     {
         [NotNull]

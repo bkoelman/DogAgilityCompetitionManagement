@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
@@ -50,7 +49,6 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         }
 
         [Test]
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public void When_disposing_row_multiple_times_it_should_write_the_row_only_once()
         {
             // Arrange

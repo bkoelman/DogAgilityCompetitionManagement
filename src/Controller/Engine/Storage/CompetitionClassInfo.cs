@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
@@ -17,7 +16,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [CanBeNull]
         public string Grade { get; }
 
-        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         [CanBeNull]
         public string Type { get; }
 

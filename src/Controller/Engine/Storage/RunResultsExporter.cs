@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
@@ -33,7 +32,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 ImportExportColumns.Placement
             }.AsReadOnly();
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static void ExportTo([NotNull] string path,
             [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
         {

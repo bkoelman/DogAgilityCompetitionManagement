@@ -47,14 +47,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             return $"Error at position {displayPosition}: {message}{packet.FormatHexBuffer(4)}";
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         protected PacketFormatException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             ErrorOffset = info.GetInt32("ErrorOffset");
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             Guard.NotNull(info, nameof(info));

@@ -9,33 +9,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class DataGridViewProgressBarColumn : DataGridViewTextBoxColumn
     {
-        [CanBeNull]
-        public override DataGridViewCell CellTemplate
-        {
-            get
-            {
-                return base.CellTemplate;
-            }
-            set
-            {
-                if (!(value is DataGridViewProgressBarCell))
-                {
-                    throw new InvalidOperationException(
-                        $"CellTemplate must be set to a {typeof (DataGridViewProgressBarCell).Name} object.");
-                }
-                base.CellTemplate = value;
-            }
-        }
-
         [NotNull]
         private DataGridViewProgressBarCell ProgressBarCell
         {
             get
             {
-                var result = (DataGridViewProgressBarCell) CellTemplate;
+                var result = CellTemplate as DataGridViewProgressBarCell;
                 if (result == null)
                 {
-                    throw new InvalidOperationException("CellTemplate is not set.");
+                    throw new InvalidOperationException("CellTemplate is not properly set.");
                 }
                 return result;
             }

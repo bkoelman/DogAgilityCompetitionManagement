@@ -16,7 +16,6 @@ namespace DogAgilityCompetition.Circe
         {
         }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         private SerialConnectionException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

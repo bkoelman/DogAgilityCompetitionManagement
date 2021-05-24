@@ -76,7 +76,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                     if (originalVersion != activeModel.Value)
                     {
                         // Should never get here.
-                        throw new OptimisticConcurrencyException("Unexpected model update from multiple threads.");
+                        throw new DBConcurrencyException("Unexpected model update from multiple threads.");
                     }
 
                     try

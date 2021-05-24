@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
@@ -15,8 +14,6 @@ namespace DogAgilityCompetition.WinForms
     /// Loads a TrueType font file from an embedded resource and assigns it to a <see cref="Label" />. This circumvents the
     /// need to install the font in Windows first.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
-        Justification = "This class registers itself on the containing Form/Control, which disposes it.")]
     public sealed class TimerFontContainer
     {
         [NotNull]

@@ -1,140 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
-  <Import Project="..\packages\NUnit.3.13.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{01B86F51-F728-4A50-8F60-E404964D0B24}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DogAgilityCompetition.Specs</RootNamespace>
-    <AssemblyName>DogAgilityCompetition.Specs</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="FluentAssertions, Version=5.10.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.10.3\lib\net45\FluentAssertions.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=2020.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.2020.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.13.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.13.1\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\AssemblyVersion.cs">
-      <Link>Properties\AssemblyVersion.cs</Link>
-    </Compile>
-    <Compile Include="Builders\RecordedTimeBuilder.cs" />
-    <Compile Include="Facilities\EventArgsWithNameForRemoteKeyTrackerExtensions.cs" />
-    <Compile Include="Facilities\AssertionsExtensions.cs" />
-    <Compile Include="Facilities\TrackerEventListener.cs" />
-    <Compile Include="Facilities\RawDeviceKeyExtensions.cs" />
-    <Compile Include="Facilities\CirceUsbLoopbackTestRunner.cs" />
-    <Compile Include="CirceSpecs\CirceControllerSessionEvents.cs" />
-    <Compile Include="CirceSpecs\CirceOperationBinaryFormat.cs" />
-    <Compile Include="DeviceKeyHandlingSpecs\KeyScenarios.cs" />
-    <Compile Include="Facilities\CirceUsbLoopbackTestRunner`1.cs" />
-    <Compile Include="Builders\DelimitedValuesReaderBuilder.cs" />
-    <Compile Include="Builders\DelimitedValuesReaderSettingsBuilder.cs" />
-    <Compile Include="Builders\DelimitedValuesWriterBuilder.cs" />
-    <Compile Include="Builders\DelimitedValuesWriterSettingsBuilder.cs" />
-    <Compile Include="Builders\ITestDataBuilder.cs" />
-    <Compile Include="Builders\NetworkCompositionBuilder.cs" />
-    <Compile Include="DelimitedValuesSpecs\ReaderConversions.cs" />
-    <Compile Include="DelimitedValuesSpecs\ReaderDisposal.cs" />
-    <Compile Include="DelimitedValuesSpecs\ReaderParsing.cs" />
-    <Compile Include="DelimitedValuesSpecs\ReaderPositioning.cs" />
-    <Compile Include="DelimitedValuesSpecs\WriterComposition.cs" />
-    <Compile Include="DelimitedValuesSpecs\WriterConversions.cs" />
-    <Compile Include="DelimitedValuesSpecs\WriterDisposal.cs" />
-    <Compile Include="Facilities\FakeSystemLogger.cs" />
-    <Compile Include="Facilities\EventArgsWithName.cs" />
-    <Compile Include="Facilities\OrderExpect.cs" />
-    <Compile Include="Facilities\OrderingScenario.cs" />
-    <Compile Include="NetworkSpecs\NetworkCompositions.cs" />
-    <Compile Include="DeviceKeyHandlingSpecs\NumberEntryFilters.cs" />
-    <Compile Include="DeviceKeyHandlingSpecs\RemoteKeyTracking.cs" />
-    <Compile Include="CirceSpecs\CircePacketBinaryFormat.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RankingSpecs\ComparisonOperators.cs" />
-    <Compile Include="RankingSpecs\RunResultOrdering.cs" />
-    <Compile Include="RankingSpecs\RunResultTotalOrdering.cs" />
+    <ProjectReference Include="..\Controller\DogAgilityCompetition.Controller.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Circe\DogAgilityCompetition.Circe.csproj">
-      <Project>{3b7bd73d-a741-41d1-8316-0877aed6958f}</Project>
-      <Name>DogAgilityCompetition.Circe</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Controller\DogAgilityCompetition.Controller.csproj">
-      <Project>{8279d0d9-849a-40c2-bdf3-20afe0d39ea8}</Project>
-      <Name>DogAgilityCompetition.Controller</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\ResharperCodeContractNullability.2.0.0\analyzers\dotnet\cs\CodeContractNullability.dll" />
-    <Analyzer Include="..\packages\ResharperCodeContractNullability.2.0.0\analyzers\dotnet\cs\MsgPack.dll" />
-  </ItemGroup>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.13.1\build\NUnit.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

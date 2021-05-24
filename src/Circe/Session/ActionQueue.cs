@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,10 +95,6 @@ namespace DogAgilityCompetition.Circe.Session
         /// <summary>
         /// Blocks until an already running action has completed, then cancels all remaining actions in the queue.
         /// </summary>
-        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "workQueue",
-            Justification =
-                "BlockingCollection<T> cannot be disposed as long as consumers exist. Therefore, Dispose is called from ConsumerLoop()."
-            )]
         public void Dispose()
         {
             using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))

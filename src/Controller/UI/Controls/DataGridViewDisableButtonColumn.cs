@@ -9,33 +9,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class DataGridViewDisableButtonColumn : DataGridViewButtonColumn
     {
-        [CanBeNull]
-        public override DataGridViewCell CellTemplate
-        {
-            get
-            {
-                return base.CellTemplate;
-            }
-            set
-            {
-                if (!(value is DataGridViewDisableButtonCell))
-                {
-                    throw new InvalidOperationException(
-                        $"CellTemplate must be set to a {typeof (DataGridViewDisableButtonCell).Name} object.");
-                }
-                base.CellTemplate = value;
-            }
-        }
-
         [NotNull]
         private DataGridViewDisableButtonCell DisableButtonCell
         {
             get
             {
-                var result = (DataGridViewDisableButtonCell) CellTemplate;
+                var result = CellTemplate as DataGridViewDisableButtonCell;
                 if (result == null)
                 {
-                    throw new InvalidOperationException("CellTemplate is not set.");
+                    throw new InvalidOperationException("CellTemplate is not properly set.");
                 }
                 return result;
             }

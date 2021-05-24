@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using DogAgilityCompetition.Circe;
@@ -91,7 +90,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return mergeRunResults;
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         [NotNull]
         private static Dictionary<int, CompetitionRunResult> ImportRunResultsFrom([NotNull] string path)
         {

@@ -1,10 +1,13 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DogAgilityCompetition.Controller.UI.Forms;
 using JetBrains.Annotations;
 using log4net;
+using log4net.Config;
+using log4net.Repository;
 
 namespace DogAgilityCompetition.Controller
 {
@@ -22,6 +25,9 @@ namespace DogAgilityCompetition.Controller
         [STAThread]
         private static void Main()
         {
+            ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("log4net.config"));
+
             Log.Info("Application started.");
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -429,10 +428,6 @@ namespace DogAgilityCompetition.Circe.Mediator
             sendQueue.Add(operation);
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "sendQueue",
-            Justification =
-                "BlockingCollection<T> cannot be disposed as long as consumers exist. Therefore, Dispose is not called from anywhere."
-            )]
         public void Dispose()
         {
             sendQueue.CompleteAdding();

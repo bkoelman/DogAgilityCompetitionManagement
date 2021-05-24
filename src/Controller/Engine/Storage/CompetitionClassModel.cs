@@ -159,7 +159,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
             if (!found)
             {
-                throw new ObjectNotFoundException($"No competitor found with number {runResult.Competitor.Number}");
+                throw new KeyNotFoundException($"No competitor found with number {runResult.Competitor.Number}");
             }
 
             var newResultList = new ReadOnlyCollection<CompetitionRunResult>(newResults);
