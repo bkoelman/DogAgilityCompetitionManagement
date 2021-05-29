@@ -95,30 +95,28 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             DateTime currentTimeUtc = SystemContext.UtcNow();
             var imported = new Dictionary<int, CompetitionRunResult>();
 
-            using (var textReader = new StreamReader(path))
+            using var textReader = new StreamReader(path);
+
+            var settings = new DelimitedValuesReaderSettings
             {
-                var settings = new DelimitedValuesReaderSettings
-                {
-                    Culture = Settings.Default.ImportExportCulture
-                };
+                Culture = Settings.Default.ImportExportCulture
+            };
 
-                using (var valuesReader = new DelimitedValuesReader(textReader, settings))
-                {
-                    AssertRequiredColumnsExist(valuesReader);
-                    bool hasOptionalColumns = ContainsOptionalColumnNames(valuesReader);
+            using var valuesReader = new DelimitedValuesReader(textReader, settings);
 
-                    foreach (IDelimitedValuesReaderRow row in valuesReader)
-                    {
-                        try
-                        {
-                            CompetitionRunResult runResult = GetRunResultFrom(row, hasOptionalColumns, currentTimeUtc);
-                            imported[runResult.Competitor.Number] = runResult;
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception($"Failed to read import file at row {valuesReader.LineNumber}: {ex.Message}", ex);
-                        }
-                    }
+            AssertRequiredColumnsExist(valuesReader);
+            bool hasOptionalColumns = ContainsOptionalColumnNames(valuesReader);
+
+            foreach (IDelimitedValuesReaderRow row in valuesReader)
+            {
+                try
+                {
+                    CompetitionRunResult runResult = GetRunResultFrom(row, hasOptionalColumns, currentTimeUtc);
+                    imported[runResult.Competitor.Number] = runResult;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Failed to read import file at row {valuesReader.LineNumber}: {ex.Message}", ex);
                 }
             }
 

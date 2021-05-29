@@ -65,10 +65,8 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             Guard.NotNull(visualizer, nameof(visualizer));
             Guard.NotNull(change, nameof(change));
 
-            using (var collector = new VisualizationUpdateCollector(visualizer))
-            {
-                collector.Include(change);
-            }
+            using var collector = new VisualizationUpdateCollector(visualizer);
+            collector.Include(change);
         }
     }
 }

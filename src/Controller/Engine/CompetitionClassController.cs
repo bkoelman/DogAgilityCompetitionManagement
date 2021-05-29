@@ -71,20 +71,19 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 bool result;
 
-                using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+                lock (stateLock)
                 {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                    lockTracker.Acquired();
 
-                        NetworkHealthReport networkHealth = networkHealthNeededCallback();
-                        bool inStateAfterSetupCompleted = classState != CompetitionClassState.Offline && classState != CompetitionClassState.SetupCompleted;
-                        bool isRunInProgress = inStateAfterSetupCompleted || networkHealth.RunComposition != null;
-                        bool isNetworkCompliant = !networkHealth.HasErrors;
-                        bool hasCompetitors = CacheManager.DefaultInstance.ActiveModel.Results.Any();
+                    NetworkHealthReport networkHealth = networkHealthNeededCallback();
+                    bool inStateAfterSetupCompleted = classState != CompetitionClassState.Offline && classState != CompetitionClassState.SetupCompleted;
+                    bool isRunInProgress = inStateAfterSetupCompleted || networkHealth.RunComposition != null;
+                    bool isNetworkCompliant = !networkHealth.HasErrors;
+                    bool hasCompetitors = CacheManager.DefaultInstance.ActiveModel.Results.Any();
 
-                        result = !isRunInProgress && isNetworkCompliant && hasCompetitors;
-                    }
+                    result = !isRunInProgress && isNetworkCompliant && hasCompetitors;
                 }
 
                 return result;
@@ -121,23 +120,22 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
+                using var collector = new VisualizationUpdateCollector(visualizer);
+
+                runData.HideExistingRunResultIfAny(collector);
+
+                collector.Include(new EliminationUpdate(e.IsEliminated));
+
+                if (e.IsEliminated)
                 {
-                    runData.HideExistingRunResultIfAny(collector);
-
-                    collector.Include(new EliminationUpdate(e.IsEliminated));
-
-                    if (e.IsEliminated)
+                    if (modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem != null)
                     {
-                        if (modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem != null)
-                        {
-                            collector.Include(new StartAnimation(modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem));
-                        }
+                        collector.Include(new StartAnimation(modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem));
+                    }
 
-                        if (modelSnapshot.Alerts.Eliminated.Sound.EffectivePath != null)
-                        {
-                            collector.Include(new PlaySound(modelSnapshot.Alerts.Eliminated.Sound.EffectivePath));
-                        }
+                    if (modelSnapshot.Alerts.Eliminated.Sound.EffectivePath != null)
+                    {
+                        collector.Include(new PlaySound(modelSnapshot.Alerts.Eliminated.Sound.EffectivePath));
                     }
                 }
             });
@@ -147,12 +145,11 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    runData.HideExistingRunResultIfAny(collector);
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                    collector.Include(new RefusalCountUpdate(e.Argument));
-                }
+                runData.HideExistingRunResultIfAny(collector);
+
+                collector.Include(new RefusalCountUpdate(e.Argument));
             });
         }
 
@@ -218,16 +215,15 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 if (classState != CompetitionClassState.Offline)
                 {
-                    using (var collector = new VisualizationUpdateCollector(visualizer))
-                    {
-                        IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
-                        collector.Include(new RankingsUpdate(rankings));
+                    using var collector = new VisualizationUpdateCollector(visualizer);
 
-                        if (newRunVersion.Competitor.Number == modelSnapshot.LastCompletedCompetitorNumber)
-                        {
-                            CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
-                            collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
-                        }
+                    IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
+                    collector.Include(new RankingsUpdate(rankings));
+
+                    if (newRunVersion.Competitor.Number == modelSnapshot.LastCompletedCompetitorNumber)
+                    {
+                        CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
+                        collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
                     }
                 }
             });
@@ -254,20 +250,19 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 SetState(CompetitionClassState.SetupCompleted);
 
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    collector.Include(VisualizationChangeFactory.ClearAll());
-                    collector.Include(new ClassInfoUpdate(modelSnapshot.ClassInfo));
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                    UpdateCurrentCompetitorVisualization(collector);
-                    UpdateNextCompetitorVisualization(collector);
+                collector.Include(VisualizationChangeFactory.ClearAll());
+                collector.Include(new ClassInfoUpdate(modelSnapshot.ClassInfo));
 
-                    CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
-                    collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
+                UpdateCurrentCompetitorVisualization(collector);
+                UpdateNextCompetitorVisualization(collector);
 
-                    IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
-                    collector.Include(new RankingsUpdate(rankings));
-                }
+                CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
+                collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
+
+                IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
+                collector.Include(new RankingsUpdate(rankings));
             });
         }
 
@@ -312,44 +307,43 @@ namespace DogAgilityCompetition.Controller.Engine
 
             ExecuteExclusiveIfStateIn(statesAllowed, () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
+                using var collector = new VisualizationUpdateCollector(visualizer);
+
+                if (competitorNumber != null)
                 {
-                    if (competitorNumber != null)
+                    if (isCurrentCompetitor)
                     {
-                        if (isCurrentCompetitor)
+                        if (modelSnapshot.Results.Any(r => r.Competitor.Number == competitorNumber.Value))
                         {
-                            if (modelSnapshot.Results.Any(r => r.Competitor.Number == competitorNumber.Value))
+                            currentCompetitorNumber = competitorNumber.Value;
+
+                            if (nextCompetitorNumberTyped == null || nextCompetitorNumberTyped.Value == currentCompetitorNumber.Value)
                             {
-                                currentCompetitorNumber = competitorNumber.Value;
+                                nextCompetitorNumberTyped = null;
+                                nextCompetitorNumberGenerated = modelSnapshot.GetBestNextCompetitorNumberOrNull(currentCompetitorNumber);
 
-                                if (nextCompetitorNumberTyped == null || nextCompetitorNumberTyped.Value == currentCompetitorNumber.Value)
-                                {
-                                    nextCompetitorNumberTyped = null;
-                                    nextCompetitorNumberGenerated = modelSnapshot.GetBestNextCompetitorNumberOrNull(currentCompetitorNumber);
-
-                                    UpdateNextCompetitorVisualization(collector);
-                                }
-                            }
-
-                            UpdateCurrentCompetitorVisualization(collector);
-
-                            if (classState == CompetitionClassState.ReadyToStart)
-                            {
-                                ClearCurrentRunOrShowExistingRun(collector);
+                                UpdateNextCompetitorVisualization(collector);
                             }
                         }
-                        else if (modelSnapshot.Results.Any(r =>
-                            r.Competitor.Number == competitorNumber.Value &&
-                            (currentCompetitorNumber == null || r.Competitor.Number != currentCompetitorNumber.Value)))
-                        {
-                            nextCompetitorNumberTyped = competitorNumber.Value;
-                        }
 
-                        UpdateNextCompetitorVisualization(collector);
+                        UpdateCurrentCompetitorVisualization(collector);
+
+                        if (classState == CompetitionClassState.ReadyToStart)
+                        {
+                            ClearCurrentRunOrShowExistingRun(collector);
+                        }
+                    }
+                    else if (modelSnapshot.Results.Any(r =>
+                        r.Competitor.Number == competitorNumber.Value &&
+                        (currentCompetitorNumber == null || r.Competitor.Number != currentCompetitorNumber.Value)))
+                    {
+                        nextCompetitorNumberTyped = competitorNumber.Value;
                     }
 
-                    collector.Include(VisualizationChangeFactory.CompetitorNumberBlinkOff(isCurrentCompetitor));
+                    UpdateNextCompetitorVisualization(collector);
                 }
+
+                collector.Include(VisualizationChangeFactory.CompetitorNumberBlinkOff(isCurrentCompetitor));
             });
         }
 
@@ -465,12 +459,11 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 runData.EliminationTracker.StartMonitorCourseTime(modelSnapshot.ClassInfo.MaximumCourseTime);
 
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    runData.HideExistingRunResultIfAny(collector);
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                    collector.Include(new StartPrimaryTimer());
-                }
+                runData.HideExistingRunResultIfAny(collector);
+
+                collector.Include(new StartPrimaryTimer());
             });
         }
 
@@ -532,19 +525,18 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.StartPassed, CompetitionClassState.Intermediate3Passed), () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                    runData.Timings = timingsNotNull.ChangeFinishTime(passageTime);
-                    SetState(CompetitionClassState.FinishPassed);
+                CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
 
-                    TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
-                    Log.Info($"Passed Finish at {elapsed}.");
+                runData.Timings = timingsNotNull.ChangeFinishTime(passageTime);
+                SetState(CompetitionClassState.FinishPassed);
 
-                    runData.EliminationTracker.StopMonitorCourseTime();
-                    collector.Include(PrimaryTimeStopAndSet.FromTimeSpanWithAccuracy(elapsed));
-                }
+                TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
+                Log.Info($"Passed Finish at {elapsed}.");
+
+                runData.EliminationTracker.StopMonitorCourseTime();
+                collector.Include(PrimaryTimeStopAndSet.FromTimeSpanWithAccuracy(elapsed));
             });
         }
 
@@ -590,27 +582,26 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.SetupCompleted, CompetitionClassState.RunCompleted), () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    switch (classState)
-                    {
-                        case CompetitionClassState.SetupCompleted:
-                            PrepareForRun(collector, true);
-                            break;
-                        case CompetitionClassState.ReadyToStart:
-                            StartClockSynchronization(collector);
-                            break;
-                        case CompetitionClassState.RunCompleted:
-                            PrepareForRun(collector, false);
-                            break;
-                        default:
-                            if (runData.EliminationTracker.IsEliminated || classState == CompetitionClassState.FinishPassed)
-                            {
-                                CompleteActiveRun(collector);
-                            }
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                            break;
-                    }
+                switch (classState)
+                {
+                    case CompetitionClassState.SetupCompleted:
+                        PrepareForRun(collector, true);
+                        break;
+                    case CompetitionClassState.ReadyToStart:
+                        StartClockSynchronization(collector);
+                        break;
+                    case CompetitionClassState.RunCompleted:
+                        PrepareForRun(collector, false);
+                        break;
+                    default:
+                        if (runData.EliminationTracker.IsEliminated || classState == CompetitionClassState.FinishPassed)
+                        {
+                            CompleteActiveRun(collector);
+                        }
+
+                        break;
                 }
             });
         }
@@ -835,23 +826,22 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.WaitingForSync, () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
+                using var collector = new VisualizationUpdateCollector(visualizer);
+
+                if (e.Result == ClockSynchronizationResult.Succeeded)
                 {
-                    if (e.Result == ClockSynchronizationResult.Succeeded)
-                    {
-                        collector.Include(new ClockSynchronizationUpdate(ClockSynchronizationMode.Normal));
+                    collector.Include(new ClockSynchronizationUpdate(ClockSynchronizationMode.Normal));
 
-                        if (modelSnapshot.Alerts.ReadyToStart.Sound.EffectivePath != null)
-                        {
-                            collector.Include(new PlaySound(modelSnapshot.Alerts.ReadyToStart.Sound.EffectivePath));
-                        }
-
-                        ClearCurrentRunOrShowExistingRun(collector);
-                    }
-                    else
+                    if (modelSnapshot.Alerts.ReadyToStart.Sound.EffectivePath != null)
                     {
-                        GoOffline(collector);
+                        collector.Include(new PlaySound(modelSnapshot.Alerts.ReadyToStart.Sound.EffectivePath));
                     }
+
+                    ClearCurrentRunOrShowExistingRun(collector);
+                }
+                else
+                {
+                    GoOffline(collector);
                 }
             });
         }
@@ -883,12 +873,11 @@ namespace DogAgilityCompetition.Controller.Engine
                     runData.FaultCount = faultCount;
                 }
 
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    runData.HideExistingRunResultIfAny(collector);
+                using var collector = new VisualizationUpdateCollector(visualizer);
 
-                    collector.Include(new FaultCountUpdate(runData.FaultCount));
-                }
+                runData.HideExistingRunResultIfAny(collector);
+
+                collector.Include(new FaultCountUpdate(runData.FaultCount));
             });
         }
 
@@ -904,10 +893,8 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.ReadyToStart, CompetitionClassState.FinishPassed), () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    ClearCurrentRunOrShowExistingRun(collector);
-                }
+                using var collector = new VisualizationUpdateCollector(visualizer);
+                ClearCurrentRunOrShowExistingRun(collector);
             });
         }
 
@@ -917,10 +904,8 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 if (modelSnapshot.Alerts.CustomItemA.Sound.EffectivePath != null)
                 {
-                    using (var collector = new VisualizationUpdateCollector(visualizer))
-                    {
-                        collector.Include(new PlaySound(modelSnapshot.Alerts.CustomItemA.Sound.EffectivePath));
-                    }
+                    using var collector = new VisualizationUpdateCollector(visualizer);
+                    collector.Include(new PlaySound(modelSnapshot.Alerts.CustomItemA.Sound.EffectivePath));
                 }
             });
         }
@@ -929,10 +914,8 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.SetupCompleted, CompetitionClassState.RunCompleted), () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    collector.Include(PlaySound.Mute);
-                }
+                using var collector = new VisualizationUpdateCollector(visualizer);
+                collector.Include(PlaySound.Mute);
             });
         }
 
@@ -942,10 +925,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
-                using (var collector = new VisualizationUpdateCollector(visualizer))
-                {
-                    GoOffline(collector);
-                }
+                using var collector = new VisualizationUpdateCollector(visualizer);
+                GoOffline(collector);
             });
         }
 
@@ -994,21 +975,20 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private void ExecuteExclusiveIfStateIn([NotNull] ICollection<CompetitionClassState> statesAllowed, [NotNull] Action action)
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                    if (statesAllowed.Contains(classState))
-                    {
-                        action();
-                    }
-                    else
-                    {
-                        string statesList = string.Join(", ", statesAllowed.Select(s => s.ToString()));
-                        Log.Debug($"Discarding operation, because current state {classState} is not in allowed set ({statesList}).");
-                    }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                if (statesAllowed.Contains(classState))
+                {
+                    action();
+                }
+                else
+                {
+                    string statesList = string.Join(", ", statesAllowed.Select(s => s.ToString()));
+                    Log.Debug($"Discarding operation, because current state {classState} is not in allowed set ({statesList}).");
                 }
             }
         }

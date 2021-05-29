@@ -194,18 +194,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             // Bug workaround: For some unknown reason the FixedSingle border style of Panels is not rendered
             // when using Panel.DrawToBitmap. So we draw them ourselves.
-            using (Graphics graphics = Graphics.FromImage(controlsBitmap))
-            {
-                foreach (RunHistoryLine runHistoryLine in innerPanel.Controls.OfType<RunHistoryLine>())
-                {
-                    int offsetY = runHistoryLine.Location.Y;
-                    int offsetX = runHistoryLine.Location.X;
+            using Graphics graphics = Graphics.FromImage(controlsBitmap);
 
-                    foreach (Panel panel in runHistoryLine.Controls.OfType<Panel>())
-                    {
-                        graphics.DrawRectangle(SystemPens.ControlDarkDark, panel.Location.X + offsetX, panel.Location.Y + offsetY, panel.ClientSize.Width + 1,
-                            panel.ClientSize.Height);
-                    }
+            foreach (RunHistoryLine runHistoryLine in innerPanel.Controls.OfType<RunHistoryLine>())
+            {
+                int offsetY = runHistoryLine.Location.Y;
+                int offsetX = runHistoryLine.Location.X;
+
+                foreach (Panel panel in runHistoryLine.Controls.OfType<Panel>())
+                {
+                    graphics.DrawRectangle(SystemPens.ControlDarkDark, panel.Location.X + offsetX, panel.Location.Y + offsetY, panel.ClientSize.Width + 1,
+                        panel.ClientSize.Height);
                 }
             }
         }

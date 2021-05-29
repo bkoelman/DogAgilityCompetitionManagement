@@ -63,30 +63,29 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             Guard.NotNull(replacementVersion, nameof(replacementVersion));
             Guard.NotNull(originalVersion, nameof(originalVersion));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (originalVersion != activeModel.Value)
                 {
-                    lockTracker.Acquired();
-
-                    if (originalVersion != activeModel.Value)
-                    {
-                        // Should never get here.
-                        throw new DBConcurrencyException("Unexpected model update from multiple threads.");
-                    }
-
-                    try
-                    {
-                        serializer.Save(replacementVersion);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error("Failed to save in-memory model to disk.", ex);
-                    }
-
-                    activeModel.Value = replacementVersion;
-                    return replacementVersion;
+                    // Should never get here.
+                    throw new DBConcurrencyException("Unexpected model update from multiple threads.");
                 }
+
+                try
+                {
+                    serializer.Save(replacementVersion);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Failed to save in-memory model to disk.", ex);
+                }
+
+                activeModel.Value = replacementVersion;
+                return replacementVersion;
             }
         }
     }

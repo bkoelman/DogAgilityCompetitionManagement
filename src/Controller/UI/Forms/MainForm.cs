@@ -222,22 +222,21 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void SetupClassButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new ClassSetupForm())
+            using var form = new ClassSetupForm();
+
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    // @formatter:keep_existing_linebreaks true
+                // @formatter:keep_existing_linebreaks true
 
-                    Requirements = Requirements
-                        .ChangeIntermediateTimerCount(CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
-                        .ChangeStartFinishMinDelayForSingleSensor(CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
+                Requirements = Requirements
+                    .ChangeIntermediateTimerCount(CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
+                    .ChangeStartFinishMinDelayForSingleSensor(CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
 
-                    // @formatter:keep_existing_linebreaks restore
+                // @formatter:keep_existing_linebreaks restore
 
-                    healthMonitor.ForceChanged();
+                healthMonitor.ForceChanged();
 
-                    ApplyModelChangesToDisplayForms();
-                }
+                ApplyModelChangesToDisplayForms();
             }
         }
 
@@ -267,23 +266,21 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void ResultsButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new ClassResultsForm())
+            using var form = new ClassResultsForm();
+
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    ApplyModelChangesToDisplayForms();
-                }
+                ApplyModelChangesToDisplayForms();
             }
         }
 
         private void CustomDisplayButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new CustomDisplaySetupForm())
+            using var form = new CustomDisplaySetupForm();
+
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    customDisplayForm.ReloadConfiguration();
-                }
+                customDisplayForm.ReloadConfiguration();
             }
         }
 

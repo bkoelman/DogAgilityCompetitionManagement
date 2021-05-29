@@ -83,14 +83,12 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             var lines = new List<string>();
 
-            using (var reader = new StringReader(text))
-            {
-                string nextLine;
+            using var reader = new StringReader(text);
+            string nextLine;
 
-                while ((nextLine = reader.ReadLine()) != null)
-                {
-                    lines.Add(nextLine);
-                }
+            while ((nextLine = reader.ReadLine()) != null)
+            {
+                lines.Add(nextLine);
             }
 
             return lines;

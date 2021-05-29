@@ -36,16 +36,15 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
-            using (var reader = XmlReader.Create(path, new XmlReaderSettings
+            using var reader = XmlReader.Create(path, new XmlReaderSettings
             {
                 CloseInput = true
-            }))
-            {
-                var serializer = new DataContractSerializer(typeof(NetworkConfigurationXml));
+            });
 
-                var configuration = (NetworkConfigurationXml)serializer.ReadObject(reader);
-                return new NetworkConfigurationFile(path, configuration);
-            }
+            var serializer = new DataContractSerializer(typeof(NetworkConfigurationXml));
+
+            var configuration = (NetworkConfigurationXml)serializer.ReadObject(reader);
+            return new NetworkConfigurationFile(path, configuration);
         }
 
         public void SaveAs([NotNull] string path)

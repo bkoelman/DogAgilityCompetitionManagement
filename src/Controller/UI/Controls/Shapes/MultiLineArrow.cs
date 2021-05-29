@@ -30,37 +30,31 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var path = new GraphicsPath())
+            using var path = new GraphicsPath();
+
+            using var arrowPen = new Pen(Brushes.Gray, 6)
             {
-                using (var arrowPen = new Pen(Brushes.Gray, 6)
-                {
-                    EndCap = LineCap.ArrowAnchor
-                })
-                {
-                    path.AddLines(shadowPoints);
-                    graphics.DrawPath(arrowPen, path);
-                }
-            }
+                EndCap = LineCap.ArrowAnchor
+            };
+
+            path.AddLines(shadowPoints);
+            graphics.DrawPath(arrowPen, path);
         }
 
         public override void DrawFill(Graphics graphics)
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var path = new GraphicsPath())
+            using var path = new GraphicsPath();
+            using Brush fillBrush = new SolidBrush(GetColorForState());
+
+            using var arrowPen = new Pen(fillBrush, 6)
             {
-                using (Brush fillBrush = new SolidBrush(GetColorForState()))
-                {
-                    using (var arrowPen = new Pen(fillBrush, 6)
-                    {
-                        EndCap = LineCap.ArrowAnchor
-                    })
-                    {
-                        path.AddLines(arrowPoints);
-                        graphics.DrawPath(arrowPen, path);
-                    }
-                }
-            }
+                EndCap = LineCap.ArrowAnchor
+            };
+
+            path.AddLines(arrowPoints);
+            graphics.DrawPath(arrowPen, path);
         }
 
         private Color GetColorForState()

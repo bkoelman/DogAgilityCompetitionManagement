@@ -115,10 +115,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [NotNull]
         private static Icon GetIconFromErrorProvider()
         {
-            using (var provider = new ErrorProvider())
-            {
-                return (Icon)provider.Icon.Clone();
-            }
+            using var provider = new ErrorProvider();
+            return (Icon)provider.Icon.Clone();
         }
 
         protected override void OnPaint(PaintEventArgs e)

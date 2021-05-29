@@ -121,14 +121,13 @@ namespace DogAgilityCompetition.Circe.Controller
                 disposeRequestedWaitHandle.Dispose();
                 reconnectLoopTerminatedWaitHandle.Dispose();
 
-                using (var lockTracker = new LockTracker(Log, "Dispose (post)"))
-                {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(Log, "Dispose (post)");
 
-                        hasBeenDisposed = true;
-                    }
+                lock (stateLock)
+                {
+                    lockTracker.Acquired();
+
+                    hasBeenDisposed = true;
                 }
             }
             else

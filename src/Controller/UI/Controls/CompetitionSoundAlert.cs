@@ -74,17 +74,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void BrowseForSound()
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.Title = "Select sound file";
-                dialog.Filter = "Wave files (*.wav)|*.wav|All files (*.*)|*.*";
-                dialog.FileName = pathTextBox.Text;
+                Title = "Select sound file",
+                Filter = "Wave files (*.wav)|*.wav|All files (*.*)|*.*",
+                FileName = pathTextBox.Text
+            };
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    pathTextBox.Text = dialog.FileName;
-                    ValidateChildren();
-                }
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                pathTextBox.Text = dialog.FileName;
+                ValidateChildren();
             }
         }
     }

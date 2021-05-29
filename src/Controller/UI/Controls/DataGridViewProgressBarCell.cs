@@ -80,10 +80,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             if ((paintParts & DataGridViewPaintParts.Background) == DataGridViewPaintParts.Background)
             {
-                using (var backBrush = new SolidBrush(backColor))
-                {
-                    graphics.FillRectangle(backBrush, paintRect);
-                }
+                using var backBrush = new SolidBrush(backColor);
+                graphics.FillRectangle(backBrush, paintRect);
             }
 
             paintRect.Offset(cellStyle.Padding.Right, cellStyle.Padding.Top);
@@ -97,10 +95,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 var barBounds = new Rectangle(paintRect.Left + 1, paintRect.Top + 1, paintRect.Width - 1, paintRect.Height - 1);
                 barBounds.Width = (int)Math.Round(barBounds.Width * rate);
 
-                using (var fillBrush = new SolidBrush(rate <= 0.25 ? RedColor : rate <= 0.5 ? YellowColor : GreenColor))
-                {
-                    graphics.FillRectangle(fillBrush, barBounds);
-                }
+                using var fillBrush = new SolidBrush(rate <= 0.25 ? RedColor : rate <= 0.5 ? YellowColor : GreenColor);
+                graphics.FillRectangle(fillBrush, barBounds);
             }
 
             if (DataGridView.CurrentCellAddress.X == ColumnIndex && DataGridView.CurrentCellAddress.Y == RowIndex &&

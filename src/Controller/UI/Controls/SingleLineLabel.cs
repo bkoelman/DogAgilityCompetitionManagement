@@ -71,19 +71,16 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             if (UseCompatibleTextRendering)
             {
-                using (StringFormat format = reflected.CreateStringFormat())
+                using StringFormat format = reflected.CreateStringFormat();
+
+                if (Enabled)
                 {
-                    if (Enabled)
-                    {
-                        using (Brush brush = new SolidBrush(nearestColor))
-                        {
-                            e.Graphics.DrawString(Text, Font, brush, r, format);
-                        }
-                    }
-                    else
-                    {
-                        ControlPaint.DrawStringDisabled(e.Graphics, Text, Font, nearestColor, r, format);
-                    }
+                    using Brush brush = new SolidBrush(nearestColor);
+                    e.Graphics.DrawString(Text, Font, brush, r, format);
+                }
+                else
+                {
+                    ControlPaint.DrawStringDisabled(e.Graphics, Text, Font, nearestColor, r, format);
                 }
             }
             else

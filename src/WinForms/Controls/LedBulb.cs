@@ -90,17 +90,14 @@ namespace DogAgilityCompetition.WinForms.Controls
             Guard.NotNull(e, nameof(e));
 
             // Create an off-screen graphics object for double buffering.
-            using (var offScreenBmp = new Bitmap(ClientRectangle.Width, ClientRectangle.Height))
-            {
-                using (Graphics g = Graphics.FromImage(offScreenBmp))
-                {
-                    g.SmoothingMode = SmoothingMode.HighQuality;
-                    // Draw the control.
-                    DrawControl(g, On);
-                    // Draw the image to the screen.
-                    e.Graphics.DrawImageUnscaled(offScreenBmp, 0, 0);
-                }
-            }
+            using var offScreenBmp = new Bitmap(ClientRectangle.Width, ClientRectangle.Height);
+            using Graphics g = Graphics.FromImage(offScreenBmp);
+
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            // Draw the control.
+            DrawControl(g, On);
+            // Draw the image to the screen.
+            e.Graphics.DrawImageUnscaled(offScreenBmp, 0, 0);
         }
 
         /// <summary>
@@ -170,10 +167,8 @@ namespace DogAgilityCompetition.WinForms.Controls
 
             if (On)
             {
-                using (var borderPen = new Pen(Color.FromArgb(85, Color.Black), 1F))
-                {
-                    g.DrawEllipse(borderPen, rectangle);
-                }
+                using var borderPen = new Pen(Color.FromArgb(85, Color.Black), 1F);
+                g.DrawEllipse(borderPen, rectangle);
             }
         }
 

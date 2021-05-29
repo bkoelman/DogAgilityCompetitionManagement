@@ -107,11 +107,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                 if (!float.IsInfinity(newSize))
                 {
-                    using (var drawFont = new Font(font.FontFamily, newSize, font.Style))
-                    {
-                        extent = graphics.MeasureString(innerText, drawFont);
-                        drawPointCache = CalculateDrawPoint(extent, heightRatio, widthRatio);
-                    }
+                    using var drawFont = new Font(font.FontFamily, newSize, font.Style);
+                    extent = graphics.MeasureString(innerText, drawFont);
+                    drawPointCache = CalculateDrawPoint(extent, heightRatio, widthRatio);
                 }
 
                 sizeCache = newSize;
@@ -167,13 +165,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 Font currentFont = Font;
 
-                using (var drawFont = new Font(currentFont.FontFamily, sizeCache.Value, currentFont.Style))
-                {
-                    using (var brush = new SolidBrush(ForeColor))
-                    {
-                        graphics.DrawString(innerText, drawFont, brush, drawPointCache.Value);
-                    }
-                }
+                using var drawFont = new Font(currentFont.FontFamily, sizeCache.Value, currentFont.Style);
+                using var brush = new SolidBrush(ForeColor);
+
+                graphics.DrawString(innerText, drawFont, brush, drawPointCache.Value);
             }
         }
 

@@ -33,21 +33,20 @@ namespace DogAgilityCompetition.DeviceConfigurer
         {
             Guard.NotNull(callback, nameof(callback));
 
-            using (var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod())))
+            using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()));
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (typeof(TPhase) == currentPhase.GetType())
                 {
-                    lockTracker.Acquired();
+                    AssignmentPhase newPhase = callback((TPhase)currentPhase);
 
-                    if (typeof(TPhase) == currentPhase.GetType())
+                    if (newPhase != null)
                     {
-                        AssignmentPhase newPhase = callback((TPhase)currentPhase);
-
-                        if (newPhase != null)
-                        {
-                            currentPhase = newPhase;
-                            return true;
-                        }
+                        currentPhase = newPhase;
+                        return true;
                     }
                 }
             }
@@ -68,19 +67,18 @@ namespace DogAgilityCompetition.DeviceConfigurer
         {
             while (true)
             {
-                using (var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod())))
+                using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()));
+
+                lock (stateLock)
                 {
-                    lock (stateLock)
+                    lockTracker.Acquired();
+
+                    if (typeof(TPhase) == currentPhase.GetType())
                     {
-                        lockTracker.Acquired();
-
-                        if (typeof(TPhase) == currentPhase.GetType())
-                        {
-                            return (TPhase)currentPhase;
-                        }
-
-                        Thread.Sleep(250);
+                        return (TPhase)currentPhase;
                     }
+
+                    Thread.Sleep(250);
                 }
             }
         }

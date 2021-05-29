@@ -41,14 +41,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var filter = new NumberEntryFilter();
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyCompetitorSelecting(true);
-            }
+            filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyCompetitorSelecting(true);
         }
 
         [Test]
@@ -59,13 +58,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -76,13 +74,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(OtherRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -94,14 +91,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(false, 7);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(false, 7);
         }
 
         #endregion
@@ -116,14 +112,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
         }
 
         [Test]
@@ -135,13 +130,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -154,14 +148,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(false, 4);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(false, 4);
         }
 
         [Test]
@@ -171,13 +164,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var filter = new NumberEntryFilter();
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -188,14 +180,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.PassStart, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.PassStart, OneMinute);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.PassStart, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.PassStart, OneMinute);
         }
 
         [Test]
@@ -206,14 +197,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(OtherRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.ResetRun, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.ResetRun, NullTime);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.ResetRun, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.ResetRun, NullTime);
         }
 
         [Test]
@@ -223,14 +213,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var filter = new NumberEntryFilter();
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Ready, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Ready, OneMinute);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Ready, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Ready, OneMinute);
         }
 
         [Test]
@@ -241,14 +230,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 2);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 2);
         }
 
         [Test]
@@ -260,13 +248,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -279,14 +266,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
         }
 
         [Test]
@@ -296,14 +282,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var filter = new NumberEntryFilter();
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
         }
 
         [Test]
@@ -314,14 +299,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(OtherRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
         }
 
         #endregion
@@ -335,18 +319,17 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
-                filter.HandleKeyDown(OtherRemoteControl, RemoteKey.Key8OrDecreaseFaults, NullTime);
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key9OrIncreaseFaults, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(3);
-                listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
-                listener.EventsCollected[1].ShouldBeNotifyDigitReceived(true, 78);
-                listener.EventsCollected[2].ShouldBeNotifyDigitReceived(true, 789);
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key7, NullTime);
+            filter.HandleKeyDown(OtherRemoteControl, RemoteKey.Key8OrDecreaseFaults, NullTime);
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key9OrIncreaseFaults, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(3);
+            listener.EventsCollected[0].ShouldBeNotifyDigitReceived(true, 7);
+            listener.EventsCollected[1].ShouldBeNotifyDigitReceived(true, 78);
+            listener.EventsCollected[2].ShouldBeNotifyDigitReceived(true, 789);
         }
 
         [Test]
@@ -361,13 +344,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key0OrMuteSound, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key0OrMuteSound, NullTime);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         #region Tests for releasing modifier keys
@@ -380,14 +362,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyCompetitorSelectCancelled(true);
-            }
+            filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyCompetitorSelectCancelled(true);
         }
 
         [Test]
@@ -399,14 +380,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleKeyDown(ThisRemoteControl, RemoteKey.Key4, NullTime);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyCompetitorSelected(false, 4);
-            }
+            filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyCompetitorSelected(false, 4);
         }
 
         [Test]
@@ -418,13 +398,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -437,13 +416,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyUp(OtherRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().BeEmpty();
-            }
+            filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterNextCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().BeEmpty();
         }
 
         [Test]
@@ -456,14 +434,13 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             filter.HandleModifierKeyDown(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
 
             // Act
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+            using var listener = new FilterEventListener(filter);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyCompetitorSelected(true, 4);
-            }
+            filter.HandleModifierKeyUp(ThisRemoteControl, RemoteKeyModifier.EnterCurrentCompetitor);
+
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyCompetitorSelected(true, 4);
         }
 
         #endregion
@@ -476,13 +453,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var filter = new NumberEntryFilter();
             TimeSpan fourMinutes = 4.Minutes();
 
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleMissingKey(ThisRemoteControl, fourMinutes);
+            using var listener = new FilterEventListener(filter);
 
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, null, fourMinutes);
-            }
+            filter.HandleMissingKey(ThisRemoteControl, fourMinutes);
+
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, null, fourMinutes);
         }
 
         [Test]
@@ -490,13 +466,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
         {
             var filter = new NumberEntryFilter();
 
-            using (var listener = new FilterEventListener(filter))
-            {
-                filter.HandleMissingKey(ThisRemoteControl, NullTime);
+            using var listener = new FilterEventListener(filter);
 
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, null, NullTime);
-            }
+            filter.HandleMissingKey(ThisRemoteControl, NullTime);
+
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, null, NullTime);
         }
 
         #endregion

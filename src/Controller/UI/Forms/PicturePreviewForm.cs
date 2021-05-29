@@ -20,12 +20,16 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             Guard.NotNullNorEmpty(title, nameof(title));
             Guard.NotNull(parent, nameof(parent));
 
-            using (var form = new PicturePreviewForm())
+            using var form = new PicturePreviewForm
             {
-                form.pictureBox.ImageLocation = path;
-                form.Text = title + " preview";
-                form.ShowDialog(parent);
-            }
+                pictureBox =
+                {
+                    ImageLocation = path
+                },
+                Text = title + " preview"
+            };
+
+            form.ShowDialog(parent);
         }
 
         private void PicturePreviewForm_KeyDown([CanBeNull] object sender, [NotNull] KeyEventArgs e)

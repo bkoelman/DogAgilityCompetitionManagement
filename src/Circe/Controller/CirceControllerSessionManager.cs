@@ -244,40 +244,37 @@ namespace DogAgilityCompetition.Circe.Controller
 
             public void Accept(KeepAliveOperation operation)
             {
-                using (var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod()))
-                {
-                    lock (nonReentrantProcessIncomingOperationLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod());
 
-                        owner.HandleIncomingKeepAliveOperation(operation);
-                    }
+                lock (nonReentrantProcessIncomingOperationLock)
+                {
+                    lockTracker.Acquired();
+
+                    owner.HandleIncomingKeepAliveOperation(operation);
                 }
             }
 
             public void Accept(NotifyStatusOperation operation)
             {
-                using (var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod()))
-                {
-                    lock (nonReentrantProcessIncomingOperationLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod());
 
-                        owner.HandleIncomingNotifyStatusOperation(operation);
-                    }
+                lock (nonReentrantProcessIncomingOperationLock)
+                {
+                    lockTracker.Acquired();
+
+                    owner.HandleIncomingNotifyStatusOperation(operation);
                 }
             }
 
             public void Accept(NotifyActionOperation operation)
             {
-                using (var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod()))
-                {
-                    lock (nonReentrantProcessIncomingOperationLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(InnerLog, MethodBase.GetCurrentMethod());
 
-                        owner.HandleIncomingNotifyActionOperation(operation);
-                    }
+                lock (nonReentrantProcessIncomingOperationLock)
+                {
+                    lockTracker.Acquired();
+
+                    owner.HandleIncomingNotifyActionOperation(operation);
                 }
             }
 

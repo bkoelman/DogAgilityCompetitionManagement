@@ -32,20 +32,19 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void ExportButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var dialog = new SaveFileDialog())
+            using var dialog = new SaveFileDialog
             {
-                dialog.Title = "Select competitors file for export";
-                dialog.Filter = "Csv files (*.csv)|*.csv|All files (*.*)|*.*";
+                Title = "Select competitors file for export",
+                Filter = "Csv files (*.csv)|*.csv|All files (*.*)|*.*",
+                FileName = ProposeFileNameFor(originalVersion)
+            };
 
-                dialog.FileName = ProposeFileNameFor(originalVersion);
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                var calculator = new ClassPlacementCalculator(originalVersion);
+                IEnumerable<CompetitionRunResult> runResultsRecalculated = calculator.Recalculate(runResultsGrid.DataSource);
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    var calculator = new ClassPlacementCalculator(originalVersion);
-                    IEnumerable<CompetitionRunResult> runResultsRecalculated = calculator.Recalculate(runResultsGrid.DataSource);
-
-                    RunResultsExporter.ExportTo(dialog.FileName, runResultsRecalculated);
-                }
+                RunResultsExporter.ExportTo(dialog.FileName, runResultsRecalculated);
             }
         }
 
@@ -106,12 +105,11 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void GoToCompetitorButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new GoToCompetitorForm())
+            using var form = new GoToCompetitorForm();
+
+            if (form.ShowDialog(this) == DialogResult.OK && form.SelectedCompetitorNumber != null)
             {
-                if (form.ShowDialog(this) == DialogResult.OK && form.SelectedCompetitorNumber != null)
-                {
-                    runResultsGrid.GoToCompetitor(form.SelectedCompetitorNumber.Value);
-                }
+                runResultsGrid.GoToCompetitor(form.SelectedCompetitorNumber.Value);
             }
         }
     }

@@ -164,58 +164,57 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void ChangePortButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new ComPortSelectionForm())
+            using var form = new ComPortSelectionForm
             {
-                form.ComPortName = settings.ComPortName;
+                ComPortName = settings.ComPortName
+            };
 
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    settings.ComPortName = form.ComPortName;
-                    UpdateControlsFromSettings();
-                    UpdateSessionManagerFromSettings();
-                }
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                settings.ComPortName = form.ComPortName;
+                UpdateControlsFromSettings();
+                UpdateSessionManagerFromSettings();
             }
         }
 
         private void StatusCodeLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
         {
-            using (var form = new MediatorStatusSelectionForm())
+            using var form = new MediatorStatusSelectionForm
             {
-                form.StatusCode = settings.MediatorStatus;
+                StatusCode = settings.MediatorStatus
+            };
 
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    settings.MediatorStatus = form.StatusCode;
-                    UpdateControlsFromSettings();
-                    UpdateSessionManagerFromSettings();
-                }
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                settings.MediatorStatus = form.StatusCode;
+                UpdateControlsFromSettings();
+                UpdateSessionManagerFromSettings();
             }
         }
 
         private void VersionLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
         {
-            using (var form = new ProtocolVersionSelectionForm())
+            using var form = new ProtocolVersionSelectionForm
             {
-                form.Version = settings.ProtocolVersionOrDefault;
+                Version = settings.ProtocolVersionOrDefault
+            };
 
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    settings.ProtocolVersion = form.Version?.ToString();
-                    UpdateControlsFromSettings();
-                    UpdateSessionManagerFromSettings();
-                }
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                settings.ProtocolVersion = form.Version?.ToString();
+                UpdateControlsFromSettings();
+                UpdateSessionManagerFromSettings();
             }
         }
 
         private void LogButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var form = new LogMessageForm())
+            using var form = new LogMessageForm();
+
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    byte[] data = Encoding.UTF8.GetBytes(form.Message);
-                    sessionManager.Value.LogData(data);
-                }
+                byte[] data = Encoding.UTF8.GetBytes(form.Message);
+                sessionManager.Value.LogData(data);
             }
         }
 

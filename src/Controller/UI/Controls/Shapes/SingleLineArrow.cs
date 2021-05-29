@@ -22,31 +22,28 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var pen = new Pen(Brushes.Gray, 6)
+            using var pen = new Pen(Brushes.Gray, 6)
             {
                 EndCap = LineCap.ArrowAnchor
-            })
-            {
-                var shadowTopLeft = new PointF(topLeft.X + ShadowOffset, topLeft.Y + ShadowOffset);
-                var shadowBottomRight = new PointF(bottomRight.X + ShadowOffset, bottomRight.Y + ShadowOffset);
-                graphics.DrawLine(pen, shadowTopLeft, shadowBottomRight);
-            }
+            };
+
+            var shadowTopLeft = new PointF(topLeft.X + ShadowOffset, topLeft.Y + ShadowOffset);
+            var shadowBottomRight = new PointF(bottomRight.X + ShadowOffset, bottomRight.Y + ShadowOffset);
+            graphics.DrawLine(pen, shadowTopLeft, shadowBottomRight);
         }
 
         public override void DrawFill(Graphics graphics)
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (Brush fillBrush = new SolidBrush(GetColorForState()))
+            using Brush fillBrush = new SolidBrush(GetColorForState());
+
+            using var arrowPen = new Pen(fillBrush, 6)
             {
-                using (var arrowPen = new Pen(fillBrush, 6)
-                {
-                    EndCap = LineCap.ArrowAnchor
-                })
-                {
-                    graphics.DrawLine(arrowPen, topLeft, bottomRight);
-                }
-            }
+                EndCap = LineCap.ArrowAnchor
+            };
+
+            graphics.DrawLine(arrowPen, topLeft, bottomRight);
         }
 
         private Color GetColorForState()

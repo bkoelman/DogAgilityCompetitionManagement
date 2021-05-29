@@ -70,39 +70,36 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
             else
             {
-                using (StringFormat stringFormat = Reflected.GetStringFormat(this))
+                using StringFormat stringFormat = Reflected.GetStringFormat(this);
+                using var textPath = new GraphicsPath();
+
+                textPath.AddString(Text, Font.FontFamily, (int)Font.Style, clientBounds.Height, TopLeftPoint, stringFormat);
+
+                PointF[] transformPoints =
                 {
-                    using (var textPath = new GraphicsPath())
-                    {
-                        textPath.AddString(Text, Font.FontFamily, (int)Font.Style, clientBounds.Height, TopLeftPoint, stringFormat);
+                    new(clientBounds.Left, clientBounds.Top),
+                    new(clientBounds.Right, clientBounds.Top),
+                    new(clientBounds.Left, clientBounds.Bottom)
+                };
 
-                        PointF[] transformPoints =
-                        {
-                            new(clientBounds.Left, clientBounds.Top),
-                            new(clientBounds.Right, clientBounds.Top),
-                            new(clientBounds.Left, clientBounds.Bottom)
-                        };
+                RectangleF textBounds = Stabilize(textPath.GetBounds());
+                e.Graphics.Transform = new Matrix(textBounds, transformPoints);
 
-                        RectangleF textBounds = Stabilize(textPath.GetBounds());
-                        e.Graphics.Transform = new Matrix(textBounds, transformPoints);
+                e.Graphics.Clear(BackColor);
+                e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-                        e.Graphics.Clear(BackColor);
-                        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                        if (Image != null)
-                        {
-                            Rectangle imageBounds = Rectangle.Round(textBounds);
-                            DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
-                        }
-
-                        using (var brush = new SolidBrush(Enabled ? ForeColor : ControlPaint.LightLight(ForeColor)))
-                        {
-                            e.Graphics.FillPath(brush, textPath);
-                        }
-
-                        e.Graphics.ResetTransform();
-                    }
+                if (Image != null)
+                {
+                    Rectangle imageBounds = Rectangle.Round(textBounds);
+                    DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
                 }
+
+                using (var brush = new SolidBrush(Enabled ? ForeColor : ControlPaint.LightLight(ForeColor)))
+                {
+                    e.Graphics.FillPath(brush, textPath);
+                }
+
+                e.Graphics.ResetTransform();
             }
         }
 

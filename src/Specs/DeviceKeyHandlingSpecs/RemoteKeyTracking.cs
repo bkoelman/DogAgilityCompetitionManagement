@@ -29,14 +29,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var tracker = new RemoteKeyTracker();
 
             // Act
-            using (var listener = new TrackerEventListener(tracker))
-            {
-                tracker.ProcessDeviceAction(deviceAction);
+            using var listener = new TrackerEventListener(tracker);
+            tracker.ProcessDeviceAction(deviceAction);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, sensorTime);
-            }
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, sensorTime);
         }
 
         [Test]
@@ -47,14 +45,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var tracker = new RemoteKeyTracker();
 
             // Act
-            using (var listener = new TrackerEventListener(tracker))
-            {
-                tracker.ProcessDeviceAction(deviceAction);
+            using var listener = new TrackerEventListener(tracker);
+            tracker.ProcessDeviceAction(deviceAction);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, NullTime);
-            }
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, NullTime);
         }
     }
 }

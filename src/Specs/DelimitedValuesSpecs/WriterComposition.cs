@@ -112,10 +112,8 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Act
             Action action = () =>
             {
-                using (IDelimitedValuesWriterRow row = writer.CreateRow())
-                {
-                    row.SetCell("B", "dummy");
-                }
+                using IDelimitedValuesWriterRow row = writer.CreateRow();
+                row.SetCell("B", "dummy");
             };
 
             // Assert

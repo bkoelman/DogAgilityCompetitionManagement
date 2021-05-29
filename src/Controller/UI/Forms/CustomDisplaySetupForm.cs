@@ -29,16 +29,16 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void BrowseButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.FileName = picturePathTextBox.Text.Trim();
-                dialog.Title = "Select picture file";
-                dialog.Filter = "Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*";
+                FileName = picturePathTextBox.Text.Trim(),
+                Title = "Select picture file",
+                Filter = "Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*"
+            };
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    picturePathTextBox.Text = dialog.FileName;
-                }
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                picturePathTextBox.Text = dialog.FileName;
             }
         }
 

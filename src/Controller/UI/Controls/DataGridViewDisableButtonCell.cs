@@ -34,10 +34,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 if ((paintParts & DataGridViewPaintParts.Background) == DataGridViewPaintParts.Background)
                 {
-                    using (var cellBackground = new SolidBrush(cellStyle.BackColor))
-                    {
-                        graphics.FillRectangle(cellBackground, cellBounds);
-                    }
+                    using var cellBackground = new SolidBrush(cellStyle.BackColor);
+                    graphics.FillRectangle(cellBackground, cellBounds);
                 }
 
                 if ((paintParts & DataGridViewPaintParts.Border) == DataGridViewPaintParts.Border)

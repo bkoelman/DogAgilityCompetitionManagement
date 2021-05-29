@@ -87,15 +87,13 @@ namespace DogAgilityCompetition.Circe.Protocol
         [NotNull]
         private static byte[] StreamToBuffer([NotNull] Action<Stream> writeCallback)
         {
-            using (var stream = new MemoryStream())
-            {
-                writeCallback(stream);
+            using var stream = new MemoryStream();
+            writeCallback(stream);
 
-                byte[] buffer = new byte[stream.Length];
-                stream.Seek(0, SeekOrigin.Begin);
-                stream.Read(buffer, 0, buffer.Length);
-                return buffer;
-            }
+            byte[] buffer = new byte[stream.Length];
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(buffer, 0, buffer.Length);
+            return buffer;
         }
 
         private static void WriteParameterBytesTo([NotNull] Parameter parameter, [NotNull] Stream output)

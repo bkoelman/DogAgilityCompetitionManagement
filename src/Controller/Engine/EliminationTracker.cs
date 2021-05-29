@@ -36,14 +36,13 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-                {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                        return UnsafeIsEliminated;
-                    }
+                lock (stateLock)
+                {
+                    lockTracker.Acquired();
+
+                    return UnsafeIsEliminated;
                 }
             }
         }
@@ -52,14 +51,13 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-                {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                        return isManuallyEliminated;
-                    }
+                lock (stateLock)
+                {
+                    lockTracker.Acquired();
+
+                    return isManuallyEliminated;
                 }
             }
             set
@@ -75,14 +73,13 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-                {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                        return refusalCount;
-                    }
+                lock (stateLock)
+                {
+                    lockTracker.Acquired();
+
+                    return refusalCount;
                 }
             }
         }
@@ -148,16 +145,15 @@ namespace DogAgilityCompetition.Controller.Engine
 
             StopMonitorCourseTime();
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                    maximumCourseTimeElapsed = false;
-                    isManuallyEliminated = false;
-                    refusalCount = 0;
-                }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                maximumCourseTimeElapsed = false;
+                isManuallyEliminated = false;
+                refusalCount = 0;
             }
         }
 

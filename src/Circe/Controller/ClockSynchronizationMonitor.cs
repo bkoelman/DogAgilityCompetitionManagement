@@ -54,22 +54,21 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             Guard.NotNull(sessionManager, nameof(sessionManager));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (circeSessionManager.Value != null)
                 {
-                    lockTracker.Acquired();
-
-                    if (circeSessionManager.Value != null)
-                    {
-                        throw new InvalidOperationException("Already initialized.");
-                    }
-
-                    sessionManager.DeviceTracker.DeviceAdded += DeviceTrackerOnDeviceAddedOrChanged;
-                    sessionManager.DeviceTracker.DeviceChanged += DeviceTrackerOnDeviceAddedOrChanged;
-
-                    circeSessionManager.Value = sessionManager;
+                    throw new InvalidOperationException("Already initialized.");
                 }
+
+                sessionManager.DeviceTracker.DeviceAdded += DeviceTrackerOnDeviceAddedOrChanged;
+                sessionManager.DeviceTracker.DeviceChanged += DeviceTrackerOnDeviceAddedOrChanged;
+
+                circeSessionManager.Value = sessionManager;
             }
         }
 
@@ -77,23 +76,22 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             Guard.NotNull(eventArgs, nameof(eventArgs));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!deviceMap.ContainsKey(eventArgs.Argument.DeviceAddress))
                 {
-                    lockTracker.Acquired();
+                    deviceMap[eventArgs.Argument.DeviceAddress] = new DeviceSyncStatus();
+                }
 
-                    if (!deviceMap.ContainsKey(eventArgs.Argument.DeviceAddress))
-                    {
-                        deviceMap[eventArgs.Argument.DeviceAddress] = new DeviceSyncStatus();
-                    }
+                deviceMap[eventArgs.Argument.DeviceAddress].Update(eventArgs.Argument.ClockSynchronization);
 
-                    deviceMap[eventArgs.Argument.DeviceAddress].Update(eventArgs.Argument.ClockSynchronization);
-
-                    if (deviceMap[eventArgs.Argument.DeviceAddress].IsSynchronized && IsSyncInProgress)
-                    {
-                        VerifySynchronizationComplete();
-                    }
+                if (deviceMap[eventArgs.Argument.DeviceAddress].IsSynchronized && IsSyncInProgress)
+                {
+                    VerifySynchronizationComplete();
                 }
             }
         }
@@ -117,20 +115,19 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             AssertInitialized();
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (raiseEventsCancellationTokenSource != null)
                 {
-                    lockTracker.Acquired();
-
-                    if (raiseEventsCancellationTokenSource != null)
-                    {
-                        raiseEventsCancellationTokenSource.Cancel();
-                        raiseEventsCancellationTokenSource = null;
-                    }
-
-                    syncCancellationSource.Value?.Cancel();
+                    raiseEventsCancellationTokenSource.Cancel();
+                    raiseEventsCancellationTokenSource = null;
                 }
+
+                syncCancellationSource.Value?.Cancel();
             }
         }
 
@@ -331,16 +328,15 @@ namespace DogAgilityCompetition.Circe.Controller
 
             bool result = false;
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                    if (deviceMap.ContainsKey(deviceAddress))
-                    {
-                        result = deviceMap[deviceAddress].IsSynchronized;
-                    }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                if (deviceMap.ContainsKey(deviceAddress))
+                {
+                    result = deviceMap[deviceAddress].IsSynchronized;
                 }
             }
 

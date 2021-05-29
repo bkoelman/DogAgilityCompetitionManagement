@@ -44,23 +44,22 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Start()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested && !isConsumerRunning)
                 {
-                    lockTracker.Acquired();
+                    isConsumerRunning = true;
 
-                    if (!disposeRequested && !isConsumerRunning)
-                    {
-                        isConsumerRunning = true;
-
-                        Log.Debug("Signaling state change after start.");
-                        Monitor.Pulse(stateLock);
-                    }
-                    else
-                    {
-                        Log.Debug("Already started or disposed.");
-                    }
+                    Log.Debug("Signaling state change after start.");
+                    Monitor.Pulse(stateLock);
+                }
+                else
+                {
+                    Log.Debug("Already started or disposed.");
                 }
             }
         }
@@ -70,23 +69,22 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Pause()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested && isConsumerRunning)
                 {
-                    lockTracker.Acquired();
+                    isConsumerRunning = false;
 
-                    if (!disposeRequested && isConsumerRunning)
-                    {
-                        isConsumerRunning = false;
-
-                        Log.Debug("Signaling state change after pause.");
-                        Monitor.Pulse(stateLock);
-                    }
-                    else
-                    {
-                        Log.Debug("Already paused or disposed.");
-                    }
+                    Log.Debug("Signaling state change after pause.");
+                    Monitor.Pulse(stateLock);
+                }
+                else
+                {
+                    Log.Debug("Already paused or disposed.");
                 }
             }
         }
@@ -96,25 +94,24 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Dispose()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested)
                 {
-                    lockTracker.Acquired();
+                    disposeRequested = true;
 
-                    if (!disposeRequested)
-                    {
-                        disposeRequested = true;
+                    Log.Debug("Dispose: Signaling state change after dispose.");
+                    Monitor.Pulse(stateLock);
 
-                        Log.Debug("Dispose: Signaling state change after dispose.");
-                        Monitor.Pulse(stateLock);
-
-                        workQueue.CompleteAdding();
-                    }
-                    else
-                    {
-                        Log.Debug("Already disposed.");
-                    }
+                    workQueue.CompleteAdding();
+                }
+                else
+                {
+                    Log.Debug("Already disposed.");
                 }
             }
         }
@@ -169,57 +166,56 @@ namespace DogAgilityCompetition.Circe.Session
                         continue;
                     }
 
-                    using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+                    using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+                    lock (stateLock)
                     {
-                        lock (stateLock)
+                        lockTracker.Acquired();
+
+                        if (!isConsumerRunning && !disposeRequested)
                         {
-                            lockTracker.Acquired();
+                            Log.Debug("Entering wait loop until running or disposing.");
 
-                            if (!isConsumerRunning && !disposeRequested)
+                            while (!isConsumerRunning && !disposeRequested)
                             {
-                                Log.Debug("Entering wait loop until running or disposing.");
-
-                                while (!isConsumerRunning && !disposeRequested)
-                                {
-                                    // Consumer is paused, so block this thread until state changes.
-                                    Monitor.Wait(stateLock);
-                                }
-
-                                Log.Debug("Exited wait loop.");
+                                // Consumer is paused, so block this thread until state changes.
+                                Monitor.Wait(stateLock);
                             }
 
-                            if (disposeRequested)
-                            {
-                                // Dispose has been called by producer, so cancel whatever is left in the queue.
+                            Log.Debug("Exited wait loop.");
+                        }
 
-                                Log.Debug("Disposal has been requested, canceling queue entry.");
-                                workItem.TaskSource.TrySetCanceled();
-                                continue;
-                            }
+                        if (disposeRequested)
+                        {
+                            // Dispose has been called by producer, so cancel whatever is left in the queue.
 
-                            int taskId = workItem.TaskSource.Task.Id;
+                            Log.Debug("Disposal has been requested, canceling queue entry.");
+                            workItem.TaskSource.TrySetCanceled();
+                            continue;
+                        }
 
-                            // Perform action inside lock, so that state transitions will block 
-                            // until the current action has completed.
-                            try
-                            {
-                                workItem.CancelToken.ThrowIfCancellationRequested();
+                        int taskId = workItem.TaskSource.Task.Id;
 
-                                Log.Debug($"Executing action for task {taskId}.");
-                                workItem.Action();
-                                workItem.TaskSource.TrySetResult(null);
-                                Log.Debug("Task completed.");
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                Log.Debug($"Propagating cancellation request to task {taskId}.");
-                                workItem.TaskSource.TrySetCanceled();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Debug($"Setting task {taskId} to error state.");
-                                workItem.TaskSource.TrySetException(ex);
-                            }
+                        // Perform action inside lock, so that state transitions will block 
+                        // until the current action has completed.
+                        try
+                        {
+                            workItem.CancelToken.ThrowIfCancellationRequested();
+
+                            Log.Debug($"Executing action for task {taskId}.");
+                            workItem.Action();
+                            workItem.TaskSource.TrySetResult(null);
+                            Log.Debug("Task completed.");
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Log.Debug($"Propagating cancellation request to task {taskId}.");
+                            workItem.TaskSource.TrySetCanceled();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Debug($"Setting task {taskId} to error state.");
+                            workItem.TaskSource.TrySetException(ex);
                         }
                     }
                 }

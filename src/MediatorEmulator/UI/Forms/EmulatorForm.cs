@@ -231,15 +231,15 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void OpenToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.Title = "Open network configuration";
-                dialog.Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                Title = "Open network configuration",
+                Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*"
+            };
 
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    OpenFromFile(dialog.FileName);
-                }
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                OpenFromFile(dialog.FileName);
             }
         }
 
@@ -298,15 +298,15 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void SaveAsToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var dialog = new SaveFileDialog())
+            using var dialog = new SaveFileDialog
             {
-                dialog.Title = "Save network configuration";
-                dialog.Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                Title = "Save network configuration",
+                Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*"
+            };
 
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    SaveFile(dialog.FileName);
-                }
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                SaveFile(dialog.FileName);
             }
         }
 

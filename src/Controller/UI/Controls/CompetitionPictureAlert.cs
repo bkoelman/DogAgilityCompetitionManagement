@@ -109,21 +109,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void BrowseForPicture()
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.Title = "Select picture file";
-
-                dialog.Filter = "All pictures (*.bmp;*.gif;*.jpg;*.png;*.tiff)|*.bmp;*.gif;*.jpg;*.png;*.tiff|Bitmap (*.bmp)|*.bmp|" +
+                Title = "Select picture file",
+                Filter = "All pictures (*.bmp;*.gif;*.jpg;*.png;*.tiff)|*.bmp;*.gif;*.jpg;*.png;*.tiff|Bitmap (*.bmp)|*.bmp|" +
                     "Graphics Interchange Format (*.gif)|*.gif|Joint Photographic Experts Group (*.jpg)|*.jpg" +
-                    "|Portable Network Graphics (*.png)|*.png|Tag Image File Format (*.tiff)|*.tiff|All files (*.*)|*.*";
+                    "|Portable Network Graphics (*.png)|*.png|Tag Image File Format (*.tiff)|*.tiff|All files (*.*)|*.*",
+                FileName = pathTextBox.Text
+            };
 
-                dialog.FileName = pathTextBox.Text;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    pathTextBox.Text = dialog.FileName;
-                    ValidateChildren();
-                }
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                pathTextBox.Text = dialog.FileName;
+                ValidateChildren();
             }
         }
     }

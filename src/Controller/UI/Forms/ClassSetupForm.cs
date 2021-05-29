@@ -88,67 +88,67 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void ImportButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.Title = "Select competitors file to import";
-                dialog.Filter = "Csv files (*.csv)|*.csv|All files (*.*)|*.*";
+                Title = "Select competitors file to import",
+                Filter = "Csv files (*.csv)|*.csv|All files (*.*)|*.*"
+            };
 
-                if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                try
                 {
-                    try
-                    {
-                        var importer = new RunResultsImporter(competitorsGrid.DataSource);
+                    var importer = new RunResultsImporter(competitorsGrid.DataSource);
 
-                        IEnumerable<CompetitionRunResult> results = importer.ImportFrom(dialog.FileName,
-                            mergeDeletesCheckBox.Checked, discardTimingsCheckBox.Checked);
+                    IEnumerable<CompetitionRunResult> results = importer.ImportFrom(dialog.FileName,
+                        mergeDeletesCheckBox.Checked, discardTimingsCheckBox.Checked);
 
-                        competitorsGrid.DataSource = results;
-                        hasImportedCompetitors = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(this, ex.ToString(), "Import failed - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-#if DEBUG
-                    // NICE-TO-HAVE: Remove test code from Debug builds.
-                    // International demo names available at: http://www.fakenamegenerator.com/
-                    intermediateCountUpDown.Value = 1;
-
-                    competitorsGrid.DataSource = new List<CompetitionRunResult>
-                    {
-                        new(new Competitor(1, "Tania", "Zita").ChangeCountryCode("NL")),
-                        new(new Competitor(2, "кучер", "dziesięć").ChangeCountryCode("RU")),
-                        new(new Competitor(3, "Ελληvικά", "Αλκιβιαδης").ChangeCountryCode("GR")),
-                        new(new Competitor(4, "Україна", "être").ChangeCountryCode("PL")),
-                        new(new Competitor(5, "Annelies", "Seena").ChangeCountryCode("NL")),
-                        new(new Competitor(6, "Ben", "Rain").ChangeCountryCode("NL")),
-                        new(new Competitor(7, "Feline", "Cadie").ChangeCountryCode("NL")),
-                        new(new Competitor(8, "Marissa", "Yentl").ChangeCountryCode("NL")),
-                        new(new Competitor(9, "Elly-may", "Benthe").ChangeCountryCode("NL")),
-                        new(new Competitor(13, "Alwin", "Mekx").ChangeCountryCode("NL")),
-                        new(new Competitor(14, "Wilbert", "Bryce").ChangeCountryCode("NL")),
-                        new(new Competitor(20, "Marissa", "Kida").ChangeCountryCode("NL")),
-                        new(new Competitor(21, "Margreet", "Blizzard").ChangeCountryCode("NL")),
-                        new(new Competitor(24, "Carla", "Jill").ChangeCountryCode("NL")),
-                        new(new Competitor(25, "Anouk", "Ikey").ChangeCountryCode("NL")),
-                        new(new Competitor(26, "Johan", "Djintie").ChangeCountryCode("NL")),
-                        new(new Competitor(27, "Marina", "Jess").ChangeCountryCode("NL"))
-                    };
-
+                    competitorsGrid.DataSource = results;
                     hasImportedCompetitors = true;
-
-                    gradeTextBox.Text = "B1 small";
-                    classTypeTextBox.Text = "Agility";
-                    inspectorNameTextBox.Text = "John Doe";
-                    ringNameTextBox.Text = "R1";
-                    standardCourseTimeTextBox.Text = "45";
-                    maximumCourseTimeTextBox.Text = "65";
-                    trackLengthTextBox.Text = "57";
-#endif
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.ToString(), "Import failed - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+#if DEBUG
+                // NICE-TO-HAVE: Remove test code from Debug builds.
+                // International demo names available at: http://www.fakenamegenerator.com/
+                intermediateCountUpDown.Value = 1;
+
+                competitorsGrid.DataSource = new List<CompetitionRunResult>
+                {
+                    new(new Competitor(1, "Tania", "Zita").ChangeCountryCode("NL")),
+                    new(new Competitor(2, "кучер", "dziesięć").ChangeCountryCode("RU")),
+                    new(new Competitor(3, "Ελληvικά", "Αλκιβιαδης").ChangeCountryCode("GR")),
+                    new(new Competitor(4, "Україна", "être").ChangeCountryCode("PL")),
+                    new(new Competitor(5, "Annelies", "Seena").ChangeCountryCode("NL")),
+                    new(new Competitor(6, "Ben", "Rain").ChangeCountryCode("NL")),
+                    new(new Competitor(7, "Feline", "Cadie").ChangeCountryCode("NL")),
+                    new(new Competitor(8, "Marissa", "Yentl").ChangeCountryCode("NL")),
+                    new(new Competitor(9, "Elly-may", "Benthe").ChangeCountryCode("NL")),
+                    new(new Competitor(13, "Alwin", "Mekx").ChangeCountryCode("NL")),
+                    new(new Competitor(14, "Wilbert", "Bryce").ChangeCountryCode("NL")),
+                    new(new Competitor(20, "Marissa", "Kida").ChangeCountryCode("NL")),
+                    new(new Competitor(21, "Margreet", "Blizzard").ChangeCountryCode("NL")),
+                    new(new Competitor(24, "Carla", "Jill").ChangeCountryCode("NL")),
+                    new(new Competitor(25, "Anouk", "Ikey").ChangeCountryCode("NL")),
+                    new(new Competitor(26, "Johan", "Djintie").ChangeCountryCode("NL")),
+                    new(new Competitor(27, "Marina", "Jess").ChangeCountryCode("NL"))
+                };
+
+                hasImportedCompetitors = true;
+
+                gradeTextBox.Text = "B1 small";
+                classTypeTextBox.Text = "Agility";
+                inspectorNameTextBox.Text = "John Doe";
+                ringNameTextBox.Text = "R1";
+                standardCourseTimeTextBox.Text = "45";
+                maximumCourseTimeTextBox.Text = "65";
+                trackLengthTextBox.Text = "57";
+#endif
             }
         }
 

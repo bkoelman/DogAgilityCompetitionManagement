@@ -39,19 +39,18 @@ namespace DogAgilityCompetition.Circe.Controller
 
         public void UpdateMediatorStatus(int mediatorStatus)
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (mediatorStatus != lastMediatorStatus)
                 {
-                    lockTracker.Acquired();
+                    Log.Debug($"Mediator status changed from {lastMediatorStatus} to {mediatorStatus}.");
 
-                    if (mediatorStatus != lastMediatorStatus)
-                    {
-                        Log.Debug($"Mediator status changed from {lastMediatorStatus} to {mediatorStatus}.");
-
-                        lastMediatorStatus = mediatorStatus;
-                        MediatorStatusChanged?.Invoke(this, new EventArgs<int>(mediatorStatus));
-                    }
+                    lastMediatorStatus = mediatorStatus;
+                    MediatorStatusChanged?.Invoke(this, new EventArgs<int>(mediatorStatus));
                 }
             }
         }
@@ -60,34 +59,33 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             Guard.NotNull(status, nameof(status));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (deviceMap.ContainsKey(status.DeviceAddress))
                 {
-                    lockTracker.Acquired();
+                    DeviceMapEntry existingEntry = deviceMap[status.DeviceAddress];
 
-                    if (deviceMap.ContainsKey(status.DeviceAddress))
+                    bool hasChanges = existingEntry.ApplyChanges(status);
+                    existingEntry.Extend();
+
+                    if (hasChanges)
                     {
-                        DeviceMapEntry existingEntry = deviceMap[status.DeviceAddress];
-
-                        bool hasChanges = existingEntry.ApplyChanges(status);
-                        existingEntry.Extend();
-
-                        if (hasChanges)
-                        {
-                            Log.Debug($"Device {status.DeviceAddress} changed.");
-                            DeviceChanged?.Invoke(this, new EventArgs<DeviceStatus>(status));
-                        }
+                        Log.Debug($"Device {status.DeviceAddress} changed.");
+                        DeviceChanged?.Invoke(this, new EventArgs<DeviceStatus>(status));
                     }
-                    else
-                    {
-                        var newEntry = new DeviceMapEntry(status, RemoveTimerTick);
-                        deviceMap[status.DeviceAddress] = newEntry;
-                        newEntry.Extend();
+                }
+                else
+                {
+                    var newEntry = new DeviceMapEntry(status, RemoveTimerTick);
+                    deviceMap[status.DeviceAddress] = newEntry;
+                    newEntry.Extend();
 
-                        Log.Debug($"Device {status.DeviceAddress} added.");
-                        DeviceAdded?.Invoke(this, new EventArgs<DeviceStatus>(status));
-                    }
+                    Log.Debug($"Device {status.DeviceAddress} added.");
+                    DeviceAdded?.Invoke(this, new EventArgs<DeviceStatus>(status));
                 }
             }
         }
@@ -96,35 +94,33 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                    if (deviceMap.ContainsKey(deviceAddress))
-                    {
-                        DeviceMapEntry existingEntry = deviceMap[deviceAddress];
-                        existingEntry.Extend();
-                    }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                if (deviceMap.ContainsKey(deviceAddress))
+                {
+                    DeviceMapEntry existingEntry = deviceMap[deviceAddress];
+                    existingEntry.Extend();
                 }
             }
         }
 
         public void Dispose()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
 
-                    while (deviceMap.Count > 0)
-                    {
-                        KeyValuePair<WirelessNetworkAddress, DeviceMapEntry> firstPair = deviceMap.First();
-                        deviceMap.Remove(firstPair.Key);
-                        firstPair.Value.Dispose();
-                    }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                while (deviceMap.Count > 0)
+                {
+                    KeyValuePair<WirelessNetworkAddress, DeviceMapEntry> firstPair = deviceMap.First();
+                    deviceMap.Remove(firstPair.Key);
+                    firstPair.Value.Dispose();
                 }
             }
         }
@@ -133,24 +129,23 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             try
             {
-                using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+
+                lock (stateLock)
                 {
-                    lock (stateLock)
+                    lockTracker.Acquired();
+
+                    var entry = (DeviceMapEntry)state;
+
+                    WirelessNetworkAddress address = entry.LastStatus.DeviceAddress;
+
+                    if (deviceMap.Remove(address))
                     {
-                        lockTracker.Acquired();
-
-                        var entry = (DeviceMapEntry)state;
-
-                        WirelessNetworkAddress address = entry.LastStatus.DeviceAddress;
-
-                        if (deviceMap.Remove(address))
-                        {
-                            Log.Debug($"Device {address} removed.");
-                            DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(address));
-                        }
-
-                        entry.Dispose();
+                        Log.Debug($"Device {address} removed.");
+                        DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(address));
                     }
+
+                    entry.Dispose();
                 }
             }
             catch (Exception ex)

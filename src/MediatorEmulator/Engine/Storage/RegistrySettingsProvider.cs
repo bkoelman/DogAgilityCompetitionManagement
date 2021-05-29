@@ -22,17 +22,15 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             return IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath))
+                using RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
+                var container = new MostRecentlyUsedContainer();
+
+                if (appSettingsKey != null)
                 {
-                    var container = new MostRecentlyUsedContainer();
-
-                    if (appSettingsKey != null)
-                    {
-                        ImportContainerFromKey(appSettingsKey, container);
-                    }
-
-                    return container;
+                    ImportContainerFromKey(appSettingsKey, container);
                 }
+
+                return container;
             }, new MostRecentlyUsedContainer());
         }
 
@@ -55,12 +53,11 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
 
             IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath))
+                using RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
+
+                if (appSettingsKey != null)
                 {
-                    if (appSettingsKey != null)
-                    {
-                        ExportContainerToKey(container, appSettingsKey);
-                    }
+                    ExportContainerToKey(container, appSettingsKey);
                 }
             });
         }
@@ -75,10 +72,8 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             return IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath))
-                {
-                    return appSettingsKey != null ? ParseAddressFromKey(appSettingsKey) : 0;
-                }
+                using RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
+                return appSettingsKey != null ? ParseAddressFromKey(appSettingsKey) : 0;
             }, 0);
         }
 
@@ -92,12 +87,11 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath))
+                using RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
+
+                if (appSettingsKey != null)
                 {
-                    if (appSettingsKey != null)
-                    {
-                        StoreAddressInKey(address, appSettingsKey);
-                    }
+                    StoreAddressInKey(address, appSettingsKey);
                 }
             });
         }

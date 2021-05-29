@@ -81,27 +81,24 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
         public override void DrawFill(Graphics graphics)
         {
-            using (Brush fillBrush = GetBrushForFill())
-            {
-                graphics.FillRoundedRectangle(fillBrush, boxRect, 7);
-            }
+            using Brush fillBrush = GetBrushForFill();
+            graphics.FillRoundedRectangle(fillBrush, boxRect, 7);
         }
 
         public override void DrawBorder(Graphics graphics)
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var fontCopy = new Font(Font, State == ShapeState.Selected ? FontStyle.Bold : FontStyle.Regular))
-            {
-                graphics.DrawString(text, fontCopy, Brushes.Black, new RectangleF(topLeft, boxRect.Size), new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center,
-                    FormatFlags = StringFormatFlags.NoWrap
-                });
+            using var fontCopy = new Font(Font, State == ShapeState.Selected ? FontStyle.Bold : FontStyle.Regular);
 
-                graphics.DrawRoundedRectangle(Pens.Black, boxRect, 7);
-            }
+            graphics.DrawString(text, fontCopy, Brushes.Black, new RectangleF(topLeft, boxRect.Size), new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                FormatFlags = StringFormatFlags.NoWrap
+            });
+
+            graphics.DrawRoundedRectangle(Pens.Black, boxRect, 7);
         }
 
         [NotNull]
