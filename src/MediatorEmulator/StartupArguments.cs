@@ -111,10 +111,7 @@ namespace DogAgilityCompetition.MediatorEmulator
 
             if (args.Length == 2)
             {
-                int value0;
-                int value1;
-
-                if (int.TryParse(args[0], out value0) && int.TryParse(args[1], out value1))
+                if (int.TryParse(args[0], out int value0) && int.TryParse(args[1], out int value1))
                 {
                     return new[]
                     {

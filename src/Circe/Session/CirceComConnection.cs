@@ -127,10 +127,9 @@ namespace DogAgilityCompetition.Circe.Session
                 do
                 {
                     done = true;
-                    byte[] buffer;
 
                     int bytesToRead = SafeGetBytesToRead();
-                    int bytesRead = SafeComRead(bytesToRead, out buffer);
+                    int bytesRead = SafeComRead(bytesToRead, out byte[] buffer);
 
                     if (bytesRead > 0 && buffer != null)
                     {

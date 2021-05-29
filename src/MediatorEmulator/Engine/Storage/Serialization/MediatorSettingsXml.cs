@@ -38,8 +38,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         {
             get
             {
-                Version result;
-                return Version.TryParse(ProtocolVersion, out result) ? result : KeepAliveOperation.CurrentProtocolVersion;
+                return Version.TryParse(ProtocolVersion, out Version result) ? result : KeepAliveOperation.CurrentProtocolVersion;
             }
         }
 

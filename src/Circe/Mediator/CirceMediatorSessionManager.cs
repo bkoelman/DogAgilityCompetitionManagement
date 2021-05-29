@@ -182,9 +182,7 @@ namespace DogAgilityCompetition.Circe.Mediator
 
         private void SetupDevice([NotNull] WirelessNetworkAddress oldAddress, [NotNull] WirelessNetworkAddress newAddress, DeviceCapabilities capabilities)
         {
-            IWirelessDevice device;
-
-            if (Devices.TryRemove(oldAddress, out device))
+            if (Devices.TryRemove(oldAddress, out IWirelessDevice device))
             {
                 Devices[newAddress] = device;
                 deviceChangeLogger.ChangeAddress(oldAddress, newAddress, capabilities);
@@ -295,9 +293,7 @@ namespace DogAgilityCompetition.Circe.Mediator
                             Log.Debug("SenderLoop: Processing outgoing operations queue.");
                             CirceComConnection connectionNotNull2 = AssertConnectionNotNull(connection);
 
-                            Operation nextOperation;
-
-                            while (sendQueue.TryTake(out nextOperation))
+                            while (sendQueue.TryTake(out Operation nextOperation))
                             {
                                 SendOperation(connectionNotNull2, nextOperation);
                             }
@@ -354,9 +350,7 @@ namespace DogAgilityCompetition.Circe.Mediator
         private void ClearSendQueue()
         {
             int count = 0;
-            Operation unused;
-
-            while (sendQueue.TryTake(out unused))
+            while (sendQueue.TryTake(out _))
             {
                 count++;
             }

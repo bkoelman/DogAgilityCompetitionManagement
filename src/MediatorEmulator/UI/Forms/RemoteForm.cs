@@ -163,8 +163,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void RemoteForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
         {
-            IWirelessDevice unused;
-            sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out unused);
+            sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out _);
 
             DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(settings.DeviceAddressNotNull));
         }

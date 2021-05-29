@@ -26,9 +26,7 @@ namespace DogAgilityCompetition.Circe.Mediator
             Guard.NotNull(oldAddress, nameof(oldAddress));
             Guard.NotNull(newAddress, nameof(newAddress));
 
-            DeviceStatus deviceStatus;
-
-            if (deviceStatusMap.TryRemove(oldAddress, out deviceStatus))
+            if (deviceStatusMap.TryRemove(oldAddress, out DeviceStatus deviceStatus))
             {
                 deviceStatusMap[newAddress] = deviceStatus;
                 Log.Info($"Device address changed from {oldAddress} to {newAddress} with capabilities: {newCapabilities}.");

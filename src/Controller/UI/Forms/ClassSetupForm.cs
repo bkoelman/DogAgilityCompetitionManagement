@@ -169,9 +169,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void ValidateNullOrPositiveIntegerTextBox([NotNull] TextBox textBox)
         {
-            int value;
-
-            if (!string.IsNullOrWhiteSpace(textBox.Text) && (!int.TryParse(textBox.Text, out value) || value < 1))
+            if (!string.IsNullOrWhiteSpace(textBox.Text) && (!int.TryParse(textBox.Text, out int value) || value < 1))
             {
                 errorProvider.SetError(textBox, "Must be zero or higher.");
             }

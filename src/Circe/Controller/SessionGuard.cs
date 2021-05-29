@@ -158,9 +158,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     throw new NotConnectedToMediatorException();
                 }
 
-                Exception error;
-
-                if (!TryDirectSend(connectionSnapshot, false, operation, out error))
+                if (!TryDirectSend(connectionSnapshot, false, operation, out Exception error))
                 {
                     throw new Exception("Failed to send outgoing operation.", error);
                 }
@@ -237,9 +235,8 @@ namespace DogAgilityCompetition.Circe.Controller
                 // The outgoing queue has been paused. So we are guaranteed to be the only 
                 // thread that is writing to the port. So locking for exclusive write 
                 // access is not needed here.
-                Exception logoutError;
 
-                if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out logoutError))
+                if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out Exception logoutError))
                 {
                     Log.Debug("Failed to send Logout operation.", logoutError);
                 }

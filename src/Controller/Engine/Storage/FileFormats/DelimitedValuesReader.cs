@@ -402,8 +402,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             {
                 int newRowStartLineNumber = readerLineNumber + 1;
 
-                bool missingClosingTextQualifier;
-                string line = ReadToNextLineBreak(out missingClosingTextQualifier);
+                string line = ReadToNextLineBreak(out bool missingClosingTextQualifier);
 
                 // Set properties before parsing into cells, so that callers can inspect/log 
                 // the unparsed text line after catching any exceptions raised while parsing.

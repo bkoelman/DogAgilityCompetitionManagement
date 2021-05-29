@@ -238,9 +238,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 char[] chars = Encoding.ASCII.GetChars(checksumBytes);
                 string checksumHex = new(chars);
 
-                int checksumValue;
-
-                if (!int.TryParse(checksumHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out checksumValue))
+                if (!int.TryParse(checksumHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int checksumValue))
                 {
                     throw new PacketFormatException(buffer, checksumOffset, "Invalid encoding of checksum value.");
                 }
