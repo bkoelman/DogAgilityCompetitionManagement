@@ -30,16 +30,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         [CanBeNull]
         public int? Value
         {
-            get
-            {
-                return innerValue;
-            }
+            get => innerValue;
             set
             {
                 if (value != null && (value < MinValue || value > MaxValue))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value,
-                        $"Value of {GetType().Name} {Name} must be in range [{MinValue}-{MaxValue}].");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be in range [{MinValue}-{MaxValue}].");
                 }
 
                 innerValue = value;
@@ -122,6 +118,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
+
             try
             {
                 Value = int.Parse(new string(chars));
@@ -139,6 +136,9 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        }
     }
 }

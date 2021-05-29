@@ -9,10 +9,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class NextCompetitorNumberBlink : NotNullableVisualizationChange<bool>
     {
         [NotNull]
-        public static NextCompetitorNumberBlink On => new NextCompetitorNumberBlink(true);
+        public static NextCompetitorNumberBlink On => new(true);
 
         [NotNull]
-        public static NextCompetitorNumberBlink Off => new NextCompetitorNumberBlink(false);
+        public static NextCompetitorNumberBlink Off => new(false);
 
         public NextCompetitorNumberBlink(bool value)
             : base(value)

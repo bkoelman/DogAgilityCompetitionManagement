@@ -16,22 +16,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     public sealed partial class CompetitionPictureAlert : UserControl
     {
         [Category("Behavior")]
-        [DefaultValue(typeof (ErrorProvider), null)]
+        [DefaultValue(typeof(ErrorProvider), null)]
         [CanBeNull]
         public ErrorProvider ErrorProvider { get; set; }
 
         [Category("Appearance")]
-        [DefaultValue(typeof (string), "")]
+        [DefaultValue(typeof(string), "")]
         [CanBeNull]
         public string AlertName { get; set; }
 
         [NotNull]
         public AlertPictureSourceItem Item
         {
-            get
-            {
-                return new AlertPictureSourceItem(enabledCheckBox.Checked, pathTextBox.Text);
-            }
+            get => new(enabledCheckBox.Checked, pathTextBox.Text);
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -114,11 +111,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Title = @"Select picture file";
-                dialog.Filter =
-                    @"All pictures (*.bmp;*.gif;*.jpg;*.png;*.tiff)|*.bmp;*.gif;*.jpg;*.png;*.tiff|Bitmap (*.bmp)|*.bmp|" +
-                        @"Graphics Interchange Format (*.gif)|*.gif|Joint Photographic Experts Group (*.jpg)|*.jpg" +
-                        @"|Portable Network Graphics (*.png)|*.png|Tag Image File Format (*.tiff)|*.tiff|All files (*.*)|*.*";
+                dialog.Title = "Select picture file";
+
+                dialog.Filter = "All pictures (*.bmp;*.gif;*.jpg;*.png;*.tiff)|*.bmp;*.gif;*.jpg;*.png;*.tiff|Bitmap (*.bmp)|*.bmp|" +
+                    "Graphics Interchange Format (*.gif)|*.gif|Joint Photographic Experts Group (*.jpg)|*.jpg" +
+                    "|Portable Network Graphics (*.png)|*.png|Tag Image File Format (*.tiff)|*.tiff|All files (*.*)|*.*";
+
                 dialog.FileName = pathTextBox.Text;
 
                 if (dialog.ShowDialog() == DialogResult.OK)

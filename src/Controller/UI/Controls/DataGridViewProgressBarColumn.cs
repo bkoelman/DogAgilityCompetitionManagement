@@ -15,10 +15,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             get
             {
                 var result = CellTemplate as DataGridViewProgressBarCell;
+
                 if (result == null)
                 {
                     throw new InvalidOperationException("CellTemplate is not properly set.");
                 }
+
                 return result;
             }
         }
@@ -28,22 +30,21 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// </summary>
         public int Maximum
         {
-            get
-            {
-                return ProgressBarCell.Maximum;
-            }
+            get => ProgressBarCell.Maximum;
             set
             {
                 if (Maximum != value)
                 {
                     ProgressBarCell.Maximum = value;
+
                     if (DataGridView != null)
                     {
                         int rowCount = DataGridView.RowCount;
+
                         for (int i = 0; i < rowCount; i++)
                         {
                             DataGridViewRow r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell) r.Cells[Index]).Maximum = value;
+                            ((DataGridViewProgressBarCell)r.Cells[Index]).Maximum = value;
                         }
                     }
                 }
@@ -55,10 +56,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// </summary>
         public int Minimum
         {
-            get
-            {
-                return ProgressBarCell.Minimum;
-            }
+            get => ProgressBarCell.Minimum;
             set
             {
                 if (Minimum != value)
@@ -68,10 +66,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                     if (DataGridView != null)
                     {
                         int rowCount = DataGridView.RowCount;
+
                         for (int i = 0; i < rowCount; i++)
                         {
                             DataGridViewRow r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell) r.Cells[Index]).Minimum = value;
+                            ((DataGridViewProgressBarCell)r.Cells[Index]).Minimum = value;
                         }
                     }
                 }

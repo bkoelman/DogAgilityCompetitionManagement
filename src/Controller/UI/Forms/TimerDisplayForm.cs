@@ -25,6 +25,17 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [ItemNotNull]
         private readonly RunHistoryLine[] historyLines;
 
+        [CanBeNull]
+        private DateTime? startTime;
+
+        private int secondaryTimeHighlightCount;
+
+        [CanBeNull]
+        private Panel rankingsOverlayPanel;
+
+        [CanBeNull]
+        private NotifyPictureForm lastPlayedAnimationForm;
+
         protected override CreateParams CreateParams
         {
             get
@@ -74,13 +85,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
-                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
-                : string.Empty;
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}" : string.Empty;
         }
-
-        [CanBeNull]
-        private DateTime? startTime;
 
         void IVisualizationActor.StartPrimaryTimer()
         {
@@ -108,8 +114,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             displayRefreshTimer.Enabled = false;
             startTime = null;
         }
-
-        private int secondaryTimeHighlightCount;
 
         void IVisualizationActor.SetOrClearSecondaryTime(TimeSpan? time, bool doBlink)
         {
@@ -150,9 +154,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor competitor)
         {
-            currentCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            currentCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
             currentHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             currentDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
@@ -169,9 +171,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         void IVisualizationActor.SetOrClearNextCompetitor(Competitor competitor)
         {
-            nextCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            nextCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
             nextHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             nextDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
@@ -190,25 +190,20 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             if (competitorRunResult != null)
             {
-                prevCompetitorNumberLabel.Text =
-                    TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
+                prevCompetitorNumberLabel.Text = TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
                 prevHandlerNameLabel.Text = competitorRunResult.Competitor.HandlerName;
                 prevDogNameLabel.Text = competitorRunResult.Competitor.DogName;
+
                 prevTimeLabel.Text =
-                    TextFormatting.FormatTime(
-                        competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime)
-                            .TimeValue);
+                    TextFormatting.FormatTime(competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime).TimeValue);
+
                 prevFaultsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.FaultCount, 2);
                 prevRefusalsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.RefusalCount, 2);
 
-                Color foreColor = competitorRunResult.IsEliminated
-                    ? RunHistoryLine.EliminationColor
-                    : SystemColors.ControlText;
+                Color foreColor = competitorRunResult.IsEliminated ? RunHistoryLine.EliminationColor : SystemColors.ControlText;
                 prevTimeLabel.ForeColor = foreColor;
                 prevPlacementLabel.ForeColor = foreColor;
-                prevPlacementLabel.Text = competitorRunResult.IsEliminated
-                    ? @"X"
-                    : TextFormatting.FormatPlacement(competitorRunResult.Placement);
+                prevPlacementLabel.Text = competitorRunResult.IsEliminated ? "X" : TextFormatting.FormatPlacement(competitorRunResult.Placement);
             }
             else
             {
@@ -225,6 +220,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         void IVisualizationActor.SetOrClearRankings(IEnumerable<CompetitionRunResult> rankings)
         {
             int index = 0;
+
             foreach (CompetitionRunResult runResult in rankings.Take(historyLines.Length))
             {
                 historyLines[index].SetCompetitionRunResult(runResult);
@@ -237,12 +233,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        [CanBeNull]
-        private Panel rankingsOverlayPanel;
-
         void IVisualizationActor.SetClockSynchronizationMode(ClockSynchronizationMode mode)
         {
             string message;
+
             switch (mode)
             {
                 case ClockSynchronizationMode.RecommendSynchronization:
@@ -257,6 +251,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
 
             RemoveRankingsOverlay();
+
             if (message != null)
             {
                 rankingsOverlayPanel = CreateRankingsOverlay(message);
@@ -301,9 +296,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             };
         }
 
-        [CanBeNull]
-        private NotifyPictureForm lastPlayedAnimationForm;
-
         void IVisualizationActor.StartAnimation(Bitmap bitmap)
         {
             lastPlayedAnimationForm?.Cancel();
@@ -313,10 +305,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             lastPlayedAnimationForm.ShowAnimated(this, bitmap);
         }
 
-        private void LastPlayedAnimationFormOnAnimationCompleted([CanBeNull] object sender,
-            [NotNull] EventArgs eventArgs)
+        private void LastPlayedAnimationFormOnAnimationCompleted([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
         {
             var source = sender as NotifyPictureForm;
+
             if (source != null)
             {
                 source.AnimationCompleted -= LastPlayedAnimationFormOnAnimationCompleted;

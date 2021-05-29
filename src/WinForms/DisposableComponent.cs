@@ -11,6 +11,20 @@ namespace DogAgilityCompetition.WinForms
     public sealed class DisposableComponent<T> : IComponent
         where T : class, IDisposable
     {
+        [NotNull]
+        public T Component { get; }
+
+        [CanBeNull]
+        public ISite Site
+        {
+            get => null;
+            set
+            {
+            }
+        }
+
+        public event EventHandler Disposed;
+
         public DisposableComponent([NotNull] T disposable, [CanBeNull] ref IContainer container)
         {
             Guard.NotNull(disposable, nameof(disposable));
@@ -24,30 +38,14 @@ namespace DogAgilityCompetition.WinForms
                 // ensure a container ourselves in order for Dispose to be called from generated code.
                 container = new Container();
             }
+
             container.Add(this);
         }
-
-        [NotNull]
-        public T Component { get; }
 
         public void Dispose()
         {
             Component.Dispose();
             Disposed?.Invoke(this, EventArgs.Empty);
         }
-
-        [CanBeNull]
-        public ISite Site
-        {
-            get
-            {
-                return null;
-            }
-            set
-            {
-            }
-        }
-
-        public event EventHandler Disposed;
     }
 }

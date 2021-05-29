@@ -14,44 +14,33 @@ namespace DogAgilityCompetition.Specs.Facilities
     /// </summary>
     public class CirceUsbLoopbackTestRunner : IDisposable
     {
+        private static readonly TimeSpan DefaultRunTimeout = TimeSpan.FromMilliseconds(1000);
+
+        [NotNull]
+        private readonly ManualResetEvent manualResetEvent;
+
+        [CanBeNull]
+        private TimeSpan? timeout;
+
+        [CanBeNull]
+        private Version protocolVersion;
+
         [NotNull]
         public CirceControllerSessionManager RemoteSessionManager { get; }
 
         [NotNull]
         public CirceComConnection Connection { get; }
 
-        [NotNull]
-        private readonly ManualResetEvent manualResetEvent;
-
-        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
-
-        private static readonly TimeSpan DefaultRunTimeout = TimeSpan.FromMilliseconds(1000);
-
-        [CanBeNull]
-        private TimeSpan? timeout;
-
         public TimeSpan RunTimeout
         {
-            get
-            {
-                return timeout ?? DefaultRunTimeout;
-            }
-            set
-            {
-                timeout = value;
-            }
+            get => timeout ?? DefaultRunTimeout;
+            set => timeout = value;
         }
-
-        [CanBeNull]
-        private Version protocolVersion;
 
         [NotNull]
         public Version ProtocolVersion
         {
-            get
-            {
-                return protocolVersion ?? KeepAliveOperation.CurrentProtocolVersion;
-            }
+            get => protocolVersion ?? KeepAliveOperation.CurrentProtocolVersion;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -60,6 +49,8 @@ namespace DogAgilityCompetition.Specs.Facilities
         }
 
         public int MediatorStatusCode { get; set; }
+
+        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
 
         public CirceUsbLoopbackTestRunner()
         {
@@ -94,6 +85,7 @@ namespace DogAgilityCompetition.Specs.Facilities
         private void ConnectionOnOperationReceived([CanBeNull] object sender, [NotNull] IncomingOperationEventArgs e)
         {
             var loginOperation = e.Operation as LoginOperation;
+
             if (loginOperation != null)
             {
                 Connection.Send(new KeepAliveOperation(ProtocolVersion, MediatorStatusCode));
@@ -114,6 +106,7 @@ namespace DogAgilityCompetition.Specs.Facilities
             Task.Factory.StartNew(() =>
             {
                 bool done;
+
                 do
                 {
                     done = manualResetEvent.WaitOne(500);

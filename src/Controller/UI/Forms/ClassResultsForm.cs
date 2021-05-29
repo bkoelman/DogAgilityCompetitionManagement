@@ -34,16 +34,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             using (var dialog = new SaveFileDialog())
             {
-                dialog.Title = @"Select competitors file for export";
-                dialog.Filter = @"Csv files (*.csv)|*.csv|All files (*.*)|*.*";
+                dialog.Title = "Select competitors file for export";
+                dialog.Filter = "Csv files (*.csv)|*.csv|All files (*.*)|*.*";
 
                 dialog.FileName = ProposeFileNameFor(originalVersion);
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     var calculator = new ClassPlacementCalculator(originalVersion);
-                    IEnumerable<CompetitionRunResult> runResultsRecalculated =
-                        calculator.Recalculate(runResultsGrid.DataSource);
+                    IEnumerable<CompetitionRunResult> runResultsRecalculated = calculator.Recalculate(runResultsGrid.DataSource);
 
                     RunResultsExporter.ExportTo(dialog.FileName, runResultsRecalculated);
                 }
@@ -66,12 +65,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private static void AddToBuilder([CanBeNull] string value, [NotNull] StringBuilder textBuilder)
         {
             string safeValue = MakeSafeForFileName(value);
+
             if (!string.IsNullOrEmpty(safeValue))
             {
                 if (textBuilder.Length > 0)
                 {
                     textBuilder.Append("-");
                 }
+
                 textBuilder.Append(safeValue);
             }
         }
@@ -86,6 +87,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                     text = text.Replace(ch.ToString(), string.Empty);
                 }
             }
+
             return text;
         }
 
@@ -96,8 +98,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            CompetitionClassModel newVersion =
-                originalVersion.ChangeRunResults(runResultsGrid.DataSource).RecalculatePlacements();
+            CompetitionClassModel newVersion = originalVersion.ChangeRunResults(runResultsGrid.DataSource).RecalculatePlacements();
 
             originalVersion = CacheManager.DefaultInstance.ReplaceModel(newVersion, originalVersion);
             DialogResult = DialogResult.OK;

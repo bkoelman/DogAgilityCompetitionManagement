@@ -23,19 +23,22 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         public static DeviceCapabilities ToCapabilities(this RemoteEmulatorFeatures features)
         {
             var capabilities = DeviceCapabilities.None;
+
             if ((features & RemoteEmulatorFeatures.CoreKeys) != 0)
             {
                 capabilities |= DeviceCapabilities.ControlKeypad;
             }
+
             if ((features & RemoteEmulatorFeatures.NumericKeys) != 0)
             {
                 capabilities |= DeviceCapabilities.NumericKeypad;
             }
+
             if ((features & RemoteEmulatorFeatures.TimerKeys) != 0)
             {
-                capabilities |= DeviceCapabilities.StartSensor | DeviceCapabilities.IntermediateSensor |
-                    DeviceCapabilities.FinishSensor;
+                capabilities |= DeviceCapabilities.StartSensor | DeviceCapabilities.IntermediateSensor | DeviceCapabilities.FinishSensor;
             }
+
             return capabilities;
         }
     }

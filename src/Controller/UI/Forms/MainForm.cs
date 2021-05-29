@@ -28,51 +28,51 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private readonly DisposableComponent<CirceControllerSessionManager> sessionManager;
 
         [NotNull]
-        private readonly NetworkHealthMonitor healthMonitor = new NetworkHealthMonitor();
+        private readonly NetworkHealthMonitor healthMonitor = new();
 
         [NotNull]
-        private readonly ClockSynchronizationMonitor clockSynchronizationMonitor = new ClockSynchronizationMonitor();
+        private readonly ClockSynchronizationMonitor clockSynchronizationMonitor = new();
 
         [NotNull]
         private readonly DisposableComponent<CompetitionClassController> classController;
 
         [NotNull]
-        private readonly DeviceActionAdapter actionAdapter = new DeviceActionAdapter();
+        private readonly DeviceActionAdapter actionAdapter = new();
 
         [NotNull]
-        private readonly NumberEntryFilter numberFilter = new NumberEntryFilter();
+        private readonly NumberEntryFilter numberFilter = new();
 
         [NotNull]
-        private readonly RemoteKeyTracker keyTracker = new RemoteKeyTracker();
+        private readonly RemoteKeyTracker keyTracker = new();
 
         [NotNull]
         private readonly NetworkSetupForm networkSetupForm;
 
         [NotNull]
-        private readonly TimerDisplayForm timerDisplayForm = new TimerDisplayForm();
+        private readonly TimerDisplayForm timerDisplayForm = new();
 
         [NotNull]
-        private readonly WirelessDisplayRunVisualizer wirelessRunVisualizer = new WirelessDisplayRunVisualizer();
+        private readonly WirelessDisplayRunVisualizer wirelessRunVisualizer = new();
 
         [NotNull]
-        private readonly ClassResultsDisplayForm classResultsDisplayForm = new ClassResultsDisplayForm();
+        private readonly ClassResultsDisplayForm classResultsDisplayForm = new();
 
         [NotNull]
-        private readonly CustomDisplayForm customDisplayForm = new CustomDisplayForm();
+        private readonly CustomDisplayForm customDisplayForm = new();
 
         [NotNull]
-        private readonly LogForm logForm = new LogForm();
+        private readonly LogForm logForm = new();
 
         [NotNull]
         private CompetitionClassRequirements requirements = CompetitionClassRequirements.Default;
 
+        [CanBeNull]
+        private Process emulatorProcess;
+
         [NotNull]
         private CompetitionClassRequirements Requirements
         {
-            get
-            {
-                return requirements;
-            }
+            get => requirements;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -81,9 +81,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                 healthMonitor.SetClassRequirements(requirements);
             }
         }
-
-        [CanBeNull]
-        private Process emulatorProcess;
 
         public MainForm()
         {
@@ -96,18 +93,16 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // Reason: Assignment is unneeded because this registers a callback to the allocated object.
             new DisposableComponent<DisposableHolder>(new DisposableHolder(EmulatorProcessKill), ref components);
 
-            var runVisualizer =
-                new CompositeRunVisualizer(new ICompetitionRunVisualizer[]
-                {
-                    new WinFormsVisualizer(this, competitionStateOverview),
-                    new WinFormsVisualizer(this, timerDisplayForm),
-                    wirelessRunVisualizer
-                });
+            var runVisualizer = new CompositeRunVisualizer(new ICompetitionRunVisualizer[]
+            {
+                new WinFormsVisualizer(this, competitionStateOverview),
+                new WinFormsVisualizer(this, timerDisplayForm),
+                wirelessRunVisualizer
+            });
 
             classController =
                 new DisposableComponent<CompetitionClassController>(
-                    new CompetitionClassController(() => healthMonitor.GetLatest(), clockSynchronizationMonitor,
-                        runVisualizer), ref components);
+                    new CompetitionClassController(() => healthMonitor.GetLatest(), clockSynchronizationMonitor, runVisualizer), ref components);
 
 #if DEBUG
             logLinkLabel.Visible = true;
@@ -115,7 +110,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
             emulatorLinkLabel.Visible = HasEmulatorFiles();
 
-            logForm.VisibleChanged += (s, e) => { logLinkLabel.Text = logForm.Visible ? "Hide log" : "Show log"; };
+            logForm.VisibleChanged += (s, e) => logLinkLabel.Text = logForm.Visible ? "Hide log" : "Show log";
 
             networkSetupForm = new NetworkSetupForm(this);
 
@@ -125,29 +120,20 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                 ShowNetworkHealth(e.Argument);
             });
 
-            classController.Component.UnknownErrorDuringSave +=
-                (s, e) => this.EnsureOnMainThread(() => ShowError(e.Argument.ToString()));
+            classController.Component.UnknownErrorDuringSave += (s, e) => this.EnsureOnMainThread(() => ShowError(e.Argument.ToString()));
             classController.Component.Aborted += (s, e) => this.EnsureOnMainThread(ClassControllerOnAborted);
-            classController.Component.RankingChanged +=
-                (s, e) => this.EnsureOnMainThread(() => ClassControllerOnRankingChanged(e));
-            classController.Component.StateTransitioned +=
-                (s, e) => this.EnsureOnMainThread(() => stateVisualizer.TransitionTo(e.Argument));
+            classController.Component.RankingChanged += (s, e) => this.EnsureOnMainThread(() => ClassControllerOnRankingChanged(e));
+            classController.Component.StateTransitioned += (s, e) => this.EnsureOnMainThread(() => stateVisualizer.TransitionTo(e.Argument));
 
             networkStatusView.SwitchToStatusMode();
 
             actionAdapter.CommandReceived += (s, e) => classController.Component.HandleCommand(e.Command);
-            actionAdapter.GatePassed +=
-                (s, e) => classController.Component.HandleGatePassed(e.SensorTime, e.GatePassage, e.Source);
+            actionAdapter.GatePassed += (s, e) => classController.Component.HandleGatePassed(e.SensorTime, e.GatePassage, e.Source);
 
-            numberFilter.NotifyCompetitorSelecting +=
-                (s, e) => classController.Component.StartCompetitorSelection(e.IsCurrentCompetitor);
-            numberFilter.NotifyDigitReceived +=
-                (s, e) => classController.Component.ReceiveDigit(e.IsCurrentCompetitor, e.CompetitorNumber);
-            numberFilter.NotifyCompetitorSelectCanceled +=
-                (s, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, null);
-            numberFilter.NotifyCompetitorSelected +=
-                (s, e) =>
-                    classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, e.CompetitorNumber);
+            numberFilter.NotifyCompetitorSelecting += (s, e) => classController.Component.StartCompetitorSelection(e.IsCurrentCompetitor);
+            numberFilter.NotifyDigitReceived += (s, e) => classController.Component.ReceiveDigit(e.IsCurrentCompetitor, e.CompetitorNumber);
+            numberFilter.NotifyCompetitorSelectCanceled += (s, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, null);
+            numberFilter.NotifyCompetitorSelected += (s, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, e.CompetitorNumber);
             numberFilter.NotifyUnknownAction += (s, e) => actionAdapter.Adapt(e.Source, e.Key, e.SensorTime);
 
             keyTracker.ModifierKeyDown += (s, e) => numberFilter.HandleModifierKeyDown(e.Source, e.Modifier);
@@ -155,34 +141,28 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             keyTracker.ModifierKeyUp += (s, e) => numberFilter.HandleModifierKeyUp(e.Source, e.Modifier);
             keyTracker.MissingKey += (s, e) => numberFilter.HandleMissingKey(e.Source, e.SensorTime);
 
-            sessionManager = new DisposableComponent<CirceControllerSessionManager>(
-                new CirceControllerSessionManager(), ref components);
+            sessionManager = new DisposableComponent<CirceControllerSessionManager>(new CirceControllerSessionManager(), ref components);
             sessionManager.Component.PacketSending += (s, e) => this.EnsureOnMainThread(() => logForm.PulseOutputLed());
             sessionManager.Component.PacketReceived += (s, e) => this.EnsureOnMainThread(() => logForm.PulseInputLed());
+
             sessionManager.Component.ConnectionStateChanged += (s, e) =>
             {
                 healthMonitor.HandleConnectionStateChanged(e.State);
-                this.EnsureOnMainThread(
-                    () => { networkStatusView.IsConnected = e.State == ControllerConnectionState.Connected; });
+                this.EnsureOnMainThread(() => networkStatusView.IsConnected = e.State == ControllerConnectionState.Connected);
             };
+
             sessionManager.Component.DeviceActionReceived += (s, e) => keyTracker.ProcessDeviceAction(e.Argument);
 
             sessionManager.Component.DeviceTracker.DeviceAdded += (s, e) => healthMonitor.HandleDeviceAdded(e.Argument);
-            sessionManager.Component.DeviceTracker.DeviceChanged +=
-                (s, e) => healthMonitor.HandleDeviceChanged(e.Argument);
-            sessionManager.Component.DeviceTracker.DeviceRemoved +=
-                (s, e) => healthMonitor.HandleDeviceRemoved(e.Argument);
-            sessionManager.Component.DeviceTracker.MediatorStatusChanged +=
-                (s, e) => healthMonitor.HandleMediatorStatusChanged(e.Argument);
+            sessionManager.Component.DeviceTracker.DeviceChanged += (s, e) => healthMonitor.HandleDeviceChanged(e.Argument);
+            sessionManager.Component.DeviceTracker.DeviceRemoved += (s, e) => healthMonitor.HandleDeviceRemoved(e.Argument);
+            sessionManager.Component.DeviceTracker.MediatorStatusChanged += (s, e) => healthMonitor.HandleMediatorStatusChanged(e.Argument);
 
             clockSynchronizationMonitor.Initialize(sessionManager.Component);
 
-            sessionManager.Component.DeviceTracker.DeviceAdded +=
-                (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
-            sessionManager.Component.DeviceTracker.DeviceChanged +=
-                (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
-            sessionManager.Component.DeviceTracker.DeviceRemoved +=
-                (s, e) => this.EnsureOnMainThread(() => networkStatusView.Remove(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceAdded += (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceChanged += (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceRemoved += (s, e) => this.EnsureOnMainThread(() => networkStatusView.Remove(e.Argument));
 
             networkSetupForm.SessionManager = sessionManager.Component;
         }
@@ -196,11 +176,13 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             LoadSettings();
 
-            Requirements =
-                Requirements.ChangeIntermediateTimerCount(
-                    CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
-                    .ChangeStartFinishMinDelayForSingleSensor(
-                        CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
+            // @formatter:keep_existing_linebreaks true
+
+            Requirements = Requirements
+                .ChangeIntermediateTimerCount(CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
+                .ChangeStartFinishMinDelayForSingleSensor(CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
+
+            // @formatter:keep_existing_linebreaks restore
 
             ApplyModelChangesToDisplayForms();
 
@@ -244,11 +226,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    Requirements =
-                        Requirements.ChangeIntermediateTimerCount(
-                            CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
-                            .ChangeStartFinishMinDelayForSingleSensor(
-                                CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
+                    // @formatter:keep_existing_linebreaks true
+
+                    Requirements = Requirements
+                        .ChangeIntermediateTimerCount(CacheManager.DefaultInstance.ActiveModel.IntermediateTimerCount)
+                        .ChangeStartFinishMinDelayForSingleSensor(CacheManager.DefaultInstance.ActiveModel.StartFinishMinDelayForSingleSensor);
+
+                    // @formatter:keep_existing_linebreaks restore
+
                     healthMonitor.ForceChanged();
 
                     ApplyModelChangesToDisplayForms();
@@ -263,8 +248,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             CompetitionRunResult lastCompleted = modelSnapshot.GetLastCompletedOrNull();
             lastCompletedRunEditor.TryUpdateWith(lastCompleted);
 
-            IReadOnlyCollection<CompetitionRunResult> rankings =
-                modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
+            IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
             classResultsDisplayForm.UpdateRankings(rankings);
             classResultsDisplayForm.SetClass(modelSnapshot.ClassInfo);
 
@@ -327,8 +311,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void ToggleActiveDisplay([CanBeNull] Form formToShow)
         {
-            List<Form> formsToHide =
-                new Form[] { timerDisplayForm, classResultsDisplayForm, customDisplayForm }.ToList();
+            List<Form> formsToHide = new Form[]
+            {
+                timerDisplayForm,
+                classResultsDisplayForm,
+                customDisplayForm
+            }.ToList();
 
             if (formToShow != null)
             {
@@ -348,6 +336,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 Screen currentScreen = Screen.FromControl(this);
                 Screen otherScreen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName != currentScreen.DeviceName);
+
                 if (otherScreen != null)
                 {
                     form.StartPosition = FormStartPosition.Manual;
@@ -415,8 +404,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                 }
             }
 
-            if (healthReport.MediatorStatus != KnownMediatorStatusCode.Normal &&
-                healthReport.MediatorStatus != KnownMediatorStatusCode.MediatorUnconfigured)
+            if (healthReport.MediatorStatus != KnownMediatorStatusCode.Normal && healthReport.MediatorStatus != KnownMediatorStatusCode.MediatorUnconfigured)
             {
                 string statusName = KnownMediatorStatusCode.GetNameFor(healthReport.MediatorStatus);
                 messageBuilder.AppendLine($"Mediator reports status {statusName}.");
@@ -448,8 +436,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             healthTextBox.Text = messageBuilder.ToString();
         }
 
-        private void LastCompletedRunEditor_RunResultChanging([CanBeNull] object sender,
-            [NotNull] RunResultChangingEventArgs e)
+        private void LastCompletedRunEditor_RunResultChanging([CanBeNull] object sender, [NotNull] RunResultChangingEventArgs e)
         {
             string errorMessage = classController.Component.TryUpdateRunResult(e.OriginalRunResult, e.NewRunResult);
             e.ErrorMessage = errorMessage;
@@ -465,14 +452,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             if (emulatorProcess == null)
             {
                 string emulatorExePath = GetEmulatorExePath();
+
                 if (emulatorExePath == null)
                 {
-                    MessageBox.Show("DogAgilityCompetitionMediatorEmulator.exe not found.", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("DogAgilityCompetitionMediatorEmulator.exe not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 string emulatorXmlPath = GetEmulatorXmlPath();
+
                 if (emulatorXmlPath == null)
                 {
                     MessageBox.Show("RemoteForDebug.xml not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -489,11 +477,11 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = emulatorExePath,
-                    Arguments =
-                        $"\"{emulatorXmlPath}\" transparentontop pos={yPos}x{xPos} size={emulatorHeight}x{emulatorWidth}"
+                    Arguments = $"\"{emulatorXmlPath}\" transparentontop pos={yPos}x{xPos} size={emulatorHeight}x{emulatorWidth}"
                 };
 
                 emulatorProcess = Process.Start(startInfo);
+
                 if (emulatorProcess != null)
                 {
                     emulatorProcess.EnableRaisingEvents = true;

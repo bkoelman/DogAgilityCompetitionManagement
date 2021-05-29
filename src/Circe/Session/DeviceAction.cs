@@ -23,8 +23,7 @@ namespace DogAgilityCompetition.Circe.Session
         [CanBeNull]
         public TimeSpan? SensorTime { get; }
 
-        public DeviceAction([NotNull] WirelessNetworkAddress deviceAddress, [CanBeNull] RawDeviceKeys? inputKeys,
-            [CanBeNull] TimeSpan? sensorTime)
+        public DeviceAction([NotNull] WirelessNetworkAddress deviceAddress, [CanBeNull] RawDeviceKeys? inputKeys, [CanBeNull] TimeSpan? sensorTime)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -37,12 +36,14 @@ namespace DogAgilityCompetition.Circe.Session
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
                 formatter.Append(() => DeviceAddress, () => DeviceAddress);
                 formatter.Append(() => InputKeys, () => InputKeys);
                 formatter.Append(() => SensorTime, () => SensorTime);
             }
+
             return textBuilder.ToString();
         }
 
@@ -59,13 +60,16 @@ namespace DogAgilityCompetition.Circe.Session
         [NotNull]
         public Operation ToOperation()
         {
-            return new NotifyActionOperation(DeviceAddress) { InputKeys = InputKeys, SensorTime = SensorTime };
+            return new NotifyActionOperation(DeviceAddress)
+            {
+                InputKeys = InputKeys,
+                SensorTime = SensorTime
+            };
         }
 
         public bool Equals([CanBeNull] DeviceAction other)
         {
-            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.InputKeys == InputKeys &&
-                other.SensorTime == SensorTime;
+            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.InputKeys == InputKeys && other.SensorTime == SensorTime;
         }
 
         public override bool Equals([CanBeNull] object obj)
@@ -84,10 +88,12 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 

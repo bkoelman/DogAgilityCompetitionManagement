@@ -26,15 +26,18 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         private readonly FreshNotNullableReference<CirceMediatorSessionManager> sessionManager;
 
         [NotNull]
-        private readonly FreshReference<DeviceStatus> lastStatus = new FreshReference<DeviceStatus>(null);
+        private readonly FreshReference<DeviceStatus> lastStatus = new(null);
 
         // Prevents endless recursion when updating controls that raise change events.
         private bool isUpdatingControlsFromSettings;
 
+        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
+
+        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
+
         public event EventHandler<EventArgs<WirelessNetworkAddress>> DeviceRemoved;
 
-        public GateForm([NotNull] GateSettingsXml gateSettings, bool initiallyMaximized,
-            [NotNull] CirceMediatorSessionManager mediatorSessionManager)
+        public GateForm([NotNull] GateSettingsXml gateSettings, bool initiallyMaximized, [NotNull] CirceMediatorSessionManager mediatorSessionManager)
         {
             Guard.NotNull(gateSettings, nameof(gateSettings));
             Guard.NotNull(mediatorSessionManager, nameof(mediatorSessionManager));
@@ -62,7 +65,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 isUpdatingControlsFromSettings = true;
 
-                Text = @"Gate " + settings.DeviceAddressNotNull;
+                Text = "Gate " + settings.DeviceAddressNotNull;
 
                 powerStatus.IsPoweredOn = settings.IsPoweredOn;
                 signalButton.Enabled = settings.IsPoweredOn;
@@ -92,9 +95,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
 
             lastStatus.Value = settings.IsPoweredOn
-                ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork, DeviceCapabilities.TimeSensor,
-                    settings.RolesAssigned, settings.SignalStrength, settings.BatteryStatus, settings.IsAligned,
-                    hardwareStatus.SynchronizationStatus, settings.HasVersionMismatch.TrueOrNull())
+                ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork, DeviceCapabilities.TimeSensor, settings.RolesAssigned,
+                    settings.SignalStrength, settings.BatteryStatus, settings.IsAligned, hardwareStatus.SynchronizationStatus,
+                    settings.HasVersionMismatch.TrueOrNull())
                 : null;
         }
 
@@ -151,10 +154,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
             DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(settings.DeviceAddressNotNull));
         }
-
-        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
-
-        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
 
         void IWirelessDevice.ChangeAddress(WirelessNetworkAddress newAddress)
         {

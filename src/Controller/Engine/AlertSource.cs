@@ -13,13 +13,13 @@ namespace DogAgilityCompetition.Controller.Engine
     public sealed class AlertSource : IDisposable
     {
         [NotNull]
-        public static readonly AlertSource None = new AlertSource(AlertPictureSourceItem.None, AlertSoundSourceItem.None);
+        public static readonly AlertSource None = new(AlertPictureSourceItem.None, AlertSoundSourceItem.None);
 
         [NotNull]
         public AlertPictureSourceItem Picture { get; }
 
         [NotNull]
-        public AlertSoundSourceItem Sound { get; private set; }
+        public AlertSoundSourceItem Sound { get; }
 
         public AlertSource([NotNull] AlertPictureSourceItem picture, [NotNull] AlertSoundSourceItem sound)
         {

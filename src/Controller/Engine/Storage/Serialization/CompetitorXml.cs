@@ -58,6 +58,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             {
                 throw new InvalidDataException("Competitor handler name is missing or empty in XML file.");
             }
+
             return source.HandlerName;
         }
 
@@ -69,6 +70,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             {
                 throw new InvalidDataException("Competitor dog name is missing or empty in XML file.");
             }
+
             return source.DogName;
         }
     }

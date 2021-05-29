@@ -19,19 +19,18 @@ namespace DogAgilityCompetition.Controller.Engine
         [NotNull]
         private readonly Timer maximumCourseTimeTimer;
 
+        [NotNull]
+        private readonly object stateLock = new();
+
         private bool maximumCourseTimeElapsed; // Protected by stateLock
 
         private bool isManuallyEliminated; // Protected by stateLock
 
         private int refusalCount; // Protected by stateLock
 
-        [NotNull]
-        private readonly object stateLock = new object();
-
         private int MaxRefusalsValue => refusalStepSize * eliminationThreshold;
 
-        public event EventHandler<EliminationEventArgs> EliminationChanged;
-        public event EventHandler<EventArgs<int>> RefusalCountChanged;
+        private bool UnsafeIsEliminated => isManuallyEliminated || refusalCount >= MaxRefusalsValue || maximumCourseTimeElapsed;
 
         public bool IsEliminated
         {
@@ -49,9 +48,6 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private bool UnsafeIsEliminated
-            => isManuallyEliminated || refusalCount >= MaxRefusalsValue || maximumCourseTimeElapsed;
-
         public bool IsManuallyEliminated
         {
             get
@@ -68,7 +64,10 @@ namespace DogAgilityCompetition.Controller.Engine
             }
             set
             {
-                RaiseEventsOnChangeWithLock(() => { isManuallyEliminated = value; });
+                RaiseEventsOnChangeWithLock(() =>
+                {
+                    isManuallyEliminated = value;
+                });
             }
         }
 
@@ -88,6 +87,9 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
+        public event EventHandler<EliminationEventArgs> EliminationChanged;
+        public event EventHandler<EventArgs<int>> RefusalCountChanged;
+
         public EliminationTracker(int refusalStepSize, int eliminationThreshold)
         {
             this.refusalStepSize = refusalStepSize;
@@ -98,7 +100,10 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private void MaximumCourseTimeTimerTick()
         {
-            RaiseEventsOnChangeWithLock(() => { maximumCourseTimeElapsed = true; });
+            RaiseEventsOnChangeWithLock(() =>
+            {
+                maximumCourseTimeElapsed = true;
+            });
         }
 
         public void IncreaseRefusals()
@@ -177,12 +182,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
                     action();
 
-                    argsForEliminationChanged = UnsafeIsEliminated != beforeIsEliminated
-                        ? new EliminationEventArgs(UnsafeIsEliminated)
-                        : null;
-                    argsForRefusalCountChanged = refusalCount != beforeRefusalCount
-                        ? new EventArgs<int>(refusalCount)
-                        : null;
+                    argsForEliminationChanged = UnsafeIsEliminated != beforeIsEliminated ? new EliminationEventArgs(UnsafeIsEliminated) : null;
+                    argsForRefusalCountChanged = refusalCount != beforeRefusalCount ? new EventArgs<int>(refusalCount) : null;
                 }
             }
 
@@ -190,6 +191,7 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 EliminationChanged?.Invoke(this, argsForEliminationChanged);
             }
+
             if (argsForRefusalCountChanged != null)
             {
                 RefusalCountChanged?.Invoke(this, argsForRefusalCountChanged);

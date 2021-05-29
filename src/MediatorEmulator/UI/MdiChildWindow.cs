@@ -17,8 +17,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
         private const int MenuStripHeight = 24;
         private const int ExtraSpace = 5;
 
-        public static void Register([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings,
-            bool initiallyMaximized, [CanBeNull] ref IContainer container)
+        public static void Register([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings, bool initiallyMaximized,
+            [CanBeNull] ref IContainer container)
         {
             Guard.NotNull(form, nameof(form));
             Guard.NotNull(settings, nameof(settings));
@@ -41,8 +41,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
             [NotNull]
             private readonly IWindowSettings settings;
 
-            public TargetWindow([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings,
-                bool initiallyMaximized)
+            public TargetWindow([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings, bool initiallyMaximized)
             {
                 Guard.NotNull(form, nameof(form));
                 Guard.NotNull(settings, nameof(settings));
@@ -59,22 +58,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
 
             private void FormOnLocationChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
             {
-                settings.WindowLocationX = form.WindowState == FormWindowState.Normal
-                    ? form.Location.X
-                    : form.RestoreBounds.Location.X;
-                settings.WindowLocationY = form.WindowState == FormWindowState.Normal
-                    ? form.Location.Y
-                    : form.RestoreBounds.Location.Y;
+                settings.WindowLocationX = form.WindowState == FormWindowState.Normal ? form.Location.X : form.RestoreBounds.Location.X;
+                settings.WindowLocationY = form.WindowState == FormWindowState.Normal ? form.Location.Y : form.RestoreBounds.Location.Y;
             }
 
             private void FormOnSizeChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
             {
-                settings.WindowHeight = form.WindowState == FormWindowState.Normal
-                    ? form.Size.Height
-                    : form.RestoreBounds.Height;
-                settings.WindowWidth = form.WindowState == FormWindowState.Normal
-                    ? form.Size.Width
-                    : form.RestoreBounds.Width;
+                settings.WindowHeight = form.WindowState == FormWindowState.Normal ? form.Size.Height : form.RestoreBounds.Height;
+                settings.WindowWidth = form.WindowState == FormWindowState.Normal ? form.Size.Width : form.RestoreBounds.Width;
             }
 
             private void FormOnWindowStateChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
@@ -114,6 +105,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
                     {
                         form.Width = form.MdiParent.ClientSize.Width - ExtraSpace;
                     }
+
                     if (form.Height > form.MdiParent.ClientSize.Height)
                     {
                         form.Height = form.MdiParent.ClientSize.Height - ExtraSpace - MenuStripHeight;
@@ -121,15 +113,17 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
 
                     int? newX = null;
                     int? newY = null;
+
                     if (form.Location.X < 0 || form.Location.X + form.Size.Width > form.MdiParent.ClientSize.Width)
                     {
                         newX = Math.Max(0, form.MdiParent.ClientSize.Width - form.Size.Width - ExtraSpace);
                     }
+
                     if (form.Location.Y < 0 || form.Location.Y + form.Size.Height > form.MdiParent.ClientSize.Height)
                     {
-                        newY = Math.Max(0,
-                            form.MdiParent.ClientSize.Height - form.Size.Height - ExtraSpace - MenuStripHeight);
+                        newY = Math.Max(0, form.MdiParent.ClientSize.Height - form.Size.Height - ExtraSpace - MenuStripHeight);
                     }
+
                     if (newX != null || newY != null)
                     {
                         form.Location = new Point(newX ?? form.Location.X, newY ?? form.Location.Y);

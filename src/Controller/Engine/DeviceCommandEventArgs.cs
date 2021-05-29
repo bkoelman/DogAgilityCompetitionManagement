@@ -14,6 +14,9 @@ namespace DogAgilityCompetition.Controller.Engine
             Command = command;
         }
 
-        public override string ToString() => $"{GetType().Name}: Command={Command}, Source={Source}";
+        public override string ToString()
+        {
+            return $"{GetType().Name}: Command={Command}, Source={Source}";
+        }
     }
 }

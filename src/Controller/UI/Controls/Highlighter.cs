@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private static readonly Color DefaultHighlightColor = Color.White;
 
         [NotNull]
-        private readonly Timer timer = new Timer();
+        private readonly Timer timer = new();
 
         [CanBeNull]
         private Color? nonHighlightingForeColor;
@@ -29,15 +29,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [CanBeNull]
         private IReadOnlyCollection<Color> colorTable;
 
-        public event EventHandler HighlightCycleFinished;
-
-        public Highlighter()
-        {
-            timer.Interval = 100;
-            timer.Tick += TimerOnTick;
-            HighlightColor = DefaultHighlightColor;
-        }
-
         [CanBeNull]
         public Control TargetControl { get; set; }
 
@@ -46,10 +37,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [DefaultValue(false)]
         public bool IsHighlightEnabled
         {
-            get
-            {
-                return isHighlightEnabled;
-            }
+            get => isHighlightEnabled;
             set
             {
                 if (value != isHighlightEnabled)
@@ -74,17 +62,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [DefaultValue(50)]
         public int HighlightSpeed
         {
-            get
-            {
-                return highlightSpeed;
-            }
+            get => highlightSpeed;
             set
             {
                 if (value != highlightSpeed)
                 {
                     if (value < 0 || value > 500)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), value, @"value must be in range [0-500].");
+                        throw new ArgumentOutOfRangeException(nameof(value), value, "value must be in range [0-500].");
                     }
 
                     if (!DesignMode)
@@ -102,6 +87,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                     highlightSpeed = value;
                 }
             }
+        }
+
+        public event EventHandler HighlightCycleFinished;
+
+        public Highlighter()
+        {
+            timer.Interval = 100;
+            timer.Tick += TimerOnTick;
+            HighlightColor = DefaultHighlightColor;
         }
 
         private void StartHighlighting()
@@ -157,6 +151,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             isAtEndOfCycle = false;
 
             indexInColorTable++;
+
             if (indexInColorTable == colorTable.Count)
             {
                 indexInColorTable = 0;
@@ -183,11 +178,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             private readonly double startSaturation;
             private readonly int tableSize;
             private readonly double stepSize;
-            private bool directionIsUp;
 
             [NotNull]
             [ItemNotNull]
             private readonly Lazy<IReadOnlyCollection<Color>> colorTableLazy;
+
+            private bool directionIsUp;
 
             [NotNull]
             public IReadOnlyCollection<Color> ColorTable => colorTableLazy.Value;
@@ -200,7 +196,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 startSaturation = startColor.GetSaturation();
 
                 this.tableSize = tableSize;
-                stepSize = 2 / (double) tableSize;
+                stepSize = 2 / (double)tableSize;
 
                 colorTableLazy = new Lazy<IReadOnlyCollection<Color>>(CreateColorTable);
             }
@@ -211,6 +207,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 var table = new List<Color>();
 
                 double currentSaturation = startSaturation;
+
                 for (int i = 0; i < tableSize; i++)
                 {
                     currentSaturation = GetNextValue(currentSaturation);

@@ -11,12 +11,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     public sealed class AlertEventArgs : EventArgs
     {
         [NotNull]
-        public WirelessNetworkAddress DestinationAddress { get; private set; }
+        public WirelessNetworkAddress DestinationAddress { get; }
 
         [CanBeNull]
         public Task Task { get; set; }
 
-        public CancellationToken CancelToken { get; private set; }
+        public CancellationToken CancelToken { get; }
 
         public AlertEventArgs([NotNull] WirelessNetworkAddress destinationAddress, CancellationToken cancelToken)
         {

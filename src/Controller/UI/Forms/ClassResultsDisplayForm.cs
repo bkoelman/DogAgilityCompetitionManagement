@@ -21,6 +21,17 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [ItemNotNull]
         private IReadOnlyCollection<CompetitionRunResult> pendingRefreshOfRankings;
 
+        public ClassResultsDisplayForm()
+        {
+            InitializeComponent();
+
+            CompetitionClassModel snapshot = CacheManager.DefaultInstance.ActiveModel;
+
+            IReadOnlyCollection<CompetitionRunResult> runResults = snapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
+            UpdateRankings(runResults);
+            SetClass(snapshot.ClassInfo);
+        }
+
         protected override void OnVisibleChanged([NotNull] EventArgs e)
         {
             base.OnVisibleChanged(e);
@@ -32,25 +43,18 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        public ClassResultsDisplayForm()
-        {
-            InitializeComponent();
-
-            CompetitionClassModel snapshot = CacheManager.DefaultInstance.ActiveModel;
-
-            IReadOnlyCollection<CompetitionRunResult> runResults =
-                snapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
-            UpdateRankings(runResults);
-            SetClass(snapshot.ClassInfo);
-        }
-
         public void UpdateRankings([ItemNotNull] [NotNull] IReadOnlyCollection<CompetitionRunResult> rankings)
         {
             Guard.NotNull(rankings, nameof(rankings));
 
             if (Visible)
             {
-                var firstThreeControls = new[] { runHistoryLine0001, runHistoryLine0002, runHistoryLine0003 };
+                RunHistoryLine[] firstThreeControls =
+                {
+                    runHistoryLine0001,
+                    runHistoryLine0002,
+                    runHistoryLine0003
+                };
 
                 for (int index = 0; index < firstThreeControls.Length; index++)
                 {
@@ -83,20 +87,17 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
-                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
-                : string.Empty;
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}" : string.Empty;
         }
 
-        private void RecreateScrollableRunHistoryLines(
-            [NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> runResults)
+        private void RecreateScrollableRunHistoryLines([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> runResults)
         {
             UpdateScrollingPanel(() =>
             {
                 scrollingPanel.ClearInnerControls();
 
                 int heightOffset = 0;
-                int minControlCount = (int) Math.Truncate((decimal) scrollingPanel.Height / ControlHeightIncrement);
+                int minControlCount = (int)Math.Truncate((decimal)scrollingPanel.Height / ControlHeightIncrement);
 
                 for (int index = 0; index < Math.Max(minControlCount, runResults.Count); index++)
                 {
@@ -109,6 +110,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                     };
 
                     CompetitionRunResult runResult = runResults.ElementAtOrDefault(index);
+
                     if (runResult != null)
                     {
                         runHistoryLine.SetCompetitionRunResult(runResult);

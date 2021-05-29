@@ -23,10 +23,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         [CanBeNull]
         public CirceControllerSessionManager SessionManager
         {
-            get
-            {
-                return sessionManager;
-            }
+            get => sessionManager;
             set
             {
                 if (value != sessionManager)
@@ -87,8 +84,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void SessionManagerOnConnectionStateChanged([CanBeNull] object sender,
-            [NotNull] ControllerConnectionStateEventArgs e)
+        private void SessionManagerOnConnectionStateChanged([CanBeNull] object sender, [NotNull] ControllerConnectionStateEventArgs e)
         {
             // Chicken and egg problem: We need to marshal from a background thread to the UI thread,
             // but may need to create a Window handle before marshaling is possible. But we can only create
@@ -126,8 +122,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             });
         }
 
-        private void DeviceTrackerOnDeviceRemoved([CanBeNull] object sender,
-            [NotNull] EventArgs<WirelessNetworkAddress> e)
+        private void DeviceTrackerOnDeviceRemoved([CanBeNull] object sender, [NotNull] EventArgs<WirelessNetworkAddress> e)
         {
             if (Visible)
             {

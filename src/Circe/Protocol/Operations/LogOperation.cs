@@ -6,18 +6,17 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
     /// <summary>
-    /// This operation can be used by a mediator to communicate its internal state and is intended for technical
-    /// troubleshooting.
+    /// This operation can be used by a mediator to communicate its internal state and is intended for technical troubleshooting.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This operation enables a mediator to communicate its internal state to the controller, which in turn facilitates
-    /// logging to disk. This operation is intended for diagnostic purposes and can be sent at any time, also before login. The
-    /// single parameter of this operation contains the (variable length) binary data to log.
+    /// This operation enables a mediator to communicate its internal state to the controller, which in turn facilitates logging to disk. This operation is
+    /// intended for diagnostic purposes and can be sent at any time, also before login. The single parameter of this operation contains the (variable
+    /// length) binary data to log.
     /// </para>
     /// <para>
-    /// Note that this operation may be sent conditionally from a mediator, depending on compilation flags or configuration.
-    /// This operation type must therefore not be used by a controller as an indication that the connection is still alive.
+    /// Note that this operation may be sent conditionally from a mediator, depending on compilation flags or configuration. This operation type must
+    /// therefore not be used by a controller as an indication that the connection is still alive.
     /// </para>
     /// </remarks>
     public sealed class LogOperation : Operation
@@ -33,23 +32,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         [NotNull]
         public IList<byte> LogData
         {
-            get
-            {
-                return logDataParameter.Value;
-            }
-            set
-            {
-                logDataParameter.ReplaceValueWith(value);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LogOperation" /> class.
-        /// </summary>
-        internal LogOperation()
-            : base(TypeCode)
-        {
-            Parameters.Add(logDataParameter);
+            get => logDataParameter.Value;
+            set => logDataParameter.ReplaceValueWith(value);
         }
 
         /// <summary>
@@ -63,6 +47,15 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         {
             Guard.NotNull(logData, nameof(logData));
             LogData = logData;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogOperation" /> class.
+        /// </summary>
+        internal LogOperation()
+            : base(TypeCode)
+        {
+            Parameters.Add(logDataParameter);
         }
 
         [NotNull]

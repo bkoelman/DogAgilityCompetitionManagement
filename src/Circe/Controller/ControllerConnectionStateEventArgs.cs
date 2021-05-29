@@ -9,13 +9,13 @@ namespace DogAgilityCompetition.Circe.Controller
         /// <summary>
         /// Gets the new connection state.
         /// </summary>
-        public ControllerConnectionState State { get; private set; }
+        public ControllerConnectionState State { get; }
 
         /// <summary>
         /// Gets the name of the COM port, if available.
         /// </summary>
         [CanBeNull]
-        public string ComPort { get; private set; }
+        public string ComPort { get; }
 
         public ControllerConnectionStateEventArgs(ControllerConnectionState state, [CanBeNull] string comPort)
         {

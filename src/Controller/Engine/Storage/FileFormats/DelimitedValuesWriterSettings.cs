@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         [NotNull]
         public DelimitedValuesWriterSettings Clone()
         {
-            return new DelimitedValuesWriterSettings
+            return new()
             {
                 IncludeColumnNamesOnFirstLine = IncludeColumnNamesOnFirstLine,
                 AutoCloseWriter = AutoCloseWriter,

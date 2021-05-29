@@ -10,7 +10,7 @@ namespace DogAgilityCompetition.DeviceConfigurer.Phases
     public sealed class PhaseWaitingForSetupResponse : AssignmentPhase
     {
         [NotNull]
-        public WirelessNetworkAddress NewAddress { get; private set; }
+        public WirelessNetworkAddress NewAddress { get; }
 
         public PhaseWaitingForSetupResponse([NotNull] WirelessNetworkAddress newAddress)
         {

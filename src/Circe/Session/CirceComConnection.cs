@@ -27,10 +27,10 @@ namespace DogAgilityCompetition.Circe.Session
         private readonly SerialPort comPort;
 
         [NotNull]
-        private readonly PacketAssembler assembler = new PacketAssembler();
+        private readonly PacketAssembler assembler = new();
 
         [NotNull]
-        private readonly PacketReader reader = new PacketReader();
+        private readonly PacketReader reader = new();
 
         [NotNull]
         public string PortName => comPort.PortName;
@@ -88,6 +88,7 @@ namespace DogAgilityCompetition.Circe.Session
             Log.Debug($"Closing port {PortName}.");
 
             bool hasClosed = false;
+
             try
             {
                 comPort.Close();
@@ -112,13 +113,17 @@ namespace DogAgilityCompetition.Circe.Session
         }
 
         [Pure]
-        public override string ToString() => PortName;
+        public override string ToString()
+        {
+            return PortName;
+        }
 
         private void ComPortOnDataReceived([CanBeNull] object sender, [NotNull] SerialDataReceivedEventArgs e)
         {
             try
             {
                 bool done;
+
                 do
                 {
                     done = true;
@@ -175,6 +180,7 @@ namespace DogAgilityCompetition.Circe.Session
             }
 
             buffer = new byte[bytesToRead];
+
             try
             {
                 return comPort.Read(buffer, 0, bytesToRead);
@@ -196,6 +202,7 @@ namespace DogAgilityCompetition.Circe.Session
         private void AssemblerOnCompletePacketAdded([CanBeNull] object sender, [NotNull] EventArgs<byte[]> e)
         {
             Operation operation = null;
+
             try
             {
                 operation = reader.Read(e.Argument);
@@ -214,6 +221,7 @@ namespace DogAgilityCompetition.Circe.Session
                 PacketReceived?.Invoke(this, EventArgs.Empty);
 
                 var logOperation = operation as LogOperation;
+
                 if (logOperation != null)
                 {
                     Log.Debug($"Discarding assembled operation: {logOperation}{logOperation.FormatLogData()}");

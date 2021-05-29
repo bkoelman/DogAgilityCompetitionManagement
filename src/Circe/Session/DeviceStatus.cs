@@ -14,8 +14,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </remarks>
     public sealed class DeviceStatus : IEquatable<DeviceStatus>
     {
-        private const DeviceRoles IntermediateTimers =
-            DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
+        private const DeviceRoles IntermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
         [NotNull]
         public WirelessNetworkAddress DeviceAddress { get; }
@@ -44,9 +43,7 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 if ((Capabilities & DeviceCapabilities.ControlKeypad) != 0)
                 {
-                    return (Capabilities & DeviceCapabilities.NumericKeypad) != 0
-                        ? "Competition remote"
-                        : "Training remote";
+                    return (Capabilities & DeviceCapabilities.NumericKeypad) != 0 ? "Competition remote" : "Training remote";
                 }
 
                 switch (Capabilities)
@@ -61,9 +58,8 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        public DeviceStatus([NotNull] WirelessNetworkAddress deviceAddress, bool isInNetwork,
-            DeviceCapabilities capabilities, DeviceRoles roles, int signalStrength, [CanBeNull] int? batteryStatus,
-            [CanBeNull] bool? isAligned, [CanBeNull] ClockSynchronizationStatus? clockSynchronization,
+        public DeviceStatus([NotNull] WirelessNetworkAddress deviceAddress, bool isInNetwork, DeviceCapabilities capabilities, DeviceRoles roles,
+            int signalStrength, [CanBeNull] int? batteryStatus, [CanBeNull] bool? isAligned, [CanBeNull] ClockSynchronizationStatus? clockSynchronization,
             [CanBeNull] bool? hasVersionMismatch)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
@@ -87,21 +83,22 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 allowed |= DeviceRoles.Keypad;
             }
-            if ((capabilities & DeviceCapabilities.StartSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.StartSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= DeviceRoles.StartTimer;
             }
-            if ((capabilities & DeviceCapabilities.IntermediateSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.IntermediateSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= IntermediateTimers;
             }
-            if ((capabilities & DeviceCapabilities.FinishSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.FinishSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= DeviceRoles.FinishTimer;
             }
+
             if ((capabilities & DeviceCapabilities.Display) != 0)
             {
                 allowed |= DeviceRoles.Display;
@@ -118,17 +115,15 @@ namespace DogAgilityCompetition.Circe.Session
             // ReSharper disable PossibleInvalidOperationException
             // ReSharper disable once AssignNullToNotNullAttribute
             // Reason: Operation has been validated for required parameters when this code is reached.
-            return new DeviceStatus(operation.OriginatingAddress, operation.GetMembership.Value,
-                operation.Capabilities.Value, operation.Roles.Value, operation.SignalStrength.Value,
-                operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization,
-                operation.HasVersionMismatch);
+            return new DeviceStatus(operation.OriginatingAddress, operation.GetMembership.Value, operation.Capabilities.Value, operation.Roles.Value,
+                operation.SignalStrength.Value, operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization, operation.HasVersionMismatch);
             // ReSharper restore PossibleInvalidOperationException
         }
 
         [NotNull]
         public NotifyStatusOperation ToOperation()
         {
-            return new NotifyStatusOperation(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength)
+            return new(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength)
             {
                 BatteryStatus = BatteryStatus,
                 IsAligned = IsAligned,
@@ -140,21 +135,20 @@ namespace DogAgilityCompetition.Circe.Session
         [NotNull]
         public DeviceStatus ChangeIsInNetwork(bool isInNetwork)
         {
-            return new DeviceStatus(DeviceAddress, isInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus,
-                IsAligned, ClockSynchronization, HasVersionMismatch);
+            return new(DeviceAddress, isInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
         [NotNull]
         public DeviceStatus ChangeRoles(DeviceRoles roles)
         {
-            return new DeviceStatus(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus,
-                IsAligned, ClockSynchronization, HasVersionMismatch);
+            return new(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
         [Pure]
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
                 formatter.Append(() => DeviceAddress, () => DeviceAddress);
@@ -167,16 +161,15 @@ namespace DogAgilityCompetition.Circe.Session
                 formatter.Append(() => ClockSynchronization, () => ClockSynchronization);
                 formatter.Append(() => HasVersionMismatch, () => HasVersionMismatch);
             }
+
             return textBuilder.ToString();
         }
 
         public bool Equals([CanBeNull] DeviceStatus other)
         {
-            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress &&
-                other.IsInNetwork == IsInNetwork && other.Capabilities == Capabilities && other.Roles == Roles &&
-                other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
-                other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization &&
-                other.HasVersionMismatch == HasVersionMismatch;
+            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.IsInNetwork == IsInNetwork &&
+                other.Capabilities == Capabilities && other.Roles == Roles && other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
+                other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization && other.HasVersionMismatch == HasVersionMismatch;
         }
 
         public override bool Equals([CanBeNull] object obj)
@@ -186,9 +179,8 @@ namespace DogAgilityCompetition.Circe.Session
 
         public override int GetHashCode()
         {
-            return DeviceAddress.GetHashCode() ^ IsInNetwork.GetHashCode() ^ Capabilities.GetHashCode() ^
-                Roles.GetHashCode() ^ SignalStrength.GetHashCode() ^ BatteryStatus.GetHashCode() ^
-                IsAligned.GetHashCode() ^ ClockSynchronization.GetHashCode() ^ HasVersionMismatch.GetHashCode();
+            return DeviceAddress.GetHashCode() ^ IsInNetwork.GetHashCode() ^ Capabilities.GetHashCode() ^ Roles.GetHashCode() ^ SignalStrength.GetHashCode() ^
+                BatteryStatus.GetHashCode() ^ IsAligned.GetHashCode() ^ ClockSynchronization.GetHashCode() ^ HasVersionMismatch.GetHashCode();
         }
 
         public static bool operator ==([CanBeNull] DeviceStatus left, [CanBeNull] DeviceStatus right)
@@ -197,10 +189,12 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 

@@ -30,6 +30,10 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private bool forceClose;
 
+        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
+
+        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
+
         public MediatorForm([NotNull] MediatorSettingsXml mediatorSettings, bool initiallyMaximized,
             [NotNull] CirceMediatorSessionManager mediatorSessionManager)
         {
@@ -60,15 +64,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.EnsureOnMainThread(() => packetInputPulsingLed.On = !packetInputPulsingLed.On);
         }
 
-        private void MediatorSessionManagerOnConnectionStateChanged([CanBeNull] object sender,
-            [NotNull] MediatorConnectionStateEventArgs e)
+        private void MediatorSessionManagerOnConnectionStateChanged([CanBeNull] object sender, [NotNull] MediatorConnectionStateEventArgs e)
         {
             this.EnsureOnMainThread(() =>
             {
                 switch (e.State)
                 {
                     case MediatorConnectionState.WaitingForComPort:
-                        stateLabel.Text = @"Status: Waiting for available COM port.";
+                        stateLabel.Text = "Status: Waiting for available COM port.";
                         break;
                     case MediatorConnectionState.WaitingForLogin:
                         stateLabel.Text = $"Status: Waiting for incoming Login on {e.ComPort}.";
@@ -80,9 +83,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                         stateLabel.Text = $"Status: Connected on {e.ComPort}.";
                         break;
                     case MediatorConnectionState.Disconnected:
-                        stateLabel.Text = !string.IsNullOrEmpty(e.ComPort)
-                            ? $"Status: Disconnected from {e.ComPort}."
-                            : @"Status: Disconnected.";
+                        stateLabel.Text = !string.IsNullOrEmpty(e.ComPort) ? $"Status: Disconnected from {e.ComPort}." : "Status: Disconnected.";
                         break;
                 }
             });
@@ -114,7 +115,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 isUpdatingControlsFromSettings = true;
 
-                Text = @"Mediator " + settings.DeviceAddressNotNull;
+                Text = "Mediator " + settings.DeviceAddressNotNull;
 
                 powerStatus.IsPoweredOn = settings.IsPoweredOn;
                 portLabel.Text = settings.ComPortName ?? ComPortSelectionForm.AutoText;
@@ -150,6 +151,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
 
             UpdateSessionManagerFromSettings();
+
             if (powerStatus.IsPoweredOn)
             {
                 sessionManager.Value.PowerOn();
@@ -175,8 +177,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void StatusCodeLinkLabel_LinkClicked([CanBeNull] object sender,
-            [NotNull] LinkLabelLinkClickedEventArgs e)
+        private void StatusCodeLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
         {
             using (var form = new MediatorStatusSelectionForm())
             {
@@ -231,10 +232,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             forceClose = true;
             Close();
         }
-
-        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
-
-        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
 
         void IWirelessDevice.ChangeAddress(WirelessNetworkAddress newAddress)
         {

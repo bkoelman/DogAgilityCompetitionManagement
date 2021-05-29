@@ -15,19 +15,19 @@ namespace DogAgilityCompetition.DeviceConfigurer
     public sealed class StartupArguments
     {
         [NotNull]
-        public string ComPortName { get; private set; }
+        public string ComPortName { get; }
 
         [CanBeNull]
-        public WirelessNetworkAddress OldAddress { get; private set; }
+        public WirelessNetworkAddress OldAddress { get; }
 
         [NotNull]
-        public WirelessNetworkAddress NewAddress { get; private set; }
+        public WirelessNetworkAddress NewAddress { get; }
 
         [CanBeNull]
-        public DeviceCapabilities? Capabilities { get; private set; }
+        public DeviceCapabilities? Capabilities { get; }
 
-        private StartupArguments([NotNull] string comPortName, [CanBeNull] WirelessNetworkAddress oldAddress,
-            [NotNull] WirelessNetworkAddress newAddress, [CanBeNull] DeviceCapabilities? capabilities)
+        private StartupArguments([NotNull] string comPortName, [CanBeNull] WirelessNetworkAddress oldAddress, [NotNull] WirelessNetworkAddress newAddress,
+            [CanBeNull] DeviceCapabilities? capabilities)
         {
             ComPortName = comPortName;
             OldAddress = oldAddress;
@@ -51,6 +51,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 {
                     comPortName = arg.Substring("port=".Length).ToUpperInvariant();
                 }
+
                 if (arg.StartsWith("new=", StringComparison.OrdinalIgnoreCase))
                 {
                     newAddress = ParseAddress(arg.Substring("new=".Length));
@@ -71,8 +72,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             if (comPortName == null || newAddress == null)
             {
-                string title = "Dog Agility Competition Management - Device Configurer" +
-                    AssemblyReader.GetInformationalVersion();
+                string title = "Dog Agility Competition Management - Device Configurer" + AssemblyReader.GetInformationalVersion();
                 string exeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
 
                 Console.WriteLine(title);
@@ -100,30 +100,32 @@ namespace DogAgilityCompetition.DeviceConfigurer
         [NotNull]
         private static WirelessNetworkAddress ParseAddress([NotNull] string value)
         {
-            return new WirelessNetworkAddress(value.ToUpperInvariant());
+            return new(value.ToUpperInvariant());
         }
 
         [CanBeNull]
         private static DeviceCapabilities? ParseCapabilities([NotNull] string value)
         {
-            return (DeviceCapabilities) Enum.Parse(typeof (DeviceCapabilities), value, true);
+            return (DeviceCapabilities)Enum.Parse(typeof(DeviceCapabilities), value, true);
         }
 
         [NotNull]
         private static string GetAllowedCapabilities()
         {
             var textBuilder = new StringBuilder();
-            for (int value = 1; value < (int) DeviceCapabilities.All; value *= 2)
+
+            for (int value = 1; value < (int)DeviceCapabilities.All; value *= 2)
             {
                 if (textBuilder.Length > 0)
                 {
                     textBuilder.AppendLine();
                 }
 
-                var capability = (DeviceCapabilities) value;
+                var capability = (DeviceCapabilities)value;
                 textBuilder.Append(" ");
                 textBuilder.Append(capability);
             }
+
             return textBuilder.ToString();
         }
     }

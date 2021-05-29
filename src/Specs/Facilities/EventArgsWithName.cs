@@ -24,6 +24,9 @@ namespace DogAgilityCompetition.Specs.Facilities
             EventArgs = eventArgs;
         }
 
-        public override string ToString() => $"{Name}: {EventArgs}";
+        public override string ToString()
+        {
+            return $"{Name}: {EventArgs}";
+        }
     }
 }

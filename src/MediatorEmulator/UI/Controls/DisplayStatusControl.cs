@@ -35,22 +35,22 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             InitializeComponent();
 
             var timerFontContainer = new TimerFontContainer(ref components);
-            timerFontContainer.ApplyTo(primaryTimeSecondsLabel, primaryTimeMillisecondsLabel, currentFaultsValueLabel,
-                currentRefusalsValueLabel, currentCompetitorNumberLabel, previousCompetitorPlacementLabel,
-                nextCompetitorNumberLabel);
+
+            timerFontContainer.ApplyTo(primaryTimeSecondsLabel, primaryTimeMillisecondsLabel, currentFaultsValueLabel, currentRefusalsValueLabel,
+                currentCompetitorNumberLabel, previousCompetitorPlacementLabel, nextCompetitorNumberLabel);
         }
 
         private void DisplayStatusControl_Resize([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             int centerX = displayGroupBox.ClientSize.Width / 2;
             int labelWidth = previousCompetitorPlacementLabel.Width;
-            previousCompetitorPlacementLabel.Location = new Point(centerX - labelWidth / 2,
-                previousCompetitorPlacementLabel.Location.Y);
+            previousCompetitorPlacementLabel.Location = new Point(centerX - labelWidth / 2, previousCompetitorPlacementLabel.Location.Y);
         }
 
         private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+
             if (primaryTimeStartedAt != null && !isSecondaryTimeVisible)
             {
                 TimeSpan timePassed = SystemContext.UtcNow() - primaryTimeStartedAt.Value;
@@ -124,11 +124,18 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         {
             bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
 
-            primaryTimeMillisecondsLabel.Text = isEliminated
-                ? EliminationText
-                : (isSecondaryTimeVisible
-                    ? TextFormatting.FormatMilliseconds(secondaryTime.Value.TimeValue)
-                    : (primaryTimeStartedAt != null ? MillisecDashes : primaryTimeMillisecondsMeasured));
+            // @formatter:keep_existing_linebreaks true
+
+            primaryTimeMillisecondsLabel.Text =
+                isEliminated
+                    ? EliminationText
+                    : isSecondaryTimeVisible
+                        ? TextFormatting.FormatMilliseconds(secondaryTime.Value.TimeValue)
+                        : primaryTimeStartedAt != null
+                            ? MillisecDashes
+                            : primaryTimeMillisecondsMeasured;
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         void ISimpleVisualizationActor.SetOrClearCurrentCompetitorNumber(int? number)

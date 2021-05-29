@@ -19,7 +19,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [NotNull]
         public static string FormatPlacement(int placement)
         {
-            int? value = placement > 0 ? placement : (int?) null;
+            int? value = placement > 0 ? placement : null;
             return FormatNumber(value, 3);
         }
 
@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return string.Empty;
             }
 
-            string formatterZeroes = new string('0', digitCount);
+            string formatterZeroes = new('0', digitCount);
 
             var formatBuilder = new StringBuilder();
             formatBuilder.Append("{0:");

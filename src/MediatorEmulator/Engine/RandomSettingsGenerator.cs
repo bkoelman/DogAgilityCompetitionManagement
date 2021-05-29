@@ -9,7 +9,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
     public sealed class RandomSettingsGenerator
     {
         [NotNull]
-        private readonly Random randomizer = new Random();
+        private readonly Random randomizer = new();
 
         public int GetSignalStrength()
         {

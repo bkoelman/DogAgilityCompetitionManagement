@@ -6,16 +6,14 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine
 {
     /// <summary>
-    /// Represents a <see cref="TimeSpan" />, rounded to whole milliseconds, along with a flag that indicates where the time
-    /// value came from.
+    /// Represents a <see cref="TimeSpan" />, rounded to whole milliseconds, along with a flag that indicates where the time value came from.
     /// </summary>
     /// <remarks>
     /// Deeply immutable by design to allow for safe cross-thread member access.
     /// </remarks>
     public struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanWithAccuracy>
     {
-        private const string TimeRegexFormat =
-            @"^(?<Seconds>[0-9]{1,3})DecimalSeparatorPlaceholder(?<Milliseconds>[0-9][0-9][0-9])(?<AccuracySymbol>[~*]?)$";
+        private const string TimeRegexFormat = @"^(?<Seconds>[0-9]{1,3})DecimalSeparatorPlaceholder(?<Milliseconds>[0-9][0-9][0-9])(?<AccuracySymbol>[~*]?)$";
 
         /// <summary>
         /// Time value, in whole milliseconds.
@@ -43,29 +41,29 @@ namespace DogAgilityCompetition.Controller.Engine
 
         public TimeSpanWithAccuracy ChangeAccuracy(TimeAccuracy timeAccuracy)
         {
-            return new TimeSpanWithAccuracy(TimeValue, timeAccuracy);
+            return new(TimeValue, timeAccuracy);
         }
 
         [CanBeNull]
-        public static TimeSpanWithAccuracy? FromString([CanBeNull] string text,
-            [CanBeNull] IFormatProvider formatProvider = null)
+        public static TimeSpanWithAccuracy? FromString([CanBeNull] string text, [CanBeNull] IFormatProvider formatProvider = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return null;
             }
+
             string trimmed = text.Trim();
 
             Regex timeRegex = CreateTimeRegexFor(formatProvider);
             Match match = timeRegex.Match(trimmed);
+
             if (match.Success)
             {
                 string accuracySymbol = match.Groups["AccuracySymbol"].Value;
                 string seconds = match.Groups["Seconds"].Value;
                 string milliseconds = match.Groups["Milliseconds"].Value;
 
-                TimeSpan timeValue = TimeSpan.FromSeconds(int.Parse(seconds)) +
-                    TimeSpan.FromMilliseconds(int.Parse(milliseconds));
+                TimeSpan timeValue = TimeSpan.FromSeconds(int.Parse(seconds)) + TimeSpan.FromMilliseconds(int.Parse(milliseconds));
 
                 TimeAccuracy accuracy = GetAccuracyForSymbol(accuracySymbol);
                 return new TimeSpanWithAccuracy(timeValue, accuracy);
@@ -78,7 +76,7 @@ namespace DogAgilityCompetition.Controller.Engine
         private static Regex CreateTimeRegexFor([CanBeNull] IFormatProvider formatProvider)
         {
             formatProvider = formatProvider ?? NumberFormatInfo.InvariantInfo;
-            NumberFormatInfo formatInfo = NumberFormatInfo.GetInstance(formatProvider);
+            var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
             string separator = Regex.Escape(formatInfo.NumberDecimalSeparator);
 
             string timeRegexPattern = TimeRegexFormat.Replace("DecimalSeparatorPlaceholder", separator);
@@ -100,13 +98,16 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public override string ToString() => ToString(null, null);
+        public override string ToString()
+        {
+            return ToString(null, null);
+        }
 
         [Pure]
         public string ToString([CanBeNull] string format /* discarded */, [CanBeNull] IFormatProvider formatProvider)
         {
             formatProvider = formatProvider ?? NumberFormatInfo.InvariantInfo;
-            NumberFormatInfo formatInfo = NumberFormatInfo.GetInstance(formatProvider);
+            var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
 
             double secondsTruncated = Math.Truncate(TimeValue.TotalSeconds);
             string timeString = $"{secondsTruncated:##0}{formatInfo.NumberDecimalSeparator}{TimeValue.Milliseconds:000}";
@@ -133,7 +134,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public override bool Equals([CanBeNull] object obj)
         {
-            return !ReferenceEquals(obj, null) && obj is TimeSpanWithAccuracy && Equals((TimeSpanWithAccuracy) obj);
+            return !ReferenceEquals(obj, null) && obj is TimeSpanWithAccuracy && Equals((TimeSpanWithAccuracy)obj);
         }
 
         [Pure]

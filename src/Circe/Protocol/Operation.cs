@@ -8,23 +8,22 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Protocol
 {
     /// <summary>
-    /// Represents the base class for all CIRCE operations that can be exchanged between an application controller and a
-    /// mediator device.
+    /// Represents the base class for all CIRCE operations that can be exchanged between an application controller and a mediator device.
     /// </summary>
     [Serializable]
     public abstract class Operation
     {
-        /// <summary>
-        /// Gets the code that identifies this type of operation.
-        /// </summary>
-        public int Code { get; }
-
         /// <summary>
         /// Gets the operation parameters.
         /// </summary>
         [NotNull]
         [ItemNotNull]
         protected internal IList<Parameter> Parameters { get; }
+
+        /// <summary>
+        /// Gets the code that identifies this type of operation.
+        /// </summary>
+        public int Code { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Operation" /> class.
@@ -103,9 +102,11 @@ namespace DogAgilityCompetition.Circe.Protocol
                         {
                             textBuilder.Append(", ");
                         }
+
                         textBuilder.Append(parameter);
                     }
                 }
+
                 textBuilder.Append("]");
             }
 

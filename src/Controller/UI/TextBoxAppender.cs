@@ -21,19 +21,17 @@ namespace DogAgilityCompetition.Controller.UI
         [NotNull]
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        [NotNull]
+        private readonly FreshBoolean isFrozen = new(false);
+
+        [NotNull]
+        private readonly FreshEnum<TextBoxAppenderMode> mode = new(TextBoxAppenderMode.All);
+
+        [NotNull]
+        private readonly FreshEnum<TextBoxAppenderSwitches> switches = new(TextBoxAppenderSwitches.None);
+
         [CanBeNull]
         private TextBox logTextBox;
-
-        [NotNull]
-        private readonly FreshBoolean isFrozen = new FreshBoolean(false);
-
-        [NotNull]
-        private readonly FreshEnum<TextBoxAppenderMode> mode =
-            new FreshEnum<TextBoxAppenderMode>(TextBoxAppenderMode.All);
-
-        [NotNull]
-        private readonly FreshEnum<TextBoxAppenderSwitches> switches =
-            new FreshEnum<TextBoxAppenderSwitches>(TextBoxAppenderSwitches.None);
 
         public static bool IsFrozen
         {
@@ -112,6 +110,7 @@ namespace DogAgilityCompetition.Controller.UI
                 if (!isFrozen.Value && logTextBox != null && logTextBox.Created)
                 {
                     bool include = ApplyFilter(loggingEvent);
+
                     if (include)
                     {
                         logTextBox.EnsureOnMainThread(() =>
@@ -122,12 +121,12 @@ namespace DogAgilityCompetition.Controller.UI
                     }
                 }
             }
-                // ReSharper disable once EmptyGeneralCatchClause
-                // Reason: In case an unhandled exception is thrown (Task or AppDomain), it ultimately gets logged.
-                // This results in an attempt to also write to the TextBox, which may not be possible
-                // at that time. To prevent an endless loop (this method causing a new AppDomain/Task exception)
-                // and to ensure the TextBox issues does not prevent that the unhandled exception gets written 
-                // to log files, we silently swallow any exceptions here.
+            // ReSharper disable once EmptyGeneralCatchClause
+            // Reason: In case an unhandled exception is thrown (Task or AppDomain), it ultimately gets logged.
+            // This results in an attempt to also write to the TextBox, which may not be possible
+            // at that time. To prevent an endless loop (this method causing a new AppDomain/Task exception)
+            // and to ensure the TextBox issues does not prevent that the unhandled exception gets written 
+            // to log files, we silently swallow any exceptions here.
             catch (Exception)
             {
             }
@@ -161,8 +160,7 @@ namespace DogAgilityCompetition.Controller.UI
 
         private static bool IsNetworkLogEvent([NotNull] LoggingEvent loggingEvent)
         {
-            return IsPacketLogEvent(loggingEvent) ||
-                loggingEvent.LoggerName.EndsWith(".SessionGuard", StringComparison.Ordinal) ||
+            return IsPacketLogEvent(loggingEvent) || loggingEvent.LoggerName.EndsWith(".SessionGuard", StringComparison.Ordinal) ||
                 loggingEvent.LoggerName.EndsWith(".DeviceTracker", StringComparison.Ordinal) ||
                 loggingEvent.LoggerName.EndsWith(".ActionQueue", StringComparison.Ordinal) ||
                 loggingEvent.LoggerName.EndsWith(".CirceComConnection", StringComparison.Ordinal) ||

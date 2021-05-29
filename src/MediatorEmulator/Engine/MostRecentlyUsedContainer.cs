@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
 
         [NotNull]
         [ItemNotNull]
-        private readonly List<string> mruList = new List<string>();
+        private readonly List<string> mruList = new();
 
         [NotNull]
         [ItemNotNull]
@@ -37,8 +37,8 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         }
 
         /// <summary>
-        /// Updates the MRU list with the specified text. If the MRU list already contains this text, it is moved to the top of the
-        /// list (preserving existing case).
+        /// Updates the MRU list with the specified text. If the MRU list already contains this text, it is moved to the top of the list (preserving existing
+        /// case).
         /// </summary>
         public void MarkAsUsed([NotNull] string text)
         {
@@ -47,6 +47,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             if (text.Length > 0)
             {
                 int existingIndex = GetExistingIndex(text);
+
                 if (existingIndex == -1)
                 {
                     mruList.Insert(0, text);
@@ -65,6 +66,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             Guard.NotNullNorEmpty(path, nameof(path));
 
             int index = GetExistingIndex(path);
+
             if (index != -1)
             {
                 mruList.RemoveAt(index);
@@ -80,6 +82,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
                     return itemIndex;
                 }
             }
+
             return -1;
         }
     }

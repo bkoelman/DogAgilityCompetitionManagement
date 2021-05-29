@@ -72,14 +72,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             {
                 if (existingRunResult.Timings.FinishTime != null)
                 {
-                    finishTimeElapsed =
-                        existingRunResult.Timings.FinishTime.ElapsedSince(existingRunResult.Timings.StartTime);
+                    finishTimeElapsed = existingRunResult.Timings.FinishTime.ElapsedSince(existingRunResult.Timings.StartTime);
                 }
 
                 if (latestIntermediateTimeOrNull != null)
                 {
-                    intermediateTimeElapsed =
-                        latestIntermediateTimeOrNull.ElapsedSince(existingRunResult.Timings.StartTime);
+                    intermediateTimeElapsed = latestIntermediateTimeOrNull.ElapsedSince(existingRunResult.Timings.StartTime);
                 }
             }
 
@@ -96,25 +94,19 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         [NotNull]
         public static VisualizationChange CompetitorNumberBlinkOn(bool isCurrentCompetitor)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) CurrentCompetitorNumberBlink.On
-                : NextCompetitorNumberBlink.On;
+            return isCurrentCompetitor ? CurrentCompetitorNumberBlink.On : NextCompetitorNumberBlink.On;
         }
 
         [NotNull]
         public static VisualizationChange CompetitorNumberBlinkOff(bool isCurrentCompetitor)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) CurrentCompetitorNumberBlink.Off
-                : NextCompetitorNumberBlink.Off;
+            return isCurrentCompetitor ? CurrentCompetitorNumberBlink.Off : NextCompetitorNumberBlink.Off;
         }
 
         [NotNull]
         public static VisualizationChange CompetitorNumberUpdate(bool isCurrentCompetitor, int competitorNumber)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) new CurrentCompetitorNumberUpdate(competitorNumber)
-                : new NextCompetitorNumberUpdate(competitorNumber);
+            return isCurrentCompetitor ? new CurrentCompetitorNumberUpdate(competitorNumber) : new NextCompetitorNumberUpdate(competitorNumber);
         }
     }
 }

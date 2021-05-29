@@ -59,7 +59,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once ConvertToLambdaExpression
-            Action action = () => { reader.GetEnumerator(); };
+            Action action = () =>
+            {
+                reader.GetEnumerator();
+            };
 
             // Assert
             action.Should().Throw<ObjectDisposedException>();
@@ -75,7 +78,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once ConvertToLambdaExpression
-            Action action = () => { reader.TakeWhile(x => true).ToArray(); };
+            Action action = () =>
+            {
+                reader.TakeWhile(x => true).ToArray();
+            };
 
             // Assert
             action.Should().Throw<ObjectDisposedException>();

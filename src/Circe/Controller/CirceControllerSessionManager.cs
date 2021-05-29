@@ -67,8 +67,7 @@ namespace DogAgilityCompetition.Circe.Controller
         }
 
         [NotNull]
-        public Task AlertAsync([NotNull] WirelessNetworkAddress destinationAddress,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public Task AlertAsync([NotNull] WirelessNetworkAddress destinationAddress, CancellationToken cancellationToken = default)
         {
             Guard.NotNull(destinationAddress, nameof(destinationAddress));
 
@@ -78,8 +77,8 @@ namespace DogAgilityCompetition.Circe.Controller
         }
 
         [NotNull]
-        public Task NetworkSetupAsync([NotNull] WirelessNetworkAddress destinationAddress, bool joinNetwork,
-            DeviceRoles roles, CancellationToken cancellationToken = default(CancellationToken))
+        public Task NetworkSetupAsync([NotNull] WirelessNetworkAddress destinationAddress, bool joinNetwork, DeviceRoles roles,
+            CancellationToken cancellationToken = default)
         {
             Guard.NotNull(destinationAddress, nameof(destinationAddress));
 
@@ -89,15 +88,15 @@ namespace DogAgilityCompetition.Circe.Controller
         }
 
         [NotNull]
-        public Task SynchronizeClocksAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task SynchronizeClocksAsync(CancellationToken cancellationToken = default)
         {
             var operation = new SynchronizeClocksOperation();
             return sessionGuard.SendAsync(operation, cancellationToken);
         }
 
         [NotNull]
-        public Task VisualizeAsync([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> destinationAddresses,
-            VisualizeFieldSet fieldSet, CancellationToken cancellationToken = default(CancellationToken))
+        public Task VisualizeAsync([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> destinationAddresses, VisualizeFieldSet fieldSet,
+            CancellationToken cancellationToken = default)
         {
             var operation = new VisualizeOperation(destinationAddresses)
             {
@@ -115,8 +114,7 @@ namespace DogAgilityCompetition.Circe.Controller
             return sessionGuard.SendAsync(operation, cancellationToken);
         }
 
-        private void SessionGuardOnStateChanged([CanBeNull] object sender,
-            [NotNull] ControllerConnectionStateEventArgs e)
+        private void SessionGuardOnStateChanged([CanBeNull] object sender, [NotNull] ControllerConnectionStateEventArgs e)
         {
             ConnectionStateChanged?.Invoke(this, e);
         }
@@ -159,6 +157,7 @@ namespace DogAgilityCompetition.Circe.Controller
             {
                 Log.Warn($"Discarding device {notifyStatusOperation.OriginatingAddress} " +
                     $"because combination of capabilities is invalid ({notifyStatusOperation.Capabilities}).");
+
                 return false;
             }
 
@@ -177,11 +176,13 @@ namespace DogAgilityCompetition.Circe.Controller
             {
                 return false;
             }
-            if ((capabilities & DeviceCapabilities.TimeSensor) != 0 && (capabilities != DeviceCapabilities.TimeSensor))
+
+            if ((capabilities & DeviceCapabilities.TimeSensor) != 0 && capabilities != DeviceCapabilities.TimeSensor)
             {
                 return false;
             }
-            if ((capabilities & DeviceCapabilities.Display) != 0 && (capabilities != DeviceCapabilities.Display))
+
+            if ((capabilities & DeviceCapabilities.Display) != 0 && capabilities != DeviceCapabilities.Display)
             {
                 return false;
             }
@@ -192,14 +193,13 @@ namespace DogAgilityCompetition.Circe.Controller
         private sealed class ControllerIncomingOperationDispatcher : IOperationAcceptor
         {
             [NotNull]
-            private static readonly ISystemLogger InnerLog =
-                new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            private static readonly ISystemLogger InnerLog = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
             [NotNull]
             private readonly CirceControllerSessionManager owner;
 
             [NotNull]
-            private readonly object nonReentrantProcessIncomingOperationLock = new object();
+            private readonly object nonReentrantProcessIncomingOperationLock = new();
 
             public ControllerIncomingOperationDispatcher([NotNull] CirceControllerSessionManager owner)
             {

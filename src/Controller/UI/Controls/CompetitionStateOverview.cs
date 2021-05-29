@@ -18,6 +18,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         private const int WsExComposited = 0x02000000;
 
+        [CanBeNull]
+        private DateTime? startTime;
+
+        [CanBeNull]
+        private Panel rankingsOverlayPanel;
+
         protected override CreateParams CreateParams
         {
             get
@@ -44,9 +50,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         void IVisualizationActor.SetClass(CompetitionClassInfo classInfo)
         {
         }
-
-        [CanBeNull]
-        private DateTime? startTime;
 
         void IVisualizationActor.StartPrimaryTimer()
         {
@@ -97,9 +100,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor competitor)
         {
-            currentCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            currentCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
         }
 
         void IVisualizationActor.SetCurrentCompetitorNumber(int number)
@@ -114,9 +115,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         void IVisualizationActor.SetOrClearNextCompetitor(Competitor competitor)
         {
-            nextCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            nextCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
         }
 
         void IVisualizationActor.SetNextCompetitorNumber(int number)
@@ -133,23 +132,18 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             if (competitorRunResult != null)
             {
-                prevCompetitorNumberLabel.Text =
-                    TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
+                prevCompetitorNumberLabel.Text = TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
+
                 prevTimeLabel.Text =
-                    TextFormatting.FormatTime(
-                        competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime)
-                            .TimeValue);
+                    TextFormatting.FormatTime(competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime).TimeValue);
+
                 prevFaultsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.FaultCount, 2);
                 prevRefusalsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.RefusalCount, 2);
 
-                Color foreColor = competitorRunResult.IsEliminated
-                    ? RunHistoryLine.EliminationColor
-                    : SystemColors.ControlText;
+                Color foreColor = competitorRunResult.IsEliminated ? RunHistoryLine.EliminationColor : SystemColors.ControlText;
                 prevTimeLabel.ForeColor = foreColor;
                 prevPlacementLabel.ForeColor = foreColor;
-                prevPlacementLabel.Text = competitorRunResult.IsEliminated
-                    ? @"X"
-                    : TextFormatting.FormatPlacement(competitorRunResult.Placement);
+                prevPlacementLabel.Text = competitorRunResult.IsEliminated ? "X" : TextFormatting.FormatPlacement(competitorRunResult.Placement);
             }
             else
             {
@@ -165,12 +159,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
         }
 
-        [CanBeNull]
-        private Panel rankingsOverlayPanel;
-
         void IVisualizationActor.SetClockSynchronizationMode(ClockSynchronizationMode mode)
         {
             string message;
+
             switch (mode)
             {
                 case ClockSynchronizationMode.RecommendSynchronization:
@@ -185,6 +177,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
 
             RemoveRankingsOverlay();
+
             if (message != null)
             {
                 rankingsOverlayPanel = CreateRankingsOverlay(message);

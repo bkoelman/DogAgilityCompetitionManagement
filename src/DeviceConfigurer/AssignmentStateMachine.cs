@@ -8,8 +8,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.DeviceConfigurer
 {
     /// <summary>
-    /// Enables conditional execution of a phase and waiting for a specific phase in the wireless network address assignment
-    /// process.
+    /// Enables conditional execution of a phase and waiting for a specific phase in the wireless network address assignment process.
     /// </summary>
     public sealed class AssignmentStateMachine
     {
@@ -17,7 +16,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly object stateLock = new object();
+        private readonly object stateLock = new();
 
         [NotNull]
         private AssignmentPhase currentPhase;
@@ -40,9 +39,10 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 {
                     lockTracker.Acquired();
 
-                    if (typeof (TPhase) == currentPhase.GetType())
+                    if (typeof(TPhase) == currentPhase.GetType())
                     {
-                        AssignmentPhase newPhase = callback((TPhase) currentPhase);
+                        AssignmentPhase newPhase = callback((TPhase)currentPhase);
+
                         if (newPhase != null)
                         {
                             currentPhase = newPhase;
@@ -51,17 +51,20 @@ namespace DogAgilityCompetition.DeviceConfigurer
                     }
                 }
             }
+
             return false;
         }
 
         [NotNull]
-        private static string GetDisplayNameFor<TPhase>([NotNull] MethodBase source) where TPhase : AssignmentPhase
+        private static string GetDisplayNameFor<TPhase>([NotNull] MethodBase source)
+            where TPhase : AssignmentPhase
         {
-            return source.Name + "<" + typeof (TPhase).Name + ">";
+            return source.Name + "<" + typeof(TPhase).Name + ">";
         }
 
         [NotNull]
-        public TPhase WaitForPhase<TPhase>() where TPhase : AssignmentPhase
+        public TPhase WaitForPhase<TPhase>()
+            where TPhase : AssignmentPhase
         {
             while (true)
             {
@@ -71,9 +74,9 @@ namespace DogAgilityCompetition.DeviceConfigurer
                     {
                         lockTracker.Acquired();
 
-                        if (typeof (TPhase) == currentPhase.GetType())
+                        if (typeof(TPhase) == currentPhase.GetType())
                         {
-                            return (TPhase) currentPhase;
+                            return (TPhase)currentPhase;
                         }
 
                         Thread.Sleep(250);

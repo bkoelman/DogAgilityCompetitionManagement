@@ -43,8 +43,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         public CultureInfo Culture { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum length of the line. Setting this prevents that the entire source is read in memory when an
-        /// uneven number of text qualifiers occurs.
+        /// Gets or sets the maximum length of the line. Setting this prevents that the entire source is read in memory when an uneven number of text qualifiers
+        /// occurs.
         /// </summary>
         /// <value>
         /// The maximum length of a single line of text in source.
@@ -67,7 +67,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         [NotNull]
         public DelimitedValuesReaderSettings Clone()
         {
-            return new DelimitedValuesReaderSettings
+            return new()
             {
                 AutoCloseReader = AutoCloseReader,
                 FieldSeparator = FieldSeparator,

@@ -6,6 +6,8 @@ using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
@@ -19,6 +21,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Act
             var output = new StringWriter();
+
             using (new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSingleColumnHeader("A")
@@ -37,6 +40,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Act
             var output = new StringWriter();
+
             using (new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -123,6 +127,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -143,6 +148,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             var output = new StringWriter();
             var cultureWithCommaAsDecimalSeparator = new CultureInfo("nl-NL");
+
             using (new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -162,6 +168,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -187,6 +194,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -212,6 +220,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -237,6 +246,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -262,6 +272,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -289,6 +300,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -314,6 +326,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()

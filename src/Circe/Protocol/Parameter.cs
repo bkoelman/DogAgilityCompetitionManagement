@@ -81,7 +81,10 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => $"{GetType().Name} {Name} ({Id})";
+        public override string ToString()
+        {
+            return $"{GetType().Name} {Name} ({Id})";
+        }
 
         /// <summary>
         /// Validates the value of this parameter.
@@ -96,8 +99,7 @@ namespace DogAgilityCompetition.Circe.Protocol
 
             if (IsRequired && !HasValue)
             {
-                throw new OperationValidationException(owner,
-                    $"Required {GetType().Name} {Name} is missing or has no value.");
+                throw new OperationValidationException(owner, $"Required {GetType().Name} {Name} is missing or has no value.");
             }
         }
 

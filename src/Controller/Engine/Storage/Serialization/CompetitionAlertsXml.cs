@@ -48,12 +48,17 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         [NotNull]
         public static CompetitionAlerts FromXmlObject([CanBeNull] CompetitionAlertsXml source)
         {
+            // @formatter:keep_existing_linebreaks true
+
             return source == null
                 ? CompetitionAlerts.Empty
                 : new CompetitionAlerts(AlertSourceXml.FromXmlObject(source.Eliminated),
                     AlertSourceXml.FromXmlObject(source.FirstPlace),
                     AlertSourceXml.FromXmlObject(source.CleanRunInStandardCourseTime),
-                    AlertSourceXml.FromXmlObject(source.ReadyToStart), AlertSourceXml.FromXmlObject(source.CustomItemA));
+                    AlertSourceXml.FromXmlObject(source.ReadyToStart),
+                    AlertSourceXml.FromXmlObject(source.CustomItemA));
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

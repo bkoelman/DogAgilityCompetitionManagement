@@ -8,6 +8,8 @@ using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.NetworkSpecs
 {
     /// <summary>
@@ -17,7 +19,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
     public sealed class NetworkCompositions
     {
         [NotNull]
-        private static readonly WirelessNetworkAddress DeviceAddress = new WirelessNetworkAddress("ABCDEF");
+        private static readonly WirelessNetworkAddress DeviceAddress = new("ABCDEF");
 
         [Test]
         public void When_setting_a_negative_delay_it_must_fail()
@@ -39,6 +41,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
         {
             // Arrange
             TimeSpan minDelay = 1.Minutes();
+
             NetworkComposition composition = new NetworkCompositionBuilder()
                 .WithStartFinishMinDelayForSingleSensor(minDelay)
                 .Build();
@@ -96,12 +99,10 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(timer1, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer1);
-            composition = composition.ChangeRolesFor(timer2, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer2);
-            composition = composition.ChangeRolesFor(timer3, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer3);
+            composition = composition
+                .ChangeRolesFor(timer1, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer1)
+                .ChangeRolesFor(timer2, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer2)
+                .ChangeRolesFor(timer3, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer3);
 
             // Assert
             composition.IsInRoleIntermediateTimer1(timer1).Should().BeTrue();

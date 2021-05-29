@@ -3,13 +3,11 @@ using System;
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
     /// <summary>
-    /// This operation is periodically used by a controller to synchronize the hardware clocks of all wireless devices in the
-    /// logical network.
+    /// This operation is periodically used by a controller to synchronize the hardware clocks of all wireless devices in the logical network.
     /// </summary>
     /// <remarks>
-    /// The controller can determine whether the synchronization succeeded by waiting for three seconds on incoming Notify
-    /// Status (52) operations from devices, which are expected to include the Clock Synchronization parameter with value Sync
-    /// Succeeded.
+    /// The controller can determine whether the synchronization succeeded by waiting for three seconds on incoming Notify Status (52) operations from
+    /// devices, which are expected to include the Clock Synchronization parameter with value Sync Succeeded.
     /// </remarks>
     [Serializable]
     public sealed class SynchronizeClocksOperation : Operation

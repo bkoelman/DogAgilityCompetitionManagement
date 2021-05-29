@@ -7,6 +7,8 @@ using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
@@ -20,6 +22,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithColumnHeaders("A", "B", "C")
@@ -46,6 +49,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             var output = new StringWriter();
             var culture = new CultureInfo("nl-NL");
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSingleColumnHeader("A")
@@ -71,6 +75,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSingleColumnHeader("A")

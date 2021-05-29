@@ -37,13 +37,19 @@ namespace DogAgilityCompetition.Circe.Protocol
 
             byte[] payloadBytes = GetPacketPayloadBytes(operation.Parameters);
 
-            int? checksum = includeChecksum ? 0 : (int?) null;
+            int? checksum = includeChecksum ? 0 : null;
             UpdateChecksum(headerBytes, ref checksum);
             UpdateChecksum(payloadBytes, ref checksum);
 
             byte[] trailerBytes = GetPacketTrailerBytes(checksum);
 
-            byte[] packetBytes = CombineBuffers(new[] { headerBytes, payloadBytes, trailerBytes });
+            byte[] packetBytes = CombineBuffers(new[]
+            {
+                headerBytes,
+                payloadBytes,
+                trailerBytes
+            });
+
             return packetBytes;
         }
 
@@ -74,6 +80,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                     WriteParameterBytesTo(parameter, stream);
                 }
             });
+
             return buffer;
         }
 
@@ -84,7 +91,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             {
                 writeCallback(stream);
 
-                var buffer = new byte[stream.Length];
+                byte[] buffer = new byte[stream.Length];
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.Read(buffer, 0, buffer.Length);
                 return buffer;
@@ -124,7 +131,10 @@ namespace DogAgilityCompetition.Circe.Protocol
 
             // ReSharper disable once RedundantExplicitArraySize
             // Reason: Extra compiler check when packet format changes.
-            return new byte[PacketFormat.PacketTrailerMinLength] { PacketFormatDelimiters.EndOfText };
+            return new byte[PacketFormat.PacketTrailerMinLength]
+            {
+                PacketFormatDelimiters.EndOfText
+            };
         }
 
         private static void UpdateChecksum([NotNull] IEnumerable<byte> buffer, [CanBeNull] ref int? checksum)
@@ -145,13 +155,15 @@ namespace DogAgilityCompetition.Circe.Protocol
         {
             int size = buffers.Sum(sourceBuffer => sourceBuffer.Length);
 
-            var destinationBuffer = new byte[size];
+            byte[] destinationBuffer = new byte[size];
             int destinationOffset = 0;
+
             foreach (byte[] sourceBuffer in buffers)
             {
                 Buffer.BlockCopy(sourceBuffer, 0, destinationBuffer, destinationOffset, sourceBuffer.Length);
                 destinationOffset += sourceBuffer.Length;
             }
+
             return destinationBuffer;
         }
     }

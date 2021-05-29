@@ -9,16 +9,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     public sealed class RunResultChangingEventArgs : EventArgs
     {
         [NotNull]
-        public CompetitionRunResult OriginalRunResult { get; private set; }
+        public CompetitionRunResult OriginalRunResult { get; }
 
         [NotNull]
-        public CompetitionRunResult NewRunResult { get; private set; }
+        public CompetitionRunResult NewRunResult { get; }
 
         [CanBeNull]
         public string ErrorMessage { get; set; }
 
-        public RunResultChangingEventArgs([NotNull] CompetitionRunResult originalRunResult,
-            [NotNull] CompetitionRunResult newRunResult)
+        public RunResultChangingEventArgs([NotNull] CompetitionRunResult originalRunResult, [NotNull] CompetitionRunResult newRunResult)
         {
             Guard.NotNull(originalRunResult, nameof(originalRunResult));
             Guard.NotNull(newRunResult, nameof(newRunResult));

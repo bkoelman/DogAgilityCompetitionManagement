@@ -18,12 +18,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed partial class RunResultEditor : UserControl
     {
-        [CanBeNull]
-        private CompetitionRunResult originalRunVersion;
-
         [NotNull]
         [ItemNotNull]
         private readonly Lazy<IEnumerable<Control>> allChildControls;
+
+        [CanBeNull]
+        private CompetitionRunResult originalRunVersion;
 
         private int messageHighlightCount;
 
@@ -50,8 +50,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private bool HasChanges
-            => FinishTimeHasChanges || RefusalCountHasChanges || FaultCountHasChanges || EliminatedHasChanges;
+        private bool HasChanges => FinishTimeHasChanges || RefusalCountHasChanges || FaultCountHasChanges || EliminatedHasChanges;
 
         private bool FinishTimeHasChanges
         {
@@ -61,74 +60,26 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     return false;
                 }
+
                 if (!string.IsNullOrEmpty(GetErrorForFinishTimeOnScreen()))
                 {
                     return true;
                 }
 
                 CompetitionRunTimings screenValue = ConvertFinishTimeFromScreen(false);
-                return
-                    !EqualitySupport.EqualsWithNulls(originalRunVersion.Timings, screenValue,
-                        CompetitionRunTimingsElapsedEqual);
+                return !EqualitySupport.EqualsWithNulls(originalRunVersion.Timings, screenValue, CompetitionRunTimingsElapsedEqual);
             }
         }
 
-        private static bool CompetitionRunTimingsElapsedEqual([NotNull] CompetitionRunTimings firstTimings,
-            [NotNull] CompetitionRunTimings secondTimings)
-        {
-            return EqualitySupport.EqualsWithNulls(firstTimings.FinishTime, secondTimings.FinishTime,
-                RecordedTimesElapsedEqual);
-        }
+        private bool RefusalCountHasChanges =>
+            originalRunVersion != null && (!string.IsNullOrEmpty(GetErrorForRefusalCountOnScreen()) ||
+                originalRunVersion.RefusalCount != ConvertRefusalCountFromScreen());
 
-        private static bool RecordedTimesElapsedEqual([NotNull] RecordedTime firstRecordedTime,
-            [NotNull] RecordedTime secondRecordedTime)
-        {
-            TimeSpanWithAccuracy elapsed = firstRecordedTime.ElapsedSince(secondRecordedTime);
-            return elapsed.TimeValue == TimeSpan.Zero;
-        }
+        private bool FaultCountHasChanges =>
+            originalRunVersion != null &&
+            (!string.IsNullOrEmpty(GetErrorForFaultCountOnScreen()) || originalRunVersion.FaultCount != ConvertFaultCountFromScreen());
 
-        [NotNull]
-        private CompetitionRunTimings ConvertFinishTimeFromScreen(bool forceUserEdited)
-        {
-            TimeSpanWithAccuracy? finishTime = TimeSpanWithAccuracy.FromString(finishTimeTextBox.Text);
-            if (finishTime != null && forceUserEdited)
-            {
-                finishTime = finishTime.Value.ChangeAccuracy(TimeAccuracy.UserEdited);
-            }
-
-            CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
-            return originalRunVersionNotNull.UpdateFinishTimeFrom(finishTime);
-        }
-
-        private bool RefusalCountHasChanges
-            =>
-                originalRunVersion != null &&
-                    (!string.IsNullOrEmpty(GetErrorForRefusalCountOnScreen()) ||
-                        originalRunVersion.RefusalCount != ConvertRefusalCountFromScreen());
-
-        private int ConvertRefusalCountFromScreen()
-        {
-            return (int) refusalsUpDown.Value;
-        }
-
-        private bool FaultCountHasChanges
-            =>
-                originalRunVersion != null &&
-                    (!string.IsNullOrEmpty(GetErrorForFaultCountOnScreen()) ||
-                        originalRunVersion.FaultCount != ConvertFaultCountFromScreen());
-
-        private int ConvertFaultCountFromScreen()
-        {
-            return (int) faultsUpDown.Value;
-        }
-
-        private bool EliminatedHasChanges
-            => originalRunVersion != null && originalRunVersion.IsEliminated != ConvertEliminatedFromScreen();
-
-        private bool ConvertEliminatedFromScreen()
-        {
-            return eliminatedCheckBox.Checked;
-        }
+        private bool EliminatedHasChanges => originalRunVersion != null && originalRunVersion.IsEliminated != ConvertEliminatedFromScreen();
 
         public event EventHandler<RunResultChangingEventArgs> RunResultChanging;
         public event EventHandler RunResultChanged;
@@ -147,6 +98,46 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             refusalsUpDown.Maximum = CompetitionRunResult.MaxRefusalsValue;
             refusalsUpDown.Increment = CompetitionRunResult.RefusalStepSize;
+        }
+
+        private static bool CompetitionRunTimingsElapsedEqual([NotNull] CompetitionRunTimings firstTimings, [NotNull] CompetitionRunTimings secondTimings)
+        {
+            return EqualitySupport.EqualsWithNulls(firstTimings.FinishTime, secondTimings.FinishTime, RecordedTimesElapsedEqual);
+        }
+
+        private static bool RecordedTimesElapsedEqual([NotNull] RecordedTime firstRecordedTime, [NotNull] RecordedTime secondRecordedTime)
+        {
+            TimeSpanWithAccuracy elapsed = firstRecordedTime.ElapsedSince(secondRecordedTime);
+            return elapsed.TimeValue == TimeSpan.Zero;
+        }
+
+        [NotNull]
+        private CompetitionRunTimings ConvertFinishTimeFromScreen(bool forceUserEdited)
+        {
+            TimeSpanWithAccuracy? finishTime = TimeSpanWithAccuracy.FromString(finishTimeTextBox.Text);
+
+            if (finishTime != null && forceUserEdited)
+            {
+                finishTime = finishTime.Value.ChangeAccuracy(TimeAccuracy.UserEdited);
+            }
+
+            CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
+            return originalRunVersionNotNull.UpdateFinishTimeFrom(finishTime);
+        }
+
+        private int ConvertRefusalCountFromScreen()
+        {
+            return (int)refusalsUpDown.Value;
+        }
+
+        private int ConvertFaultCountFromScreen()
+        {
+            return (int)faultsUpDown.Value;
+        }
+
+        private bool ConvertEliminatedFromScreen()
+        {
+            return eliminatedCheckBox.Checked;
         }
 
         private void BindNumericUpDownToChangeEventHandler([NotNull] NumericUpDown control)
@@ -186,18 +177,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             competitorTextBox.Text = runResult == null
                 ? string.Empty
-                : runResult.Competitor.Number + " - " + runResult.Competitor.HandlerName + " - " +
-                    runResult.Competitor.DogName;
+                : runResult.Competitor.Number + " - " + runResult.Competitor.HandlerName + " - " + runResult.Competitor.DogName;
         }
 
         private void SetScreenValueForFinishTime([CanBeNull] CompetitionRunResult runResult)
         {
             string text = string.Empty;
+
             if (runResult?.Timings?.FinishTime != null)
             {
                 TimeSpanWithAccuracy finishTime = runResult.Timings.FinishTime.ElapsedSince(runResult.Timings.StartTime);
                 text = finishTime.ToString();
             }
+
             finishTimeTextBox.Text = text;
         }
 
@@ -249,6 +241,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 return ex.Message;
             }
+
             return string.Empty;
         }
 
@@ -263,12 +256,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             try
             {
-                CompetitionRunResult.AssertFaultCountIsValid((int) faultsUpDown.Value);
+                CompetitionRunResult.AssertFaultCountIsValid((int)faultsUpDown.Value);
             }
             catch (ArgumentException ex)
             {
                 return ex.Message;
             }
+
             return string.Empty;
         }
 
@@ -283,12 +277,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             try
             {
-                CompetitionRunResult.AssertRefusalCountIsValid((int) refusalsUpDown.Value);
+                CompetitionRunResult.AssertRefusalCountIsValid((int)refusalsUpDown.Value);
             }
             catch (ArgumentException ex)
             {
                 return ex.Message;
             }
+
             return string.Empty;
         }
 
@@ -301,11 +296,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
 
-            CompetitionRunResult newRunVersion =
-                originalRunVersionNotNull.ChangeTimings(ConvertFinishTimeFromScreen(true))
-                    .ChangeFaultCount(ConvertFaultCountFromScreen())
-                    .ChangeRefusalCount(ConvertRefusalCountFromScreen())
-                    .ChangeIsEliminated(ConvertEliminatedFromScreen());
+            // @formatter:keep_existing_linebreaks true
+
+            CompetitionRunResult newRunVersion = originalRunVersionNotNull
+                .ChangeTimings(ConvertFinishTimeFromScreen(true))
+                .ChangeFaultCount(ConvertFaultCountFromScreen())
+                .ChangeRefusalCount(ConvertRefusalCountFromScreen())
+                .ChangeIsEliminated(ConvertEliminatedFromScreen());
+
+            // @formatter:keep_existing_linebreaks restore
 
             var changingEventArgs = new RunResultChangingEventArgs(originalRunVersionNotNull, newRunVersion);
             RunResultChanging?.Invoke(this, changingEventArgs);
@@ -314,8 +313,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 ShowAnimatedSuccess("Competitor updated.");
 
-                originalRunVersion =
-                    CacheManager.DefaultInstance.ActiveModel.GetRunResultFor(newRunVersion.Competitor.Number);
+                originalRunVersion = CacheManager.DefaultInstance.ActiveModel.GetRunResultFor(newRunVersion.Competitor.Number);
                 RunResultChanged?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -358,6 +356,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private void MessageHighlighter_HighlightCycleFinished([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             messageHighlightCount++;
+
             if (messageHighlightCount == 2)
             {
                 messageLabel.Visible = false;
@@ -369,8 +368,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private void RevertButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
-            CompetitionRunResult activeVersionOrNull =
-                CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersionNotNull.Competitor.Number);
+            CompetitionRunResult activeVersionOrNull = CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersionNotNull.Competitor.Number);
             OverwriteWith(activeVersionOrNull);
         }
 

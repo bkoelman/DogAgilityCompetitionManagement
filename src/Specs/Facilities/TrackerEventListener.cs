@@ -8,13 +8,12 @@ namespace DogAgilityCompetition.Specs.Facilities
 {
     internal sealed class TrackerEventListener : IDisposable
     {
-        [NotNull]
-        [ItemNotNull]
-        public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } =
-            new List<EventArgsWithName<RemoteKeyTracker>>();
-
         [CanBeNull]
         private RemoteKeyTracker source;
+
+        [NotNull]
+        [ItemNotNull]
+        public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } = new();
 
         public TrackerEventListener([NotNull] RemoteKeyTracker source)
         {

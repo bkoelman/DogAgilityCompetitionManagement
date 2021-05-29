@@ -87,21 +87,24 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         {
             Guard.NotNull(source, nameof(source));
 
-            return
-                new CompetitionClassModel().ChangeRunResults(
-                    source.RunResults.EmptyIfNull().Select(CompetitionRunResultXml.FromXmlObject))
-                    .SafeChangeLastCompletedCompetitorNumber(source.LastCompletedCompetitorNumber)
-                    .ChangeClassInfo(
-                        new CompetitionClassInfo().ChangeGrade(source.Grade)
-                            .ChangeType(source.ClassType)
-                            .ChangeInspectorName(source.InspectorName)
-                            .ChangeRingName(source.RingName)
-                            .ChangeStandardCourseTime(source.StandardCourseTime)
-                            .ChangeMaximumCourseTime(source.MaximumCourseTime)
-                            .ChangeTrackLengthInMeters(source.TrackLengthInMeters))
-                    .ChangeIntermediateTimerCount(source.IntermediateTimerCount)
-                    .ChangeStartFinishMinDelayForSingleSensor(source.StartFinishMinDelayForSingleSensor)
-                    .ChangeAlerts(CompetitionAlertsXml.FromXmlObject(source.Alerts));
+            // @formatter:keep_existing_linebreaks true
+
+            return new CompetitionClassModel()
+                .ChangeRunResults(source.RunResults.EmptyIfNull().Select(CompetitionRunResultXml.FromXmlObject))
+                .SafeChangeLastCompletedCompetitorNumber(source.LastCompletedCompetitorNumber)
+                .ChangeClassInfo(new CompetitionClassInfo()
+                    .ChangeGrade(source.Grade)
+                    .ChangeType(source.ClassType)
+                    .ChangeInspectorName(source.InspectorName)
+                    .ChangeRingName(source.RingName)
+                    .ChangeStandardCourseTime(source.StandardCourseTime)
+                    .ChangeMaximumCourseTime(source.MaximumCourseTime)
+                    .ChangeTrackLengthInMeters(source.TrackLengthInMeters))
+                .ChangeIntermediateTimerCount(source.IntermediateTimerCount)
+                .ChangeStartFinishMinDelayForSingleSensor(source.StartFinishMinDelayForSingleSensor)
+                .ChangeAlerts(CompetitionAlertsXml.FromXmlObject(source.Alerts));
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

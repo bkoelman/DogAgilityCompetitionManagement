@@ -11,25 +11,24 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// Represents the address of a hardware device in the CIRCE wireless network.
     /// </summary>
     [Serializable]
-    public sealed class WirelessNetworkAddress
-        : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
+    public sealed class WirelessNetworkAddress : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
     {
         [NotNull]
-        public string Value { get; private set; }
+        public static readonly WirelessNetworkAddress Default = new("000000");
 
         [NotNull]
-        public static readonly WirelessNetworkAddress Default = new WirelessNetworkAddress("000000");
-
-        private WirelessNetworkAddress()
-        {
-            // Private constructor is required for XML serialization.
-            Value = Default.Value;
-        }
+        public string Value { get; private set; }
 
         public WirelessNetworkAddress([NotNull] string value)
         {
             AssertValidAddress(value);
             Value = value;
+        }
+
+        private WirelessNetworkAddress()
+        {
+            // Private constructor is required for XML serialization.
+            Value = Default.Value;
         }
 
         [AssertionMethod]
@@ -66,7 +65,10 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        public override string ToString() => Value;
+        public override string ToString()
+        {
+            return Value;
+        }
 
         public int CompareTo([CanBeNull] WirelessNetworkAddress other)
         {
@@ -90,22 +92,22 @@ namespace DogAgilityCompetition.Circe.Protocol
             return Value.GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator ==([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator !=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
         {
             return !(left == right);
         }
@@ -115,8 +117,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return left == null ? right != null : left.CompareTo(right) == -1;
         }
 
-        public static bool operator <=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator <=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
         {
             return left == null || left.CompareTo(right) <= 0;
         }
@@ -126,8 +127,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return left?.CompareTo(right) == 1;
         }
 
-        public static bool operator >=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator >=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
         {
             return left == null ? right == null : left.CompareTo(right) >= 0;
         }

@@ -33,7 +33,12 @@ namespace DogAgilityCompetition.Circe.Protocol
         [NotNull]
         public static IEnumerable<int> GetAll()
         {
-            return new[] { Normal, MediatorUnconfigured, FailedToSendNetworkPacket };
+            return new[]
+            {
+                Normal,
+                MediatorUnconfigured,
+                FailedToSendNetworkPacket
+            };
         }
     }
 }

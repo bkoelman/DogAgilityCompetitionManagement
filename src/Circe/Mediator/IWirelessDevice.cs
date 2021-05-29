@@ -17,8 +17,11 @@ namespace DogAgilityCompetition.Circe.Mediator
         void ChangeAddress([NotNull] WirelessNetworkAddress newAddress);
 
         void Accept([NotNull] AlertOperation operation);
+
         void Accept([NotNull] NetworkSetupOperation operation);
+
         void Accept([NotNull] SynchronizeClocksOperation operation);
+
         void Accept([NotNull] VisualizeOperation operation);
     }
 }

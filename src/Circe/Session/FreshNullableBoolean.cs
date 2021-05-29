@@ -4,13 +4,11 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Session
 {
     /// <summary>
-    /// Wraps a nullable <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns
-    /// the latest value.
+    /// Wraps a nullable <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns the latest value.
     /// </summary>
     /// <remarks>
-    /// It is strongly recommended to mark <see cref="FreshNullableBoolean" /> members in your class as <c>readonly</c>,
-    /// because accidentally replacing a FreshNullableBoolean object with another FreshNullableBoolean object defeats the whole
-    /// purpose of this class.
+    /// It is strongly recommended to mark <see cref="FreshNullableBoolean" /> members in your class as <c>readonly</c>, because accidentally replacing a
+    /// FreshNullableBoolean object with another FreshNullableBoolean object defeats the whole purpose of this class.
     /// </remarks>
     public sealed class FreshNullableBoolean
     {
@@ -52,7 +50,7 @@ namespace DogAgilityCompetition.Circe.Session
         [CanBeNull]
         private static bool? FromInt32(int value)
         {
-            return value == TrueValue ? true : value == FalseValue ? false : (bool?) null;
+            return value == TrueValue ? true : value == FalseValue ? false : null;
         }
 
         private static int ToInt32([CanBeNull] bool? value)

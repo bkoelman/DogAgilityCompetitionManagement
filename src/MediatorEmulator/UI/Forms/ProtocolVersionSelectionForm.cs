@@ -14,9 +14,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             get
             {
-                int majorNumber = (int) majorUpDown.Value;
-                int minorNumber = (int) minorUpDown.Value;
-                int releaseNumber = (int) releaseUpDown.Value;
+                int majorNumber = (int)majorUpDown.Value;
+                int minorNumber = (int)minorUpDown.Value;
+                int releaseNumber = (int)releaseUpDown.Value;
 
                 return IsInRange(majorNumber) && IsInRange(minorNumber) && IsInRange(releaseNumber)
                     ? new Version(majorNumber, minorNumber, releaseNumber)
@@ -30,22 +30,21 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private static bool IsInRange(int value)
-        {
-            return value >= 0 && value <= 999;
-        }
-
         public ProtocolVersionSelectionForm()
         {
             InitializeComponent();
+        }
+
+        private static bool IsInRange(int value)
+        {
+            return value >= 0 && value <= 999;
         }
 
         private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             if (Version == null)
             {
-                MessageBox.Show("All values must be in range [0-999].", "Error", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show("All values must be in range [0-999].", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

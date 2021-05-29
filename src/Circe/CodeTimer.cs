@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Circe
         private readonly string text;
 
         [NotNull]
-        private readonly Stopwatch stopwatch = new Stopwatch();
+        private readonly Stopwatch stopwatch = new();
 
         public CodeTimer([NotNull] string text)
         {

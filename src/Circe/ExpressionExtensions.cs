@@ -6,13 +6,16 @@ namespace DogAgilityCompetition.Circe
 {
     /// <summary />
     // Resharper bug "The type parameter T could be declared as covariant" tracked at: https://youtrack.jetbrains.com/issue/RSRP-453088
-    public delegate T? GetOptionalValueCallback<T>() where T : struct;
+    public delegate T? GetOptionalValueCallback<T>()
+        where T : struct;
 
     /// <summary />
-    public delegate T GetValueCallback<out T>() where T : struct;
+    public delegate T GetValueCallback<out T>()
+        where T : struct;
 
     /// <summary />
-    public delegate T GetReferenceCallback<out T>() where T : class;
+    public delegate T GetReferenceCallback<out T>()
+        where T : class;
 
     /// <summary />
     public static class ExpressionExtensions
@@ -69,15 +72,17 @@ namespace DogAgilityCompetition.Circe
         private static MemberExpression GetMemberExpression([CanBeNull] this Expression expression)
         {
             var memberExpression = expression as MemberExpression;
+
             if (memberExpression != null)
             {
                 return memberExpression;
             }
 
             var unaryExpression = expression as UnaryExpression;
+
             if (unaryExpression != null)
             {
-                memberExpression = (MemberExpression) unaryExpression.Operand;
+                memberExpression = (MemberExpression)unaryExpression.Operand;
                 return memberExpression;
             }
 

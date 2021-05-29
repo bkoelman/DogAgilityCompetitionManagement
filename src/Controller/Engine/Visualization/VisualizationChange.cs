@@ -16,6 +16,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         }
 
         [Pure]
-        public override string ToString() => GetType().Name;
+        public override string ToString()
+        {
+            return GetType().Name;
+        }
     }
 }

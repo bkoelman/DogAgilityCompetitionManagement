@@ -12,23 +12,16 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
     /// </summary>
     public sealed class VisualizeOperationDispatcher
     {
-        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
         private const int CirceHiddenCompetitorNumber = 0;
         private const int CirceHiddenPlacement = 0;
         private const int CirceHiddenFaultsRefusals = 99;
+        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
 
         [NotNull]
         private readonly ISimpleVisualizationActor actor;
 
         [NotNull]
         private readonly Control invokeContext;
-
-        [NotNull]
-        public static VisualizeOperationDispatcher CreateFor<T>([NotNull] T source)
-            where T : Control, ISimpleVisualizationActor
-        {
-            return new VisualizeOperationDispatcher(source, source);
-        }
 
         private VisualizeOperationDispatcher([NotNull] ISimpleVisualizationActor actor, [NotNull] Control invokeContext)
         {
@@ -37,6 +30,13 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
 
             this.actor = actor;
             this.invokeContext = invokeContext;
+        }
+
+        [NotNull]
+        public static VisualizeOperationDispatcher CreateFor<T>([NotNull] T source)
+            where T : Control, ISimpleVisualizationActor
+        {
+            return new(source, source);
         }
 
         public void ClearAll()
@@ -87,9 +87,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         {
             if (operation.CurrentCompetitorNumber != null)
             {
-                int? number = operation.CurrentCompetitorNumber == CirceHiddenCompetitorNumber
-                    ? null
-                    : operation.CurrentCompetitorNumber;
+                int? number = operation.CurrentCompetitorNumber == CirceHiddenCompetitorNumber ? null : operation.CurrentCompetitorNumber;
                 actor.SetOrClearCurrentCompetitorNumber(number);
             }
         }
@@ -98,9 +96,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         {
             if (operation.NextCompetitorNumber != null)
             {
-                int? number = operation.NextCompetitorNumber == CirceHiddenCompetitorNumber
-                    ? null
-                    : operation.NextCompetitorNumber;
+                int? number = operation.NextCompetitorNumber == CirceHiddenCompetitorNumber ? null : operation.NextCompetitorNumber;
                 actor.SetOrClearNextCompetitorNumber(number);
             }
         }
@@ -153,9 +149,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         {
             if (operation.PreviousPlacement != null)
             {
-                int? placement = operation.PreviousPlacement == CirceHiddenPlacement
-                    ? null
-                    : operation.PreviousPlacement;
+                int? placement = operation.PreviousPlacement == CirceHiddenPlacement ? null : operation.PreviousPlacement;
                 actor.SetOrClearPreviousCompetitorPlacement(placement);
             }
         }

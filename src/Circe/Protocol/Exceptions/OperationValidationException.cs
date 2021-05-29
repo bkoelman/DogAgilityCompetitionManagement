@@ -1,13 +1,11 @@
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
-    /// Represents the error that is thrown when the logical contents of a CIRCE packet is not compliant with the protocol
-    /// specification.
+    /// Represents the error that is thrown when the logical contents of a CIRCE packet is not compliant with the protocol specification.
     /// </summary>
     [Serializable]
     public sealed class OperationValidationException : Exception
@@ -32,16 +30,16 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Operation = operation;
         }
 
+        private OperationValidationException([NotNull] SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            Operation = (Operation)info.GetValue("Operation", typeof(Operation));
+        }
+
         [NotNull]
         private static string FormatMessage([NotNull] Operation operation, [NotNull] string message)
         {
             return $"{operation.GetType().Name} ({operation.Code}): {message}";
-        }
-
-        private OperationValidationException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Operation = (Operation) info.GetValue("Operation", typeof (Operation));
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

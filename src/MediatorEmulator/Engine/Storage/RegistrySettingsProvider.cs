@@ -13,9 +13,9 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
     public static class RegistrySettingsProvider
     {
         private const string RegistryPath = @"Software\DogAgilityCompetitionManagement\MediatorEmulator";
-        private const string MruRegistryPath = @"MruList";
+        private const string MruRegistryPath = "MruList";
         private const int MruMaxLength = 6;
-        private const string LastUsedAddressPath = @"LastAddressUsed";
+        private const string LastUsedAddressPath = "LastAddressUsed";
 
         [NotNull]
         public static MostRecentlyUsedContainer GetMruList()
@@ -25,22 +25,28 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
                 using (RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath))
                 {
                     var container = new MostRecentlyUsedContainer();
+
                     if (appSettingsKey != null)
                     {
                         ImportContainerFromKey(appSettingsKey, container);
                     }
+
                     return container;
                 }
             }, new MostRecentlyUsedContainer());
         }
 
-        private static void ImportContainerFromKey([NotNull] RegistryKey appSettingsKey,
-            [NotNull] MostRecentlyUsedContainer container)
+        private static void ImportContainerFromKey([NotNull] RegistryKey appSettingsKey, [NotNull] MostRecentlyUsedContainer container)
         {
             string valueList = appSettingsKey.GetValue(MruRegistryPath) as string;
+
             if (valueList != null)
             {
-                string[] values = valueList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = valueList.Split(new[]
+                {
+                    ';'
+                }, StringSplitOptions.RemoveEmptyEntries);
+
                 container.Import(values.Take(MruMaxLength));
             }
         }
@@ -61,8 +67,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
             });
         }
 
-        private static void ExportContainerToKey([NotNull] MostRecentlyUsedContainer container,
-            [NotNull] RegistryKey appSettingsKey)
+        private static void ExportContainerToKey([NotNull] MostRecentlyUsedContainer container, [NotNull] RegistryKey appSettingsKey)
         {
             string valueList = string.Join(";", container.Items.Take(MruMaxLength));
             appSettingsKey.SetValue(MruRegistryPath, valueList);
@@ -82,7 +87,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         private static int ParseAddressFromKey([NotNull] RegistryKey appSettingsKey)
         {
             object value = appSettingsKey.GetValue(LastUsedAddressPath);
-            return (int?) value ?? 0;
+            return (int?)value ?? 0;
         }
 
         public static void SaveLastUsedAddress(int address)
@@ -107,7 +112,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
 
         private static void IgnoreErrors([NotNull] Action action)
         {
-            var tempInstance = new object();
+            object tempInstance = new();
 
             Func<object> callback = () =>
             {
@@ -125,8 +130,8 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
             {
                 return callback();
             }
-                // ReSharper disable once EmptyGeneralCatchClause
-                // Reason: This is for convenience only; failure must not require user attention.
+            // ReSharper disable once EmptyGeneralCatchClause
+            // Reason: This is for convenience only; failure must not require user attention.
             catch (Exception)
             {
                 return defaultValue;

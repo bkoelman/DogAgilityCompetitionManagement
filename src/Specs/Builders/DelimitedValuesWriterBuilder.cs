@@ -13,7 +13,11 @@ namespace DogAgilityCompetition.Specs.Builders
     {
         [NotNull]
         [ItemNotNull]
-        private static readonly List<string> DefaultHeaders = new List<string> { "ColumnHeader1", "ColumnHeader2" };
+        private static readonly List<string> DefaultHeaders = new()
+        {
+            "ColumnHeader1",
+            "ColumnHeader2"
+        };
 
         private bool useDefaultHeaders = true;
 
@@ -22,7 +26,7 @@ namespace DogAgilityCompetition.Specs.Builders
         private List<string> columnHeaders;
 
         [NotNull]
-        private DelimitedValuesWriterSettingsBuilder settingsBuilder = new DelimitedValuesWriterSettingsBuilder();
+        private DelimitedValuesWriterSettingsBuilder settingsBuilder = new();
 
         [CanBeNull]
         private TextWriter writer;

@@ -23,8 +23,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             Guard.NotNull(points, nameof(points));
 
             arrowPoints = points.ToArray();
-            shadowPoints =
-                arrowPoints.Select(point => new PointF(point.X + ShadowOffset, point.Y + ShadowOffset)).ToArray();
+            shadowPoints = arrowPoints.Select(point => new PointF(point.X + ShadowOffset, point.Y + ShadowOffset)).ToArray();
         }
 
         public override void DrawShadow(Graphics graphics)
@@ -33,7 +32,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
             using (var path = new GraphicsPath())
             {
-                using (var arrowPen = new Pen(Brushes.Gray, 6) { EndCap = LineCap.ArrowAnchor })
+                using (var arrowPen = new Pen(Brushes.Gray, 6)
+                {
+                    EndCap = LineCap.ArrowAnchor
+                })
                 {
                     path.AddLines(shadowPoints);
                     graphics.DrawPath(arrowPen, path);
@@ -49,7 +51,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             {
                 using (Brush fillBrush = new SolidBrush(GetColorForState()))
                 {
-                    using (var arrowPen = new Pen(fillBrush, 6) { EndCap = LineCap.ArrowAnchor })
+                    using (var arrowPen = new Pen(fillBrush, 6)
+                    {
+                        EndCap = LineCap.ArrowAnchor
+                    })
                     {
                         path.AddLines(arrowPoints);
                         graphics.DrawPath(arrowPen, path);
@@ -80,7 +85,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
             public Builder(PointF start)
             {
-                arrowPoints = new[] { start }.ToList();
+                arrowPoints = new[]
+                {
+                    start
+                }.ToList();
             }
 
             [NotNull]
@@ -114,7 +122,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             [NotNull]
             public MultiLineArrow Build()
             {
-                return new MultiLineArrow(arrowPoints);
+                return new(arrowPoints);
             }
         }
     }

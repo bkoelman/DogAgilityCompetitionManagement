@@ -16,28 +16,26 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     {
         [NotNull]
         [ItemNotNull]
-        private static readonly IReadOnlyCollection<string> RequiredColumnNames =
-            new List<string>
-            {
-                ImportExportColumns.CompetitorNumber,
-                ImportExportColumns.HandlerName,
-                ImportExportColumns.DogName,
-                ImportExportColumns.CountryCode
-            }.AsReadOnly();
+        private static readonly IReadOnlyCollection<string> RequiredColumnNames = new List<string>
+        {
+            ImportExportColumns.CompetitorNumber,
+            ImportExportColumns.HandlerName,
+            ImportExportColumns.DogName,
+            ImportExportColumns.CountryCode
+        }.AsReadOnly();
 
         [NotNull]
         [ItemNotNull]
-        private static readonly IReadOnlyCollection<string> OptionalColumnNames =
-            new List<string>
-            {
-                ImportExportColumns.IntermediateTime1,
-                ImportExportColumns.IntermediateTime2,
-                ImportExportColumns.IntermediateTime3,
-                ImportExportColumns.FinishTime,
-                ImportExportColumns.FaultCount,
-                ImportExportColumns.RefusalCount,
-                ImportExportColumns.IsEliminated
-            }.AsReadOnly();
+        private static readonly IReadOnlyCollection<string> OptionalColumnNames = new List<string>
+        {
+            ImportExportColumns.IntermediateTime1,
+            ImportExportColumns.IntermediateTime2,
+            ImportExportColumns.IntermediateTime3,
+            ImportExportColumns.FinishTime,
+            ImportExportColumns.FaultCount,
+            ImportExportColumns.RefusalCount,
+            ImportExportColumns.IsEliminated
+        }.AsReadOnly();
 
         [NotNull]
         [ItemNotNull]
@@ -59,6 +57,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             var mergeRunResults = new List<CompetitionRunResult>();
 
             Dictionary<int, CompetitionRunResult> importRunResults = ImportRunResultsFrom(path);
+
             foreach (CompetitionRunResult existingRunResult in existingRunResults)
             {
                 if (importRunResults.ContainsKey(existingRunResult.Competitor.Number))
@@ -98,7 +97,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
             using (var textReader = new StreamReader(path))
             {
-                var settings = new DelimitedValuesReaderSettings { Culture = Settings.Default.ImportExportCulture };
+                var settings = new DelimitedValuesReaderSettings
+                {
+                    Culture = Settings.Default.ImportExportCulture
+                };
+
                 using (var valuesReader = new DelimitedValuesReader(textReader, settings))
                 {
                     AssertRequiredColumnsExist(valuesReader);
@@ -113,8 +116,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                         }
                         catch (Exception ex)
                         {
-                            throw new Exception(
-                                $"Failed to read import file at row {valuesReader.LineNumber}: {ex.Message}", ex);
+                            throw new Exception($"Failed to read import file at row {valuesReader.LineNumber}: {ex.Message}", ex);
                         }
                     }
                 }
@@ -126,9 +128,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [AssertionMethod]
         private static void AssertRequiredColumnsExist([NotNull] [ItemNotNull] DelimitedValuesReader reader)
         {
-            List<string> missingColumnNames =
-                RequiredColumnNames.Where(requiredColumnName => !reader.ColumnNames.Contains(requiredColumnName))
-                    .ToList();
+            List<string> missingColumnNames = RequiredColumnNames.Where(requiredColumnName => !reader.ColumnNames.Contains(requiredColumnName)).ToList();
 
             if (missingColumnNames.Count > 0)
             {
@@ -142,17 +142,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         }
 
         [NotNull]
-        private static CompetitionRunResult GetRunResultFrom([NotNull] IDelimitedValuesReaderRow row,
-            bool hasOptionalColumns, DateTime startTimeUtc)
+        private static CompetitionRunResult GetRunResultFrom([NotNull] IDelimitedValuesReaderRow row, bool hasOptionalColumns, DateTime startTimeUtc)
         {
             Competitor competitor = GetCompetitorFrom(row);
             var runResult = new CompetitionRunResult(competitor);
 
             if (hasOptionalColumns)
             {
-                var faultCount = row.GetCell<int?>(ImportExportColumns.FaultCount);
-                var refusalCount = row.GetCell<int?>(ImportExportColumns.RefusalCount);
-                var isEliminated = row.GetCell<bool?>(ImportExportColumns.IsEliminated);
+                int? faultCount = row.GetCell<int?>(ImportExportColumns.FaultCount);
+                int? refusalCount = row.GetCell<int?>(ImportExportColumns.RefusalCount);
+                bool? isEliminated = row.GetCell<bool?>(ImportExportColumns.IsEliminated);
 
                 // Note: We cannot reconstruct whether start time was high precision, because it does not roundtrip
                 // through import/export. However, we do not need to know. A low-precision elapsed time is caused by 
@@ -161,31 +160,30 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 // time was high precision.
                 var startTime = new RecordedTime(TimeSpan.Zero, startTimeUtc);
 
-                RecordedTime intermediateTime1 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1,
-                    startTime);
-                RecordedTime intermediateTime2 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2,
-                    startTime);
-                RecordedTime intermediateTime3 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3,
-                    startTime);
+                RecordedTime intermediateTime1 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, startTime);
+                RecordedTime intermediateTime2 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, startTime);
+                RecordedTime intermediateTime3 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, startTime);
                 RecordedTime finishTime = GetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, startTime);
 
-                if (intermediateTime1 == null && intermediateTime2 == null && intermediateTime3 == null &&
-                    finishTime == null)
+                if (intermediateTime1 == null && intermediateTime2 == null && intermediateTime3 == null && finishTime == null)
                 {
                     startTime = null;
                 }
 
                 bool runCompleted = finishTime != null || (isEliminated != null && isEliminated.Value);
+
                 if (runCompleted)
                 {
                     if (faultCount != null)
                     {
                         runResult = runResult.ChangeFaultCount(faultCount.Value);
                     }
+
                     if (refusalCount != null)
                     {
                         runResult = runResult.ChangeRefusalCount(refusalCount.Value);
                     }
+
                     if (isEliminated != null)
                     {
                         runResult = runResult.ChangeIsEliminated(isEliminated.Value);
@@ -193,12 +191,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
                     if (startTime != null)
                     {
-                        runResult =
-                            runResult.ChangeTimings(
-                                new CompetitionRunTimings(startTime).ChangeIntermediateTime1(intermediateTime1)
-                                    .ChangeIntermediateTime2(intermediateTime2)
-                                    .ChangeIntermediateTime3(intermediateTime3)
-                                    .ChangeFinishTime(finishTime));
+                        // @formatter:keep_existing_linebreaks true
+
+                        runResult = runResult
+                            .ChangeTimings(new CompetitionRunTimings(startTime)
+                                .ChangeIntermediateTime1(intermediateTime1)
+                                .ChangeIntermediateTime2(intermediateTime2)
+                                .ChangeIntermediateTime3(intermediateTime3)
+                                .ChangeFinishTime(finishTime));
+
+                        // @formatter:keep_existing_linebreaks restore
                     }
                 }
             }
@@ -218,6 +220,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             {
                 throw new InvalidDataException("Handler name is missing.");
             }
+
             if (string.IsNullOrWhiteSpace(dogName))
             {
                 throw new InvalidDataException("Dog name is missing.");
@@ -227,19 +230,17 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         }
 
         [CanBeNull]
-        private static RecordedTime GetTimeElapsedSinceStart([NotNull] IDelimitedValuesReaderRow row,
-            [NotNull] string columnName, [NotNull] RecordedTime startTime)
+        private static RecordedTime GetTimeElapsedSinceStart([NotNull] IDelimitedValuesReaderRow row, [NotNull] string columnName,
+            [NotNull] RecordedTime startTime)
         {
             string timeString = row.GetCell(columnName);
-            TimeSpanWithAccuracy? timeWithAccuracy = TimeSpanWithAccuracy.FromString(timeString,
-                Settings.Default.ImportExportCulture);
+            TimeSpanWithAccuracy? timeWithAccuracy = TimeSpanWithAccuracy.FromString(timeString, Settings.Default.ImportExportCulture);
 
             return timeWithAccuracy != null ? startTime.Add(timeWithAccuracy.Value) : null;
         }
 
         [NotNull]
-        private static CompetitionRunResult Merge([NotNull] CompetitionRunResult existing,
-            [NotNull] CompetitionRunResult imported, bool skipTimings)
+        private static CompetitionRunResult Merge([NotNull] CompetitionRunResult existing, [NotNull] CompetitionRunResult imported, bool skipTimings)
         {
             return skipTimings ? existing.ChangeCompetitor(imported.Competitor) : MergeWithTimings();
         }

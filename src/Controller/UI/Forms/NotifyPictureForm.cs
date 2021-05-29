@@ -88,11 +88,13 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             if (holdStartedAt != null)
             {
                 TimeSpan elapsed = SystemContext.UtcNow() - holdStartedAt.Value;
+
                 if (elapsed >= HoldAtMaxOpacityDuration)
                 {
                     holdStartedAt = null;
                     directionIsUp = false;
                 }
+
                 return;
             }
 

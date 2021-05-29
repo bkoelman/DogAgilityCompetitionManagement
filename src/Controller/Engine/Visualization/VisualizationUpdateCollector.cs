@@ -7,8 +7,8 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
     /// <summary>
-    /// Provides a temporary context in which visualization changes are collected, which are then sent out as a set, in order
-    /// to minimize the number of outgoing network packets.
+    /// Provides a temporary context in which visualization changes are collected, which are then sent out as a set, in order to minimize the number of
+    /// outgoing network packets.
     /// </summary>
     public sealed class VisualizationUpdateCollector : IDisposable
     {
@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
 
         [NotNull]
         [ItemNotNull]
-        private List<VisualizationChange> changeSet = new List<VisualizationChange>();
+        private List<VisualizationChange> changeSet = new();
 
         public VisualizationUpdateCollector([NotNull] ICompetitionRunVisualizer source)
         {
@@ -40,10 +40,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             Guard.NotNull(change, nameof(change));
 
             VisualizationChange existing = changeSet.FirstOrDefault(c => c.GetType() == change.GetType());
+
             if (existing != null)
             {
                 changeSet.Remove(existing);
             }
+
             changeSet.Add(change);
         }
 

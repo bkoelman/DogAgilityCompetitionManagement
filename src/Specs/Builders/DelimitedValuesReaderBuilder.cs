@@ -15,7 +15,11 @@ namespace DogAgilityCompetition.Specs.Builders
     {
         [NotNull]
         [ItemNotNull]
-        private static readonly string[] DefaultHeaders = { "ColumnHeader1", "ColumnHeader2" };
+        private static readonly string[] DefaultHeaders =
+        {
+            "ColumnHeader1",
+            "ColumnHeader2"
+        };
 
         private bool useDefaultHeaders = true;
 
@@ -27,7 +31,11 @@ namespace DogAgilityCompetition.Specs.Builders
 
         [NotNull]
         [ItemNotNull]
-        private List<string> dataLines = new List<string> { "RowCell_1x1,RowCell_1x2", "RowCell_2x1,RowCell_2x2" };
+        private List<string> dataLines = new()
+        {
+            "RowCell_1x1,RowCell_1x2",
+            "RowCell_2x1,RowCell_2x2"
+        };
 
         [CanBeNull]
         private DelimitedValuesReaderSettings settings = new DelimitedValuesReaderSettingsBuilder().Build();
@@ -41,6 +49,7 @@ namespace DogAgilityCompetition.Specs.Builders
             string fieldSeparator = GetFieldSeparatorFromSettings();
 
             string columnHeaderLine = null;
+
             if (headerLine == null && useDefaultHeaders)
             {
                 columnHeaderLine = string.Join(fieldSeparator, DefaultHeaders);
@@ -63,6 +72,7 @@ namespace DogAgilityCompetition.Specs.Builders
             writer.Flush();
             stream.Seek(0, SeekOrigin.Begin);
             TextReader reader = new StreamReader(stream);
+
             if (createReader != null)
             {
                 reader = createReader(reader);
@@ -132,8 +142,7 @@ namespace DogAgilityCompetition.Specs.Builders
         }
 
         [NotNull]
-        public DelimitedValuesReaderBuilder WithIntermediateReader(
-            [NotNull] Func<TextReader, TextReader> createReaderCallback)
+        public DelimitedValuesReaderBuilder WithIntermediateReader([NotNull] Func<TextReader, TextReader> createReaderCallback)
         {
             createReader = createReaderCallback;
             return this;

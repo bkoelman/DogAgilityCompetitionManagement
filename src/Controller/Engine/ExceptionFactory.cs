@@ -6,9 +6,10 @@ namespace DogAgilityCompetition.Controller.Engine
     public static class ExceptionFactory
     {
         [NotNull]
-        public static NotSupportedException CreateNotSupportedExceptionFor<T>(T enumValue) where T : struct
+        public static NotSupportedException CreateNotSupportedExceptionFor<T>(T enumValue)
+            where T : struct
         {
-            return new NotSupportedException($"Unsupported {typeof (T).Name} '{enumValue}'.");
+            return new($"Unsupported {typeof(T).Name} '{enumValue}'.");
         }
     }
 }

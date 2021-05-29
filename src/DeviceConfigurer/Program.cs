@@ -23,6 +23,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
             //CirceSpecExamples.DumpScenarios();
 
             StartupArguments startupArguments = StartupArguments.Parse(args);
+
             if (startupArguments != null)
             {
                 ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());

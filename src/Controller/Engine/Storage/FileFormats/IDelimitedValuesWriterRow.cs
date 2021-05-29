@@ -42,7 +42,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="converter">
         /// Optional. Used to convert from <typeparamref name="T" /> to string.
         /// </param>
-        void SetCell<T>([NotNull] string columnName, [CanBeNull] T value,
-            [CanBeNull] Converter<T, string> converter = null);
+        void SetCell<T>([NotNull] string columnName, [CanBeNull] T value, [CanBeNull] Converter<T, string> converter = null);
     }
 }

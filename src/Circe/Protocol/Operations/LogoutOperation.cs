@@ -6,8 +6,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// This operation is used by a controller to end communications with a mediator.
     /// </summary>
     /// <remarks>
-    /// This operation is sent by a controller to terminate communications. After receiving this operation, the mediator should
-    /// not send any more operations until another Login (01) operation has been received.
+    /// This operation is sent by a controller to terminate communications. After receiving this operation, the mediator should not send any more operations
+    /// until another Login (01) operation has been received.
     /// </remarks>
     [Serializable]
     public sealed class LogoutOperation : Operation

@@ -32,8 +32,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 
         [NotNull]
         [ItemNotNull]
-        public Collection<DisplaySettingsXml> DisplaysOrEmpty
-            => Displays ?? (Displays = new Collection<DisplaySettingsXml>());
+        public Collection<DisplaySettingsXml> DisplaysOrEmpty => Displays ?? (Displays = new Collection<DisplaySettingsXml>());
 
         [DataMember]
         [CanBeNull]
@@ -42,8 +41,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 
         [NotNull]
         [ItemNotNull]
-        public Collection<RemoteSettingsXml> RemotesOrEmpty
-            => Remotes ?? (Remotes = new Collection<RemoteSettingsXml>());
+        public Collection<RemoteSettingsXml> RemotesOrEmpty => Remotes ?? (Remotes = new Collection<RemoteSettingsXml>());
 
         [DataMember]
         [CanBeNull]
@@ -57,22 +55,23 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
             Guard.NotNull(address, nameof(address));
 
             GateSettingsXml gateToRemove = GatesOrEmpty.FirstOrDefault(gate => gate.DeviceAddressNotNull == address);
+
             if (gateToRemove != null)
             {
                 GatesOrEmpty.Remove(gateToRemove);
                 return;
             }
 
-            RemoteSettingsXml remoteToRemove =
-                RemotesOrEmpty.FirstOrDefault(remote => remote.DeviceAddressNotNull == address);
+            RemoteSettingsXml remoteToRemove = RemotesOrEmpty.FirstOrDefault(remote => remote.DeviceAddressNotNull == address);
+
             if (remoteToRemove != null)
             {
                 RemotesOrEmpty.Remove(remoteToRemove);
                 return;
             }
 
-            DisplaySettingsXml displayToRemove =
-                DisplaysOrEmpty.FirstOrDefault(display => display.DeviceAddressNotNull == address);
+            DisplaySettingsXml displayToRemove = DisplaysOrEmpty.FirstOrDefault(display => display.DeviceAddressNotNull == address);
+
             if (displayToRemove != null)
             {
                 DisplaysOrEmpty.Remove(displayToRemove);

@@ -12,13 +12,14 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public sealed class WirelessDisplayUpdateCollector : IVisualizationActor
     {
-        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
         private const int CirceHiddenCompetitorNumber = 0;
         private const int CirceHiddenPlacement = 0;
         private const int CirceHiddenFaultsRefusals = 99;
 
+        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
+
         [NotNull]
-        private readonly VisualizeFieldSetBuilder builder = new VisualizeFieldSetBuilder();
+        private readonly VisualizeFieldSetBuilder builder = new();
 
         public VisualizeFieldSet GetResult()
         {

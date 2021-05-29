@@ -15,32 +15,33 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             get
             {
                 var result = CellTemplate as DataGridViewDisableButtonCell;
+
                 if (result == null)
                 {
                     throw new InvalidOperationException("CellTemplate is not properly set.");
                 }
+
                 return result;
             }
         }
 
         public bool Enabled
         {
-            get
-            {
-                return DisableButtonCell.Enabled;
-            }
+            get => DisableButtonCell.Enabled;
             set
             {
                 if (Enabled != value)
                 {
                     DisableButtonCell.Enabled = value;
+
                     if (DataGridView != null)
                     {
                         int rowCount = DataGridView.RowCount;
+
                         for (int i = 0; i < rowCount; i++)
                         {
                             DataGridViewRow r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewDisableButtonCell) r.Cells[Index]).Enabled = value;
+                            ((DataGridViewDisableButtonCell)r.Cells[Index]).Enabled = value;
                         }
                     }
                 }

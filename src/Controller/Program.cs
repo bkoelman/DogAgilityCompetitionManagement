@@ -43,25 +43,23 @@ namespace DogAgilityCompetition.Controller
             Log.Info("Application ended.");
         }
 
-        private static void TaskSchedulerOnUnobservedTaskException([CanBeNull] object sender,
-            [NotNull] UnobservedTaskExceptionEventArgs e)
+        private static void TaskSchedulerOnUnobservedTaskException([CanBeNull] object sender, [NotNull] UnobservedTaskExceptionEventArgs e)
         {
             Log.Error("Unhandled exception in TaskScheduler.", e.Exception);
             e.SetObserved();
         }
 
-        private static void CurrentDomainOnUnhandledException([CanBeNull] object sender,
-            [NotNull] UnhandledExceptionEventArgs e)
+        private static void CurrentDomainOnUnhandledException([CanBeNull] object sender, [NotNull] UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
+
             if (ex != null)
             {
                 Log.Error($"Unhandled managed exception in AppDomain (isTerminating={e.IsTerminating})", ex);
             }
             else
             {
-                Log.Error(
-                    $"Unhandled unmanaged exception in AppDomain (isTerminating={e.IsTerminating}): {e.ExceptionObject}");
+                Log.Error($"Unhandled unmanaged exception in AppDomain (isTerminating={e.IsTerminating}): {e.ExceptionObject}");
             }
         }
     }

@@ -3,12 +3,11 @@ using System.Threading;
 namespace DogAgilityCompetition.Circe.Session
 {
     /// <summary>
-    /// Wraps a <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns the latest
-    /// value.
+    /// Wraps a <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns the latest value.
     /// </summary>
     /// <remarks>
-    /// It is strongly recommended to mark <see cref="FreshBoolean" /> members in your class as <c>readonly</c>, because
-    /// accidentally replacing a FreshBoolean object with another FreshBoolean object defeats the whole purpose of this class.
+    /// It is strongly recommended to mark <see cref="FreshBoolean" /> members in your class as <c>readonly</c>, because accidentally replacing a
+    /// FreshBoolean object with another FreshBoolean object defeats the whole purpose of this class.
     /// </remarks>
     public sealed class FreshBoolean
     {

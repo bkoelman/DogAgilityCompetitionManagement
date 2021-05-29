@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Controller.Engine
     public sealed class AlertSoundSourceItem : AlertSourceItem
     {
         [NotNull]
-        public static readonly AlertSoundSourceItem None = new AlertSoundSourceItem(false, null);
+        public static readonly AlertSoundSourceItem None = new(false, null);
 
         public AlertSoundSourceItem(bool isEnabled, [CanBeNull] string soundPath)
             : base(isEnabled, soundPath)

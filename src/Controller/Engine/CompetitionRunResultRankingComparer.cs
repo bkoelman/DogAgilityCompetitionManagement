@@ -15,8 +15,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private readonly RankingComparisonMode comparisonMode;
 
-        public CompetitionRunResultRankingComparer([NotNull] CompetitionClassModel modelSnapshot,
-            RankingComparisonMode comparisonMode)
+        public CompetitionRunResultRankingComparer([NotNull] CompetitionClassModel modelSnapshot, RankingComparisonMode comparisonMode)
         {
             Guard.NotNull(modelSnapshot, nameof(modelSnapshot));
             this.modelSnapshot = modelSnapshot;

@@ -38,12 +38,14 @@ namespace DogAgilityCompetition.Controller.Engine
         private static void LogChanges([NotNull] [ItemNotNull] IEnumerable<VisualizationChange> changes)
         {
             var writer = new StringWriter();
+
             foreach (VisualizationChange change in changes)
             {
                 writer.WriteLine();
                 writer.Write("\t");
                 change.WriteTo(writer);
             }
+
             Log.Debug("Applying set of visualization changes: " + writer);
         }
     }

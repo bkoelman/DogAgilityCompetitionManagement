@@ -16,42 +16,41 @@ namespace DogAgilityCompetition.Circe.Controller
     /// </summary>
     internal sealed class SessionGuard : IDisposable
     {
+        private const int TryNextComPortDelayInMilliseconds = 100;
+
         [NotNull]
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
         private static readonly Version ProtocolVersionExpected =
-            new Version(KeepAliveOperation.CurrentProtocolVersion.Major, KeepAliveOperation.CurrentProtocolVersion.Minor);
-
-        private const int TryNextComPortDelayInMilliseconds = 100;
+            new(KeepAliveOperation.CurrentProtocolVersion.Major, KeepAliveOperation.CurrentProtocolVersion.Minor);
 
         [NotNull]
-        private readonly object stateLock = new object();
-
-        private bool hasBeenStarted;
-        private bool hasBeenDisposed;
+        private readonly object stateLock = new();
 
         [NotNull]
-        private readonly ComPortRotator portRotator = new ComPortRotator();
+        private readonly ComPortRotator portRotator = new();
 
         [NotNull]
         private readonly ActionQueue outgoingOperationsQueue;
 
         [NotNull]
-        private readonly ManualResetEventSlim disposeRequestedWaitHandle = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim disposeRequestedWaitHandle = new(false);
 
         [NotNull]
-        private readonly ManualResetEventSlim reconnectLoopTerminatedWaitHandle = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim reconnectLoopTerminatedWaitHandle = new(false);
 
         [NotNull]
-        private readonly FreshReference<CirceComConnection> activeConnection =
-            new FreshReference<CirceComConnection>(null);
+        private readonly FreshReference<CirceComConnection> activeConnection = new(null);
 
         [NotNull]
-        private readonly FreshDateTime lastRefreshTimeInUtc = new FreshDateTime(DateTime.MinValue);
+        private readonly FreshDateTime lastRefreshTimeInUtc = new(DateTime.MinValue);
 
         [NotNull]
-        private readonly FreshNullableBoolean seenProtocolVersionMismatch = new FreshNullableBoolean(null);
+        private readonly FreshNullableBoolean seenProtocolVersionMismatch = new(null);
+
+        private bool hasBeenStarted;
+        private bool hasBeenDisposed;
 
         public event EventHandler BeforePacketSent;
         public event EventHandler AfterPacketReceived;
@@ -78,13 +77,15 @@ namespace DogAgilityCompetition.Circe.Controller
                         Log.Debug("Already started or disposed.");
                         return;
                     }
+
                     hasBeenStarted = true;
                 }
             }
 
             Log.Debug("Creating task for reconnect loop.");
-            Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default).ContinueWith(task => reconnectLoopTerminatedWaitHandle.Set());
+
+            Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)
+                .ContinueWith(task => reconnectLoopTerminatedWaitHandle.Set());
         }
 
         public void Dispose()
@@ -142,6 +143,7 @@ namespace DogAgilityCompetition.Circe.Controller
             Guard.NotNull(operation, nameof(operation));
 
             Log.Debug($"Adding outgoing operation to queue: {operation}");
+
             return outgoingOperationsQueue.Enqueue(() =>
             {
                 // The reconnect thread will pause the queue before changing the active connection.
@@ -150,12 +152,14 @@ namespace DogAgilityCompetition.Circe.Controller
                 // callback is running.
 
                 CirceComConnection connectionSnapshot = activeConnection.Value;
+
                 if (connectionSnapshot == null)
                 {
                     throw new NotConnectedToMediatorException();
                 }
 
                 Exception error;
+
                 if (!TryDirectSend(connectionSnapshot, false, operation, out error))
                 {
                     throw new Exception("Failed to send outgoing operation.", error);
@@ -166,6 +170,7 @@ namespace DogAgilityCompetition.Circe.Controller
         private void ReconnectLoop()
         {
             Log.Debug("Entering ReconnectLoop.");
+
             while (true)
             {
                 try
@@ -233,6 +238,7 @@ namespace DogAgilityCompetition.Circe.Controller
                 // thread that is writing to the port. So locking for exclusive write 
                 // access is not needed here.
                 Exception logoutError;
+
                 if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out logoutError))
                 {
                     Log.Debug("Failed to send Logout operation.", logoutError);
@@ -259,6 +265,7 @@ namespace DogAgilityCompetition.Circe.Controller
             // Block until we have successfully sent a Login operation.
             Exception connectError;
             CirceComConnection newConnection;
+
             do
             {
                 // Block until we have obtained a COM port.
@@ -347,10 +354,11 @@ namespace DogAgilityCompetition.Circe.Controller
             AfterPacketReceived?.Invoke(sender, e);
         }
 
-        private static bool TryDirectSend([NotNull] CirceComConnection connection, bool openBeforeSend,
-            [NotNull] Operation operation, [CanBeNull] out Exception error)
+        private static bool TryDirectSend([NotNull] CirceComConnection connection, bool openBeforeSend, [NotNull] Operation operation,
+            [CanBeNull] out Exception error)
         {
             error = null;
+
             try
             {
                 if (openBeforeSend)
@@ -379,6 +387,7 @@ namespace DogAgilityCompetition.Circe.Controller
             {
                 error = ex;
             }
+
             return false;
         }
 
@@ -402,17 +411,18 @@ namespace DogAgilityCompetition.Circe.Controller
             // than taking an exclusive lock, risking potential deadlocks.
 
             var keepAliveOperation = e.Operation as KeepAliveOperation;
+
             if (keepAliveOperation != null)
             {
                 // Major and Minor version must match exactly; Build is ignored here and Revision is not used by the CIRCE spec.
 
                 // ReSharper disable once PossibleNullReferenceException
                 // Reason: Operation has been validated for required parameters when this code is reached.
-                var incomingVersion = new Version(keepAliveOperation.ProtocolVersion.Major,
-                    keepAliveOperation.ProtocolVersion.Minor);
+                var incomingVersion = new Version(keepAliveOperation.ProtocolVersion.Major, keepAliveOperation.ProtocolVersion.Minor);
                 bool isVersionMismatch = incomingVersion != ProtocolVersionExpected;
 
                 bool? wasVersionMismatch = seenProtocolVersionMismatch.CompareExchange(isVersionMismatch, null);
+
                 if (wasVersionMismatch == null)
                 {
                     // We are in the process of establishing a connection
@@ -443,6 +453,7 @@ namespace DogAgilityCompetition.Circe.Controller
             }
 
             bool? seenProtocolVersionMismatchSnapshot = seenProtocolVersionMismatch.Value;
+
             if (seenProtocolVersionMismatchSnapshot == false)
             {
                 Log.Debug("Extending session lifetime.");
@@ -459,15 +470,12 @@ namespace DogAgilityCompetition.Circe.Controller
                 }
                 catch (Exception ex)
                 {
-                    string message =
-                        $"Unexpected error while processing incoming operation on {e.Connection}: {e.Operation}";
-                    Log.Error(message, ex);
+                    Log.Error($"Unexpected error while processing incoming operation on {e.Connection}: {e.Operation}", ex);
                 }
             }
             else
             {
-                Log.Warn(
-                    $"Discarding incoming operation after detection of version mismatch on {e.Connection}: {e.Operation}");
+                Log.Warn($"Discarding incoming operation after detection of version mismatch on {e.Connection}: {e.Operation}");
             }
         }
 

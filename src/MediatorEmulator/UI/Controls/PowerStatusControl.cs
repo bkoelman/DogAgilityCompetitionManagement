@@ -14,26 +14,20 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class PowerStatusControl : UserControl
     {
+        [NotNull]
+        private readonly FreshBoolean threadSafeIsPoweredOn = new(false);
+
         public bool SupportsBlink
         {
-            get
-            {
-                return statusLed.Visible;
-            }
-            set
-            {
-                statusLed.Visible = value;
-            }
+            get => statusLed.Visible;
+            set => statusLed.Visible = value;
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsPoweredOn
         {
-            get
-            {
-                return !onButton.Enabled;
-            }
+            get => !onButton.Enabled;
             set
             {
                 if (value != IsPoweredOn)
@@ -46,9 +40,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 }
             }
         }
-
-        [NotNull]
-        private readonly FreshBoolean threadSafeIsPoweredOn = new FreshBoolean(false);
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -66,10 +57,10 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         {
             if (SupportsBlink)
             {
-                return Task.Factory.StartNew(Blink, CancellationToken.None, TaskCreationOptions.None,
-                    TaskScheduler.Default);
+                return Task.Factory.StartNew(Blink, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
             }
-            return Task.FromResult((object) null);
+
+            return Task.FromResult((object)null);
         }
 
         private void Blink()

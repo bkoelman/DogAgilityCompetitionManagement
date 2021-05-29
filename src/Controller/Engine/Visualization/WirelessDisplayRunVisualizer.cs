@@ -11,8 +11,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
     /// <summary>
-    /// Collects all visualization changes into a single Circe operation and transmits it to the displays in the logical
-    /// network.
+    /// Collects all visualization changes into a single Circe operation and transmits it to the displays in the logical network.
     /// </summary>
     public sealed class WirelessDisplayRunVisualizer : ICompetitionRunVisualizer
     {
@@ -26,8 +25,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         [ItemNotNull]
         private IReadOnlyList<WirelessNetworkAddress> displaysInRunComposition = new List<WirelessNetworkAddress>();
 
-        public void InitializeRun([NotNull] CirceControllerSessionManager sessionManager,
-            [NotNull] NetworkComposition runComposition)
+        public void InitializeRun([NotNull] CirceControllerSessionManager sessionManager, [NotNull] NetworkComposition runComposition)
         {
             Guard.NotNull(sessionManager, nameof(sessionManager));
             Guard.NotNull(runComposition, nameof(runComposition));
@@ -41,11 +39,14 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             AssertPreconditions(sessionManager =>
             {
                 var updateCollector = new WirelessDisplayUpdateCollector();
+
                 foreach (VisualizationChange change in changes)
                 {
                     change.ApplyTo(updateCollector);
                 }
+
                 VisualizeFieldSet fieldSet = updateCollector.GetResult();
+
                 if (!fieldSet.IsEmpty)
                 {
                     ApplyFieldSet(sessionManager, fieldSet);
@@ -58,7 +59,11 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             // Due to limited size of hardware buffers, we currently send the operation for each device individually.
             foreach (WirelessNetworkAddress display in displaysInRunComposition)
             {
-                Task task = sessionManager.VisualizeAsync(new[] { display }, fieldSet);
+                Task task = sessionManager.VisualizeAsync(new[]
+                {
+                    display
+                }, fieldSet);
+
                 task.ContinueWith(t =>
                 {
                     if (t.IsFaulted)

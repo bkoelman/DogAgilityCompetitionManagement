@@ -10,7 +10,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class PreviousCompetitorRunUpdate : NullableVisualizationChange<CompetitionRunResult>
     {
         [NotNull]
-        public static PreviousCompetitorRunUpdate Hidden => new PreviousCompetitorRunUpdate(null);
+        public static PreviousCompetitorRunUpdate Hidden => new(null);
 
         public PreviousCompetitorRunUpdate([CanBeNull] CompetitionRunResult value)
             : base(value)

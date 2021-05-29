@@ -29,16 +29,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         private readonly DisposableComponent<CirceMediatorSessionManager> sessionManager;
 
         [NotNull]
-        private NetworkConfigurationFile file = new NetworkConfigurationFile();
-
-        [NotNull]
-        private MediatorForm mediatorForm;
-
-        [NotNull]
-        private readonly RandomSettingsGenerator settingsGenerator = new RandomSettingsGenerator();
+        private readonly RandomSettingsGenerator settingsGenerator = new();
 
         [NotNull]
         private readonly MostRecentlyUsedContainer mruContainer = RegistrySettingsProvider.GetMruList();
+
+        [NotNull]
+        private NetworkConfigurationFile file = new();
+
+        [NotNull]
+        private MediatorForm mediatorForm;
 
         public EmulatorForm([NotNull] StartupArguments startupArguments)
         {
@@ -47,8 +47,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
             Text += AssemblyReader.GetInformationalVersion();
 
-            sessionManager = new DisposableComponent<CirceMediatorSessionManager>(new CirceMediatorSessionManager(),
-                ref components);
+            sessionManager = new DisposableComponent<CirceMediatorSessionManager>(new CirceMediatorSessionManager(), ref components);
         }
 
         private void EmulatorForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
@@ -94,6 +93,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         private void MaximizeOnSecondaryScreen()
         {
             Screen secondaryScreen = Screen.AllScreens.FirstOrDefault(s => !s.Primary);
+
             if (secondaryScreen != null)
             {
                 StartPosition = FormStartPosition.Manual;
@@ -129,6 +129,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 MdiParent = this
             };
+
             mediatorForm.WindowStateChanging += MdiFormOnWindowStateChanging;
             mediatorForm.Show();
             Log.Info("Added Mediator.");
@@ -137,6 +138,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         private void MdiFormOnWindowStateChanging([CanBeNull] object sender, [NotNull] WindowStateChangingEventArgs e)
         {
             var deviceForm = sender as Form;
+
             if (deviceForm != null && deviceForm.WindowState == FormWindowState.Maximized)
             {
                 file.Configuration.IsMaximized = false;
@@ -153,6 +155,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
@@ -171,6 +174,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
@@ -183,6 +187,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
@@ -230,8 +235,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Title = @"Open network configuration";
-                dialog.Filter = @"Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                dialog.Title = "Open network configuration";
+                dialog.Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
 
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -245,6 +250,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             Guard.NotNullNorEmpty(path, nameof(path));
 
             NetworkConfigurationFile newFile;
+
             try
             {
                 newFile = NetworkConfigurationFile.Load(path);
@@ -273,6 +279,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
 
             Form[] childrenNotMediator = MdiChildren.Where(form => form != mediatorForm).ToArray();
+
             foreach (Form child in childrenNotMediator)
             {
                 child.Close();
@@ -295,8 +302,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             using (var dialog = new SaveFileDialog())
             {
-                dialog.Title = @"Save network configuration";
-                dialog.Filter = @"Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                dialog.Title = "Save network configuration";
+                dialog.Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
 
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -358,11 +365,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 mruMenuItem.Click -= MruMenuItemOnClick;
             }
+
             recentFilesToolStripMenuItem.DropDownItems.Clear();
 
             foreach (string path in mruContainer.Items)
             {
-                var mruMenuItem = new ToolStripMenuItem(Path.GetFileName(path)) { Tag = path };
+                var mruMenuItem = new ToolStripMenuItem(Path.GetFileName(path))
+                {
+                    Tag = path
+                };
+
                 mruMenuItem.Click += MruMenuItemOnClick;
 
                 recentFilesToolStripMenuItem.DropDownItems.Add(mruMenuItem);
@@ -373,10 +385,12 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void MruMenuItemOnClick([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
         {
-            var mruMenuItem = (ToolStripMenuItem) sender;
+            var mruMenuItem = (ToolStripMenuItem)sender;
+
             if (mruMenuItem != null)
             {
-                string path = (string) mruMenuItem.Tag;
+                string path = (string)mruMenuItem.Tag;
+
                 if (!OpenFromFile(path))
                 {
                     mruContainer.Remove(path);

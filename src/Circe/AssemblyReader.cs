@@ -9,10 +9,10 @@ namespace DogAgilityCompetition.Circe
         [NotNull]
         public static string GetInformationalVersion()
         {
-            Assembly assembly = Assembly.GetEntryAssembly();
+            var assembly = Assembly.GetEntryAssembly();
+
             CustomAttributeData versionAttribute =
-                assembly.CustomAttributes.FirstOrDefault(
-                    data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
+                assembly.CustomAttributes.FirstOrDefault(data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
 
             if (versionAttribute != null && versionAttribute.ConstructorArguments.Any())
             {

@@ -9,7 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine
     public abstract class DeviceEventArgs : EventArgs
     {
         [NotNull]
-        public WirelessNetworkAddress Source { get; private set; }
+        public WirelessNetworkAddress Source { get; }
 
         protected DeviceEventArgs([NotNull] WirelessNetworkAddress source)
         {

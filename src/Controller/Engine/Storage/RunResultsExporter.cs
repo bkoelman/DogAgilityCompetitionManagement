@@ -15,32 +15,34 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     {
         [NotNull]
         [ItemNotNull]
-        private static readonly ReadOnlyCollection<string> ExportColumnNames =
-            new List<string>
-            {
-                ImportExportColumns.CompetitorNumber,
-                ImportExportColumns.HandlerName,
-                ImportExportColumns.DogName,
-                ImportExportColumns.CountryCode,
-                ImportExportColumns.IntermediateTime1,
-                ImportExportColumns.IntermediateTime2,
-                ImportExportColumns.IntermediateTime3,
-                ImportExportColumns.FinishTime,
-                ImportExportColumns.FaultCount,
-                ImportExportColumns.RefusalCount,
-                ImportExportColumns.IsEliminated,
-                ImportExportColumns.Placement
-            }.AsReadOnly();
+        private static readonly ReadOnlyCollection<string> ExportColumnNames = new List<string>
+        {
+            ImportExportColumns.CompetitorNumber,
+            ImportExportColumns.HandlerName,
+            ImportExportColumns.DogName,
+            ImportExportColumns.CountryCode,
+            ImportExportColumns.IntermediateTime1,
+            ImportExportColumns.IntermediateTime2,
+            ImportExportColumns.IntermediateTime3,
+            ImportExportColumns.FinishTime,
+            ImportExportColumns.FaultCount,
+            ImportExportColumns.RefusalCount,
+            ImportExportColumns.IsEliminated,
+            ImportExportColumns.Placement
+        }.AsReadOnly();
 
-        public static void ExportTo([NotNull] string path,
-            [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public static void ExportTo([NotNull] string path, [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
             Guard.NotNull(runResults, nameof(runResults));
 
             using (var textWriter = new StreamWriter(path))
             {
-                var settings = new DelimitedValuesWriterSettings { Culture = Settings.Default.ImportExportCulture };
+                var settings = new DelimitedValuesWriterSettings
+                {
+                    Culture = Settings.Default.ImportExportCulture
+                };
+
                 using (var valuesWriter = new DelimitedValuesWriter(textWriter, ExportColumnNames, settings))
                 {
                     foreach (CompetitionRunResult runResult in runResults)
@@ -54,14 +56,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
                             if (runResult.Timings != null)
                             {
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, runResult,
-                                    runResult.Timings.IntermediateTime1);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, runResult,
-                                    runResult.Timings.IntermediateTime2);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, runResult,
-                                    runResult.Timings.IntermediateTime3);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, runResult,
-                                    runResult.Timings.FinishTime);
+                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, runResult, runResult.Timings.IntermediateTime1);
+                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, runResult, runResult.Timings.IntermediateTime2);
+                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, runResult, runResult.Timings.IntermediateTime3);
+                                SetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, runResult, runResult.Timings.FinishTime);
                             }
 
                             if (runResult.HasCompleted)
@@ -77,10 +75,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        private static void SetTimeElapsedSinceStart([NotNull] IDelimitedValuesWriterRow row,
-            [NotNull] string columnName, [NotNull] CompetitionRunResult runResult, [CanBeNull] RecordedTime time)
+        private static void SetTimeElapsedSinceStart([NotNull] IDelimitedValuesWriterRow row, [NotNull] string columnName,
+            [NotNull] CompetitionRunResult runResult, [CanBeNull] RecordedTime time)
         {
             TimeSpanWithAccuracy? elapsed = GetElapsedSinceStart(runResult.Timings, time);
+
             if (elapsed != null)
             {
                 row.SetCell(columnName, elapsed.Value);
@@ -88,10 +87,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         }
 
         [CanBeNull]
-        private static TimeSpanWithAccuracy? GetElapsedSinceStart([CanBeNull] CompetitionRunTimings timings,
-            [CanBeNull] RecordedTime time)
+        private static TimeSpanWithAccuracy? GetElapsedSinceStart([CanBeNull] CompetitionRunTimings timings, [CanBeNull] RecordedTime time)
         {
-            return timings != null && time != null ? time.ElapsedSince(timings.StartTime) : (TimeSpanWithAccuracy?) null;
+            return timings != null && time != null ? time.ElapsedSince(timings.StartTime) : null;
         }
     }
 }

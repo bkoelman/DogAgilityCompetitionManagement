@@ -27,10 +27,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override bool AutoSize
         {
-            get
-            {
-                return false;
-            }
+            get => false;
             set
             {
                 // ignore
@@ -39,10 +36,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public override Font Font
         {
-            get
-            {
-                return base.Font;
-            }
+            get => base.Font;
             set
             {
                 base.Font = value;
@@ -53,10 +47,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [NotNull]
         public override string Text
         {
-            get
-            {
-                return innerText;
-            }
+            get => innerText;
             set
             {
                 // ReSharper disable once ConstantNullCoalescingCondition
@@ -74,10 +65,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public override ContentAlignment TextAlign
         {
-            get
-            {
-                return base.TextAlign;
-            }
+            get => base.TextAlign;
             set
             {
                 if (value != base.TextAlign)
@@ -125,6 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                         drawPointCache = CalculateDrawPoint(extent, heightRatio, widthRatio);
                     }
                 }
+
                 sizeCache = newSize;
             }
         }
@@ -177,6 +166,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             if (sizeCache != null && drawPointCache != null && !float.IsInfinity(sizeCache.Value))
             {
                 Font currentFont = Font;
+
                 using (var drawFont = new Font(currentFont.FontFamily, sizeCache.Value, currentFont.Style))
                 {
                     using (var brush = new SolidBrush(ForeColor))

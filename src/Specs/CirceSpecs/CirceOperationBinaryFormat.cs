@@ -8,6 +8,8 @@ using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
@@ -48,6 +50,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -91,6 +94,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -155,6 +159,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -244,6 +249,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -252,6 +258,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Assert
             var expected = new NetworkSetupOperation(new WirelessNetworkAddress("ABCDEF"), true,
                 DeviceRoles.StartTimer | DeviceRoles.FinishTimer | DeviceRoles.Keypad);
+
             operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
@@ -264,7 +271,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 DestinationAddress = new WirelessNetworkAddress("654321"),
                 Capabilities =
                     DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
-                        DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor
+                    DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor
             };
 
             // Act
@@ -351,6 +358,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -362,7 +370,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 DestinationAddress = new WirelessNetworkAddress("654321"),
                 Capabilities =
                     DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
-                        DeviceCapabilities.IntermediateSensor | DeviceCapabilities.FinishSensor
+                    DeviceCapabilities.IntermediateSensor | DeviceCapabilities.FinishSensor
             };
 
             operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
@@ -444,6 +452,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -610,6 +619,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -623,6 +633,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 IsAligned = true,
                 ClockSynchronization = ClockSynchronizationStatus.RequiresSync
             };
+
             operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
@@ -714,6 +725,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -725,6 +737,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 InputKeys = RawDeviceKeys.Key2OrPassIntermediate | RawDeviceKeys.Key7,
                 SensorTime = TimeSpan.FromMilliseconds(456.75)
             };
+
             operation.Should().BeEquivalentTo(expected, options => options.IncludingAllRuntimeProperties());
         }
 
@@ -955,6 +968,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 ByteFor('\t'),
                 3
             };
+
             var reader = new PacketReader();
 
             // Act
@@ -983,7 +997,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
         private static byte ByteFor(char ch)
         {
-            return (byte) ch;
+            return (byte)ch;
         }
 
         [NotNull]
@@ -992,6 +1006,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
         private static string DumpBytes([NotNull] IEnumerable<byte> bytes)
         {
             var textBuilder = new StringBuilder();
+
             foreach (byte bt in bytes)
             {
                 if (textBuilder.Length > 0)
@@ -1005,13 +1020,14 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 }
                 else if (bt < 32)
                 {
-                    textBuilder.Append($"{(int) bt}");
+                    textBuilder.Append($"{(int)bt}");
                 }
                 else
                 {
-                    textBuilder.Append($"ByteFor('{(char) bt}')");
+                    textBuilder.Append($"ByteFor('{(char)bt}')");
                 }
             }
+
             return textBuilder.ToString();
         }
     }

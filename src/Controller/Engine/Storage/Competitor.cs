@@ -13,8 +13,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class Competitor : IEquatable<Competitor>
     {
-        private static readonly int CompetitorNumberMaximumValue =
-            int.Parse(new string('9', NumberEntryFilter.MaxCompetitorNumberLength));
+        private static readonly int CompetitorNumberMaximumValue = int.Parse(new string('9', NumberEntryFilter.MaxCompetitorNumberLength));
 
         public int Number { get; }
 
@@ -32,8 +31,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
         }
 
-        private Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName,
-            [CanBeNull] string countryCode)
+        private Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName, [CanBeNull] string countryCode)
         {
             Guard.InRangeInclusive(number, nameof(number), 1, CompetitorNumberMaximumValue);
             Guard.NotNullNorWhiteSpace(handlerName, nameof(handlerName));
@@ -48,7 +46,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [NotNull]
         public Competitor ChangeCountryCode([CanBeNull] string countryCode)
         {
-            return new Competitor(Number, HandlerName, DogName, countryCode);
+            return new(Number, HandlerName, DogName, countryCode);
         }
 
         [Pure]
@@ -73,8 +71,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
         public bool Equals([CanBeNull] Competitor other)
         {
-            return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName &&
-                other.DogName == DogName && other.CountryCode == CountryCode;
+            return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName && other.DogName == DogName &&
+                other.CountryCode == CountryCode;
         }
 
         public override bool Equals([CanBeNull] object obj)
@@ -84,8 +82,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
         public override int GetHashCode()
         {
-            return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^
-                (CountryCode ?? string.Empty).GetHashCode();
+            return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^ (CountryCode ?? string.Empty).GetHashCode();
         }
 
         public static bool operator ==([CanBeNull] Competitor left, [CanBeNull] Competitor right)
@@ -94,10 +91,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 

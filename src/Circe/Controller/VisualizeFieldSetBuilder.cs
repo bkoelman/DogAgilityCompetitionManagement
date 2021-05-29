@@ -36,9 +36,8 @@ namespace DogAgilityCompetition.Circe.Controller
 
         public VisualizeFieldSet Build()
         {
-            return new VisualizeFieldSet(currentCompetitorNumber, nextCompetitorNumber, startPrimaryTimer,
-                primaryTimerValue, secondaryTimerValue, currentFaultCount, currentRefusalCount, currentIsEliminated,
-                previousPlacement);
+            return new(currentCompetitorNumber, nextCompetitorNumber, startPrimaryTimer, primaryTimerValue, secondaryTimerValue, currentFaultCount,
+                currentRefusalCount, currentIsEliminated, previousPlacement);
         }
 
         [NotNull]

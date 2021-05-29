@@ -23,52 +23,55 @@ namespace DogAgilityCompetition.Circe.Mediator
         private static readonly TimeSpan MaxIdleTime = TimeSpan.FromMilliseconds(700);
 
         [NotNull]
-        private readonly FreshEnum<MediatorConnectionState> connectionState =
-            new FreshEnum<MediatorConnectionState>(MediatorConnectionState.Disconnected);
+        private readonly FreshEnum<MediatorConnectionState> connectionState = new(MediatorConnectionState.Disconnected);
 
         [NotNull]
-        private readonly FreshReference<string> connectedComPort = new FreshReference<string>(null);
+        private readonly FreshReference<string> connectedComPort = new(null);
 
         [NotNull]
         private readonly MediatorIncomingOperationDispatcher operationDispatcher;
 
         [NotNull]
         [ItemNotNull]
-        private readonly BlockingCollection<Operation> sendQueue = new BlockingCollection<Operation>();
+        private readonly BlockingCollection<Operation> sendQueue = new();
 
         [NotNull]
-        private readonly ManualResetEventSlim powerOffRequestedWaitHandle = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim powerOffRequestedWaitHandle = new(false);
 
         [NotNull]
-        private readonly ManualResetEventSlim powerOffCompletedWaitHandle = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim powerOffCompletedWaitHandle = new(false);
 
         [NotNull]
-        private readonly FreshNotNullableReference<Version> protocolVersion =
-            new FreshNotNullableReference<Version>(KeepAliveOperation.CurrentProtocolVersion);
+        private readonly FreshNotNullableReference<Version> protocolVersion = new(KeepAliveOperation.CurrentProtocolVersion);
 
         [NotNull]
-        private readonly FreshReference<string> portName = new FreshReference<string>(null);
+        private readonly FreshReference<string> portName = new(null);
+
+        [NotNull]
+        private readonly FreshInt32 mediatorStatus = new(0);
+
+        [NotNull]
+        private readonly FreshBoolean awaitingAddressAssignment = new(false);
+
+        [NotNull]
+        private readonly FreshReference<IWirelessDevice> mediator = new(null);
+
+        [NotNull]
+        private readonly DeviceStatusChangeLogger deviceChangeLogger = new();
+
+        private DateTime lastSendTime;
 
         [CanBeNull]
         public string ComPortName
         {
-            get
-            {
-                return portName.Value;
-            }
-            set
-            {
-                portName.Value = value;
-            }
+            get => portName.Value;
+            set => portName.Value = value;
         }
 
         [NotNull]
         public Version ProtocolVersion
         {
-            get
-            {
-                return protocolVersion.Value;
-            }
+            get => protocolVersion.Value;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -76,18 +79,9 @@ namespace DogAgilityCompetition.Circe.Mediator
             }
         }
 
-        [NotNull]
-        private readonly FreshInt32 mediatorStatus = new FreshInt32(0);
-
-        [NotNull]
-        private readonly FreshBoolean awaitingAddressAssignment = new FreshBoolean(false);
-
         public int StatusCode
         {
-            get
-            {
-                return mediatorStatus.Value;
-            }
+            get => mediatorStatus.Value;
             set
             {
                 if (value != mediatorStatus.Value)
@@ -105,16 +99,10 @@ namespace DogAgilityCompetition.Circe.Mediator
             }
         }
 
-        [NotNull]
-        private readonly FreshReference<IWirelessDevice> mediator = new FreshReference<IWirelessDevice>(null);
-
         [CanBeNull]
         public IWirelessDevice Mediator
         {
-            get
-            {
-                return mediator.Value;
-            }
+            get => mediator.Value;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -123,11 +111,7 @@ namespace DogAgilityCompetition.Circe.Mediator
         }
 
         [NotNull]
-        public ConcurrentDictionary<WirelessNetworkAddress, IWirelessDevice> Devices { get; } =
-            new ConcurrentDictionary<WirelessNetworkAddress, IWirelessDevice>();
-
-        [NotNull]
-        private readonly DeviceStatusChangeLogger deviceChangeLogger = new DeviceStatusChangeLogger();
+        public ConcurrentDictionary<WirelessNetworkAddress, IWirelessDevice> Devices { get; } = new();
 
         public event EventHandler PacketSending;
         public event EventHandler PacketReceived;
@@ -159,23 +143,21 @@ namespace DogAgilityCompetition.Circe.Mediator
         {
             if (operation.CapabilitiesOrNone == DeviceCapabilities.None)
             {
-                if (Mediator != null && Mediator.Address == operation.DestinationAddressOrDefault &&
-                    Mediator.IsPoweredOn)
+                if (Mediator != null && Mediator.Address == operation.DestinationAddressOrDefault && Mediator.IsPoweredOn)
                 {
                     SetupMediator(operation.AssignAddress);
                 }
                 else
                 {
-                    Log.Error(
-                        $"No on-line mediator with address {operation.DestinationAddressOrDefault} found to setup.");
+                    Log.Error($"No on-line mediator with address {operation.DestinationAddressOrDefault} found to setup.");
                 }
             }
             else
             {
                 // Note: This code path is filled with race conditions. Not intended for production scenarios.
                 IWirelessDevice targetDevice =
-                    Devices.Values.SingleOrDefault(
-                        device => device.Address == operation.DestinationAddressOrDefault && device.IsPoweredOn);
+                    Devices.Values.SingleOrDefault(device => device.Address == operation.DestinationAddressOrDefault && device.IsPoweredOn);
+
                 if (targetDevice != null)
                 {
                     SetupDevice(targetDevice.Address, operation.AssignAddress, operation.CapabilitiesOrNone);
@@ -198,10 +180,10 @@ namespace DogAgilityCompetition.Circe.Mediator
             ResetMediatorStatusAfterSetup();
         }
 
-        private void SetupDevice([NotNull] WirelessNetworkAddress oldAddress,
-            [NotNull] WirelessNetworkAddress newAddress, DeviceCapabilities capabilities)
+        private void SetupDevice([NotNull] WirelessNetworkAddress oldAddress, [NotNull] WirelessNetworkAddress newAddress, DeviceCapabilities capabilities)
         {
             IWirelessDevice device;
+
             if (Devices.TryRemove(oldAddress, out device))
             {
                 Devices[newAddress] = device;
@@ -224,6 +206,7 @@ namespace DogAgilityCompetition.Circe.Mediator
         public void PowerOn()
         {
             Log.Debug("Entering PowerOn.");
+
             if (connectionState.Value != MediatorConnectionState.Disconnected)
             {
                 InnerPowerOff();
@@ -231,8 +214,7 @@ namespace DogAgilityCompetition.Circe.Mediator
 
             powerOffRequestedWaitHandle.Reset();
 
-            Task.Factory.StartNew(SenderLoop, CancellationToken.None, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default);
+            Task.Factory.StartNew(SenderLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             Log.Info("Mediator on-line.");
 
             Log.Debug("Leaving PowerOn.");
@@ -241,12 +223,14 @@ namespace DogAgilityCompetition.Circe.Mediator
         public void PowerOff()
         {
             Log.Debug("Entering PowerOff.");
+
             if (connectionState.Value != MediatorConnectionState.Disconnected)
             {
                 InnerPowerOff();
 
                 Log.Info("Mediator off-line.");
             }
+
             Log.Debug("Leaving PowerOff.");
         }
 
@@ -265,6 +249,7 @@ namespace DogAgilityCompetition.Circe.Mediator
             ChangeConnectionStateTo(MediatorConnectionState.WaitingForComPort, null);
 
             CirceComConnection connection = null;
+
             while (true)
             {
                 try
@@ -284,10 +269,10 @@ namespace DogAgilityCompetition.Circe.Mediator
                     {
                         case MediatorConnectionState.WaitingForComPort:
                             Log.Debug($"SenderLoop: Opening port {portName.Value ?? "(auto)"}.");
+
                             try
                             {
-                                connection = ComPortSelector.GetConnection(AttachConnectionHandlers,
-                                    DetachConnectionHandlers, portName.Value);
+                                connection = ComPortSelector.GetConnection(AttachConnectionHandlers, DetachConnectionHandlers, portName.Value);
                                 connectedComPort.Value = connection.PortName;
                                 Log.Debug($"SenderLoop: Awaiting Login on port {connectedComPort.Value}.");
                                 ChangeConnectionStateTo(MediatorConnectionState.WaitingForLogin, connectedComPort.Value);
@@ -296,13 +281,13 @@ namespace DogAgilityCompetition.Circe.Mediator
                             {
                                 Log.Debug($"Unable to open an available COM port: {ex.Message}");
                             }
+
                             break;
                         case MediatorConnectionState.LoginReceived:
                             Log.Debug("SenderLoop: Responding with KeepAlive after incoming Login.");
                             CirceComConnection connectionNotNull1 = AssertConnectionNotNull(connection);
 
-                            SendOperation(connectionNotNull1,
-                                new KeepAliveOperation(protocolVersion.Value, mediatorStatus.Value));
+                            SendOperation(connectionNotNull1, new KeepAliveOperation(protocolVersion.Value, mediatorStatus.Value));
                             ClearSendQueue();
                             ChangeConnectionStateTo(MediatorConnectionState.Connected, connectedComPort.Value);
                             break;
@@ -311,6 +296,7 @@ namespace DogAgilityCompetition.Circe.Mediator
                             CirceComConnection connectionNotNull2 = AssertConnectionNotNull(connection);
 
                             Operation nextOperation;
+
                             while (sendQueue.TryTake(out nextOperation))
                             {
                                 SendOperation(connectionNotNull2, nextOperation);
@@ -318,10 +304,9 @@ namespace DogAgilityCompetition.Circe.Mediator
 
                             if (lastSendTime.Add(MaxIdleTime) < SystemContext.UtcNow())
                             {
-                                SendOperation(connectionNotNull2,
-                                    new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion,
-                                        mediatorStatus.Value));
+                                SendOperation(connectionNotNull2, new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion, mediatorStatus.Value));
                             }
+
                             break;
                     }
                 }
@@ -369,8 +354,8 @@ namespace DogAgilityCompetition.Circe.Mediator
         private void ClearSendQueue()
         {
             int count = 0;
-
             Operation unused;
+
             while (sendQueue.TryTake(out unused))
             {
                 count++;
@@ -382,14 +367,13 @@ namespace DogAgilityCompetition.Circe.Mediator
             }
         }
 
-        private DateTime lastSendTime;
-
         private void SendOperation([NotNull] CirceComConnection connection, [NotNull] Operation operation)
         {
             Guard.NotNull(connection, nameof(connection));
             Guard.NotNull(operation, nameof(operation));
 
             Log.Debug($"Outgoing {operation} on {connection.PortName}.");
+
             try
             {
                 connection.Send(operation);
@@ -523,8 +507,7 @@ namespace DogAgilityCompetition.Circe.Mediator
 
             [NotNull]
             [ItemNotNull]
-            private IEnumerable<IWirelessDevice> GetDevicesWithAddresses(
-                [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> addresses)
+            private IEnumerable<IWirelessDevice> GetDevicesWithAddresses([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> addresses)
             {
                 return addresses.Select(GetPoweredOnDeviceWithAddressOrNull).Where(device => device != null);
             }

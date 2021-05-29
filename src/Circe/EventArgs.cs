@@ -7,7 +7,7 @@ namespace DogAgilityCompetition.Circe
     public sealed class EventArgs<T> : EventArgs
     {
         [NotNull]
-        public T Argument { get; private set; }
+        public T Argument { get; }
 
         public EventArgs([NotNull] T argument)
         {

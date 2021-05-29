@@ -10,12 +10,11 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
     /// <summary>
-    /// Represents a <see cref="System.Windows.Forms.Label" /> whose text is always scaled and stretched to occupy the entire
-    /// control area.
+    /// Represents a <see cref="System.Windows.Forms.Label" /> whose text is always scaled and stretched to occupy the entire control area.
     /// </summary>
     public sealed class ScaleTextToFitLabel : Label
     {
-        private static readonly PointF TopLeftPoint = new PointF(0, 0);
+        private static readonly PointF TopLeftPoint = new(0, 0);
 
         private RectangleF previousTextBounds;
 
@@ -24,10 +23,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override bool AutoSize
         {
-            get
-            {
-                return false;
-            }
+            get => false;
             set
             {
             }
@@ -38,10 +34,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override ContentAlignment TextAlign
         {
-            get
-            {
-                return ContentAlignment.TopLeft;
-            }
+            get => ContentAlignment.TopLeft;
             set
             {
             }
@@ -81,15 +74,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     using (var textPath = new GraphicsPath())
                     {
-                        textPath.AddString(Text, Font.FontFamily, (int) Font.Style, clientBounds.Height, TopLeftPoint,
-                            stringFormat);
+                        textPath.AddString(Text, Font.FontFamily, (int)Font.Style, clientBounds.Height, TopLeftPoint, stringFormat);
 
                         PointF[] transformPoints =
                         {
-                            new PointF(clientBounds.Left, clientBounds.Top),
-                            new PointF(clientBounds.Right, clientBounds.Top),
-                            new PointF(clientBounds.Left, clientBounds.Bottom)
+                            new(clientBounds.Left, clientBounds.Top),
+                            new(clientBounds.Right, clientBounds.Top),
+                            new(clientBounds.Left, clientBounds.Bottom)
                         };
+
                         RectangleF textBounds = Stabilize(textPath.GetBounds());
                         e.Graphics.Transform = new Matrix(textBounds, transformPoints);
 
@@ -120,10 +113,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 int epsilonX = ClientSize.Width / 50;
                 int epsilonY = ClientSize.Height / 50;
 
-                if (Math.Abs(previousTextBounds.X - rectangle.X) <= epsilonX &&
-                    Math.Abs(previousTextBounds.Width - rectangle.Width) <= epsilonX &&
-                    Math.Abs(previousTextBounds.Y - rectangle.Y) <= epsilonY &&
-                    Math.Abs(previousTextBounds.Height - rectangle.Height) <= epsilonY)
+                if (Math.Abs(previousTextBounds.X - rectangle.X) <= epsilonX && Math.Abs(previousTextBounds.Width - rectangle.Width) <= epsilonX &&
+                    Math.Abs(previousTextBounds.Y - rectangle.Y) <= epsilonY && Math.Abs(previousTextBounds.Height - rectangle.Height) <= epsilonY)
                 {
                     return previousTextBounds;
                 }
@@ -143,23 +134,26 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             static Reflected()
             {
-                Assembly assembly = typeof (Label).Assembly;
+                Assembly assembly = typeof(Label).Assembly;
                 Type type = assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true);
                 DeflateRectMethod = type.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static);
 
-                CreateStringFormatMethod = typeof (Label).GetMethod("CreateStringFormat",
-                    BindingFlags.NonPublic | BindingFlags.Instance);
+                CreateStringFormatMethod = typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance);
             }
 
             public static Rectangle DeflateRect(Rectangle rect, Padding padding)
             {
-                return (Rectangle) DeflateRectMethod.Invoke(null, new object[] { rect, padding });
+                return (Rectangle)DeflateRectMethod.Invoke(null, new object[]
+                {
+                    rect,
+                    padding
+                });
             }
 
             [NotNull]
             public static StringFormat GetStringFormat([NotNull] Control target)
             {
-                return (StringFormat) CreateStringFormatMethod.Invoke(target, new object[0]);
+                return (StringFormat)CreateStringFormatMethod.Invoke(target, new object[0]);
             }
         }
     }

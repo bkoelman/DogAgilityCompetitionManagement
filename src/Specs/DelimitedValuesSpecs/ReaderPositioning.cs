@@ -7,6 +7,8 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
@@ -94,8 +96,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
         [Test]
         public void
-            When_lines_are_broken_using_carriage_returns_followed_by_with_line_feeds_it_should_report_the_correct_starting_line_number
-            ()
+            When_lines_are_broken_using_carriage_returns_followed_by_with_line_feeds_it_should_report_the_correct_starting_line_number()
         {
             // Arrange
             const string lineBreaker = "\r\n";

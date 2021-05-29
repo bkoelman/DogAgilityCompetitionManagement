@@ -8,6 +8,8 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
@@ -107,9 +109,11 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             var deviceAddress = new WirelessNetworkAddress("AABBCC");
             const bool getMembership = true;
+
             const DeviceCapabilities capabilities =
                 DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
-                    DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
+                DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
+
             const DeviceRoles roles = DeviceRoles.StartTimer | DeviceRoles.FinishTimer;
             const int signalStrength = 25;
             const int batteryStatus = 83;
@@ -134,8 +138,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceAdded +=
-                    (s, e) => { testRunner.SignalSucceeded(e.Argument); };
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceAdded += (s, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -162,9 +165,11 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             var deviceAddress = new WirelessNetworkAddress("AABBCC");
             const bool getMembership = true;
+
             const DeviceCapabilities capabilities =
                 DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
-                    DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
+                DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
+
             const DeviceRoles roles = DeviceRoles.StartTimer | DeviceRoles.FinishTimer;
             const int signalStrength = 99;
             const int batteryStatus = 83;
@@ -190,8 +195,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceChanged +=
-                    (s, e) => { testRunner.SignalSucceeded(e.Argument); };
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceChanged += (s, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -225,14 +229,13 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     {
                         testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, true,
                             DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad |
-                                DeviceCapabilities.StartSensor | DeviceCapabilities.FinishSensor |
-                                DeviceCapabilities.IntermediateSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer,
+                            DeviceCapabilities.StartSensor | DeviceCapabilities.FinishSensor |
+                            DeviceCapabilities.IntermediateSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer,
                             25));
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceRemoved +=
-                    (s, e) => { testRunner.SignalSucceeded(e.Argument); };
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceRemoved += (s, e) => testRunner.SignalSucceeded(e.Argument);
 
                 testRunner.RunTimeout = TimeSpan.FromSeconds(5);
 
@@ -268,8 +271,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceActionReceived +=
-                    (s, e) => { testRunner.SignalSucceeded(e.Argument); };
+                testRunner.RemoteSessionManager.DeviceActionReceived += (s, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -303,6 +305,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var alertOperation = e.Operation as AlertOperation;
+
                     if (alertOperation != null)
                     {
                         testRunner.SignalSucceeded(alertOperation);
@@ -341,6 +344,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var networkSetupOperation = e.Operation as NetworkSetupOperation;
+
                     if (networkSetupOperation != null)
                     {
                         testRunner.SignalSucceeded(networkSetupOperation);
@@ -377,6 +381,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var synchronizeClocksOperation = e.Operation as SynchronizeClocksOperation;
+
                     if (synchronizeClocksOperation != null)
                     {
                         testRunner.SignalSucceeded(synchronizeClocksOperation);
@@ -396,7 +401,12 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
         [Category("UsbLoopback")]
         public void When_visualize_is_requested_it_must_send_operation()
         {
-            var destinations = new[] { new WirelessNetworkAddress("AABBCC"), new WirelessNetworkAddress("DDEEFF") };
+            var destinations = new[]
+            {
+                new WirelessNetworkAddress("AABBCC"),
+                new WirelessNetworkAddress("DDEEFF")
+            };
+
             VisualizeFieldSet visualizeFieldSet = new VisualizeFieldSetBuilder()
                 .WithCurrentCompetitorNumber(123)
                 .WithNextCompetitorNumber(125)
@@ -423,6 +433,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var visualizeOperation = e.Operation as VisualizeOperation;
+
                     if (visualizeOperation != null)
                     {
                         testRunner.SignalSucceeded(visualizeOperation);
@@ -458,6 +469,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var logoutOperation = e.Operation as LogoutOperation;
+
                     if (logoutOperation != null)
                     {
                         testRunner.SignalSucceeded(logoutOperation);
@@ -487,6 +499,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 testRunner.OperationReceived += (s, e) =>
                 {
                     var logoutOperation = e.Operation as LogoutOperation;
+
                     if (logoutOperation != null)
                     {
                         seenLogout.Value = true;

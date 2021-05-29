@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class RankingsUpdate : NotNullableVisualizationChange<IReadOnlyCollection<CompetitionRunResult>>
     {
         [NotNull]
-        public static RankingsUpdate Hidden => new RankingsUpdate(new CompetitionRunResult[0]);
+        public static RankingsUpdate Hidden => new(new CompetitionRunResult[0]);
 
         public RankingsUpdate([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> value)
             : base(value)
@@ -25,6 +25,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
         }
 
         [Pure]
-        public override string ToString() => $"{GetType().Name} Value: [{Value.Count}]";
+        public override string ToString()
+        {
+            return $"{GetType().Name} Value: [{Value.Count}]";
+        }
     }
 }

@@ -10,8 +10,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </typeparam>
     /// <remarks>
     /// <para>
-    /// This class is identical to <see cref="FreshReference{T}" />, but having <see cref="Value" /> decorated with
-    /// <see cref="NotNullAttribute" />.
+    /// This class is identical to <see cref="FreshReference{T}" />, but having <see cref="Value" /> decorated with <see cref="NotNullAttribute" />.
     /// </para>
     /// </remarks>
     public sealed class FreshNotNullableReference<T> : FreshReference<T>
@@ -22,12 +21,10 @@ namespace DogAgilityCompetition.Circe.Session
         [NotNull]
         public override T Value
         {
-            get
-            {
+            get =>
                 // ReSharper disable once AssignNullToNotNullAttribute
                 // Reason: This class is more constrained than its base.
-                return base.Value;
-            }
+                base.Value;
             set
             {
                 Guard.NotNull(value, nameof(value));

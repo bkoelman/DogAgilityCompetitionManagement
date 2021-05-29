@@ -29,6 +29,7 @@ namespace DogAgilityCompetition.WinForms
             foreach (Control child in control.Controls)
             {
                 yield return child;
+
                 foreach (Control next in GetAllChildControlsRecursive(child))
                 {
                     yield return next;

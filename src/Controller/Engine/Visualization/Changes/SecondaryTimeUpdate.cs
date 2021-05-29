@@ -9,10 +9,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class SecondaryTimeUpdate : NullableVisualizationChange<TimeSpan?>
     {
-        public bool DoBlink { get; }
-
         [NotNull]
-        public static SecondaryTimeUpdate Hidden => new SecondaryTimeUpdate(null, false);
+        public static SecondaryTimeUpdate Hidden => new(null, false);
+
+        public bool DoBlink { get; }
 
         public SecondaryTimeUpdate([CanBeNull] TimeSpan? value, bool doBlink)
             : base(value)
@@ -28,12 +28,14 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 
         [Pure]
         public override string ToString()
-            => $"{GetType().Name} Value: {Value?.ToString() ?? "(null)"}, DoBlink: {DoBlink}";
+        {
+            return $"{GetType().Name} Value: {Value?.ToString() ?? "(null)"}, DoBlink: {DoBlink}";
+        }
 
         [NotNull]
         public static SecondaryTimeUpdate FromTimeSpanWithAccuracy([CanBeNull] TimeSpanWithAccuracy? value, bool doBlink)
         {
-            return new SecondaryTimeUpdate(value?.TimeValue, doBlink);
+            return new(value?.TimeValue, doBlink);
         }
     }
 }

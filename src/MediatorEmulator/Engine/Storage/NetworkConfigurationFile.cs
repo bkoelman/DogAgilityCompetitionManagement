@@ -36,11 +36,14 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
-            using (XmlReader reader = XmlReader.Create(path, new XmlReaderSettings { CloseInput = true }))
+            using (var reader = XmlReader.Create(path, new XmlReaderSettings
             {
-                var serializer = new DataContractSerializer(typeof (NetworkConfigurationXml));
+                CloseInput = true
+            }))
+            {
+                var serializer = new DataContractSerializer(typeof(NetworkConfigurationXml));
 
-                var configuration = (NetworkConfigurationXml) serializer.ReadObject(reader);
+                var configuration = (NetworkConfigurationXml)serializer.ReadObject(reader);
                 return new NetworkConfigurationFile(path, configuration);
             }
         }
@@ -49,10 +52,16 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
-            var settings = new XmlWriterSettings { CloseOutput = true, Indent = true, Encoding = new UTF8Encoding() };
-            using (XmlWriter writer = XmlWriter.Create(path, settings))
+            var settings = new XmlWriterSettings
             {
-                var serializer = new DataContractSerializer(typeof (NetworkConfigurationXml));
+                CloseOutput = true,
+                Indent = true,
+                Encoding = new UTF8Encoding()
+            };
+
+            using (var writer = XmlWriter.Create(path, settings))
+            {
+                var serializer = new DataContractSerializer(typeof(NetworkConfigurationXml));
                 serializer.WriteObject(writer, Configuration);
             }
 

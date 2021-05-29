@@ -11,44 +11,34 @@ namespace DogAgilityCompetition.Specs.Builders
     /// </summary>
     public sealed class NetworkCompositionBuilder : ITestDataBuilder<NetworkComposition>
     {
+        [NotNull]
+        private NetworkComposition composition = NetworkComposition.Empty
+            .ChangeRequirements(CompetitionClassRequirements.Default.ChangeStartFinishMinDelayForSingleSensor(5.Minutes()))
+            .ChangeRolesFor(new WirelessNetworkAddress("AAAAAA"), DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad, DeviceRoles.Keypad)
+            .ChangeRolesFor(new WirelessNetworkAddress("BBBBBB"), DeviceCapabilities.TimeSensor, DeviceRoles.StartTimer)
+            .ChangeRolesFor(new WirelessNetworkAddress("CCCCCC"), DeviceCapabilities.TimeSensor, DeviceRoles.FinishTimer);
+
         public NetworkComposition Build()
         {
             return composition;
         }
 
         [NotNull]
-        private NetworkComposition composition =
-            NetworkComposition.Empty.ChangeRequirements(
-                CompetitionClassRequirements.Default.ChangeStartFinishMinDelayForSingleSensor(5.Minutes()))
-                .ChangeRolesFor(new WirelessNetworkAddress("AAAAAA"),
-                    DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad, DeviceRoles.Keypad)
-                .ChangeRolesFor(new WirelessNetworkAddress("BBBBBB"), DeviceCapabilities.TimeSensor,
-                    DeviceRoles.StartTimer)
-                .ChangeRolesFor(new WirelessNetworkAddress("CCCCCC"), DeviceCapabilities.TimeSensor,
-                    DeviceRoles.FinishTimer);
-
-        [NotNull]
-        public NetworkCompositionBuilder WithStartFinishMinDelayForSingleSensor(
-            TimeSpan startFinishMinDelayForSingleSensor)
+        public NetworkCompositionBuilder WithStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
         {
-            composition =
-                composition.ChangeRequirements(
-                    composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(startFinishMinDelayForSingleSensor));
+            composition = composition.ChangeRequirements(composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(startFinishMinDelayForSingleSensor));
             return this;
         }
 
         [NotNull]
         public NetworkCompositionBuilder WithoutStartFinishMinDelayForSingleSensor()
         {
-            composition =
-                composition.ChangeRequirements(
-                    composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(TimeSpan.Zero));
+            composition = composition.ChangeRequirements(composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(TimeSpan.Zero));
             return this;
         }
 
         [NotNull]
-        public NetworkCompositionBuilder WithDeviceInRoles([NotNull] WirelessNetworkAddress deviceAddress,
-            DeviceCapabilities capabilities, DeviceRoles roles)
+        public NetworkCompositionBuilder WithDeviceInRoles([NotNull] WirelessNetworkAddress deviceAddress, DeviceCapabilities capabilities, DeviceRoles roles)
         {
             composition = composition.ChangeRolesFor(deviceAddress, capabilities, roles);
             return this;

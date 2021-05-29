@@ -30,23 +30,29 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         [NotNull]
         public CompetitionClassModel Load()
         {
-            using (XmlReader reader = XmlReader.Create(path, new XmlReaderSettings { CloseInput = true }))
+            using (var reader = XmlReader.Create(path, new XmlReaderSettings
             {
-                var serializer = new DataContractSerializer(typeof (CompetitionClassModelXml));
+                CloseInput = true
+            }))
+            {
+                var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
 
                 try
                 {
-                    var xmlObject = (CompetitionClassModelXml) serializer.ReadObject(reader);
+                    var xmlObject = (CompetitionClassModelXml)serializer.ReadObject(reader);
                     return CompetitionClassModelXml.FromXmlObject(xmlObject);
                 }
                 catch (Exception ex)
                 {
                     Log.Error("Failed to load model from XML file.", ex);
+
                     string message = $"Failed to load run configuration from file:\n\n{path}\n\n" +
                         $"Error message: {ex.Message}\n\nClick Ok to discard this file and use default settings.\n" +
                         "Click Cancel to close this application without making changes.";
-                    DialogResult response = MessageBox.Show(message, "Error - Dog Agility Competition Management System",
-                        MessageBoxButtons.OKCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+
+                    DialogResult response = MessageBox.Show(message, "Error - Dog Agility Competition Management System", MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+
                     if (response == DialogResult.OK)
                     {
                         return new CompetitionClassModel();
@@ -64,10 +70,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
             CompetitionClassModelXml xmlObject = CompetitionClassModelXml.ToXmlObject(model);
 
-            var settings = new XmlWriterSettings { CloseOutput = true, Indent = true, Encoding = new UTF8Encoding() };
-            using (XmlWriter writer = XmlWriter.Create(path, settings))
+            var settings = new XmlWriterSettings
             {
-                var serializer = new DataContractSerializer(typeof (CompetitionClassModelXml));
+                CloseOutput = true,
+                Indent = true,
+                Encoding = new UTF8Encoding()
+            };
+
+            using (var writer = XmlWriter.Create(path, settings))
+            {
+                var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
                 serializer.WriteObject(writer, xmlObject);
             }
         }

@@ -10,8 +10,8 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Controller
 {
     /// <summary>
-    /// Keeps track of the hardware devices in the wireless network. It monitors periodic incoming Circe status messages from
-    /// the mediator and provides events for addition, removal and changes of devices in the network.
+    /// Keeps track of the hardware devices in the wireless network. It monitors periodic incoming Circe status messages from the mediator and provides
+    /// events for addition, removal and changes of devices in the network.
     /// </summary>
     public sealed class DeviceTracker : IDisposable
     {
@@ -25,11 +25,10 @@ namespace DogAgilityCompetition.Circe.Controller
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly Dictionary<WirelessNetworkAddress, DeviceMapEntry> deviceMap =
-            new Dictionary<WirelessNetworkAddress, DeviceMapEntry>();
+        private readonly Dictionary<WirelessNetworkAddress, DeviceMapEntry> deviceMap = new();
 
         [NotNull]
-        private readonly object stateLock = new object();
+        private readonly object stateLock = new();
 
         private int lastMediatorStatus;
 
@@ -140,14 +139,16 @@ namespace DogAgilityCompetition.Circe.Controller
                     {
                         lockTracker.Acquired();
 
-                        var entry = (DeviceMapEntry) state;
+                        var entry = (DeviceMapEntry)state;
 
                         WirelessNetworkAddress address = entry.LastStatus.DeviceAddress;
+
                         if (deviceMap.Remove(address))
                         {
                             Log.Debug($"Device {address} removed.");
                             DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(address));
                         }
+
                         entry.Dispose();
                     }
                 }

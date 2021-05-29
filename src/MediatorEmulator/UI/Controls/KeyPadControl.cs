@@ -21,18 +21,17 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
+        private static readonly IReadOnlyCollection<RawDeviceKeys> ModifierRawKeys = new ReadOnlyCollection<RawDeviceKeys>(new List<RawDeviceKeys>
+        {
+            RawDeviceKeys.EnterCurrentCompetitor,
+            RawDeviceKeys.EnterNextCompetitor
+        });
+
+        [NotNull]
         [ItemNotNull]
         private readonly Lazy<Dictionary<ButtonBase, RawDeviceKeys>> buttonToKeyLookupLazy;
 
         private RawDeviceKeys keysDown = RawDeviceKeys.None;
-
-        [NotNull]
-        private static readonly IReadOnlyCollection<RawDeviceKeys> ModifierRawKeys =
-            new ReadOnlyCollection<RawDeviceKeys>(new List<RawDeviceKeys>
-            {
-                RawDeviceKeys.EnterCurrentCompetitor,
-                RawDeviceKeys.EnterNextCompetitor
-            });
 
         private bool InDigitEntryMode => enterCurrentCompetitorCheckBox.Checked || enterNextCompetitorCheckBox.Checked;
 
@@ -76,7 +75,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [NotNull]
         private Dictionary<ButtonBase, RawDeviceKeys> CreateButtonToKeyLookupTable()
         {
-            return new Dictionary<ButtonBase, RawDeviceKeys>
+            return new()
             {
                 { playSoundAButton, RawDeviceKeys.Key1OrPlaySoundA },
                 { passIntermediateButton, RawDeviceKeys.Key2OrPassIntermediate },
@@ -108,10 +107,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             bool numericOnly = (Features & RemoteEmulatorFeatures.NumericKeys) != 0;
             bool timerOnly = (Features & RemoteEmulatorFeatures.TimerKeys) != 0;
             bool coreOnly = (Features & RemoteEmulatorFeatures.CoreKeys) != 0;
-            bool numericOrCore = (Features & (RemoteEmulatorFeatures.NumericKeys | RemoteEmulatorFeatures.CoreKeys)) !=
-                0;
-            bool numericOrTimer = (Features & (RemoteEmulatorFeatures.NumericKeys | RemoteEmulatorFeatures.TimerKeys)) !=
-                0;
+            bool numericOrCore = (Features & (RemoteEmulatorFeatures.NumericKeys | RemoteEmulatorFeatures.CoreKeys)) != 0;
+            bool numericOrTimer = (Features & (RemoteEmulatorFeatures.NumericKeys | RemoteEmulatorFeatures.TimerKeys)) != 0;
 
             playSoundAButton.Enabled = numericOrCore;
             passIntermediateButton.Enabled = numericOrTimer;
@@ -152,6 +149,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 resetRunButton,
                 readyButton
             };
+
             foreach (ButtonBase button in buttons)
             {
                 RawDeviceKeys key = GetKeyForButton(button);
@@ -165,6 +163,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             {
                 throw new InvalidOperationException($"Cannot get key for button {button.Name}.");
             }
+
             return buttonToKeyLookupLazy.Value[button];
         }
 
@@ -179,29 +178,29 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             switch (key)
             {
                 case RawDeviceKeys.Key1OrPlaySoundA:
-                    return hasNumeric && (!hasCore || inEntry) ? "1" : (hasCore ? "Sound A" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "1" : hasCore ? "Sound A" : string.Empty;
                 case RawDeviceKeys.Key2OrPassIntermediate:
-                    return hasNumeric && (!hasTimer || inEntry) ? "2" : (hasTimer ? "Intermediate" : string.Empty);
+                    return hasNumeric && (!hasTimer || inEntry) ? "2" : hasTimer ? "Intermediate" : string.Empty;
                 case RawDeviceKeys.Key3OrToggleElimination:
-                    return hasNumeric && (!hasCore || inEntry) ? "3" : (hasCore ? "E" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "3" : hasCore ? "E" : string.Empty;
                 case RawDeviceKeys.Key4:
                     return hasNumeric ? "4" : string.Empty;
                 case RawDeviceKeys.Key5OrDecreaseRefusals:
-                    return hasNumeric && (!hasCore || inEntry) ? "5" : (hasCore ? "R-" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "5" : hasCore ? "R-" : string.Empty;
                 case RawDeviceKeys.Key6OrIncreaseRefusals:
-                    return hasNumeric && (!hasCore || inEntry) ? "6" : (hasCore ? "R+" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "6" : hasCore ? "R+" : string.Empty;
                 case RawDeviceKeys.Key7:
                     return hasNumeric ? "7" : string.Empty;
                 case RawDeviceKeys.Key8OrDecreaseFaults:
-                    return hasNumeric && (!hasCore || inEntry) ? "8" : (hasCore ? "F-" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "8" : hasCore ? "F-" : string.Empty;
                 case RawDeviceKeys.Key9OrIncreaseFaults:
-                    return hasNumeric && (!hasCore || inEntry) ? "9" : (hasCore ? "F+" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "9" : hasCore ? "F+" : string.Empty;
                 case RawDeviceKeys.EnterCurrentCompetitor:
                     return hasNumeric ? "Current" : string.Empty;
                 case RawDeviceKeys.EnterNextCompetitor:
                     return hasNumeric ? "Next" : string.Empty;
                 case RawDeviceKeys.Key0OrMuteSound:
-                    return hasNumeric && (!hasCore || inEntry) ? "0" : (hasCore ? "Mute" : string.Empty);
+                    return hasNumeric && (!hasCore || inEntry) ? "0" : hasCore ? "Mute" : string.Empty;
                 case RawDeviceKeys.PassFinish:
                     return hasTimer ? "Finish" : string.Empty;
                 case RawDeviceKeys.PassStart:
@@ -226,11 +225,11 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         {
             UpdateButtons();
 
-            RawDeviceKeys keyChanged = sender == enterCurrentCompetitorCheckBox
-                ? RawDeviceKeys.EnterCurrentCompetitor
-                : RawDeviceKeys.EnterNextCompetitor;
+            RawDeviceKeys keyChanged = sender == enterCurrentCompetitorCheckBox ? RawDeviceKeys.EnterCurrentCompetitor : RawDeviceKeys.EnterNextCompetitor;
+
             bool isKeyDownEvent = (sender == enterCurrentCompetitorCheckBox && enterCurrentCompetitorCheckBox.Checked) ||
                 (sender == enterNextCompetitorCheckBox && enterNextCompetitorCheckBox.Checked);
+
             HandleKeyChange(keyChanged, isKeyDownEvent);
         }
 
@@ -243,7 +242,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // we missed earlier before handling this MouseDown event.
             HandleMouseUpEventsPreviouslyMissed();
 
-            var button = (ButtonBase) sender;
+            var button = (ButtonBase)sender;
             Log.Debug($"MouseKeyDown on button {button.Text}");
 
             RawDeviceKeys key = GetKeyForButton(button);
@@ -252,11 +251,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private void HandleMouseUpEventsPreviouslyMissed()
         {
-            IEnumerable<RawDeviceKeys> rawKeys =
-                Enum.GetValues(typeof (RawDeviceKeys))
-                    .Cast<RawDeviceKeys>()
-                    .Except(ModifierRawKeys)
-                    .Where(key => (key & keysDown) != RawDeviceKeys.None);
+            // @formatter:keep_existing_linebreaks true
+
+            IEnumerable<RawDeviceKeys> rawKeys = Enum
+                .GetValues(typeof(RawDeviceKeys))
+                .Cast<RawDeviceKeys>()
+                .Except(ModifierRawKeys)
+                .Where(key => (key & keysDown) != RawDeviceKeys.None);
+
+            // @formatter:keep_existing_linebreaks restore
+
             foreach (RawDeviceKeys rawKey in rawKeys)
             {
                 HandleKeyChange(rawKey, false);
@@ -265,7 +269,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private void KeyButton_MouseUp([NotNull] object sender, [NotNull] MouseEventArgs e)
         {
-            var button = (ButtonBase) sender;
+            var button = (ButtonBase)sender;
             Log.Debug($"MouseKeyUp on button {button.Text}");
 
             RawDeviceKeys key = GetKeyForButton(button);

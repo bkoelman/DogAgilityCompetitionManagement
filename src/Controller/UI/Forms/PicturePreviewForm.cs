@@ -23,7 +23,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             using (var form = new PicturePreviewForm())
             {
                 form.pictureBox.ImageLocation = path;
-                form.Text = title + @" preview";
+                form.Text = title + " preview";
                 form.ShowDialog(parent);
             }
         }

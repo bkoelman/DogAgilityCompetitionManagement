@@ -17,6 +17,10 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class NetworkHealthReport : IEquatable<NetworkHealthReport>
     {
+        [NotNull]
+        public static readonly NetworkHealthReport Default =
+            new(false, false, 0, new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], null, null);
+
         public bool IsConnected { get; }
 
         public bool HasProtocolVersionMismatch { get; }
@@ -44,20 +48,13 @@ namespace DogAgilityCompetition.Controller.Engine
         [ItemNotNull]
         public IReadOnlyCollection<NetworkComplianceMismatch> ClassCompliance { get; }
 
-        public bool HasErrors
-            =>
-                MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 ||
-                    (ClassCompliance != null && ClassCompliance.Count > 0);
-
-        [NotNull]
-        public static readonly NetworkHealthReport Default = new NetworkHealthReport(false, false, 0,
-            new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], null, null);
+        public bool HasErrors =>
+            MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 || (ClassCompliance != null && ClassCompliance.Count > 0);
 
         private NetworkHealthReport(bool isConnected, bool hasProtocolVersionMismatch, int mediatorStatus,
             [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors,
             [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> unsyncedSensors,
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors,
-            [CanBeNull] NetworkComposition runComposition,
+            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors, [CanBeNull] NetworkComposition runComposition,
             [CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> classCompliance)
         {
             IsConnected = isConnected;
@@ -66,83 +63,77 @@ namespace DogAgilityCompetition.Controller.Engine
             RunComposition = runComposition;
             MisalignedSensors = new ReadOnlyCollection<WirelessNetworkAddress>(misalignedSensors.ToList());
             UnsyncedSensors = new ReadOnlyCollection<WirelessNetworkAddress>(unsyncedSensors.ToList());
-            VersionMismatchingSensors =
-                new ReadOnlyCollection<WirelessNetworkAddress>(versionMismatchingSensors.ToList());
-            ClassCompliance = classCompliance == null
-                ? null
-                : new ReadOnlyCollection<NetworkComplianceMismatch>(classCompliance.ToList());
+            VersionMismatchingSensors = new ReadOnlyCollection<WirelessNetworkAddress>(versionMismatchingSensors.ToList());
+            ClassCompliance = classCompliance == null ? null : new ReadOnlyCollection<NetworkComplianceMismatch>(classCompliance.ToList());
         }
 
         [NotNull]
         public NetworkHealthReport ChangeIsConnected(bool isConnected)
         {
-            return new NetworkHealthReport(isConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, RunComposition, ClassCompliance);
+            return new(isConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
+                ClassCompliance);
         }
 
         [NotNull]
         public NetworkHealthReport ChangeHasProtocolVersionMismatch(bool hasProtocolVersionMismatch)
         {
-            return new NetworkHealthReport(IsConnected, hasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, RunComposition, ClassCompliance);
+            return new(IsConnected, hasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
+                ClassCompliance);
         }
 
         [NotNull]
         public NetworkHealthReport ChangeMediatorStatus(int mediatorStatus)
         {
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, mediatorStatus, MisalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, RunComposition, ClassCompliance);
+            return new(IsConnected, HasProtocolVersionMismatch, mediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
+                ClassCompliance);
         }
 
         [NotNull]
-        public NetworkHealthReport ChangeMisalignedSensors(
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors)
+        public NetworkHealthReport ChangeMisalignedSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors)
         {
             Guard.NotNull(misalignedSensors, nameof(misalignedSensors));
 
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, misalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, RunComposition, ClassCompliance);
+            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, misalignedSensors, UnsyncedSensors,
+                VersionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
         [NotNull]
-        public NetworkHealthReport ChangeUnsyncedSensors(
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> unsyncedSensors)
+        public NetworkHealthReport ChangeUnsyncedSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> unsyncedSensors)
         {
             Guard.NotNull(unsyncedSensors, nameof(unsyncedSensors));
 
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                unsyncedSensors, VersionMismatchingSensors, RunComposition, ClassCompliance);
+            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, unsyncedSensors,
+                VersionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
         [NotNull]
-        public NetworkHealthReport ChangeVersionMismatchingSensors(
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors)
+        public NetworkHealthReport ChangeVersionMismatchingSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors)
         {
             Guard.NotNull(versionMismatchingSensors, nameof(versionMismatchingSensors));
 
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                UnsyncedSensors, versionMismatchingSensors, RunComposition, ClassCompliance);
+            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors,
+                versionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
         [NotNull]
         public NetworkHealthReport ChangeRunComposition([CanBeNull] NetworkComposition runComposition)
         {
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, runComposition, ClassCompliance);
+            return new(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, runComposition,
+                ClassCompliance);
         }
 
         [NotNull]
-        public NetworkHealthReport ChangeClassCompliance(
-            [CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> classCompliance)
+        public NetworkHealthReport ChangeClassCompliance([CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> classCompliance)
         {
-            return new NetworkHealthReport(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors,
-                UnsyncedSensors, VersionMismatchingSensors, RunComposition, classCompliance);
+            return new(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
+                classCompliance);
         }
 
         [Pure]
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
                 formatter.Append(() => IsConnected, () => IsConnected);
@@ -154,6 +145,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 formatter.Append(() => RunComposition == null ? "null" : "...", () => RunComposition);
                 formatter.Append(GetClassComplianceString, () => ClassCompliance);
             }
+
             return textBuilder.ToString();
         }
 
@@ -178,11 +170,9 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public bool Equals([CanBeNull] NetworkHealthReport other)
         {
-            return !ReferenceEquals(other, null) && IsConnected == other.IsConnected &&
-                HasProtocolVersionMismatch == other.HasProtocolVersionMismatch && MediatorStatus == other.MediatorStatus &&
-                MisalignedSensors.SequenceEqual(other.MisalignedSensors) &&
-                UnsyncedSensors.SequenceEqual(other.UnsyncedSensors) &&
-                VersionMismatchingSensors.SequenceEqual(other.VersionMismatchingSensors) &&
+            return !ReferenceEquals(other, null) && IsConnected == other.IsConnected && HasProtocolVersionMismatch == other.HasProtocolVersionMismatch &&
+                MediatorStatus == other.MediatorStatus && MisalignedSensors.SequenceEqual(other.MisalignedSensors) &&
+                UnsyncedSensors.SequenceEqual(other.UnsyncedSensors) && VersionMismatchingSensors.SequenceEqual(other.VersionMismatchingSensors) &&
                 RunCompositionEquals(other.RunComposition) && ClassComplianceEquals(other.ClassCompliance);
         }
 
@@ -227,9 +217,8 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public override int GetHashCode()
         {
-            return IsConnected.GetHashCode() ^ HasProtocolVersionMismatch.GetHashCode() ^ MediatorStatus.GetHashCode() ^
-                MisalignedSensors.GetHashCode() ^ UnsyncedSensors.GetHashCode() ^
-                VersionMismatchingSensors.GetHashCode() ^ (RunComposition?.GetHashCode() ?? 0) ^
+            return IsConnected.GetHashCode() ^ HasProtocolVersionMismatch.GetHashCode() ^ MediatorStatus.GetHashCode() ^ MisalignedSensors.GetHashCode() ^
+                UnsyncedSensors.GetHashCode() ^ VersionMismatchingSensors.GetHashCode() ^ (RunComposition?.GetHashCode() ?? 0) ^
                 (ClassCompliance?.GetHashCode() ?? 0);
         }
 
@@ -240,10 +229,12 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 

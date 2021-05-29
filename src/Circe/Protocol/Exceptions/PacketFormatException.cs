@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
@@ -31,11 +30,16 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="innerException">
         /// Optional. The exception that caused the current exception.
         /// </param>
-        public PacketFormatException([NotNull] byte[] packet, int errorOffset, [NotNull] string message,
-            [CanBeNull] Exception innerException = null)
+        public PacketFormatException([NotNull] byte[] packet, int errorOffset, [NotNull] string message, [CanBeNull] Exception innerException = null)
             : base(FormatMessage(packet, errorOffset, message), innerException)
         {
             ErrorOffset = errorOffset;
+        }
+
+        protected PacketFormatException([NotNull] SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            ErrorOffset = info.GetInt32("ErrorOffset");
         }
 
         [NotNull]
@@ -45,12 +49,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 
             int displayPosition = errorOffset + 1;
             return $"Error at position {displayPosition}: {message}{packet.FormatHexBuffer(4)}";
-        }
-
-        protected PacketFormatException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            ErrorOffset = info.GetInt32("ErrorOffset");
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -27,19 +27,24 @@ namespace DogAgilityCompetition.Specs.Builders
         public DelimitedValuesWriterSettings Build()
         {
             var settings = new DelimitedValuesWriterSettings();
+
             if (includeColumnNamesOnFirstLine != null)
             {
                 settings.IncludeColumnNamesOnFirstLine = includeColumnNamesOnFirstLine.Value;
             }
+
             if (autoCloseWriter != null)
             {
                 settings.AutoCloseWriter = autoCloseWriter.Value;
             }
+
             settings.FieldSeparator = fieldSeparator;
+
             if (textQualifier != null)
             {
                 settings.TextQualifier = textQualifier.Value;
             }
+
             settings.Culture = culture;
             return settings;
         }

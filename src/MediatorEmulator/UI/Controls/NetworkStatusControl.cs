@@ -7,8 +7,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
     /// <summary>
-    /// Enables configuration of network status for emulated wireless devices, such as logical network membership and assigned
-    /// roles.
+    /// Enables configuration of network status for emulated wireless devices, such as logical network membership and assigned roles.
     /// </summary>
     public sealed partial class NetworkStatusControl : UserControl
     {
@@ -18,10 +17,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsInNetwork
         {
-            get
-            {
-                return isInNetworkCheckBox.Checked;
-            }
+            get => isInNetworkCheckBox.Checked;
             set
             {
                 if (value != IsInNetwork)
@@ -37,16 +33,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DeviceRoles RolesAssigned
         {
-            get
-            {
-                return rolesAssigned;
-            }
+            get => rolesAssigned;
             set
             {
                 if (value != RolesAssigned)
                 {
                     rolesAssigned = value;
-                    rolesLabel.Text = @"Roles: " + rolesAssigned;
+                    rolesLabel.Text = "Roles: " + rolesAssigned;
 
                     StatusChanged?.Invoke(this, EventArgs.Empty);
                 }

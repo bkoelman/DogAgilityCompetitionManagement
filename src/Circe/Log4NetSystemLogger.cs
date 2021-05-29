@@ -9,8 +9,7 @@ namespace DogAgilityCompetition.Circe
         [NotNull]
         private readonly ILog log;
 
-        public Log4NetSystemLogger(
-            [CanBeNull] /* relaxed nullability constraint to prevent numerous warnings */ Type type)
+        public Log4NetSystemLogger([CanBeNull] /* relaxed nullability constraint to prevent numerous warnings */ Type type)
         {
             Guard.NotNull(type, nameof(type));
             log = LogManager.GetLogger(type);

@@ -9,12 +9,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This operation is sent by the mediator each time more than a whole second has elapsed since it sent any previous
-    /// operation. It is also sent by the mediator as a response to the Login (01) operation.
+    /// This operation is sent by the mediator each time more than a whole second has elapsed since it sent any previous operation. It is also sent by the
+    /// mediator as a response to the Login (01) operation.
     /// </para>
     /// <para>
-    /// The controller may choose to end communications by sending a Logout (02) operation when the protocol version does not
-    /// match expectations or when the connection has become idle.
+    /// The controller may choose to end communications by sending a Logout (02) operation when the protocol version does not match expectations or when the
+    /// connection has become idle.
     /// </para>
     /// </remarks>
     [Serializable]
@@ -23,61 +23,36 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         internal const int TypeCode = 51;
 
         [NotNull]
-        private readonly VersionParameter protocolVersionParameter =
-            ParameterFactory.Create(ParameterType.Version.ProtocolVersion, true);
+        private readonly VersionParameter protocolVersionParameter = ParameterFactory.Create(ParameterType.Version.ProtocolVersion, true);
 
         [NotNull]
-        private readonly IntegerParameter mediatorStatusParameter =
-            ParameterFactory.Create(ParameterType.Integer.MediatorStatus, true);
+        private readonly IntegerParameter mediatorStatusParameter = ParameterFactory.Create(ParameterType.Integer.MediatorStatus, true);
+
+        [NotNull]
+        public static Version CurrentProtocolVersion => new(0, 2, 2);
 
         /// <summary>
         /// Required. Gets or sets the version number of the CIRCE protocol that is in use.
         /// </summary>
         /// <remarks>
-        /// Only <see cref="Version.Major" />, <see cref="Version.Minor" /> and <see cref="Version.Build" /> are used, which map to
-        /// Major, Minor and Release as described in the CIRCE spec. This means that <see cref="Version.Revision" /> is discarded.
+        /// Only <see cref="Version.Major" />, <see cref="Version.Minor" /> and <see cref="Version.Build" /> are used, which map to Major, Minor and Release as
+        /// described in the CIRCE spec. This means that <see cref="Version.Revision" /> is discarded.
         /// </remarks>
         [CanBeNull]
         public Version ProtocolVersion
         {
-            get
-            {
-                return protocolVersionParameter.Value;
-            }
-            set
-            {
-                protocolVersionParameter.Value = value;
-            }
+            get => protocolVersionParameter.Value;
+            set => protocolVersionParameter.Value = value;
         }
 
         /// <summary>
-        /// Required. Indicates internal status of the mediator device. See <see cref="KnownMediatorStatusCode" /> for some
-        /// predefined values.
+        /// Required. Indicates internal status of the mediator device. See <see cref="KnownMediatorStatusCode" /> for some predefined values.
         /// </summary>
         [CanBeNull]
         public int? MediatorStatus
         {
-            get
-            {
-                return mediatorStatusParameter.Value;
-            }
-            set
-            {
-                mediatorStatusParameter.Value = value;
-            }
-        }
-
-        [NotNull]
-        public static Version CurrentProtocolVersion => new Version(0, 2, 2);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KeepAliveOperation" /> class.
-        /// </summary>
-        internal KeepAliveOperation()
-            : base(TypeCode)
-        {
-            Parameters.Add(protocolVersionParameter);
-            Parameters.Add(mediatorStatusParameter);
+            get => mediatorStatusParameter.Value;
+            set => mediatorStatusParameter.Value = value;
         }
 
         /// <summary>
@@ -96,6 +71,16 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
 
             ProtocolVersion = protocolVersion;
             MediatorStatus = mediatorStatus;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeepAliveOperation" /> class.
+        /// </summary>
+        internal KeepAliveOperation()
+            : base(TypeCode)
+        {
+            Parameters.Add(protocolVersionParameter);
+            Parameters.Add(mediatorStatusParameter);
         }
 
         /// <summary>

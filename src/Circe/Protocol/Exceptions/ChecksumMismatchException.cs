@@ -1,13 +1,11 @@
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
-    /// Represents the error that is thrown when the calculated checksum of a CIRCE packet differs from the checksum that is
-    /// stored in the packet.
+    /// Represents the error that is thrown when the calculated checksum of a CIRCE packet differs from the checksum that is stored in the packet.
     /// </summary>
     [Serializable]
     public sealed class ChecksumMismatchException : PacketFormatException
@@ -44,17 +42,17 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Calculated = calculated;
         }
 
-        [NotNull]
-        private static string FormatMessage(int stored, int calculated)
-        {
-            return $"Invalid checksum (stored=0x{stored:X2}, calculated=0x{calculated:X2}).";
-        }
-
         private ChecksumMismatchException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
             Stored = info.GetInt32("Stored");
             Calculated = info.GetInt32("Calculated");
+        }
+
+        [NotNull]
+        private static string FormatMessage(int stored, int calculated)
+        {
+            return $"Invalid checksum (stored=0x{stored:X2}, calculated=0x{calculated:X2}).";
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

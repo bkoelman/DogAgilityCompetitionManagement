@@ -72,12 +72,11 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
-            string text = new string(chars);
+            string text = new(chars);
 
             if (text != "0" && text != "1")
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value,
-                    $"Value of {GetType().Name} {Name} must be 0 or 1.");
+                throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be 0 or 1.");
             }
 
             Value = text != "0";
@@ -90,6 +89,9 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + Value : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + Value : base.ToString();
+        }
     }
 }

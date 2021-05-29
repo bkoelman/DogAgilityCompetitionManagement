@@ -13,8 +13,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
     /// <summary>
-    /// Provides a forward-only reader for files in delimited (typically CSV) format. The first line of the input file must
-    /// contain column names.
+    /// Provides a forward-only reader for files in delimited (typically CSV) format. The first line of the input file must contain column names.
     /// </summary>
     /// <remarks>
     /// This reader is compatible with Microsoft Excel .csv format, although parsing is slightly more strict. See
@@ -75,8 +74,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="settings">
         /// Settings that customize the behavior of this instance.
         /// </param>
-        public DelimitedValuesReader([NotNull] TextReader source,
-            [CanBeNull] DelimitedValuesReaderSettings settings = null)
+        public DelimitedValuesReader([NotNull] TextReader source, [CanBeNull] DelimitedValuesReaderSettings settings = null)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -96,6 +94,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 {
                     source.Dispose();
                 }
+
                 enumerator.Dispose();
                 source = null;
             }
@@ -135,26 +134,30 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 
         private sealed class DelimitedValuesEnumerator : IEnumerator<DelimitedValuesReaderRow>
         {
-            private const char CarriageReturnCharCode = (char) 13;
-            private const char LineFeedCharCode = (char) 10;
+            private const char CarriageReturnCharCode = (char)13;
+            private const char LineFeedCharCode = (char)10;
 
             [NotNull]
             [ItemNotNull]
             private readonly DelimitedValuesReader owner;
 
-            private char effectiveFieldSeparator;
-            private int readerLineNumber;
-            private int rowStartLineNumber;
-
             [NotNull]
             [ItemNotNull]
             private readonly List<string> columnNames;
+
+            private char effectiveFieldSeparator;
+            private int readerLineNumber;
+            private int rowStartLineNumber;
 
             [CanBeNull]
             private DelimitedValuesReaderRow currentRow;
 
             [CanBeNull]
             private string currentLine;
+
+            object IEnumerator.Current => Current;
+
+            private bool IsPositionBeforeStart => readerLineNumber == 0;
 
             public DelimitedValuesReaderRow Current
             {
@@ -164,8 +167,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                     return currentRow;
                 }
             }
-
-            object IEnumerator.Current => Current;
 
             public int RowStartLineNumber
             {
@@ -200,8 +201,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             [NotNull]
             public CultureInfo EffectiveCulture { get; }
 
-            private bool IsPositionBeforeStart => readerLineNumber == 0;
-
             public DelimitedValuesEnumerator([NotNull] [ItemNotNull] DelimitedValuesReader owner)
             {
                 Guard.NotNull(owner, nameof(owner));
@@ -211,6 +210,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 EffectiveCulture = this.owner.settings.Culture ?? CultureInfo.InvariantCulture;
 
                 string headerLine = ConsumeLinesForSingleRow();
+
                 if (headerLine == null)
                 {
                     throw new DelimitedValuesParseException("Missing column names on first line.");
@@ -289,10 +289,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                     if (line[index] == effectiveFieldSeparator && !inTextSection)
                     {
                         string cell = cellBuilder?.ToString() ?? string.Empty;
+
                         if (isPlainCell != null && isPlainCell.Value)
                         {
                             cell = cell.TrimEnd();
                         }
+
                         cells.Add(cell);
 
                         cellBuilder = new StringBuilder();
@@ -304,8 +306,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                         if (isPlainCell == null || inTextSection)
                         {
                             // Check for "" inside a quoted string.
-                            if (inTextSection && (index + 1) < line.Length &&
-                                line[index + 1] == owner.settings.TextQualifier)
+                            if (inTextSection && index + 1 < line.Length && line[index + 1] == owner.settings.TextQualifier)
                             {
                                 cellBuilder = cellBuilder ?? new StringBuilder();
                                 cellBuilder.Append(owner.settings.TextQualifier);
@@ -324,8 +325,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                         }
                         else
                         {
-                            throw new DelimitedValuesParseException(
-                                "Text qualifier must be the first non-whitespace character of a cell.");
+                            throw new DelimitedValuesParseException("Text qualifier must be the first non-whitespace character of a cell.");
                         }
                     }
                     else
@@ -339,8 +339,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                             // Skip over trailing whitespace for text-qualified cell.
                             if (!char.IsWhiteSpace(line[index]))
                             {
-                                throw new DelimitedValuesParseException(
-                                    "Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
+                                throw new DelimitedValuesParseException("Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
                             }
                         }
                         else
@@ -359,10 +358,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 if (cellBuilder != null)
                 {
                     string lastCell = cellBuilder.ToString();
+
                     if (isPlainCell != null && isPlainCell.Value)
                     {
                         lastCell = lastCell.TrimEnd();
                     }
+
                     cells.Add(lastCell);
                 }
 
@@ -383,6 +384,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 owner.AssertNotDisposed();
 
                 string dataLine = ConsumeLinesForSingleRow();
+
                 if (dataLine == null)
                 {
                     return false;
@@ -424,11 +426,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 bool inTextSection = false;
 
                 var builder = new StringBuilder();
+
                 while (true)
                 {
                     // ReSharper disable once PossibleNullReferenceException
                     // Reason: All callers up the call stack have called owner.AssertNotDisposed().
                     int charCode = owner.source.Read();
+
                     if (charCode != -1)
                     {
                         charsSeen++;
@@ -462,7 +466,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                         {
                             if (inTextSection)
                             {
-                                builder.Append((char) charCode);
+                                builder.Append((char)charCode);
                                 continue;
                             }
                         }
@@ -484,7 +488,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                         inTextSection = !inTextSection;
                     }
 
-                    builder.Append((char) charCode);
+                    builder.Append((char)charCode);
                 }
             }
 
@@ -515,12 +519,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             private static void AssertNoDuplicates([NotNull] [ItemNotNull] IEnumerable<string> headerColumnNames)
             {
                 var columnSet = new HashSet<string>();
+
                 foreach (string columnName in headerColumnNames)
                 {
                     if (columnSet.Contains(columnName))
                     {
                         throw new DelimitedValuesParseException($"Column '{columnName}' occurs multiple times.");
                     }
+
                     columnSet.Add(columnName);
                 }
             }
@@ -530,8 +536,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             {
                 if (cellValues.Count != columnNames.Count)
                 {
-                    throw new DelimitedValuesParseException(
-                        $"Expected {columnNames.Count} cells on row instead of {cellValues.Count}.");
+                    throw new DelimitedValuesParseException($"Expected {columnNames.Count} cells on row instead of {cellValues.Count}.");
                 }
             }
         }
@@ -552,15 +557,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             [ItemNotNull]
             private readonly List<string> cellValues;
 
-            public DelimitedValuesReaderRow([NotNull] DelimitedValuesEnumerator sourceEnumerator,
-                [NotNull] [ItemNotNull] List<string> cellValues)
+            public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(sourceEnumerator.ColumnNames);
+
+            public DelimitedValuesReaderRow([NotNull] DelimitedValuesEnumerator sourceEnumerator, [NotNull] [ItemNotNull] List<string> cellValues)
             {
                 this.sourceEnumerator = sourceEnumerator;
                 this.cellValues = cellValues;
             }
-
-            public IReadOnlyCollection<string> ColumnNames
-                => new ReadOnlyCollection<string>(sourceEnumerator.ColumnNames);
 
             public IReadOnlyCollection<string> GetCells()
             {
@@ -572,6 +575,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 Guard.NotNullNorEmpty(columnName, nameof(columnName));
 
                 int index = sourceEnumerator.ColumnNames.FindIndex(c => c == columnName);
+
                 if (index == -1)
                 {
                     throw new ArgumentException($"Column with name '{columnName}' does not exist.");
@@ -591,9 +595,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             [CanBeNull]
             private T ConvertCell<T>([NotNull] string cellValue)
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof (T));
+                TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
                 object converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
-                return (T) converted;
+                return (T)converted;
             }
         }
     }

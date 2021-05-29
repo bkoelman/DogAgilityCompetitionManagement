@@ -19,25 +19,23 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
+        [ItemNotNull]
+        private static readonly Lazy<CacheManager> InnerDefaultInstance = new(CreateDefaultInstance, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        [NotNull]
         private readonly ModelSerializer serializer;
 
         [NotNull]
-        private readonly object stateLock = new object();
+        private readonly object stateLock = new();
 
         [NotNull]
-        private readonly FreshNotNullableReference<CompetitionClassModel> activeModel =
-            new FreshNotNullableReference<CompetitionClassModel>(new CompetitionClassModel());
-
-        [NotNull]
-        [ItemNotNull]
-        private static readonly Lazy<CacheManager> InnerDefaultInstance = new Lazy<CacheManager>(CreateDefaultInstance,
-            LazyThreadSafetyMode.ExecutionAndPublication);
-
-        [NotNull]
-        public CompetitionClassModel ActiveModel => activeModel.Value;
+        private readonly FreshNotNullableReference<CompetitionClassModel> activeModel = new(new CompetitionClassModel());
 
         [NotNull]
         public static CacheManager DefaultInstance => InnerDefaultInstance.Value;
+
+        [NotNull]
+        public CompetitionClassModel ActiveModel => activeModel.Value;
 
         private CacheManager([NotNull] string stateFilePath)
         {
@@ -55,14 +53,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         private static CacheManager CreateDefaultInstance()
         {
             string commonAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string defaultPath = Path.Combine(commonAppDataFolder, @"DogAgilityCompetition\Controller",
-                "ClassResultStore.xml");
+            string defaultPath = Path.Combine(commonAppDataFolder, "DogAgilityCompetition", "Controller", "ClassResultStore.xml");
             return new CacheManager(defaultPath);
         }
 
         [NotNull]
-        public CompetitionClassModel ReplaceModel([NotNull] CompetitionClassModel replacementVersion,
-            [NotNull] CompetitionClassModel originalVersion)
+        public CompetitionClassModel ReplaceModel([NotNull] CompetitionClassModel replacementVersion, [NotNull] CompetitionClassModel originalVersion)
         {
             Guard.NotNull(replacementVersion, nameof(replacementVersion));
             Guard.NotNull(originalVersion, nameof(originalVersion));

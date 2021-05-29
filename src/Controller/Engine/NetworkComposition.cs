@@ -17,23 +17,23 @@ namespace DogAgilityCompetition.Controller.Engine
     public sealed class NetworkComposition : IEquatable<NetworkComposition>
     {
         [NotNull]
-        private static readonly IReadOnlyCollection<DeviceRoles> BuiltinRoles =
-            new ReadOnlyCollection<DeviceRoles>(
-                Enum.GetValues(typeof (DeviceRoles)).Cast<DeviceRoles>().Except(new[] { DeviceRoles.None }).ToList());
+        private static readonly IReadOnlyCollection<DeviceRoles> BuiltinRoles = new ReadOnlyCollection<DeviceRoles>(Enum.GetValues(typeof(DeviceRoles))
+            .Cast<DeviceRoles>().Except(new[]
+            {
+                DeviceRoles.None
+            }).ToList());
+
+        [NotNull]
+        public static readonly NetworkComposition Empty =
+            new(new Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities>(), CompetitionClassRequirements.Default);
 
         [NotNull]
         private readonly Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities> rolesPerDevice;
 
         [NotNull]
-        public static readonly NetworkComposition Empty =
-            new NetworkComposition(new Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities>(),
-                CompetitionClassRequirements.Default);
-
-        [NotNull]
         public CompetitionClassRequirements Requirements { get; }
 
-        private NetworkComposition(
-            [NotNull] Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities> rolesPerDevice,
+        private NetworkComposition([NotNull] Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities> rolesPerDevice,
             [NotNull] CompetitionClassRequirements requirements)
         {
             this.rolesPerDevice = rolesPerDevice;
@@ -66,8 +66,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
-            return rolesPerDevice.ContainsKey(deviceAddress) &&
-                rolesPerDevice[deviceAddress].RequiresClockSynchronization;
+            return rolesPerDevice.ContainsKey(deviceAddress) && rolesPerDevice[deviceAddress].RequiresClockSynchronization;
         }
 
         [NotNull]
@@ -97,7 +96,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             if (roles == DeviceRoles.None)
             {
-                throw new ArgumentException(@"Specify one or more roles.", nameof(roles));
+                throw new ArgumentException("Specify one or more roles.", nameof(roles));
             }
         }
 
@@ -114,8 +113,7 @@ namespace DogAgilityCompetition.Controller.Engine
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
             AssertNotNone(capability);
 
-            return rolesPerDevice.ContainsKey(deviceAddress) &&
-                (rolesPerDevice[deviceAddress].Capabilities & capability) == capability;
+            return rolesPerDevice.ContainsKey(deviceAddress) && (rolesPerDevice[deviceAddress].Capabilities & capability) == capability;
         }
 
         [AssertionMethod]
@@ -123,7 +121,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             if (capability == DeviceCapabilities.None)
             {
-                throw new ArgumentException(@"Specify a capability.", nameof(capability));
+                throw new ArgumentException("Specify a capability.", nameof(capability));
             }
         }
 
@@ -190,14 +188,13 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [NotNull]
-        public NetworkComposition ChangeRolesFor([NotNull] WirelessNetworkAddress deviceAddress,
-            DeviceCapabilities capabilities, DeviceRoles roles)
+        public NetworkComposition ChangeRolesFor([NotNull] WirelessNetworkAddress deviceAddress, DeviceCapabilities capabilities, DeviceRoles roles)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
             var newRolesPerDevice = new Dictionary<WirelessNetworkAddress, DeviceRolesWithCapabilities>(rolesPerDevice)
             {
-                [deviceAddress] = new DeviceRolesWithCapabilities(capabilities, roles)
+                [deviceAddress] = new(capabilities, roles)
             };
 
             return new NetworkComposition(newRolesPerDevice, Requirements);
@@ -206,8 +203,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public bool Equals([CanBeNull] NetworkComposition other)
         {
-            return !ReferenceEquals(other, null) && rolesPerDevice.SequenceEqual(other.rolesPerDevice) &&
-                Requirements == other.Requirements;
+            return !ReferenceEquals(other, null) && rolesPerDevice.SequenceEqual(other.rolesPerDevice) && Requirements == other.Requirements;
         }
 
         [Pure]
@@ -229,10 +225,12 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
@@ -244,12 +242,11 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private sealed class DeviceRolesWithCapabilities
         {
+            private const DeviceRoles RolesRequiringClockSynchronization = DeviceRoles.StartTimer | DeviceRoles.FinishTimer | DeviceRoles.IntermediateTimer1 |
+                DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
+
             public DeviceCapabilities Capabilities { get; }
             public DeviceRoles Roles { get; }
-
-            private const DeviceRoles RolesRequiringClockSynchronization =
-                DeviceRoles.StartTimer | DeviceRoles.FinishTimer | DeviceRoles.IntermediateTimer1 |
-                    DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
             public bool RequiresClockSynchronization => (Roles & RolesRequiringClockSynchronization) != 0;
 

@@ -9,14 +9,15 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public GatePassage GatePassage { get; }
 
-        public GatePassageEventArgs([NotNull] WirelessNetworkAddress source, [CanBeNull] TimeSpan? sensorTime,
-            GatePassage gatePassage)
+        public GatePassageEventArgs([NotNull] WirelessNetworkAddress source, [CanBeNull] TimeSpan? sensorTime, GatePassage gatePassage)
             : base(source, sensorTime)
         {
             GatePassage = gatePassage;
         }
 
         public override string ToString()
-            => $"{GetType().Name}: GatePassage={GatePassage}, SensorTime={SensorTime}, Source={Source}";
+        {
+            return $"{GetType().Name}: GatePassage={GatePassage}, SensorTime={SensorTime}, Source={Source}";
+        }
     }
 }

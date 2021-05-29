@@ -19,8 +19,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             ResolveEliminationPrecedence(changeSet);
         }
 
-        private static void ResolvePrimaryTimePrecedence(
-            [NotNull] [ItemNotNull] ICollection<VisualizationChange> changeSet)
+        private static void ResolvePrimaryTimePrecedence([NotNull] [ItemNotNull] ICollection<VisualizationChange> changeSet)
         {
             StartPrimaryTimer startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
             PrimaryTimeStopAndSet setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();
@@ -34,6 +33,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         private static void ResolveEliminationPrecedence([NotNull] [ItemNotNull] IList<VisualizationChange> changeSet)
         {
             EliminationUpdate eliminationUpdate = changeSet.OfType<EliminationUpdate>().FirstOrDefault();
+
             if (eliminationUpdate != null)
             {
                 changeSet.Remove(eliminationUpdate);

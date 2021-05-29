@@ -22,14 +22,13 @@ namespace DogAgilityCompetition.Circe
 
         [AssertionMethod]
         [ContractAnnotation("value: null => halt")]
-        public static void NotNullNorEmpty<T>([CanBeNull] [ItemCanBeNull] IEnumerable<T> value,
-            [NotNull] [InvokerParameterName] string name)
+        public static void NotNullNorEmpty<T>([CanBeNull] [ItemCanBeNull] IEnumerable<T> value, [NotNull] [InvokerParameterName] string name)
         {
             NotNull(value, name);
 
             if (!value.Any())
             {
-                throw new ArgumentException(name + @" cannot be empty.", name);
+                throw new ArgumentException(name + " cannot be empty.", name);
             }
         }
 
@@ -41,13 +40,12 @@ namespace DogAgilityCompetition.Circe
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentException(name + @" cannot be empty or contain only whitespace.", name);
+                throw new ArgumentException(name + " cannot be empty or contain only whitespace.", name);
             }
         }
 
         [AssertionMethod]
-        public static void InRangeInclusive(int value, [NotNull] [InvokerParameterName] string name, int minValue,
-            int maxValue)
+        public static void InRangeInclusive(int value, [NotNull] [InvokerParameterName] string name, int minValue, int maxValue)
         {
             if (value < minValue || value > maxValue)
             {
@@ -55,13 +53,13 @@ namespace DogAgilityCompetition.Circe
                 {
                     throw new ArgumentOutOfRangeException(name, value, $"{name} must be {minValue}.");
                 }
+
                 throw new ArgumentOutOfRangeException(name, value, $"{name} must be in range [{minValue}-{maxValue}].");
             }
         }
 
         [AssertionMethod]
-        public static void InRangeInclusive(ulong value, [NotNull] [InvokerParameterName] string name, ulong minValue,
-            ulong maxValue)
+        public static void InRangeInclusive(ulong value, [NotNull] [InvokerParameterName] string name, ulong minValue, ulong maxValue)
         {
             if (value < minValue || value > maxValue)
             {
@@ -69,6 +67,7 @@ namespace DogAgilityCompetition.Circe
                 {
                     throw new ArgumentOutOfRangeException(name, value, $"{name} must be {minValue}.");
                 }
+
                 throw new ArgumentOutOfRangeException(name, value, $"{name} must be in range [{minValue}-{maxValue}].");
             }
         }
@@ -83,8 +82,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void GreaterOrEqual(TimeSpan value, [NotNull] [InvokerParameterName] string name,
-            TimeSpan minValue)
+        public static void GreaterOrEqual(TimeSpan value, [NotNull] [InvokerParameterName] string name, TimeSpan minValue)
         {
             if (value < minValue)
             {

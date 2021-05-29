@@ -9,6 +9,8 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.RankingSpecs
 {
     /// <summary>
@@ -17,6 +19,15 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
     [TestFixture]
     public sealed class RunResultOrdering
     {
+        private const int LowCompetitorNumber = 3;
+        private const int HighCompetitorNumber = 7;
+
+        private static readonly TimeSpan LowOverrunTime = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan HighOverrunTime = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan LowPenaltyTime = TimeSpan.FromSeconds(70);
+        private static readonly TimeSpan HighPenaltyTime = TimeSpan.FromSeconds(80);
+        private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(40);
+
         [Test]
         public void RunCompletion1()
         {
@@ -24,22 +35,22 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var scenarios = new List<OrderingScenario>
             {
                 // Bits: X HasFinished, X IsEliminated, Y HasFinished, Y IsEliminated
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.IsEven),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.IsEven),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.IsEven),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.IsEven)
+                new(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.IsEven),
+                new(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.IsEven),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.IsEven),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.IsEven)
             };
 
             var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
@@ -76,8 +87,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             if (hasFinished)
             {
-                result = result.ChangeTimings(new CompetitionRunTimings(
-                    new RecordedTimeBuilder()
+                result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
                         .At(TimeSpan.FromSeconds(10)).Build())
                     .ChangeFinishTime(new RecordedTimeBuilder()
                         .At(TimeSpan.FromSeconds(25)).Build()));
@@ -93,27 +103,28 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var scenarios = new List<OrderingScenario>
             {
                 // Bits: PenaltyTime X > Y, OverrunTime X > Y, PenaltyTime Y > X, OverrunTime Y > X
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.IsEven),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
+                new(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.IsEven),
+                new(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             CompetitionClassModel model = new CompetitionClassModel()
                 .ChangeClassInfo(new CompetitionClassInfo()
                     .ChangeStandardCourseTime(StandardCourseTime));
+
             var comparer = new CompetitionRunResultRankingComparer(model, RankingComparisonMode.OnlyPhasePenaltyOverrun);
 
             foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
@@ -132,8 +143,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static void AssertCompetitorsAreCompatibleWithProposedScenario(
-            [NotNull] CompetitionRunResult xCompetitor,
+        private static void AssertCompetitorsAreCompatibleWithProposedScenario([NotNull] CompetitionRunResult xCompetitor,
             [NotNull] CompetitionRunResult yCompetitor, [NotNull] OrderingScenario scenario,
             [NotNull] CompetitionClassModel model)
         {
@@ -177,16 +187,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static readonly TimeSpan LowOverrunTime = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan HighOverrunTime = TimeSpan.FromSeconds(10);
-        private static readonly TimeSpan LowPenaltyTime = TimeSpan.FromSeconds(70);
-        private static readonly TimeSpan HighPenaltyTime = TimeSpan.FromSeconds(80);
-
-        private const int LowCompetitorNumber = 3;
-        private const int HighCompetitorNumber = 7;
-
-        private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(40);
-
         [NotNull]
         private static CompetitionRunResult CreateCompetitorForPenaltyOverrun(bool penaltyTimeIsGreater,
             bool overrunTimeIsGreater)
@@ -197,13 +197,13 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var result = new CompetitionRunResult(new Competitor(1, "A", "A"));
 
             TimeSpan startTime = TimeSpan.FromSeconds(10);
-            result = result.ChangeTimings(new CompetitionRunTimings(
-                new RecordedTimeBuilder()
+
+            result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
                     .At(startTime).Build())
                 .ChangeFinishTime(new RecordedTimeBuilder()
                     .At(startTime + overrunTime + StandardCourseTime).Build()));
 
-            int fr = (int) (penaltyTime - overrunTime).TotalSeconds;
+            int fr = (int)(penaltyTime - overrunTime).TotalSeconds;
             result = result.ChangeFaultCount(fr);
 
             return result;
@@ -216,22 +216,22 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var scenarios = new List<OrderingScenario>
             {
                 // Bits: FinishTime X > Y, CompetitorNumber X > Y, FinishTime Y > X, CompetitorNumber Y > X
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new OrderingScenario(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
-                new OrderingScenario(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
+                new(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
             var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
@@ -261,8 +261,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             var result = new CompetitionRunResult(new Competitor(competitorNumber, "A", "A"));
 
             TimeSpan startTime = TimeSpan.FromSeconds(10);
-            result = result.ChangeTimings(new CompetitionRunTimings(
-                new RecordedTimeBuilder()
+
+            result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
                     .At(startTime).Build())
                 .ChangeFinishTime(new RecordedTimeBuilder()
                     .At(startTime + finishTime).Build()));

@@ -5,6 +5,8 @@ using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
@@ -20,14 +22,19 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("A", "B", "C")
                 .WithoutRows()
-                .WithRow(new[] { "True", "False", "" })
+                .WithRow(new[]
+                {
+                    "True",
+                    "False",
+                    ""
+                })
                 .Build();
 
             // Act
             IDelimitedValuesReaderRow row = reader.First();
-            var cell1 = row.GetCell<bool?>("A");
-            var cell2 = row.GetCell<bool?>("B");
-            var cell3 = row.GetCell<bool?>("C");
+            bool? cell1 = row.GetCell<bool?>("A");
+            bool? cell2 = row.GetCell<bool?>("B");
+            bool? cell3 = row.GetCell<bool?>("C");
 
             // Assert
             cell1.Should().BeTrue();
@@ -40,12 +47,16 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var culture = new CultureInfo("nl-NL");
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithCulture(culture))
                 .WithSingleColumnHeader("A")
                 .WithoutRows()
-                .WithRow(new[] { "3,5" })
+                .WithRow(new[]
+                {
+                    "3,5"
+                })
                 .Build();
 
             // Act
@@ -63,7 +74,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("A")
                 .WithoutRows()
-                .WithRow(new[] { "X" })
+                .WithRow(new[]
+                {
+                    "X"
+                })
                 .Build();
 
             // Act

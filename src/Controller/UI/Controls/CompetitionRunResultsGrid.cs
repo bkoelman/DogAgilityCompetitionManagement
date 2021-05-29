@@ -21,10 +21,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public bool IsEditable
         {
-            get
-            {
-                return !runResultsGrid.ReadOnly;
-            }
+            get => !runResultsGrid.ReadOnly;
             set
             {
                 runResultsGrid.ReadOnly = !value;
@@ -34,14 +31,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public bool ShowPlacement
         {
-            get
-            {
-                return PlacementColumn.Visible;
-            }
-            set
-            {
-                PlacementColumn.Visible = value;
-            }
+            get => PlacementColumn.Visible;
+            set => PlacementColumn.Visible = value;
         }
 
         public bool HideBackColors { get; set; }
@@ -53,15 +44,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             get
             {
-                IEnumerable<CompetitionRunResultRowInGrid> source =
-                    competitionRunResultRowBindingSource.List.Cast<CompetitionRunResultRowInGrid>();
+                IEnumerable<CompetitionRunResultRowInGrid> source = competitionRunResultRowBindingSource.List.Cast<CompetitionRunResultRowInGrid>();
                 return source.Select(r => r.ToCompetitionRunResult()).ToList();
             }
             set
             {
                 Guard.NotNull(value, nameof(value));
-                competitionRunResultRowBindingSource.DataSource =
-                    value.Select(CompetitionRunResultRowInGrid.FromCompetitionRunResult).ToList();
+                competitionRunResultRowBindingSource.DataSource = value.Select(CompetitionRunResultRowInGrid.FromCompetitionRunResult).ToList();
             }
         }
 
@@ -73,6 +62,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         public void GoToCompetitor(int competitorNumber)
         {
             int index = 0;
+
             foreach (CompetitionRunResultRowInGrid rowInGrid in competitionRunResultRowBindingSource)
             {
                 if (rowInGrid.CompetitorNumber == competitorNumber)
@@ -80,6 +70,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                     competitionRunResultRowBindingSource.Position = index;
                     break;
                 }
+
                 index++;
             }
         }
@@ -91,19 +82,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             DataSource = model.Results;
         }
 
-        private void RunResultsGrid_CellFormatting([CanBeNull] object sender,
-            [NotNull] DataGridViewCellFormattingEventArgs e)
+        private void RunResultsGrid_CellFormatting([CanBeNull] object sender, [NotNull] DataGridViewCellFormattingEventArgs e)
         {
             if (!HideBackColors)
             {
                 CompetitionRunResult runResult = DataSource.ElementAtOrDefault(e.RowIndex);
+
                 if (runResult != null)
                 {
                     if (runResult.HasCompleted)
                     {
-                        e.CellStyle.BackColor = runResult.IsEliminated
-                            ? Color.FromArgb(255, 224, 194)
-                            : Color.FromArgb(224, 255, 194);
+                        e.CellStyle.BackColor = runResult.IsEliminated ? Color.FromArgb(255, 224, 194) : Color.FromArgb(224, 255, 194);
                     }
                 }
             }
@@ -113,6 +102,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             // Prevent that pressing ESC closes the parent form when user wants to cancel cell editing.
             var parentForm = Parent as Form;
+
             if (parentForm != null)
             {
                 parentFormCancelButton = parentForm.CancelButton;
@@ -123,6 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private void RunResultsGrid_CellEndEdit([CanBeNull] object sender, [NotNull] DataGridViewCellEventArgs e)
         {
             var parentForm = Parent as Form;
+
             if (parentForm != null)
             {
                 parentForm.CancelButton = parentFormCancelButton;
@@ -131,10 +122,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             runResultsGrid.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
-        private void RunResultsGrid_CellValidating([CanBeNull] object sender,
-            [NotNull] DataGridViewCellValidatingEventArgs e)
+        private void RunResultsGrid_CellValidating([CanBeNull] object sender, [NotNull] DataGridViewCellValidatingEventArgs e)
         {
             DataGridViewColumn column = runResultsGrid.Columns[e.ColumnIndex];
+
             if (IsTimeColumn(column))
             {
                 try
@@ -177,8 +168,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private bool IsTimeColumn([NotNull] DataGridViewColumn column)
         {
-            return column == IntermediateTime1Column || column == IntermediateTime2Column ||
-                column == IntermediateTime3Column || column == FinishTimeColumn;
+            return column == IntermediateTime1Column || column == IntermediateTime2Column || column == IntermediateTime3Column || column == FinishTimeColumn;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             get
             {
                 int value;
-                return int.TryParse(competitorNumberTextBox.Text.Trim(), out value) ? (int?) value : null;
+                return int.TryParse(competitorNumberTextBox.Text.Trim(), out value) ? value : null;
             }
         }
 

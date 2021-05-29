@@ -14,8 +14,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         private const int CharCount = 6;
 
         [NotNull]
-        private static readonly Regex ValueFormatRegex = new Regex("^[0-9A-F]{" + CharCount + "}$",
-            RegexOptions.Compiled);
+        private static readonly Regex ValueFormatRegex = new("^[0-9A-F]{" + CharCount + "}$", RegexOptions.Compiled);
 
         [CanBeNull]
         private string innerValue;
@@ -26,10 +25,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         [CanBeNull]
         public string Value
         {
-            get
-            {
-                return innerValue;
-            }
+            get => innerValue;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -43,6 +39,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                         throw new ArgumentOutOfRangeException(nameof(value), value,
                             $"Value of {GetType().Name} {Name} must consist of {CharCount} characters in range 0-9 or A-F.");
                     }
+
                     innerValue = value;
                 }
             }
@@ -55,12 +52,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <c>true</c> if this parameter has a value; otherwise, <c>false</c>.
         /// </value>
         public override bool HasValue => !string.IsNullOrEmpty(innerValue);
-
-        [CanBeNull]
-        public string GetValueOrNull()
-        {
-            return HasValue ? Value : null;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkAddressParameter" /> class.
@@ -77,6 +68,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         public NetworkAddressParameter([NotNull] string name, int id, bool isRequired)
             : base(name, id, CharCount, isRequired)
         {
+        }
+
+        [CanBeNull]
+        public string GetValueOrNull()
+        {
+            return HasValue ? Value : null;
         }
 
         /// <summary>
@@ -119,7 +116,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        }
 
         public static bool IsValidAddress([CanBeNull] string value)
         {

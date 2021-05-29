@@ -19,8 +19,7 @@ namespace DogAgilityCompetition.Controller.Engine
         public DateTime SoftwareTimeInUtc { get; }
         public TimeAccuracy Accuracy { get; }
 
-        public RecordedTime([CanBeNull] TimeSpan? hardwareSynchronizedTime, DateTime softwareTimeInUtc,
-            [CanBeNull] TimeAccuracy? accuracy = null)
+        public RecordedTime([CanBeNull] TimeSpan? hardwareSynchronizedTime, DateTime softwareTimeInUtc, [CanBeNull] TimeAccuracy? accuracy = null)
         {
             if (accuracy == null)
             {
@@ -41,8 +40,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private static DateTime GetTimeValueRoundedToWholeMilliseconds(DateTime source)
         {
-            return new DateTime(source.Year, source.Month, source.Day, source.Hour, source.Minute, source.Second,
-                source.Millisecond, source.Kind);
+            return new(source.Year, source.Month, source.Day, source.Hour, source.Minute, source.Second, source.Millisecond, source.Kind);
         }
 
         public TimeSpanWithAccuracy ElapsedSince([NotNull] RecordedTime other)
@@ -76,6 +74,7 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 return TimeAccuracy.UserEdited;
             }
+
             if (first == TimeAccuracy.LowPrecision || second == TimeAccuracy.LowPrecision)
             {
                 return TimeAccuracy.LowPrecision;
@@ -87,9 +86,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [NotNull]
         public RecordedTime Add(TimeSpanWithAccuracy offset)
         {
-            TimeSpan? hardwareTime = offset.Accuracy == TimeAccuracy.HighPrecision
-                ? HardwareSynchronizedTime + offset.TimeValue
-                : null;
+            TimeSpan? hardwareTime = offset.Accuracy == TimeAccuracy.HighPrecision ? HardwareSynchronizedTime + offset.TimeValue : null;
             TimeAccuracy effectiveAccuracy = Combine(Accuracy, offset.Accuracy, true);
             DateTime softwareTimeInUtc = SoftwareTimeInUtc + offset.TimeValue;
 
@@ -116,31 +113,10 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public static bool operator ==([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
-        {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
-            if (ReferenceEquals(left, null))
-            {
-                return false;
-            }
-            return left.Equals(right);
-        }
-
-        [Pure]
-        public static bool operator !=([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
-        {
-            return !(left == right);
-        }
-
-        [Pure]
         public override string ToString()
         {
-            string timeValue =
-                HardwareSynchronizedTime?.ToString("hh\\:mm\\:ss\\.fffffff", CultureInfo.InvariantCulture) ??
-                    SoftwareTimeInUtc.ToString("yyyy-MM-dd HH:mm:ss.fff", DateTimeFormatInfo.InvariantInfo);
+            string timeValue = HardwareSynchronizedTime?.ToString("hh\\:mm\\:ss\\.fffffff", CultureInfo.InvariantCulture) ??
+                SoftwareTimeInUtc.ToString("yyyy-MM-dd HH:mm:ss.fff", DateTimeFormatInfo.InvariantInfo);
 
             switch (Accuracy)
             {
@@ -151,6 +127,28 @@ namespace DogAgilityCompetition.Controller.Engine
                 default:
                     return timeValue;
             }
+        }
+
+        [Pure]
+        public static bool operator ==([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
+        {
+            if (ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(left, null))
+            {
+                return false;
+            }
+
+            return left.Equals(right);
+        }
+
+        [Pure]
+        public static bool operator !=([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
+        {
+            return !(left == right);
         }
     }
 }

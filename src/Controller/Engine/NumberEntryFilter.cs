@@ -10,24 +10,23 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine
 {
     /// <summary>
-    /// In the process of input handling, filters press/release of modifier and numeric keys, to build up a competitor number
-    /// and raise related events.
+    /// In the process of input handling, filters press/release of modifier and numeric keys, to build up a competitor number and raise related events.
     /// </summary>
     /// <remarks>
     /// Supports multiple remote controls.
     /// </remarks>
     public sealed class NumberEntryFilter
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public const int MaxCompetitorNumberLength = 3;
 
         [NotNull]
-        private readonly NumberEntryState numberEntryState = new NumberEntryState();
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly DeviceModifiersState modifierStatePerDevice = new DeviceModifiersState();
+        private readonly NumberEntryState numberEntryState = new();
+
+        [NotNull]
+        private readonly DeviceModifiersState modifierStatePerDevice = new();
 
         public event EventHandler<CompetitorSelectionEventArgs> NotifyCompetitorSelecting;
         public event EventHandler<CompetitorNumberSelectionEventArgs> NotifyDigitReceived;
@@ -65,8 +64,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public void HandleKeyDown([NotNull] WirelessNetworkAddress source, RemoteKey key,
-            [CanBeNull] TimeSpan? sensorTime)
+        public void HandleKeyDown([NotNull] WirelessNetworkAddress source, RemoteKey key, [CanBeNull] TimeSpan? sensorTime)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -75,6 +73,7 @@ namespace DogAgilityCompetition.Controller.Engine
             if (keyCategory != KeyCategory.CommandOnly && HasModifierDownThatMatchesEntryState(source))
             {
                 int digit = GetDigitForKey(key);
+
                 if (numberEntryState.AppendToNumber(digit))
                 {
                     // ReSharper disable once PossibleInvalidOperationException
@@ -90,8 +89,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 }
             }
 
-            if (keyCategory == KeyCategory.CommandOnly ||
-                (keyCategory == KeyCategory.DigitAndCommand && modifierStatePerDevice.IsEmpty(source)))
+            if (keyCategory == KeyCategory.CommandOnly || (keyCategory == KeyCategory.DigitAndCommand && modifierStatePerDevice.IsEmpty(source)))
             {
                 NotifyUnknownAction?.Invoke(this, new UnknownDeviceActionEventArgs(source, sensorTime, key));
             }
@@ -104,6 +102,7 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 return true;
             }
+
             if (modifierStatePerDevice.IsDown(deviceAddress, RemoteKeyModifier.EnterCurrentCompetitor) &&
                 numberEntryState.Mode == NumberEntryMode.EnteringCurrentCompetitor)
             {
@@ -183,6 +182,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 numberEntryState.ChangeMode(NumberEntryMode.None);
 
                 bool isCurrentCompetitor = modifier == RemoteKeyModifier.EnterCurrentCompetitor;
+
                 if (builtNumber == null || builtNumber == 0)
                 {
                     var args = new CompetitorSelectionEventArgs(isCurrentCompetitor);
@@ -207,12 +207,12 @@ namespace DogAgilityCompetition.Controller.Engine
         private sealed class NumberEntryState
         {
             [NotNull]
-            private readonly StringBuilder numberBuilder = new StringBuilder();
+            private readonly StringBuilder numberBuilder = new();
 
             public NumberEntryMode Mode { get; private set; }
 
             [CanBeNull]
-            public int? Number => numberBuilder.Length == 0 ? (int?) null : int.Parse(numberBuilder.ToString());
+            public int? Number => numberBuilder.Length == 0 ? null : int.Parse(numberBuilder.ToString());
 
             public void ChangeMode(NumberEntryMode mode)
             {
@@ -224,7 +224,7 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 if (digit < 0 || digit > 9)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(digit), digit, @"digit must be in range [0-9].");
+                    throw new ArgumentOutOfRangeException(nameof(digit), digit, "digit must be in range [0-9].");
                 }
 
                 if (numberBuilder.Length < MaxCompetitorNumberLength)
@@ -233,28 +233,29 @@ namespace DogAgilityCompetition.Controller.Engine
                     return true;
                 }
 
-                Log.Debug(
-                    $"Discarding incoming digit {digit} because maximum competitor number length has been reached.");
+                Log.Debug($"Discarding incoming digit {digit} because maximum competitor number length has been reached.");
                 return false;
             }
 
             [Pure]
-            public override string ToString() => $"{GetType().Name}: Mode={Mode}, Number={numberBuilder}";
+            public override string ToString()
+            {
+                return $"{GetType().Name}: Mode={Mode}, Number={numberBuilder}";
+            }
         }
 
         private sealed class DeviceModifiersState
         {
             [NotNull]
-            private readonly Dictionary<WirelessNetworkAddress, ModifiersDownForDevice> statePerDevice =
-                new Dictionary<WirelessNetworkAddress, ModifiersDownForDevice>();
+            private readonly Dictionary<WirelessNetworkAddress, ModifiersDownForDevice> statePerDevice = new();
 
             public bool IsEmpty([NotNull] WirelessNetworkAddress deviceAddress)
             {
                 if (statePerDevice.ContainsKey(deviceAddress))
                 {
-                    return !statePerDevice[deviceAddress].ContainsEnterNextCompetitor &&
-                        !statePerDevice[deviceAddress].ContainsEnterCurrentCompetitor;
+                    return !statePerDevice[deviceAddress].ContainsEnterNextCompetitor && !statePerDevice[deviceAddress].ContainsEnterCurrentCompetitor;
                 }
+
                 return true;
             }
 
@@ -270,14 +271,13 @@ namespace DogAgilityCompetition.Controller.Engine
                             return statePerDevice[deviceAddress].ContainsEnterCurrentCompetitor;
                     }
                 }
+
                 return false;
             }
 
             public void EnsureDown([NotNull] WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
             {
-                ModifiersDownForDevice deviceState = !statePerDevice.ContainsKey(deviceAddress)
-                    ? new ModifiersDownForDevice()
-                    : statePerDevice[deviceAddress];
+                ModifiersDownForDevice deviceState = !statePerDevice.ContainsKey(deviceAddress) ? new ModifiersDownForDevice() : statePerDevice[deviceAddress];
 
                 switch (modifier)
                 {
@@ -330,27 +330,29 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 public ModifiersDownForDevice WithEnterCurrentCompetitor()
                 {
-                    return new ModifiersDownForDevice(true, ContainsEnterNextCompetitor);
+                    return new(true, ContainsEnterNextCompetitor);
                 }
 
                 public ModifiersDownForDevice WithoutEnterCurrentCompetitor()
                 {
-                    return new ModifiersDownForDevice(false, ContainsEnterNextCompetitor);
+                    return new(false, ContainsEnterNextCompetitor);
                 }
 
                 public ModifiersDownForDevice WithEnterNextCompetitor()
                 {
-                    return new ModifiersDownForDevice(ContainsEnterCurrentCompetitor, true);
+                    return new(ContainsEnterCurrentCompetitor, true);
                 }
 
                 public ModifiersDownForDevice WithoutEnterNextCompetitor()
                 {
-                    return new ModifiersDownForDevice(ContainsEnterCurrentCompetitor, false);
+                    return new(ContainsEnterCurrentCompetitor, false);
                 }
 
                 [Pure]
                 public override string ToString()
-                    => $"Current={ContainsEnterCurrentCompetitor}, Next={ContainsEnterNextCompetitor}";
+                {
+                    return $"Current={ContainsEnterCurrentCompetitor}, Next={ContainsEnterNextCompetitor}";
+                }
             }
         }
 

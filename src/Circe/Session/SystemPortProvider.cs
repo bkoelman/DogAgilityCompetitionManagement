@@ -29,6 +29,7 @@ namespace DogAgilityCompetition.Circe.Session
         public static IList<string> GetAllComPorts(bool inReverseOrder = false)
         {
             Exception error;
+
             try
             {
                 IEnumerable<string> result = SerialPort.GetPortNames().Where(IsPortNameSupported);

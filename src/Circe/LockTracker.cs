@@ -5,8 +5,8 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe
 {
     /// <summary>
-    /// Writes logging for locks that are waited for, obtained and released. Intended for analyzing multi-threading issues,
-    /// such as race conditions and deadlocks.
+    /// Writes logging for locks that are waited for, obtained and released. Intended for analyzing multi-threading issues, such as race conditions and
+    /// deadlocks.
     /// </summary>
     public sealed class LockTracker : IDisposable
     {
@@ -25,14 +25,6 @@ namespace DogAgilityCompetition.Circe
         {
         }
 
-        [NotNull]
-        private static string GetNameOfMethod([NotNull] MethodBase source)
-        {
-            Guard.NotNull(source, nameof(source));
-
-            return source.Name;
-        }
-
         public LockTracker([NotNull] ISystemLogger log, [NotNull] string source)
         {
             Guard.NotNull(log, nameof(log));
@@ -42,6 +34,14 @@ namespace DogAgilityCompetition.Circe
             this.source = source;
 
             Acquiring();
+        }
+
+        [NotNull]
+        private static string GetNameOfMethod([NotNull] MethodBase source)
+        {
+            Guard.NotNull(source, nameof(source));
+
+            return source.Name;
         }
 
         private void Acquiring()
@@ -68,9 +68,14 @@ namespace DogAgilityCompetition.Circe
         {
             Guard.NotNull(message, nameof(message));
 
-            return message.IndexOf(BlockingToObtainStateLock, StringComparison.Ordinal) != -1 ||
+            // @formatter:keep_existing_linebreaks true
+
+            return
+                message.IndexOf(BlockingToObtainStateLock, StringComparison.Ordinal) != -1 ||
                 message.IndexOf(StateLockObtained, StringComparison.Ordinal) != -1 ||
                 message.IndexOf(StateLockReleased, StringComparison.Ordinal) != -1;
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

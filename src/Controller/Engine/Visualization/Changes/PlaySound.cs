@@ -9,7 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class PlaySound : NullableVisualizationChange<string>
     {
         [NotNull]
-        public static PlaySound Mute => new PlaySound(null);
+        public static PlaySound Mute => new(null);
 
         public PlaySound([CanBeNull] string path)
             : base(path)

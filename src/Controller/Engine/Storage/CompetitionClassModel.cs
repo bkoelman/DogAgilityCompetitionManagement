@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
@@ -42,9 +41,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             Alerts = CompetitionAlerts.Empty;
         }
 
-        private CompetitionClassModel([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> results,
-            [NotNull] CompetitionClassInfo classInfo, [CanBeNull] int? lastCompletedCompetitorNumber,
-            int intermediateTimerCount, TimeSpan startFinishMinDelayForSingleSensor,
+        private CompetitionClassModel([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> results, [NotNull] CompetitionClassInfo classInfo,
+            [CanBeNull] int? lastCompletedCompetitorNumber, int intermediateTimerCount, TimeSpan startFinishMinDelayForSingleSensor,
             [CanBeNull] CompetitionAlerts alerts)
         {
             AssertUniqueCompetitors(results);
@@ -61,12 +59,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         private static void AssertUniqueCompetitors([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> results)
         {
             var map = new Dictionary<int, CompetitionRunResult>();
+
             foreach (CompetitionRunResult result in results)
             {
                 if (map.ContainsKey(result.Competitor.Number))
                 {
                     throw new ArgumentException($"Competitor number {result.Competitor.Number} occurs multiple times.");
                 }
+
                 map[result.Competitor.Number] = result;
             }
         }
@@ -75,9 +75,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [CanBeNull]
         public CompetitionRunResult GetLastCompletedOrNull()
         {
-            return LastCompletedCompetitorNumber != null
-                ? GetRunResultOrNull(LastCompletedCompetitorNumber.Value)
-                : null;
+            return LastCompletedCompetitorNumber != null ? GetRunResultOrNull(LastCompletedCompetitorNumber.Value) : null;
         }
 
         [Pure]
@@ -85,6 +83,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public CompetitionRunResult GetRunResultFor(int competitorNumber)
         {
             CompetitionRunResult runResult = GetRunResultOrNull(competitorNumber);
+
             if (runResult == null)
             {
                 throw new ArgumentException($"Competitor {competitorNumber} does not exist.");
@@ -98,21 +97,25 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public RecordedTime GetLatestIntermediateTimeOrNull(int competitorNumber)
         {
             CompetitionRunResult runResult = GetRunResultOrNull(competitorNumber);
+
             if (runResult?.Timings != null)
             {
                 if (IntermediateTimerCount >= 3 && runResult.Timings.IntermediateTime3 != null)
                 {
                     return runResult.Timings.IntermediateTime3;
                 }
+
                 if (IntermediateTimerCount == 2 && runResult.Timings.IntermediateTime2 != null)
                 {
                     return runResult.Timings.IntermediateTime2;
                 }
+
                 if (IntermediateTimerCount == 1 && runResult.Timings.IntermediateTime1 != null)
                 {
                     return runResult.Timings.IntermediateTime1;
                 }
             }
+
             return null;
         }
 
@@ -125,14 +128,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
         [Pure]
         [NotNull]
-        public CompetitionClassModel ChangeRunResults(
-            [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public CompetitionClassModel ChangeRunResults([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNull(runResults, nameof(runResults));
 
             var newResultList = new ReadOnlyCollection<CompetitionRunResult>(runResults.ToList());
-            return new CompetitionClassModel(newResultList, ClassInfo, LastCompletedCompetitorNumber,
-                IntermediateTimerCount, StartFinishMinDelayForSingleSensor, Alerts);
+
+            return new CompetitionClassModel(newResultList, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount,
+                StartFinishMinDelayForSingleSensor, Alerts);
         }
 
         [Pure]
@@ -144,6 +147,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             var newResults = new List<CompetitionRunResult>();
 
             bool found = false;
+
             foreach (CompetitionRunResult result in Results)
             {
                 if (result.Competitor.Number == runResult.Competitor.Number)
@@ -163,8 +167,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
 
             var newResultList = new ReadOnlyCollection<CompetitionRunResult>(newResults);
-            return new CompetitionClassModel(newResultList, ClassInfo, LastCompletedCompetitorNumber,
-                IntermediateTimerCount, StartFinishMinDelayForSingleSensor, Alerts);
+
+            return new CompetitionClassModel(newResultList, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount,
+                StartFinishMinDelayForSingleSensor, Alerts);
         }
 
         [Pure]
@@ -173,26 +178,26 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             Guard.NotNull(classInfo, nameof(classInfo));
 
-            return new CompetitionClassModel(Results, classInfo, LastCompletedCompetitorNumber, IntermediateTimerCount,
-                StartFinishMinDelayForSingleSensor, Alerts);
+            return new CompetitionClassModel(Results, classInfo, LastCompletedCompetitorNumber, IntermediateTimerCount, StartFinishMinDelayForSingleSensor,
+                Alerts);
         }
 
         [Pure]
         [NotNull]
-        public CompetitionClassModel SafeChangeLastCompletedCompetitorNumber(
-            [CanBeNull] int? lastCompletedCompetitorNumber)
+        public CompetitionClassModel SafeChangeLastCompletedCompetitorNumber([CanBeNull] int? lastCompletedCompetitorNumber)
         {
             if (lastCompletedCompetitorNumber != null)
             {
                 CompetitionRunResult runResult = GetRunResultOrNull(lastCompletedCompetitorNumber.Value);
+
                 if (runResult == null)
                 {
                     lastCompletedCompetitorNumber = null;
                 }
             }
 
-            return new CompetitionClassModel(Results, ClassInfo, lastCompletedCompetitorNumber, IntermediateTimerCount,
-                StartFinishMinDelayForSingleSensor, Alerts);
+            return new CompetitionClassModel(Results, ClassInfo, lastCompletedCompetitorNumber, IntermediateTimerCount, StartFinishMinDelayForSingleSensor,
+                Alerts);
         }
 
         [Pure]
@@ -201,19 +206,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             Guard.InRangeInclusive(intermediateTimerCount, nameof(intermediateTimerCount), 0, 3);
 
-            return new CompetitionClassModel(Results, ClassInfo, LastCompletedCompetitorNumber, intermediateTimerCount,
-                StartFinishMinDelayForSingleSensor, Alerts);
+            return new CompetitionClassModel(Results, ClassInfo, LastCompletedCompetitorNumber, intermediateTimerCount, StartFinishMinDelayForSingleSensor,
+                Alerts);
         }
 
         [Pure]
         [NotNull]
-        public CompetitionClassModel ChangeStartFinishMinDelayForSingleSensor(
-            TimeSpan startFinishMinDelayForSingleSensor)
+        public CompetitionClassModel ChangeStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
         {
             AssertNotNegative(startFinishMinDelayForSingleSensor);
 
-            return new CompetitionClassModel(Results, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount,
-                startFinishMinDelayForSingleSensor, Alerts);
+            return new CompetitionClassModel(Results, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount, startFinishMinDelayForSingleSensor,
+                Alerts);
         }
 
         [AssertionMethod]
@@ -221,9 +225,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         {
             if (startFinishMinDelayForSingleSensor < TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor),
-                    startFinishMinDelayForSingleSensor,
-                    @"Minimum delay between passage of Start and Finish gates cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor), startFinishMinDelayForSingleSensor,
+                    "Minimum delay between passage of Start and Finish gates cannot be negative.");
             }
         }
 
@@ -231,8 +234,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         [NotNull]
         public CompetitionClassModel ChangeAlerts([CanBeNull] CompetitionAlerts alerts)
         {
-            return new CompetitionClassModel(Results, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount,
-                StartFinishMinDelayForSingleSensor, alerts);
+            return new(Results, ClassInfo, LastCompletedCompetitorNumber, IntermediateTimerCount, StartFinishMinDelayForSingleSensor, alerts);
         }
 
         [Pure]
@@ -270,13 +272,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             CompetitionClassModel snapshotSorted = GetSortedAscendingByCompetitorNumber();
 
             CompetitionRunResult lastCompleted = snapshotSorted.GetLastCompletedOrNull();
+
             if (lastCompleted != null)
             {
-                CompetitionRunResult nextUncompletedCompetitor =
-                    snapshotSorted.Results.SkipWhile(r => r.Competitor.Number != lastCompleted.Competitor.Number)
-                        .Skip(1)
-                        .SkipWhile(r => r.HasCompleted)
-                        .FirstOrDefault();
+                // @formatter:keep_existing_linebreaks true
+
+                CompetitionRunResult nextUncompletedCompetitor = snapshotSorted.Results
+                    .SkipWhile(r => r.Competitor.Number != lastCompleted.Competitor.Number)
+                    .Skip(1)
+                    .SkipWhile(r => r.HasCompleted)
+                    .FirstOrDefault();
+
+                // @formatter:keep_existing_linebreaks restore
 
                 if (nextUncompletedCompetitor != null)
                 {
@@ -305,11 +312,15 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             {
                 CompetitionClassModel snapshotSorted = GetSortedAscendingByCompetitorNumber();
 
-                CompetitionRunResult firstUncompletedCompetitorAfterCurrent =
-                    snapshotSorted.Results.SkipWhile(r => r.Competitor.Number != currentCompetitorNumber.Value)
-                        .Skip(1)
-                        .SkipWhile(r => r.HasCompleted)
-                        .FirstOrDefault();
+                // @formatter:keep_existing_linebreaks true
+
+                CompetitionRunResult firstUncompletedCompetitorAfterCurrent = snapshotSorted.Results
+                    .SkipWhile(r => r.Competitor.Number != currentCompetitorNumber.Value)
+                    .Skip(1)
+                    .SkipWhile(r => r.HasCompleted)
+                    .FirstOrDefault();
+
+                // @formatter:keep_existing_linebreaks restore
 
                 if (firstUncompletedCompetitorAfterCurrent != null)
                 {
@@ -317,8 +328,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 }
 
                 CompetitionRunResult firstUncompletedCompetitor =
-                    snapshotSorted.Results.FirstOrDefault(
-                        r => !r.HasCompleted && r.Competitor.Number != currentCompetitorNumber.Value);
+                    snapshotSorted.Results.FirstOrDefault(r => !r.HasCompleted && r.Competitor.Number != currentCompetitorNumber.Value);
+
                 return firstUncompletedCompetitor?.Competitor.Number;
             }
 

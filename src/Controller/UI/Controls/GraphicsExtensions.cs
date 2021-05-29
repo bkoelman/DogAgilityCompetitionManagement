@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
     /// <summary>
-    /// A simple extension to the <see cref="Graphics" /> class for extended graphic routines, such as for creating rounded
-    /// rectangles. Please contact: aaronreginald@yahoo.com for the most recent implementations of this class.
+    /// A simple extension to the <see cref="Graphics" /> class for extended graphic routines, such as for creating rounded rectangles. Please contact:
+    /// aaronreginald@yahoo.com for the most recent implementations of this class.
     /// </summary>
     /// <remarks>
     /// <see href="http://www.codeproject.com/Articles/5649/Extended-Graphics-An-implementation-of-Rounded-Rec" />
@@ -15,8 +15,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </remarks>
     public static class GraphicsExtensions
     {
-        public static void DrawRoundedRectangle([NotNull] this Graphics graphics, [NotNull] Pen pen,
-            RectangleF rectangle, float radius)
+        public static void DrawRoundedRectangle([NotNull] this Graphics graphics, [NotNull] Pen pen, RectangleF rectangle, float radius)
         {
             using (new SmoothingModeScope(graphics, SmoothingMode.AntiAlias))
             {
@@ -25,8 +24,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        public static void FillRoundedRectangle([NotNull] this Graphics graphics, [NotNull] Brush brush,
-            RectangleF rectangle, float radius)
+        public static void FillRoundedRectangle([NotNull] this Graphics graphics, [NotNull] Brush brush, RectangleF rectangle, float radius)
         {
             using (new SmoothingModeScope(graphics, SmoothingMode.AntiAlias))
             {
@@ -52,7 +50,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             // if the corner radius is greater than or equal to 
             // half the width, or height (whichever is shorter) 
             // then return a capsule instead of a lozenge 
-            if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
+            if (radius >= Math.Min(baseRect.Width, baseRect.Height) / 2.0)
             {
                 return GetCapsule(baseRect);
             }
@@ -86,10 +84,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private static GraphicsPath GetCapsule(RectangleF baseRect)
         {
             var path = new GraphicsPath();
+
             try
             {
                 float diameter;
                 RectangleF arc;
+
                 if (baseRect.Width > baseRect.Height)
                 {
                     // return horizontal capsule 
@@ -124,6 +124,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 path.CloseFigure();
             }
+
             return path;
         }
 

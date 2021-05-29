@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.MediatorEmulator
     public sealed class StartupArguments
     {
         [CanBeNull]
-        public string Path { get; private set; }
+        public string Path { get; }
 
         [CanBeNull]
         public Point? Location { get; }
@@ -25,11 +25,9 @@ namespace DogAgilityCompetition.MediatorEmulator
 
         public bool TransparentOnTop { get; }
 
-        public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop
-            ;
+        public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop;
 
-        private StartupArguments([CanBeNull] string path, [CanBeNull] Point? location, [CanBeNull] Size? size,
-            FormWindowState state, bool transparentOnTop)
+        private StartupArguments([CanBeNull] string path, [CanBeNull] Point? location, [CanBeNull] Size? size, FormWindowState state, bool transparentOnTop)
         {
             Path = path;
             Location = location;
@@ -55,6 +53,7 @@ namespace DogAgilityCompetition.MediatorEmulator
                 {
                     location = ParseLocation(arg.Substring("pos=".Length));
                 }
+
                 if (arg.StartsWith("size=", StringComparison.OrdinalIgnoreCase))
                 {
                     size = ParseSize(arg.Substring("size=".Length));
@@ -73,6 +72,7 @@ namespace DogAgilityCompetition.MediatorEmulator
                     {
                         throw new InvalidOperationException("Multiple paths are not supported.");
                     }
+
                     path = arg;
                 }
             }
@@ -83,6 +83,7 @@ namespace DogAgilityCompetition.MediatorEmulator
         private static Point ParseLocation([NotNull] string value)
         {
             int[] parts = TrySplitIntoTwoCoordinates(value);
+
             if (parts != null)
             {
                 return new Point(parts[1], parts[0]);
@@ -94,6 +95,7 @@ namespace DogAgilityCompetition.MediatorEmulator
         private static Size ParseSize([NotNull] string value)
         {
             int[] parts = TrySplitIntoTwoCoordinates(value);
+
             if (parts != null)
             {
                 return new Size(parts[1], parts[0]);
@@ -106,21 +108,28 @@ namespace DogAgilityCompetition.MediatorEmulator
         private static int[] TrySplitIntoTwoCoordinates([NotNull] string value)
         {
             string[] args = value.Split('x');
+
             if (args.Length == 2)
             {
                 int value0;
                 int value1;
+
                 if (int.TryParse(args[0], out value0) && int.TryParse(args[1], out value1))
                 {
-                    return new[] { value0, value1 };
+                    return new[]
+                    {
+                        value0,
+                        value1
+                    };
                 }
             }
+
             return null;
         }
 
         private static FormWindowState ParseWindowState([NotNull] string value)
         {
-            return (FormWindowState) Enum.Parse(typeof (FormWindowState), value, true);
+            return (FormWindowState)Enum.Parse(typeof(FormWindowState), value, true);
         }
     }
 }

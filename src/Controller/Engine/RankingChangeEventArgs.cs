@@ -11,10 +11,10 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         [NotNull]
         [ItemNotNull]
-        public IReadOnlyCollection<CompetitionRunResult> Rankings { get; private set; }
+        public IReadOnlyCollection<CompetitionRunResult> Rankings { get; }
 
         [CanBeNull]
-        public CompetitionRunResult PreviousRunResult { get; private set; }
+        public CompetitionRunResult PreviousRunResult { get; }
 
         public RankingChangeEventArgs([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> rankings,
             [CanBeNull] CompetitionRunResult previousRunResult)

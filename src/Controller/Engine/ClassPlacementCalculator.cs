@@ -23,8 +23,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         [NotNull]
         [ItemNotNull]
-        public IEnumerable<CompetitionRunResult> Recalculate(
-            [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public IEnumerable<CompetitionRunResult> Recalculate([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNull(runResults, nameof(runResults));
 
@@ -35,11 +34,13 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 int placementCounter = 0;
                 CompetitionRunResult previousResult = null;
+
                 foreach (CompetitionRunResult runResult in sorted)
                 {
                     if (runResult.HasFinished && !runResult.IsEliminated)
                     {
                         int placement;
+
                         if (previousResult != null && comparer.IsPlacementEqual(runResult, previousResult))
                         {
                             placement = previousResult.Placement;

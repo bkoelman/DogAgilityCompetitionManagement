@@ -8,10 +8,10 @@ namespace DogAgilityCompetition.Circe.Session
     public sealed class IncomingOperationEventArgs : EventArgs
     {
         [NotNull]
-        public Operation Operation { get; private set; }
+        public Operation Operation { get; }
 
         [NotNull]
-        public CirceComConnection Connection { get; private set; }
+        public CirceComConnection Connection { get; }
 
         public IncomingOperationEventArgs([NotNull] Operation operation, [NotNull] CirceComConnection connection)
         {

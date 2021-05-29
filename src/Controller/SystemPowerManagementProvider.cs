@@ -31,9 +31,9 @@ namespace DogAgilityCompetition.Controller
         /// </remarks>
         public static void Disable()
         {
-            const NativeMethods.ExecutionStates flags =
-                NativeMethods.ExecutionStates.Continuous | NativeMethods.ExecutionStates.SystemRequired |
-                    NativeMethods.ExecutionStates.DisplayRequired;
+            const NativeMethods.ExecutionStates flags = NativeMethods.ExecutionStates.Continuous | NativeMethods.ExecutionStates.SystemRequired |
+                NativeMethods.ExecutionStates.DisplayRequired;
+
             NativeMethods.ExecutionStates previousState = NativeMethods.SetThreadExecutionState(flags);
             ThrowWhenFailed(previousState);
         }
@@ -43,8 +43,7 @@ namespace DogAgilityCompetition.Controller
         /// </summary>
         public static void Restore()
         {
-            NativeMethods.ExecutionStates previousState =
-                NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionStates.Continuous);
+            NativeMethods.ExecutionStates previousState = NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionStates.Continuous);
             ThrowWhenFailed(previousState);
         }
 

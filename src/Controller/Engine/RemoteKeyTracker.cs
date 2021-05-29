@@ -9,8 +9,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine
 {
     /// <summary>
-    /// In the process of input handling, tracks changes in the raw key flags from devices and raises up/down events for keys
-    /// and key modifiers.
+    /// In the process of input handling, tracks changes in the raw key flags from devices and raises up/down events for keys and key modifiers.
     /// </summary>
     public sealed class RemoteKeyTracker
     {
@@ -18,36 +17,33 @@ namespace DogAgilityCompetition.Controller.Engine
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly Dictionary<WirelessNetworkAddress, RawDeviceKeys> precedingRawKeysDownPerDevice =
-            new Dictionary<WirelessNetworkAddress, RawDeviceKeys>();
+        private static readonly Dictionary<RawDeviceKeys, RemoteKeyModifier> ModifierKeyTranslationTable = new()
+        {
+            { RawDeviceKeys.EnterNextCompetitor, RemoteKeyModifier.EnterNextCompetitor },
+            { RawDeviceKeys.EnterCurrentCompetitor, RemoteKeyModifier.EnterCurrentCompetitor }
+        };
 
         [NotNull]
-        private static readonly Dictionary<RawDeviceKeys, RemoteKeyModifier> ModifierKeyTranslationTable =
-            new Dictionary<RawDeviceKeys, RemoteKeyModifier>
-            {
-                { RawDeviceKeys.EnterNextCompetitor, RemoteKeyModifier.EnterNextCompetitor },
-                { RawDeviceKeys.EnterCurrentCompetitor, RemoteKeyModifier.EnterCurrentCompetitor }
-            };
+        private static readonly Dictionary<RawDeviceKeys, RemoteKey> RegularKeyTranslationTable = new()
+        {
+            { RawDeviceKeys.Key1OrPlaySoundA, RemoteKey.Key1OrPlaySoundA },
+            { RawDeviceKeys.Key2OrPassIntermediate, RemoteKey.Key2OrPassIntermediate },
+            { RawDeviceKeys.Key3OrToggleElimination, RemoteKey.Key3OrToggleElimination },
+            { RawDeviceKeys.Key4, RemoteKey.Key4 },
+            { RawDeviceKeys.Key5OrDecreaseRefusals, RemoteKey.Key5OrDecreaseRefusals },
+            { RawDeviceKeys.Key6OrIncreaseRefusals, RemoteKey.Key6OrIncreaseRefusals },
+            { RawDeviceKeys.Key7, RemoteKey.Key7 },
+            { RawDeviceKeys.Key8OrDecreaseFaults, RemoteKey.Key8OrDecreaseFaults },
+            { RawDeviceKeys.Key9OrIncreaseFaults, RemoteKey.Key9OrIncreaseFaults },
+            { RawDeviceKeys.Key0OrMuteSound, RemoteKey.Key0OrMuteSound },
+            { RawDeviceKeys.PassFinish, RemoteKey.PassFinish },
+            { RawDeviceKeys.PassStart, RemoteKey.PassStart },
+            { RawDeviceKeys.ResetRun, RemoteKey.ResetRun },
+            { RawDeviceKeys.Ready, RemoteKey.Ready }
+        };
 
         [NotNull]
-        private static readonly Dictionary<RawDeviceKeys, RemoteKey> RegularKeyTranslationTable =
-            new Dictionary<RawDeviceKeys, RemoteKey>
-            {
-                { RawDeviceKeys.Key1OrPlaySoundA, RemoteKey.Key1OrPlaySoundA },
-                { RawDeviceKeys.Key2OrPassIntermediate, RemoteKey.Key2OrPassIntermediate },
-                { RawDeviceKeys.Key3OrToggleElimination, RemoteKey.Key3OrToggleElimination },
-                { RawDeviceKeys.Key4, RemoteKey.Key4 },
-                { RawDeviceKeys.Key5OrDecreaseRefusals, RemoteKey.Key5OrDecreaseRefusals },
-                { RawDeviceKeys.Key6OrIncreaseRefusals, RemoteKey.Key6OrIncreaseRefusals },
-                { RawDeviceKeys.Key7, RemoteKey.Key7 },
-                { RawDeviceKeys.Key8OrDecreaseFaults, RemoteKey.Key8OrDecreaseFaults },
-                { RawDeviceKeys.Key9OrIncreaseFaults, RemoteKey.Key9OrIncreaseFaults },
-                { RawDeviceKeys.Key0OrMuteSound, RemoteKey.Key0OrMuteSound },
-                { RawDeviceKeys.PassFinish, RemoteKey.PassFinish },
-                { RawDeviceKeys.PassStart, RemoteKey.PassStart },
-                { RawDeviceKeys.ResetRun, RemoteKey.ResetRun },
-                { RawDeviceKeys.Ready, RemoteKey.Ready }
-            };
+        private readonly Dictionary<WirelessNetworkAddress, RawDeviceKeys> precedingRawKeysDownPerDevice = new();
 
         public event EventHandler<RemoteKeyModifierEventArgs> ModifierKeyDown;
         public event EventHandler<RemoteKeyEventArgs> KeyDown;
@@ -70,8 +66,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void ProcessRawKeysDown([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void ProcessRawKeysDown([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, [CanBeNull] TimeSpan? sensorTime)
         {
             RawDeviceKeys precedingKeysDown = GetPrecedingKeysDownForDevice(source);
 
@@ -88,17 +83,16 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private RawDeviceKeys GetPrecedingKeysDownForDevice([NotNull] WirelessNetworkAddress source)
         {
-            return precedingRawKeysDownPerDevice.ContainsKey(source)
-                ? precedingRawKeysDownPerDevice[source]
-                : RawDeviceKeys.None;
+            return precedingRawKeysDownPerDevice.ContainsKey(source) ? precedingRawKeysDownPerDevice[source] : RawDeviceKeys.None;
         }
 
-        private void RaiseModifierDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown,
-            RawDeviceKeys precedingKeysDown, [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseModifierDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
+            [CanBeNull] TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKeyModifier> entry in ModifierKeyTranslationTable)
             {
                 ChangeType changeType = GetChangeForKey(entry.Key, rawKeysDown, precedingKeysDown);
+
                 if (changeType == ChangeType.Down)
                 {
                     Log.Debug($"ModifierKeyDown of {entry.Value} from {source}");
@@ -109,12 +103,13 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseKeyDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown,
-            RawDeviceKeys precedingKeysDown, [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseKeyDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
+            [CanBeNull] TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKey> entry in RegularKeyTranslationTable)
             {
                 ChangeType changeType = GetChangeForKey(entry.Key, rawKeysDown, precedingKeysDown);
+
                 if (changeType == ChangeType.Down)
                 {
                     Log.Debug($"KeyDown of {entry.Value} from {source}");
@@ -125,12 +120,13 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseKeyUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown,
-            RawDeviceKeys precedingKeysDown, [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseKeyUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
+            [CanBeNull] TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKey> entry in RegularKeyTranslationTable)
             {
                 ChangeType changeType = GetChangeForKey(entry.Key, rawKeysDown, precedingKeysDown);
+
                 if (changeType == ChangeType.Up)
                 {
                     Log.Debug($"KeyUp of {entry.Value} from {source}");
@@ -141,12 +137,13 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseModifierUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown,
-            RawDeviceKeys precedingKeysDown, [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseModifierUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
+            [CanBeNull] TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKeyModifier> entry in ModifierKeyTranslationTable)
             {
                 ChangeType changeType = GetChangeForKey(entry.Key, rawKeysDown, precedingKeysDown);
+
                 if (changeType == ChangeType.Up)
                 {
                     Log.Debug($"ModifierKeyUp of {entry.Value} from {source}");
@@ -157,8 +154,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private static ChangeType GetChangeForKey(RawDeviceKeys targetKey, RawDeviceKeys rawKeysDown,
-            RawDeviceKeys precedingKeysDown)
+        private static ChangeType GetChangeForKey(RawDeviceKeys targetKey, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown)
         {
             RawDeviceKeys lastKeyValue = precedingKeysDown & targetKey;
             RawDeviceKeys thisKeyValue = rawKeysDown & targetKey;

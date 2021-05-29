@@ -35,29 +35,29 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
         //    |                                     |
         //    +-BottomLeft-BottomCenter-BottomRight-+
 
-        public PointF TopLeftConnection => new PointF(boxRect.X + LeftOffsetX, boxRect.Y);
+        public PointF TopLeftConnection => new(boxRect.X + LeftOffsetX, boxRect.Y);
 
-        public PointF TopCenterConnection => new PointF(boxRect.X + CenterOffsetX, boxRect.Y);
+        public PointF TopCenterConnection => new(boxRect.X + CenterOffsetX, boxRect.Y);
 
-        public PointF TopRightConnection => new PointF(boxRect.X + RightOffsetX, boxRect.Y);
+        public PointF TopRightConnection => new(boxRect.X + RightOffsetX, boxRect.Y);
 
-        public PointF LeftTopConnection => new PointF(boxRect.X, boxRect.Y + TopOffsetY);
+        public PointF LeftTopConnection => new(boxRect.X, boxRect.Y + TopOffsetY);
 
-        public PointF LeftMiddleConnection => new PointF(boxRect.X, boxRect.Y + CenterOffsetY);
+        public PointF LeftMiddleConnection => new(boxRect.X, boxRect.Y + CenterOffsetY);
 
-        public PointF LeftBottomConnection => new PointF(boxRect.X, boxRect.Y + BottomOffsetY);
+        public PointF LeftBottomConnection => new(boxRect.X, boxRect.Y + BottomOffsetY);
 
-        public PointF BottomLeftConnection => new PointF(boxRect.X + LeftOffsetX, boxRect.Y + boxRect.Height);
+        public PointF BottomLeftConnection => new(boxRect.X + LeftOffsetX, boxRect.Y + boxRect.Height);
 
-        public PointF BottomCenterConnection => new PointF(boxRect.X + CenterOffsetX, boxRect.Y + boxRect.Height);
+        public PointF BottomCenterConnection => new(boxRect.X + CenterOffsetX, boxRect.Y + boxRect.Height);
 
-        public PointF BottomRightConnection => new PointF(boxRect.X + RightOffsetX, boxRect.Y + boxRect.Height);
+        public PointF BottomRightConnection => new(boxRect.X + RightOffsetX, boxRect.Y + boxRect.Height);
 
-        public PointF RightTopConnection => new PointF(boxRect.X + boxRect.Width, boxRect.Y + TopOffsetY);
+        public PointF RightTopConnection => new(boxRect.X + boxRect.Width, boxRect.Y + TopOffsetY);
 
-        public PointF RightMiddleConnection => new PointF(boxRect.X + boxRect.Width, boxRect.Y + CenterOffsetY);
+        public PointF RightMiddleConnection => new(boxRect.X + boxRect.Width, boxRect.Y + CenterOffsetY);
 
-        public PointF RightBottomConnection => new PointF(boxRect.X + boxRect.Width, boxRect.Y + BottomOffsetY);
+        public PointF RightBottomConnection => new(boxRect.X + boxRect.Width, boxRect.Y + BottomOffsetY);
 
         [NotNull]
         public Font Font { get; set; }
@@ -71,8 +71,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             Font = font;
             boxRect = rectangle;
             topLeft = new PointF(rectangle.Left, rectangle.Top);
-            shadowRect = new RectangleF(new PointF(rectangle.X + ShadowOffset, rectangle.Y + ShadowOffset),
-                rectangle.Size);
+            shadowRect = new RectangleF(new PointF(rectangle.X + ShadowOffset, rectangle.Y + ShadowOffset), rectangle.Size);
         }
 
         public override void DrawShadow(Graphics graphics)
@@ -94,13 +93,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
             using (var fontCopy = new Font(Font, State == ShapeState.Selected ? FontStyle.Bold : FontStyle.Regular))
             {
-                graphics.DrawString(text, fontCopy, Brushes.Black, new RectangleF(topLeft, boxRect.Size),
-                    new StringFormat
-                    {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Center,
-                        FormatFlags = StringFormatFlags.NoWrap
-                    });
+                graphics.DrawString(text, fontCopy, Brushes.Black, new RectangleF(topLeft, boxRect.Size), new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center,
+                    FormatFlags = StringFormatFlags.NoWrap
+                });
 
                 graphics.DrawRoundedRectangle(Pens.Black, boxRect, 7);
             }

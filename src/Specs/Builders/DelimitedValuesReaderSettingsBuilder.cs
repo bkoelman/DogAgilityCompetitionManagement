@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Specs.Builders
 
         public DelimitedValuesReaderSettings Build()
         {
-            return new DelimitedValuesReaderSettings
+            return new()
             {
                 FieldSeparator = fieldSeparator,
                 Culture = culture,

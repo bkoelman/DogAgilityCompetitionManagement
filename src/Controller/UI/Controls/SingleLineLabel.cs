@@ -34,11 +34,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             ImageAnimator.UpdateFrames(Image);
             Rectangle r = reflected.LayoutUtilsDeflateRect(ClientRectangle, Padding);
             Image image = Image;
+
             if (image != null)
             {
                 DrawImage(e.Graphics, image, r, RtlTranslateAlignment(ImageAlign));
             }
+
             IntPtr hdc = e.Graphics.GetHdc();
+
             try
             {
                 // The original code uses internal type DeviceContextHdcScope, which is a 'ref struct'.
@@ -54,12 +57,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 e.Graphics.ReleaseHdc();
             }
+
             if (AutoEllipsis)
             {
                 Rectangle clientRectangle = ClientRectangle;
                 Size preferredSize = GetPreferredSize(new Size(clientRectangle.Width, clientRectangle.Height));
-                reflected.ShowToolTip = (clientRectangle.Width < preferredSize.Width) ||
-                    (clientRectangle.Height < preferredSize.Height);
+                reflected.ShowToolTip = clientRectangle.Width < preferredSize.Width || clientRectangle.Height < preferredSize.Height;
             }
             else
             {
@@ -86,6 +89,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             else
             {
                 TextFormatFlags flags = reflected.CreateTextFormatFlags();
+
                 if (Enabled)
                 {
                     TextRenderer.DrawText(e.Graphics, Text, Font, r, nearestColor, flags);
@@ -97,7 +101,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            var handler = (PaintEventHandler) Events[reflected.ControlEventPaint];
+            var handler = (PaintEventHandler)Events[reflected.ControlEventPaint];
             handler?.Invoke(this, e);
         }
 
@@ -136,45 +140,60 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             [NotNull]
             private readonly Label owner;
 
+            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0]);
+
+            public bool ShowToolTip
+            {
+                set => ShowToolTipField.SetValue(owner, value);
+            }
+
+            [CanBeNull]
+            public object ControlEventPaint => ControlEventPaintField.GetValue(null);
+
             static Reflected()
             {
-                AnimateMethod =
-                    Require(typeof (Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null,
-                        new Type[0], null));
+                AnimateMethod = Require(typeof(Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
 
-                Type layoutUtilsType =
-                    Require(typeof (Label).Assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
-                LayoutUtilsDeflateRectMethod =
-                    Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
+                Type layoutUtilsType = Require(typeof(Label).Assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
+                LayoutUtilsDeflateRectMethod = Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
 
                 Type hdcType = Require(typeof(Message).Assembly.GetType("Interop+Gdi32+HDC", true));
-                InteropHdcConstructor = Require(hdcType.GetConstructor(new[] { typeof (IntPtr) }));
 
-                Type gdi32Type = Require(typeof (Message).Assembly.GetType("Interop+Gdi32", true));
-                InteropGetNearestColorMethod = Require(gdi32Type.GetMethod("GetNearestColor",
-                    BindingFlags.Public | BindingFlags.Static, null, new[] { hdcType, typeof (int) }, null));
+                InteropHdcConstructor = Require(hdcType.GetConstructor(new[]
+                {
+                    typeof(IntPtr)
+                }));
+
+                Type gdi32Type = Require(typeof(Message).Assembly.GetType("Interop+Gdi32", true));
+
+                InteropGetNearestColorMethod = Require(gdi32Type.GetMethod("GetNearestColor", BindingFlags.Public | BindingFlags.Static, null, new[]
+                {
+                    hdcType,
+                    typeof(int)
+                }, null));
 
                 PropertyInfo controlDisabledColorProperty =
-                    Require(typeof (Control).GetProperty("DisabledColor", BindingFlags.NonPublic | BindingFlags.Instance));
+                    Require(typeof(Control).GetProperty("DisabledColor", BindingFlags.NonPublic | BindingFlags.Instance));
+
                 ControlDisabledColorPropertyGetMethod = Require(controlDisabledColorProperty.GetGetMethod(true));
 
-                ShowToolTipField =
-                    Require(typeof (Label).GetField("_showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
+                ShowToolTipField = Require(typeof(Label).GetField("_showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
 
-                CreateStringFormatMethod =
-                    Require(typeof (Label).GetMethod("CreateStringFormat",
-                        BindingFlags.NonPublic | BindingFlags.Instance));
+                CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
 
                 CreateTextFormatFlagsMethod =
-                    Require(typeof (Label).GetMethod("CreateTextFormatFlags",
-                        BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
+                    Require(typeof(Label).GetMethod("CreateTextFormatFlags", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
 
                 TextRendererDisabledTextColorMethod =
-                    Require(typeof (TextRenderer).GetMethod("DisabledTextColor",
-                        BindingFlags.NonPublic | BindingFlags.Static));
+                    Require(typeof(TextRenderer).GetMethod("DisabledTextColor", BindingFlags.NonPublic | BindingFlags.Static));
 
-                ControlEventPaintField =
-                    Require(typeof (Control).GetField("s_paintEvent", BindingFlags.NonPublic | BindingFlags.Static));
+                ControlEventPaintField = Require(typeof(Control).GetField("s_paintEvent", BindingFlags.NonPublic | BindingFlags.Static));
+            }
+
+            public Reflected([NotNull] Label owner)
+            {
+                Guard.NotNull(owner, nameof(owner));
+                this.owner = owner;
             }
 
             [NotNull]
@@ -184,28 +203,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     throw new Exception("Reflection failure.");
                 }
+
                 return value;
             }
-
-            public Reflected([NotNull] Label owner)
-            {
-                Guard.NotNull(owner, nameof(owner));
-                this.owner = owner;
-            }
-
-            public Color ControlDisabledColor
-                => (Color) ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0]);
-
-            public bool ShowToolTip
-            {
-                set
-                {
-                    ShowToolTipField.SetValue(owner, value);
-                }
-            }
-
-            [CanBeNull]
-            public object ControlEventPaint => ControlEventPaintField.GetValue(null);
 
             public void Animate()
             {
@@ -214,33 +214,48 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             public Rectangle LayoutUtilsDeflateRect(Rectangle clientRectangle, Padding padding)
             {
-                return (Rectangle) LayoutUtilsDeflateRectMethod.Invoke(null, new object[] { clientRectangle, padding });
+                return (Rectangle)LayoutUtilsDeflateRectMethod.Invoke(null, new object[]
+                {
+                    clientRectangle,
+                    padding
+                });
             }
 
             public int InteropGetNearestColor(IntPtr handle, int color)
             {
-                object hdc = InteropHdcConstructor.Invoke(new object[] { handle });
-                return (int) InteropGetNearestColorMethod.Invoke(null, new object[] { hdc, color });
+                object hdc = InteropHdcConstructor.Invoke(new object[]
+                {
+                    handle
+                });
+
+                return (int)InteropGetNearestColorMethod.Invoke(null, new[]
+                {
+                    hdc,
+                    color
+                });
             }
 
             [NotNull]
             public StringFormat CreateStringFormat()
             {
-                var result = (StringFormat) CreateStringFormatMethod.Invoke(owner, new object[0]);
+                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, new object[0]);
                 result.FormatFlags |= StringFormatFlags.NoWrap;
                 return result;
             }
 
             public TextFormatFlags CreateTextFormatFlags()
             {
-                var result = (TextFormatFlags) CreateTextFormatFlagsMethod.Invoke(owner, new object[0]);
+                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, new object[0]);
                 result &= ~TextFormatFlags.WordBreak;
                 return result;
             }
 
             public Color TextRendererDisabledTextColor(Color backColor)
             {
-                return (Color) TextRendererDisabledTextColorMethod.Invoke(null, new object[] { backColor });
+                return (Color)TextRendererDisabledTextColorMethod.Invoke(null, new object[]
+                {
+                    backColor
+                });
             }
         }
     }

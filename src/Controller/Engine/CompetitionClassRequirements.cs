@@ -16,7 +16,7 @@ namespace DogAgilityCompetition.Controller.Engine
     public sealed class CompetitionClassRequirements : IEquatable<CompetitionClassRequirements>
     {
         [NotNull]
-        public static readonly CompetitionClassRequirements Default = new CompetitionClassRequirements(0, TimeSpan.Zero);
+        public static readonly CompetitionClassRequirements Default = new(0, TimeSpan.Zero);
 
         public int IntermediateTimerCount { get; }
 
@@ -37,8 +37,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [NotNull]
-        public CompetitionClassRequirements ChangeStartFinishMinDelayForSingleSensor(
-            TimeSpan startFinishMinDelayForSingleSensor)
+        public CompetitionClassRequirements ChangeStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
         {
             AssertNotNegative(startFinishMinDelayForSingleSensor);
 
@@ -50,9 +49,8 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             if (startFinishMinDelayForSingleSensor < TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor),
-                    startFinishMinDelayForSingleSensor,
-                    @"Minimum delay between passage of Start and Finish sensors cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor), startFinishMinDelayForSingleSensor,
+                    "Minimum delay between passage of Start and Finish sensors cannot be negative.");
             }
         }
 
@@ -94,10 +92,9 @@ namespace DogAgilityCompetition.Controller.Engine
             }
 
             // Can have multiple INTERMEDIATE roles.
-            const DeviceRoles intermediateTimers =
-                DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
-            foreach (WirelessNetworkAddress deviceAddress in
-                composition.GetDevicesInAnyRole(intermediateTimers))
+            const DeviceRoles intermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
+
+            foreach (WirelessNetworkAddress deviceAddress in composition.GetDevicesInAnyRole(intermediateTimers))
             {
                 if (composition.HasCapability(deviceAddress, DeviceCapabilities.TimeSensor))
                 {
@@ -106,18 +103,17 @@ namespace DogAgilityCompetition.Controller.Engine
                     {
                         mismatches.Add(NetworkComplianceMismatch.GateIsStartAndIntermediate);
                     }
+
                     if (composition.IsInRoleFinishTimer(deviceAddress))
                     {
                         mismatches.Add(NetworkComplianceMismatch.GateIsFinishAndIntermediate);
                     }
 
                     // Gates cannot be in more than one INTERMEDIATE role.
-                    bool inRoleInt12 = composition.IsInRoleIntermediateTimer1(deviceAddress) &&
-                        composition.IsInRoleIntermediateTimer2(deviceAddress);
-                    bool inRoleInt23 = composition.IsInRoleIntermediateTimer2(deviceAddress) &&
-                        composition.IsInRoleIntermediateTimer3(deviceAddress);
-                    bool inRoleInt13 = composition.IsInRoleIntermediateTimer1(deviceAddress) &&
-                        composition.IsInRoleIntermediateTimer3(deviceAddress);
+                    bool inRoleInt12 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer2(deviceAddress);
+                    bool inRoleInt23 = composition.IsInRoleIntermediateTimer2(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
+                    bool inRoleInt13 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
+
                     if (inRoleInt12 || inRoleInt23 || inRoleInt13)
                     {
                         mismatches.Add(NetworkComplianceMismatch.GateInMultipleIntermediateTimerRoles);
@@ -130,10 +126,12 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 mismatches.Add(NetworkComplianceMismatch.MissingIntermediate3Timer);
             }
+
             if (IntermediateTimerCount >= 2 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
             {
                 mismatches.Add(NetworkComplianceMismatch.MissingIntermediate2Timer);
             }
+
             if (IntermediateTimerCount >= 1 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
             {
                 mismatches.Add(NetworkComplianceMismatch.MissingIntermediate1Timer);
@@ -148,6 +146,7 @@ namespace DogAgilityCompetition.Controller.Engine
                     mismatches.Add(NetworkComplianceMismatch.IntermediateMissing32);
                 }
             }
+
             if (composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
             {
                 if (!composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
@@ -177,22 +176,22 @@ namespace DogAgilityCompetition.Controller.Engine
             return IntermediateTimerCount.GetHashCode() ^ StartFinishMinDelayForSingleSensor.GetHashCode();
         }
 
-        public static bool operator ==(
-            [CanBeNull] CompetitionClassRequirements left, [CanBeNull] CompetitionClassRequirements right)
+        public static bool operator ==([CanBeNull] CompetitionClassRequirements left, [CanBeNull] CompetitionClassRequirements right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=(
-            [CanBeNull] CompetitionClassRequirements left, [CanBeNull] CompetitionClassRequirements right)
+        public static bool operator !=([CanBeNull] CompetitionClassRequirements left, [CanBeNull] CompetitionClassRequirements right)
         {
             return !(left == right);
         }

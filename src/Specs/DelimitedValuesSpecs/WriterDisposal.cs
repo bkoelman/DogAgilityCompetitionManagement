@@ -7,6 +7,8 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
 
+// @formatter:keep_existing_linebreaks true
+
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
@@ -53,6 +55,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var output = new StringWriter();
+
             using (DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(output)
                 .WithSettings(new DelimitedValuesWriterSettingsBuilder()
@@ -67,6 +70,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 row.Dispose();
                 row.Dispose();
             }
+
             IEnumerable<string> lines = TextToLines(output.ToString());
 
             // Assert
@@ -78,14 +82,17 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         private static IEnumerable<string> TextToLines([NotNull] string text)
         {
             var lines = new List<string>();
+
             using (var reader = new StringReader(text))
             {
                 string nextLine;
+
                 while ((nextLine = reader.ReadLine()) != null)
                 {
                     lines.Add(nextLine);
                 }
             }
+
             return lines;
         }
 
@@ -94,6 +101,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             var outputStream = new MemoryStream();
+
             DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WritingTo(new StreamWriter(new BufferedStream(outputStream)))
                 .WithSingleColumnHeader("A")

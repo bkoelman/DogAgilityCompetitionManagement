@@ -19,7 +19,7 @@ namespace DogAgilityCompetition.Controller.Engine
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        public static readonly AlertPictureSourceItem None = new AlertPictureSourceItem(false, null);
+        public static readonly AlertPictureSourceItem None = new(false, null);
 
         [CanBeNull]
         private Bitmap item;

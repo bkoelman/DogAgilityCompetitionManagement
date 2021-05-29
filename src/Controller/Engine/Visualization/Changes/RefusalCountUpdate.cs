@@ -9,10 +9,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class RefusalCountUpdate : NullableVisualizationChange<int?>
     {
         [NotNull]
-        public static RefusalCountUpdate Hidden => new RefusalCountUpdate(null);
+        public static RefusalCountUpdate Hidden => new(null);
 
         [NotNull]
-        public static RefusalCountUpdate Zero => new RefusalCountUpdate(0);
+        public static RefusalCountUpdate Zero => new(0);
 
         public RefusalCountUpdate([CanBeNull] int? value)
             : base(value)

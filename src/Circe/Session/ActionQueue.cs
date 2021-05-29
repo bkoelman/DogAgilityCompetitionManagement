@@ -12,8 +12,8 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Enqueued actions can be monitored through their returned <see cref="Task" />s, which enable waiting upon completion,
-    /// inspecting if the task was canceled or whether an exception was thrown, and running a continuation upon completion.
+    /// Enqueued actions can be monitored through their returned <see cref="Task" />s, which enable waiting upon completion, inspecting if the task was
+    /// canceled or whether an exception was thrown, and running a continuation upon completion.
     /// </para>
     /// <para>
     /// Consumption of actions in the queue can be paused and resumed. On disposal, any remaining actions are canceled.
@@ -25,10 +25,10 @@ namespace DogAgilityCompetition.Circe.Session
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly BlockingCollection<WorkItem> workQueue = new BlockingCollection<WorkItem>();
+        private readonly BlockingCollection<WorkItem> workQueue = new();
 
         [NotNull]
-        private readonly object stateLock = new object();
+        private readonly object stateLock = new();
 
         private bool isConsumerRunning;
         private bool disposeRequested;
@@ -36,8 +36,7 @@ namespace DogAgilityCompetition.Circe.Session
         public ActionQueue()
         {
             Log.Debug("Creating task for consumer loop.");
-            Task.Factory.StartNew(ConsumerLoop, CancellationToken.None, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default);
+            Task.Factory.StartNew(ConsumerLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         /// <summary>
@@ -158,6 +157,7 @@ namespace DogAgilityCompetition.Circe.Session
         private void ConsumerLoop()
         {
             Log.Debug("Entering ConsumerLoop.");
+
             foreach (WorkItem workItem in workQueue.GetConsumingEnumerable())
             {
                 try
@@ -178,11 +178,13 @@ namespace DogAgilityCompetition.Circe.Session
                             if (!isConsumerRunning && !disposeRequested)
                             {
                                 Log.Debug("Entering wait loop until running or disposing.");
+
                                 while (!isConsumerRunning && !disposeRequested)
                                 {
                                     // Consumer is paused, so block this thread until state changes.
                                     Monitor.Wait(stateLock);
                                 }
+
                                 Log.Debug("Exited wait loop.");
                             }
 
@@ -226,6 +228,7 @@ namespace DogAgilityCompetition.Circe.Session
                     Log.Error("Unexpected error in ConsumerLoop.", ex);
                 }
             }
+
             workQueue.Dispose();
 
             Log.Debug("Leaving ConsumerLoop.");
@@ -244,8 +247,7 @@ namespace DogAgilityCompetition.Circe.Session
 
             public CancellationToken CancelToken { get; }
 
-            public WorkItem([NotNull] TaskCompletionSource<object> taskSource, [NotNull] Action action,
-                CancellationToken cancelToken)
+            public WorkItem([NotNull] TaskCompletionSource<object> taskSource, [NotNull] Action action, CancellationToken cancelToken)
                 : this()
             {
                 Guard.NotNull(taskSource, nameof(taskSource));

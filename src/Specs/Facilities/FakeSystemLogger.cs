@@ -12,19 +12,19 @@ namespace DogAgilityCompetition.Specs.Facilities
     {
         [NotNull]
         [ItemNotNull]
-        private readonly List<string> debugMessages = new List<string>();
+        private readonly List<string> debugMessages = new();
 
         [NotNull]
         [ItemNotNull]
-        private readonly List<string> errorMessages = new List<string>();
+        private readonly List<string> errorMessages = new();
 
         [NotNull]
         [ItemNotNull]
-        private readonly List<string> infoMessages = new List<string>();
+        private readonly List<string> infoMessages = new();
 
         [NotNull]
         [ItemNotNull]
-        private readonly List<string> warningMessages = new List<string>();
+        private readonly List<string> warningMessages = new();
 
         [NotNull]
         [ItemNotNull]

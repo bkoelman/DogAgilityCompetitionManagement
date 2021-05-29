@@ -8,7 +8,7 @@ namespace DogAgilityCompetition.DeviceConfigurer.Phases
     public sealed class PhaseAssignmentCompleted : AssignmentPhase
     {
         [CanBeNull]
-        public int? MediatorStatus { get; private set; }
+        public int? MediatorStatus { get; }
 
         public PhaseAssignmentCompleted([CanBeNull] int? mediatorStatus)
         {

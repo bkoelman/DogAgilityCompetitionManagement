@@ -9,14 +9,15 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public RemoteKeyModifier Modifier { get; }
 
-        public RemoteKeyModifierEventArgs([NotNull] WirelessNetworkAddress source, RemoteKeyModifier modifier,
-            [CanBeNull] TimeSpan? sensorTime)
+        public RemoteKeyModifierEventArgs([NotNull] WirelessNetworkAddress source, RemoteKeyModifier modifier, [CanBeNull] TimeSpan? sensorTime)
             : base(source, sensorTime)
         {
             Modifier = modifier;
         }
 
         public override string ToString()
-            => $"{GetType().Name}: Modifier={Modifier}, SensorTime={SensorTime}, Source={Source}";
+        {
+            return $"{GetType().Name}: Modifier={Modifier}, SensorTime={SensorTime}, Source={Source}";
+        }
     }
 }

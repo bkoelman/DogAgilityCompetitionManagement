@@ -13,8 +13,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         internal const int TypeCode = 3;
 
         [NotNull]
-        private readonly NetworkAddressParameter destinationAddressParameter =
-            ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
+        private readonly NetworkAddressParameter destinationAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
 
         /// <summary>
         /// Required. Gets or sets the destination address of the device in the wireless network.
@@ -27,19 +26,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
                 string parameterValue = destinationAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
-            set
-            {
-                destinationAddressParameter.Value = value?.Value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AlertOperation" /> class.
-        /// </summary>
-        internal AlertOperation()
-            : base(TypeCode)
-        {
-            Parameters.Add(destinationAddressParameter);
+            set => destinationAddressParameter.Value = value?.Value;
         }
 
         /// <summary>
@@ -54,6 +41,15 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             Guard.NotNull(destinationAddress, nameof(destinationAddress));
 
             DestinationAddress = destinationAddress;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlertOperation" /> class.
+        /// </summary>
+        internal AlertOperation()
+            : base(TypeCode)
+        {
+            Parameters.Add(destinationAddressParameter);
         }
 
         /// <summary>

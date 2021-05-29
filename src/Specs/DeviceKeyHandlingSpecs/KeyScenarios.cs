@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     public sealed class KeyScenarios
     {
         [NotNull]
-        private static readonly WirelessNetworkAddress Source = new WirelessNetworkAddress("ABCDEF");
+        private static readonly WirelessNetworkAddress Source = new("ABCDEF");
 
         [CanBeNull]
         private static readonly TimeSpan? NullTime = null;

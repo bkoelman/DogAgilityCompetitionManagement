@@ -17,14 +17,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public override object Clone()
         {
-            var cell = (DataGridViewDisableButtonCell) base.Clone();
+            var cell = (DataGridViewDisableButtonCell)base.Clone();
             cell.Enabled = Enabled;
             return cell;
         }
 
-        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex,
-            DataGridViewElementStates elementState, [CanBeNull] object value, [CanBeNull] object formattedValue,
-            [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
+        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates elementState,
+            [CanBeNull] object value, [CanBeNull] object formattedValue, [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
             DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
             Guard.NotNull(graphics, nameof(graphics));
@@ -64,6 +63,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 ButtonRenderer.DrawButton(graphics, buttonArea, PushButtonState.Disabled);
 
                 string buttonText = FormattedValue as string;
+
                 if (buttonText != null)
                 {
                     TextRenderer.DrawText(graphics, buttonText, DataGridView.Font, buttonArea, SystemColors.GrayText);
@@ -71,8 +71,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
             else
             {
-                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value, formattedValue, errorText,
-                    cellStyle, advancedBorderStyle, paintParts);
+                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value, formattedValue, errorText, cellStyle, advancedBorderStyle,
+                    paintParts);
             }
         }
     }

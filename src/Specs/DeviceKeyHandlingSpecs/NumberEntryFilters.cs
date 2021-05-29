@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
@@ -7,7 +8,6 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using Guard = DogAgilityCompetition.Circe.Guard;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
@@ -18,10 +18,10 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     public sealed class NumberEntryFilters
     {
         [NotNull]
-        private static readonly WirelessNetworkAddress ThisRemoteControl = new WirelessNetworkAddress("AAA111");
+        private static readonly WirelessNetworkAddress ThisRemoteControl = new("AAA111");
 
         [NotNull]
-        private static readonly WirelessNetworkAddress OtherRemoteControl = new WirelessNetworkAddress("BBB222");
+        private static readonly WirelessNetworkAddress OtherRemoteControl = new("BBB222");
 
 #pragma warning disable 649 // Readonly field is never assigned
         // Reason: A nullable type with value 'null' is explicitly desired here.
@@ -86,8 +86,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
         }
 
         [Test]
-        public void When_pressing_next_competitor_while_others_are_entering_next_competitor_it_must_join_number_building
-            ()
+        public void When_pressing_next_competitor_while_others_are_entering_next_competitor_it_must_join_number_building()
         {
             // Arrange
             var filter = new NumberEntryFilter();
@@ -195,8 +194,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
                 // Assert
                 listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.PassStart,
-                    OneMinute);
+                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.PassStart, OneMinute);
             }
         }
 
@@ -272,8 +270,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
         }
 
         [Test]
-        public void When_pressing_multi_functional_key_while_compatible_with_number_entry_of_others_it_must_accept_digit
-            ()
+        public void When_pressing_multi_functional_key_while_compatible_with_number_entry_of_others_it_must_accept_digit()
         {
             // Arrange
             var filter = new NumberEntryFilter();
@@ -305,15 +302,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
                 // Assert
                 listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl,
-                    RemoteKey.Key2OrPassIntermediate, OneMinute);
+                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
             }
         }
 
         [Test]
-        public void
-            When_pressing_multi_functional_key_while_no_modifiers_are_down_but_others_are_entering_current_competitor_it_must_accept_command
-            ()
+        public void When_pressing_multi_functional_key_while_no_modifiers_are_down_but_others_are_entering_current_competitor_it_must_accept_command()
         {
             // Arrange
             var filter = new NumberEntryFilter();
@@ -326,8 +320,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
                 // Assert
                 listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl,
-                    RemoteKey.Key2OrPassIntermediate, OneMinute);
+                listener.EventsCollected[0].ShouldBeNotifyUnknownAction(ThisRemoteControl, RemoteKey.Key2OrPassIntermediate, OneMinute);
             }
         }
 
@@ -454,9 +447,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
         }
 
         [Test]
-        public void
-            When_releasing_current_competitor_while_others_are_building_current_competitor_number_it_must_end_number_building
-            ()
+        public void When_releasing_current_competitor_while_others_are_building_current_competitor_number_it_must_end_number_building()
         {
             // Arrange
             var filter = new NumberEntryFilter();
@@ -512,13 +503,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         private sealed class FilterEventListener : IDisposable
         {
-            [NotNull]
-            [ItemNotNull]
-            public List<EventArgsWithName<NumberEntryFilter>> EventsCollected { get; } =
-                new List<EventArgsWithName<NumberEntryFilter>>();
-
             [CanBeNull]
             private NumberEntryFilter source;
+
+            [NotNull]
+            [ItemNotNull]
+            public List<EventArgsWithName<NumberEntryFilter>> EventsCollected { get; } = new();
 
             public FilterEventListener([NotNull] NumberEntryFilter source)
             {
@@ -529,26 +519,22 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
                 AttachFilterHandlers();
             }
 
-            private void SourceOnNotifyCompetitorSelecting([CanBeNull] object sender,
-                [NotNull] CompetitorSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelecting([CanBeNull] object sender, [NotNull] CompetitorSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelecting", e));
             }
 
-            private void SourceOnNotifyDigitReceived([CanBeNull] object sender,
-                [NotNull] CompetitorNumberSelectionEventArgs e)
+            private void SourceOnNotifyDigitReceived([CanBeNull] object sender, [NotNull] CompetitorNumberSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyDigitReceived", e));
             }
 
-            private void SourceOnNotifyCompetitorSelected([CanBeNull] object sender,
-                [NotNull] CompetitorNumberSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelected([CanBeNull] object sender, [NotNull] CompetitorNumberSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelected", e));
             }
 
-            private void SourceOnNotifyCompetitorSelectCancelled([CanBeNull] object sender,
-                [NotNull] CompetitorSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelectCancelled([CanBeNull] object sender, [NotNull] CompetitorSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelectCancelled", e));
             }
@@ -596,60 +582,56 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
     public static class EventArgsWithNameForNumberEntryFilterExtensions
     {
-        public static void ShouldBeNotifyCompetitorSelecting(
-            [NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
+        public static void ShouldBeNotifyCompetitorSelecting([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
             eventArgsWithName.Name.Should().Be("NotifyCompetitorSelecting");
             eventArgsWithName.EventArgs.Should().BeOfType<CompetitorSelectionEventArgs>();
 
-            var competitorSelectionEventArgs = (CompetitorSelectionEventArgs) eventArgsWithName.EventArgs;
+            var competitorSelectionEventArgs = (CompetitorSelectionEventArgs)eventArgsWithName.EventArgs;
             competitorSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
         }
 
-        public static void ShouldBeNotifyDigitReceived(
-            [NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
-            bool isCurrentCompetitor, int competitorNumber)
+        public static void ShouldBeNotifyDigitReceived([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
+            int competitorNumber)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
             eventArgsWithName.Name.Should().Be("NotifyDigitReceived");
             eventArgsWithName.EventArgs.Should().BeOfType<CompetitorNumberSelectionEventArgs>();
 
-            var competitorNumberSelectionEventArgs = (CompetitorNumberSelectionEventArgs) eventArgsWithName.EventArgs;
+            var competitorNumberSelectionEventArgs = (CompetitorNumberSelectionEventArgs)eventArgsWithName.EventArgs;
             competitorNumberSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
             competitorNumberSelectionEventArgs.CompetitorNumber.Should().Be(competitorNumber);
         }
 
-        public static void ShouldBeNotifyCompetitorSelected(
-            [NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
-            bool isCurrentCompetitor, int competitorNumber)
+        public static void ShouldBeNotifyCompetitorSelected([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
+            int competitorNumber)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
             eventArgsWithName.Name.Should().Be("NotifyCompetitorSelected");
             eventArgsWithName.EventArgs.Should().BeOfType<CompetitorNumberSelectionEventArgs>();
 
-            var competitorNumberSelectionEventArgs = (CompetitorNumberSelectionEventArgs) eventArgsWithName.EventArgs;
+            var competitorNumberSelectionEventArgs = (CompetitorNumberSelectionEventArgs)eventArgsWithName.EventArgs;
             competitorNumberSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
             competitorNumberSelectionEventArgs.CompetitorNumber.Should().Be(competitorNumber);
         }
 
-        public static void ShouldBeNotifyCompetitorSelectCancelled(
-            [NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
+        public static void ShouldBeNotifyCompetitorSelectCancelled([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
+            bool isCurrentCompetitor)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
             eventArgsWithName.Name.Should().Be("NotifyCompetitorSelectCancelled");
             eventArgsWithName.EventArgs.Should().BeOfType<CompetitorSelectionEventArgs>();
 
-            var competitorSelectionEventArgs = (CompetitorSelectionEventArgs) eventArgsWithName.EventArgs;
+            var competitorSelectionEventArgs = (CompetitorSelectionEventArgs)eventArgsWithName.EventArgs;
             competitorSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
         }
 
-        public static void ShouldBeNotifyUnknownAction(
-            [NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
+        public static void ShouldBeNotifyUnknownAction([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
             [NotNull] WirelessNetworkAddress source, [CanBeNull] RemoteKey? key, [CanBeNull] TimeSpan? time)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
@@ -658,7 +640,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             eventArgsWithName.Name.Should().Be("NotifyUnknownAction");
             eventArgsWithName.EventArgs.Should().BeOfType<UnknownDeviceActionEventArgs>();
 
-            var unknownDeviceActionEventArgs = (UnknownDeviceActionEventArgs) eventArgsWithName.EventArgs;
+            var unknownDeviceActionEventArgs = (UnknownDeviceActionEventArgs)eventArgsWithName.EventArgs;
             unknownDeviceActionEventArgs.Source.Should().Be(source);
             unknownDeviceActionEventArgs.Key.Should().Be(key);
             unknownDeviceActionEventArgs.SensorTime.Should().Be(time);

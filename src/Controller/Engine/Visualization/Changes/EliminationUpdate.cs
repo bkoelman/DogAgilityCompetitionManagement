@@ -9,7 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     public sealed class EliminationUpdate : NotNullableVisualizationChange<bool>
     {
         [NotNull]
-        public static EliminationUpdate Off => new EliminationUpdate(false);
+        public static EliminationUpdate Off => new(false);
 
         public EliminationUpdate(bool value)
             : base(value)

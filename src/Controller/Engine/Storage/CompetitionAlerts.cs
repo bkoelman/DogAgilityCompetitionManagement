@@ -13,6 +13,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     public sealed class CompetitionAlerts : IDisposable
     {
         [NotNull]
+        public static readonly CompetitionAlerts Empty = new(AlertSource.None, AlertSource.None, AlertSource.None, AlertSource.None, AlertSource.None);
+
+        [NotNull]
         public AlertSource Eliminated { get; }
 
         [NotNull]
@@ -25,18 +28,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public AlertSource CleanRunInStandardCourseTime { get; }
 
         [NotNull]
-        public AlertSource ReadyToStart { get; private set; }
+        public AlertSource ReadyToStart { get; }
 
         [NotNull]
-        public AlertSource CustomItemA { get; private set; }
+        public AlertSource CustomItemA { get; }
 
-        [NotNull]
-        public static readonly CompetitionAlerts Empty = new CompetitionAlerts(AlertSource.None, AlertSource.None,
-            AlertSource.None, AlertSource.None, AlertSource.None);
-
-        public CompetitionAlerts([NotNull] AlertSource eliminated, [NotNull] AlertSource firstPlace,
-            [NotNull] AlertSource cleanRunInStandardCourseTime, [NotNull] AlertSource readyToStart,
-            [NotNull] AlertSource customItemA)
+        public CompetitionAlerts([NotNull] AlertSource eliminated, [NotNull] AlertSource firstPlace, [NotNull] AlertSource cleanRunInStandardCourseTime,
+            [NotNull] AlertSource readyToStart, [NotNull] AlertSource customItemA)
         {
             Guard.NotNull(eliminated, nameof(eliminated));
             Guard.NotNull(firstPlace, nameof(firstPlace));

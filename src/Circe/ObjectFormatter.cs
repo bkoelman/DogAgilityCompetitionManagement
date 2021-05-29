@@ -35,8 +35,8 @@ namespace DogAgilityCompetition.Circe
             this.outerInstance = outerInstance;
         }
 
-        public void Append<T>([NotNull] GetReferenceCallback<T> getValue,
-            [NotNull] Expression<Func<object>> getValueExpression) where T : class
+        public void Append<T>([NotNull] GetReferenceCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+            where T : class
         {
             Guard.NotNull(getValue, nameof(getValue));
             Guard.NotNull(getValueExpression, nameof(getValueExpression));
@@ -48,8 +48,8 @@ namespace DogAgilityCompetition.Circe
             AppendToBuilder(source, name);
         }
 
-        public void Append<T>([NotNull] GetValueCallback<T> getValue,
-            [NotNull] Expression<Func<object>> getValueExpression) where T : struct
+        public void Append<T>([NotNull] GetValueCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+            where T : struct
         {
             Guard.NotNull(getValue, nameof(getValue));
             Guard.NotNull(getValueExpression, nameof(getValueExpression));
@@ -61,8 +61,8 @@ namespace DogAgilityCompetition.Circe
             AppendToBuilder(source, name);
         }
 
-        public void Append<T>([NotNull] GetOptionalValueCallback<T> getValue,
-            [NotNull] Expression<Func<object>> getValueExpression) where T : struct
+        public void Append<T>([NotNull] GetOptionalValueCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+            where T : struct
         {
             Guard.NotNull(getValue, nameof(getValue));
             Guard.NotNull(getValueExpression, nameof(getValueExpression));
@@ -96,6 +96,7 @@ namespace DogAgilityCompetition.Circe
                     builder.Append(name);
                     builder.Append("=");
                 }
+
                 builder.Append(value);
             }
         }

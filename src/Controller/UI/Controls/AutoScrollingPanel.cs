@@ -16,7 +16,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private const int UpdateIntervalInMilliseconds = 10;
 
         [NotNull]
-        private readonly Panel innerPanel = new Panel();
+        private readonly Panel innerPanel = new();
 
         [NotNull]
         private readonly Timer timer;
@@ -28,11 +28,18 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private int scrollStepSize = InitialScrollStepSize;
         private bool isUpdating;
 
+        [CanBeNull]
+        private DateTime? lastHitBoundaryTime;
+
         public AutoScrollingPanel()
         {
             DoubleBuffered = true;
 
-            timer = new Timer { Interval = UpdateIntervalInMilliseconds };
+            timer = new Timer
+            {
+                Interval = UpdateIntervalInMilliseconds
+            };
+
             timer.Tick += TimerOnTick;
             timer.Enabled = true;
         }
@@ -56,6 +63,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 innerPanel.Controls[index].Dispose();
             }
+
             innerPanel.Controls.Clear();
         }
 
@@ -81,9 +89,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [CanBeNull]
-        private DateTime? lastHitBoundaryTime;
-
         private void TimerOnTick([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             if (isUpdating || !Visible)
@@ -100,6 +105,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                         lastHitBoundaryTime = SystemContext.UtcNow();
                         return;
                     }
+
                     if (lastHitBoundaryTime.Value.AddSeconds(1) > SystemContext.UtcNow())
                     {
                         return;
@@ -142,6 +148,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             base.OnPaint(e);
 
             Bitmap bitmap = EnsureBitmap();
+
             if (bitmap != null)
             {
                 e.Graphics.DrawImage(bitmap, 0, -scrollOffset);
@@ -196,8 +203,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                     foreach (Panel panel in runHistoryLine.Controls.OfType<Panel>())
                     {
-                        graphics.DrawRectangle(SystemPens.ControlDarkDark, panel.Location.X + offsetX,
-                            panel.Location.Y + offsetY, panel.ClientSize.Width + 1, panel.ClientSize.Height);
+                        graphics.DrawRectangle(SystemPens.ControlDarkDark, panel.Location.X + offsetX, panel.Location.Y + offsetY, panel.ClientSize.Width + 1,
+                            panel.ClientSize.Height);
                     }
                 }
             }

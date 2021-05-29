@@ -19,10 +19,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         private readonly ParameterType.NetworkAddress parameterType;
         private readonly int parameterId;
 
-        public int Count => OwnerAddressParameters.Count();
-
-        public bool IsReadOnly => false;
-
         [NotNull]
         [ItemNotNull]
         private IEnumerable<NetworkAddressParameter> OwnerAddressParameters
@@ -32,6 +28,10 @@ namespace DogAgilityCompetition.Circe.Protocol
                 return owner.Parameters.Where(parameter => parameter.Id == parameterId).Cast<NetworkAddressParameter>();
             }
         }
+
+        public int Count => OwnerAddressParameters.Count();
+
+        public bool IsReadOnly => false;
 
         public WirelessNetworkAddressCollection([NotNull] Operation owner, ParameterType.NetworkAddress parameterType)
         {
@@ -83,6 +83,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         public void Clear()
         {
             List<NetworkAddressParameter> parametersToRemove = OwnerAddressParameters.ToList();
+
             foreach (NetworkAddressParameter parameterToRemove in parametersToRemove)
             {
                 owner.Parameters.Remove(parameterToRemove);
@@ -106,13 +107,14 @@ namespace DogAgilityCompetition.Circe.Protocol
         {
             Guard.NotNull(item, nameof(item));
 
-            NetworkAddressParameter parameterToRemove =
-                OwnerAddressParameters.FirstOrDefault(addressParameter => addressParameter.Value == item.Value);
+            NetworkAddressParameter parameterToRemove = OwnerAddressParameters.FirstOrDefault(addressParameter => addressParameter.Value == item.Value);
+
             if (parameterToRemove != null)
             {
                 owner.Parameters.Remove(parameterToRemove);
                 return true;
             }
+
             return false;
         }
     }

@@ -2,12 +2,14 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using Guard = DogAgilityCompetition.Circe.Guard;
+
+// @formatter:keep_existing_linebreaks true
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
@@ -232,6 +234,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string cellValue = "a\rb\nc\r\nd";
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
@@ -252,6 +255,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const char separator = ':';
             const string cellValue = "x:y:z";
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(separator))
@@ -273,9 +277,11 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string cellValue = "A \"nice\" day...";
+
             string escaped = DefaultTextQualifier +
                 cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) +
                 DefaultTextQualifier;
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
@@ -295,9 +301,11 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string cellValue = "\"A nice day...\"";
+
             string escaped = DefaultTextQualifier +
                 cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) +
                 DefaultTextQualifier;
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
@@ -317,10 +325,16 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             string emptyCellValue = string.Empty;
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("A", "B", "C")
                 .WithoutRows()
-                .WithRow(new[] { emptyCellValue, emptyCellValue, emptyCellValue })
+                .WithRow(new[]
+                {
+                    emptyCellValue,
+                    emptyCellValue,
+                    emptyCellValue
+                })
                 .Build();
 
             // Act
@@ -358,10 +372,14 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string columnHeaderName = "C";
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
-                .WithRow(new[] { " A" })
+                .WithRow(new[]
+                {
+                    " A"
+                })
                 .Build();
 
             // Act
@@ -376,10 +394,14 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string columnHeaderName = "C";
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
-                .WithRow(new[] { "A " })
+                .WithRow(new[]
+                {
+                    "A "
+                })
                 .Build();
 
             // Act
@@ -394,10 +416,14 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         {
             // Arrange
             const string columnHeaderName = "C";
+
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
-                .WithRow(new[] { " \"  A \"  " })
+                .WithRow(new[]
+                {
+                    " \"  A \"  "
+                })
                 .Build();
 
             // Act
@@ -458,6 +484,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             public override int Read()
             {
                 int result = Peek();
+
                 if (result != -1)
                 {
                     source.Read();

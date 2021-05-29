@@ -19,22 +19,19 @@ namespace DogAgilityCompetition.Controller.Engine
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [NotNull]
-        private readonly Dictionary<WirelessNetworkAddress, DeviceStatus> devicesMap =
-            new Dictionary<WirelessNetworkAddress, DeviceStatus>();
+        private static readonly object StateLock = new();
 
         [NotNull]
-        private readonly FreshNotNullableReference<NetworkHealthReport> previousReport =
-            new FreshNotNullableReference<NetworkHealthReport>(NetworkHealthReport.Default);
+        private readonly Dictionary<WirelessNetworkAddress, DeviceStatus> devicesMap = new();
 
         [NotNull]
-        private readonly FreshReference<NetworkComposition> runComposition = new FreshReference<NetworkComposition>(null);
+        private readonly FreshNotNullableReference<NetworkHealthReport> previousReport = new(NetworkHealthReport.Default);
 
         [NotNull]
-        private readonly FreshReference<CompetitionClassRequirements> nextRunRequirements =
-            new FreshReference<CompetitionClassRequirements>(null);
+        private readonly FreshReference<NetworkComposition> runComposition = new(null);
 
         [NotNull]
-        private static readonly object StateLock = new object();
+        private readonly FreshReference<CompetitionClassRequirements> nextRunRequirements = new(null);
 
         public event EventHandler<EventArgs<NetworkHealthReport>> HealthChanged;
 
@@ -49,8 +46,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [NotNull]
-        private static NetworkHealthReport GetHealthReportAfterConnectionStateChanged(ControllerConnectionState state,
-            [NotNull] NetworkHealthReport previous)
+        private static NetworkHealthReport GetHealthReportAfterConnectionStateChanged(ControllerConnectionState state, [NotNull] NetworkHealthReport previous)
         {
             previous = previous.ChangeIsConnected(state == ControllerConnectionState.Connected);
 
@@ -110,8 +106,7 @@ namespace DogAgilityCompetition.Controller.Engine
             ExclusiveUpdateWithRaiseEvent(false, previous => previous.ChangeMediatorStatus(mediatorStatus));
         }
 
-        private void ExclusiveUpdateWithRaiseEvent(bool forceChanged,
-            [NotNull] Func<NetworkHealthReport, NetworkHealthReport> updateCallback)
+        private void ExclusiveUpdateWithRaiseEvent(bool forceChanged, [NotNull] Func<NetworkHealthReport, NetworkHealthReport> updateCallback)
         {
             EventArgs<NetworkHealthReport> eventArgs;
 
@@ -180,35 +175,36 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             List<DeviceStatus> devicesAliveAndInNetwork = GetDevicesAliveAndInNetwork();
 
-            IEnumerable<WirelessNetworkAddress> misalignedSensors = from device in devicesAliveAndInNetwork
-                where device.IsAligned == false
-                select device.DeviceAddress;
+            IEnumerable<WirelessNetworkAddress> misalignedSensors =
+                from device in devicesAliveAndInNetwork where device.IsAligned == false select device.DeviceAddress;
 
-            IEnumerable<WirelessNetworkAddress> versionMismatchingSensors = from device in devicesAliveAndInNetwork
-                where device.HasVersionMismatch == true
-                select device.DeviceAddress;
+            IEnumerable<WirelessNetworkAddress> versionMismatchingSensors =
+                from device in devicesAliveAndInNetwork where device.HasVersionMismatch == true select device.DeviceAddress;
 
             IList<NetworkComplianceMismatch> classCompliance = null;
+
             if (nextRunRequirements.Value != null)
             {
                 // Create a temporary composition from all devices that are alive, then assert compliance.
                 // This effectively determines if the current network is valid for starting a competition run.
-                NetworkComposition tempComposition = CreateTemporaryCompositionFrom(devicesAliveAndInNetwork,
-                    nextRunRequirements.Value);
+                NetworkComposition tempComposition = CreateTemporaryCompositionFrom(devicesAliveAndInNetwork, nextRunRequirements.Value);
 
                 classCompliance = tempComposition.AssertComplianceWithRequirements();
             }
 
-            return
-                previousReport.Value.ChangeMisalignedSensors(misalignedSensors)
-                    .ChangeVersionMismatchingSensors(versionMismatchingSensors)
-                    .ChangeRunComposition(null)
-                    .ChangeClassCompliance(classCompliance);
+            // @formatter:keep_existing_linebreaks true
+
+            return previousReport.Value
+                .ChangeMisalignedSensors(misalignedSensors)
+                .ChangeVersionMismatchingSensors(versionMismatchingSensors)
+                .ChangeRunComposition(null)
+                .ChangeClassCompliance(classCompliance);
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         [NotNull]
-        private NetworkHealthReport GetHealthReportForActiveRunAfterNetworkHasChanged(
-            [NotNull] NetworkComposition runCompositionSnapshot)
+        private NetworkHealthReport GetHealthReportForActiveRunAfterNetworkHasChanged([NotNull] NetworkComposition runCompositionSnapshot)
         {
             List<DeviceStatus> devicesAliveAndInNetwork = GetDevicesAliveAndInNetwork();
 
@@ -217,59 +213,57 @@ namespace DogAgilityCompetition.Controller.Engine
                 where !devicesAliveAndInNetwork.Exists(d => d.DeviceAddress == deviceAddress)
                 select NetworkComplianceMismatch.CreateForOfflineDevice(deviceAddress);
 
-            List<DeviceStatus> devicesAliveAndInComposition = (from device in devicesAliveAndInNetwork
-                where runCompositionSnapshot.ContainsDevice(device.DeviceAddress)
-                select device).ToList();
+            List<DeviceStatus> devicesAliveAndInComposition =
+                (from device in devicesAliveAndInNetwork where runCompositionSnapshot.ContainsDevice(device.DeviceAddress) select device).ToList();
 
             // We only care about misalignment for devices that are in runComposition.
-            IEnumerable<WirelessNetworkAddress> misalignedSensors = from device in devicesAliveAndInComposition
-                where device.IsAligned == false
-                select device.DeviceAddress;
+            IEnumerable<WirelessNetworkAddress> misalignedSensors =
+                from device in devicesAliveAndInComposition where device.IsAligned == false select device.DeviceAddress;
 
             // We only care about mismatching version for devices that are in runComposition.
-            IEnumerable<WirelessNetworkAddress> versionMismatchingSensors = from device in devicesAliveAndInComposition
-                where device.HasVersionMismatch == true
-                select device.DeviceAddress;
+            IEnumerable<WirelessNetworkAddress> versionMismatchingSensors =
+                from device in devicesAliveAndInComposition where device.HasVersionMismatch == true select device.DeviceAddress;
 
             // We only care about devices requesting sync that are in runComposition.
-            IEnumerable<WirelessNetworkAddress> unsyncedSensors = from device in devicesAliveAndInComposition
+            IEnumerable<WirelessNetworkAddress> unsyncedSensors =
+                from device in devicesAliveAndInComposition
                 where device.ClockSynchronization == ClockSynchronizationStatus.RequiresSync
                 select device.DeviceAddress;
 
             // Create a temporary composition from the subset of devices that are both alive and were selected 
             // for this run, then assert compliance. 
             // This effectively determines if, due to off-line devices, the current network has become invalid.
-            NetworkComposition tempComposition = CreateTemporaryCompositionFrom(devicesAliveAndInComposition,
-                runCompositionSnapshot.Requirements);
+            NetworkComposition tempComposition = CreateTemporaryCompositionFrom(devicesAliveAndInComposition, runCompositionSnapshot.Requirements);
 
             IEnumerable<NetworkComplianceMismatch> classCompliance =
                 mismatchesResultingFromOfflineDevices.Concat(tempComposition.AssertComplianceWithRequirements());
 
-            return
-                previousReport.Value.ChangeMisalignedSensors(misalignedSensors)
-                    .ChangeUnsyncedSensors(unsyncedSensors)
-                    .ChangeVersionMismatchingSensors(versionMismatchingSensors)
-                    .ChangeRunComposition(runCompositionSnapshot)
-                    .ChangeClassCompliance(classCompliance);
+            // @formatter:keep_existing_linebreaks true
+
+            return previousReport.Value
+                .ChangeMisalignedSensors(misalignedSensors)
+                .ChangeUnsyncedSensors(unsyncedSensors)
+                .ChangeVersionMismatchingSensors(versionMismatchingSensors)
+                .ChangeRunComposition(runCompositionSnapshot)
+                .ChangeClassCompliance(classCompliance);
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         [NotNull]
         [ItemNotNull]
         private List<DeviceStatus> GetDevicesAliveAndInNetwork()
         {
-            IEnumerable<DeviceStatus> devices = from device in devicesMap.Values
-                where device.IsInNetwork
-                select device;
+            IEnumerable<DeviceStatus> devices = from device in devicesMap.Values where device.IsInNetwork select device;
 
             return devices.ToList();
         }
 
         [NotNull]
-        private static NetworkComposition CreateTemporaryCompositionFrom(
-            [NotNull] [ItemNotNull] IEnumerable<DeviceStatus> devicesAlive,
+        private static NetworkComposition CreateTemporaryCompositionFrom([NotNull] [ItemNotNull] IEnumerable<DeviceStatus> devicesAlive,
             [NotNull] CompetitionClassRequirements requirements)
         {
-            NetworkComposition composition = NetworkComposition.Empty;
+            var composition = NetworkComposition.Empty;
             composition = composition.ChangeRequirements(requirements);
 
             // ReSharper disable once LoopCanBeConvertedToQuery

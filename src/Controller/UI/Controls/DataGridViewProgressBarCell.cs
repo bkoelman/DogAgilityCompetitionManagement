@@ -27,17 +27,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         public int Minimum { get; set; }
 
         [NotNull]
-        public override Type ValueType => typeof (int);
+        public override Type ValueType => typeof(int);
 
         public override object DefaultNewRowValue => 0;
-
-        public override object Clone()
-        {
-            var cell = (DataGridViewProgressBarCell) base.Clone();
-            cell.Maximum = Maximum;
-            cell.Minimum = Minimum;
-            return cell;
-        }
 
         public DataGridViewProgressBarCell()
         {
@@ -45,9 +37,16 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             Minimum = 0;
         }
 
-        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex,
-            DataGridViewElementStates cellState, [CanBeNull] object value, [CanBeNull] object formattedValue,
-            [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
+        public override object Clone()
+        {
+            var cell = (DataGridViewProgressBarCell)base.Clone();
+            cell.Maximum = Maximum;
+            cell.Minimum = Minimum;
+            return cell;
+        }
+
+        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState,
+            [CanBeNull] object value, [CanBeNull] object formattedValue, [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
             DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
             Guard.NotNull(graphics, nameof(graphics));
@@ -62,14 +61,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
 
             Rectangle borderRect = BorderWidths(advancedBorderStyle);
-            var paintRect = new Rectangle(cellBounds.Left + borderRect.Left, cellBounds.Top + borderRect.Top,
-                cellBounds.Width - borderRect.Right, cellBounds.Height - borderRect.Bottom);
+
+            var paintRect = new Rectangle(cellBounds.Left + borderRect.Left, cellBounds.Top + borderRect.Top, cellBounds.Width - borderRect.Right,
+                cellBounds.Height - borderRect.Bottom);
 
             bool isSelected = (cellState & DataGridViewElementStates.Selected) == DataGridViewElementStates.Selected;
 
             Color backColor;
-            if (isSelected &&
-                (paintParts & DataGridViewPaintParts.SelectionBackground) == DataGridViewPaintParts.SelectionBackground)
+
+            if (isSelected && (paintParts & DataGridViewPaintParts.SelectionBackground) == DataGridViewPaintParts.SelectionBackground)
             {
                 backColor = cellStyle.SelectionBackColor;
             }
@@ -94,9 +94,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 graphics.FillRectangle(Brushes.White, paintRect);
                 graphics.DrawRectangle(Pens.Black, paintRect);
-                var barBounds = new Rectangle(paintRect.Left + 1, paintRect.Top + 1, paintRect.Width - 1,
-                    paintRect.Height - 1);
-                barBounds.Width = (int) Math.Round(barBounds.Width * rate);
+                var barBounds = new Rectangle(paintRect.Left + 1, paintRect.Top + 1, paintRect.Width - 1, paintRect.Height - 1);
+                barBounds.Width = (int)Math.Round(barBounds.Width * rate);
 
                 using (var fillBrush = new SolidBrush(rate <= 0.25 ? RedColor : rate <= 0.5 ? YellowColor : GreenColor))
                 {
@@ -105,8 +104,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
 
             if (DataGridView.CurrentCellAddress.X == ColumnIndex && DataGridView.CurrentCellAddress.Y == RowIndex &&
-                (paintParts & DataGridViewPaintParts.Focus) == DataGridViewPaintParts.Focus && DataGridView.Focused &&
-                ReflectShowFocusCues())
+                (paintParts & DataGridViewPaintParts.Focus) == DataGridViewPaintParts.Focus && DataGridView.Focused && ReflectShowFocusCues())
             {
                 Rectangle focusRect = paintRect;
                 focusRect.Inflate(-3, -3);
@@ -117,12 +115,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 string text = $"{100.0 * rate:#,0}%";
                 paintRect.Inflate(-2, -2);
+
                 TextRenderer.DrawText(graphics, text, cellStyle.Font, paintRect, cellStyle.ForeColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             }
 
-            if ((paintParts & DataGridViewPaintParts.ErrorIcon) == DataGridViewPaintParts.ErrorIcon &&
-                DataGridView.ShowCellErrors && !string.IsNullOrEmpty(errorText))
+            if ((paintParts & DataGridViewPaintParts.ErrorIcon) == DataGridViewPaintParts.ErrorIcon && DataGridView.ShowCellErrors &&
+                !string.IsNullOrEmpty(errorText))
             {
                 Rectangle iconBounds = GetErrorIconBounds(graphics, cellStyle, rowIndex);
                 iconBounds.Offset(cellBounds.X, cellBounds.Y);
@@ -133,26 +132,30 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private double CalculateRate([CanBeNull] object cellValue)
         {
             int value = 0;
+
             if (cellValue is int)
             {
-                value = (int) cellValue;
+                value = (int)cellValue;
             }
+
             if (value < Minimum)
             {
                 value = Minimum;
             }
+
             if (value > Maximum)
             {
                 value = Maximum;
             }
 
-            double rate = (double) (value - Minimum) / (Maximum - Minimum);
+            double rate = (double)(value - Minimum) / (Maximum - Minimum);
             return rate;
         }
 
         private bool ReflectShowFocusCues()
         {
             var customGridView = DataGridView as NonFlickeringDataGridView;
+
             if (customGridView != null)
             {
                 return customGridView.PublicShowFocusCues;
@@ -161,10 +164,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             // Note: The cell should only show the focus rectangle when this.DataGridView.ShowFocusCues is true. 
             // However that property is protected internal and can't be accessed directly.
 
-            PropertyInfo propertyInfo = DataGridView.GetType()
-                .GetProperty("ShowFocusCues", BindingFlags.Instance | BindingFlags.NonPublic);
+            PropertyInfo propertyInfo = DataGridView.GetType().GetProperty("ShowFocusCues", BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
-            bool showFocusCues = (bool) getMethodInfo.Invoke(DataGridView, new object[0]);
+            bool showFocusCues = (bool)getMethodInfo.Invoke(DataGridView, new object[0]);
             return showFocusCues;
         }
     }

@@ -12,14 +12,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         [NotNull]
         public string Message
         {
-            get
-            {
-                return messageTextBox.Text;
-            }
-            set
-            {
-                messageTextBox.Text = value;
-            }
+            get => messageTextBox.Text;
+            set => messageTextBox.Text = value;
         }
 
         public LogMessageForm()

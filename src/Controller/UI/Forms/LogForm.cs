@@ -28,6 +28,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private void LoadSettingsForDebug()
         {
             TextBoxAppenderMode mode;
+
             if (Enum.TryParse(Settings.Default.DebugTextBoxMode, false, out mode))
             {
                 switch (mode)
@@ -48,12 +49,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
 
             TextBoxAppenderSwitches switches;
+
             if (Enum.TryParse(Settings.Default.DebugTextBoxSwitches, false, out switches))
             {
                 hideLockSleepCheckBox.Checked = (switches & TextBoxAppenderSwitches.HideLockSleep) != 0;
             }
 
             bool isFrozen;
+
             if (bool.TryParse(Settings.Default.DebugTextBoxIsFrozen, out isFrozen))
             {
                 freezeLogTextBox.Checked = isFrozen;
@@ -93,6 +96,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private void HideLockSleepCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
         {
             TextBoxAppenderSwitches switches = TextBoxAppender.Switches;
+
             if (hideLockSleepCheckBox.Checked)
             {
                 switches |= TextBoxAppenderSwitches.HideLockSleep;
@@ -101,6 +105,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 switches &= ~TextBoxAppenderSwitches.HideLockSleep;
             }
+
             TextBoxAppender.Switches = switches;
         }
 

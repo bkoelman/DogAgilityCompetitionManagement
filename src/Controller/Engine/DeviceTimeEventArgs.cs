@@ -16,6 +16,9 @@ namespace DogAgilityCompetition.Controller.Engine
             SensorTime = sensorTime;
         }
 
-        public override string ToString() => $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
+        public override string ToString()
+        {
+            return $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
+        }
     }
 }

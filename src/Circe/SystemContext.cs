@@ -8,16 +8,16 @@ namespace DogAgilityCompetition.Circe
     /// </summary>
     public static class SystemContext
     {
-        static SystemContext()
-        {
-            Now = () => DateTime.Now;
-            UtcNow = () => DateTime.UtcNow;
-        }
-
         [NotNull]
         public static Func<DateTime> Now { get; set; }
 
         [NotNull]
         public static Func<DateTime> UtcNow { get; set; }
+
+        static SystemContext()
+        {
+            Now = () => DateTime.Now;
+            UtcNow = () => DateTime.UtcNow;
+        }
     }
 }

@@ -14,17 +14,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     public sealed partial class CompetitionSoundAlert : UserControl
     {
         [Category("Behavior")]
-        [DefaultValue(typeof (ErrorProvider), null)]
+        [DefaultValue(typeof(ErrorProvider), null)]
         [CanBeNull]
         public ErrorProvider ErrorProvider { get; set; }
 
         [NotNull]
         public AlertSoundSourceItem Item
         {
-            get
-            {
-                return new AlertSoundSourceItem(enabledCheckBox.Checked, pathTextBox.Text);
-            }
+            get => new(enabledCheckBox.Checked, pathTextBox.Text);
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -65,8 +62,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 else
                 {
                     // Enabled or not: selected file must exist.
-                    ErrorProvider.SetError(pathTextBox,
-                        pathTextBox.Text.Length > 0 && !File.Exists(pathTextBox.Text) ? "File not found." : string.Empty);
+                    ErrorProvider.SetError(pathTextBox, pathTextBox.Text.Length > 0 && !File.Exists(pathTextBox.Text) ? "File not found." : string.Empty);
                 }
             }
         }
@@ -80,8 +76,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Title = @"Select sound file";
-                dialog.Filter = @"Wave files (*.wav)|*.wav|All files (*.*)|*.*";
+                dialog.Title = "Select sound file";
+                dialog.Filter = "Wave files (*.wav)|*.wav|All files (*.*)|*.*";
                 dialog.FileName = pathTextBox.Text;
 
                 if (dialog.ShowDialog() == DialogResult.OK)

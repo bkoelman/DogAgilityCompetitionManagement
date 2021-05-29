@@ -22,19 +22,28 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         {
             Guard.NotNull(source, nameof(source));
 
-            return new AlertSourceItemXml { IsEnabled = source.IsEnabled, Path = source.Path };
+            return new AlertSourceItemXml
+            {
+                IsEnabled = source.IsEnabled,
+                Path = source.Path
+            };
         }
 
         [NotNull]
-        public static T FromXmlObject<T>([CanBeNull] AlertSourceItemXml source) where T : AlertSourceItem
+        public static T FromXmlObject<T>([CanBeNull] AlertSourceItemXml source)
+            where T : AlertSourceItem
         {
+            // @formatter:keep_existing_linebreaks true
+
             return source == null
-                ? (typeof (T) == typeof (AlertPictureSourceItem)
-                    ? (T) (AlertSourceItem) AlertPictureSourceItem.None
-                    : (T) (AlertSourceItem) AlertSoundSourceItem.None)
-                : (typeof (T) == typeof (AlertPictureSourceItem)
-                    ? (T) (AlertSourceItem) new AlertPictureSourceItem(source.IsEnabled, source.Path)
-                    : (T) (AlertSourceItem) new AlertSoundSourceItem(source.IsEnabled, source.Path));
+                ? typeof(T) == typeof(AlertPictureSourceItem)
+                    ? (T)(AlertSourceItem)AlertPictureSourceItem.None
+                    : (T)(AlertSourceItem)AlertSoundSourceItem.None
+                : typeof(T) == typeof(AlertPictureSourceItem)
+                    ? (T)(AlertSourceItem)new AlertPictureSourceItem(source.IsEnabled, source.Path)
+                    : (T)(AlertSourceItem)new AlertSoundSourceItem(source.IsEnabled, source.Path);
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

@@ -22,7 +22,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var pen = new Pen(Brushes.Gray, 6) { EndCap = LineCap.ArrowAnchor })
+            using (var pen = new Pen(Brushes.Gray, 6)
+            {
+                EndCap = LineCap.ArrowAnchor
+            })
             {
                 var shadowTopLeft = new PointF(topLeft.X + ShadowOffset, topLeft.Y + ShadowOffset);
                 var shadowBottomRight = new PointF(bottomRight.X + ShadowOffset, bottomRight.Y + ShadowOffset);
@@ -36,7 +39,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
             using (Brush fillBrush = new SolidBrush(GetColorForState()))
             {
-                using (var arrowPen = new Pen(fillBrush, 6) { EndCap = LineCap.ArrowAnchor })
+                using (var arrowPen = new Pen(fillBrush, 6)
+                {
+                    EndCap = LineCap.ArrowAnchor
+                })
                 {
                     graphics.DrawLine(arrowPen, topLeft, bottomRight);
                 }

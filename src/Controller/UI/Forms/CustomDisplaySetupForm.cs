@@ -32,9 +32,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             using (var dialog = new OpenFileDialog())
             {
                 dialog.FileName = picturePathTextBox.Text.Trim();
-                dialog.Title = @"Select picture file";
-                dialog.Filter =
-                    @"Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*";
+                dialog.Title = "Select picture file";
+                dialog.Filter = "Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -58,9 +57,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             (Settings.Default.CustomDisplayModeIsText ? textRadioButton : pictureRadioButton).Checked = true;
             picturePathTextBox.Text = Settings.Default.CustomDisplayPicturePath;
-            RadioButton radioButton = Settings.Default.CustomDisplayModeFirstLineIsSystemTime
-                ? systemTimeRadioButton
-                : firstLineRadioButton;
+            RadioButton radioButton = Settings.Default.CustomDisplayModeFirstLineIsSystemTime ? systemTimeRadioButton : firstLineRadioButton;
             radioButton.Checked = true;
             firstLineTextBox.Text = Settings.Default.CustomDisplayFirstLine;
             secondLineTextBox.Text = Settings.Default.CustomDisplaySecondLine;

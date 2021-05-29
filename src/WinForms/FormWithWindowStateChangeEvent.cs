@@ -25,8 +25,8 @@ namespace DogAgilityCompetition.WinForms
             if (m.Msg == WinUserConstants.WmSysCommand)
             {
                 int wParam = m.WParam.ToInt32() & 0xFFF0;
-                if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize ||
-                    wParam == WinUserConstants.ScRestore)
+
+                if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize || wParam == WinUserConstants.ScRestore)
                 {
                     newWindowState = TranslateWindowState(wParam);
                 }
@@ -35,6 +35,7 @@ namespace DogAgilityCompetition.WinForms
             if (newWindowState != null)
             {
                 EventHandler<WindowStateChangingEventArgs> eventHandler = WindowStateChanging;
+
                 if (eventHandler != null)
                 {
                     var args = new WindowStateChangingEventArgs(newWindowState.Value);

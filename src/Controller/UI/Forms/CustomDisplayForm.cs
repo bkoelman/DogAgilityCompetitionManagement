@@ -19,10 +19,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private bool IsTextMode
         {
             [UsedImplicitly]
-            get
-            {
-                return !pictureBox.Visible;
-            }
+            get => !pictureBox.Visible;
             set
             {
                 topPanel.Visible = value;
@@ -76,9 +73,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
             pictureBox.ImageLocation = Settings.Default.CustomDisplayPicturePath;
 
-            topLabel.Text = Settings.Default.CustomDisplayModeFirstLineIsSystemTime
-                ? GetCurrentTime()
-                : Settings.Default.CustomDisplayFirstLine;
+            topLabel.Text = Settings.Default.CustomDisplayModeFirstLineIsSystemTime ? GetCurrentTime() : Settings.Default.CustomDisplayFirstLine;
             middleLabel.Text = Settings.Default.CustomDisplaySecondLine;
             bottomLabel.Text = Settings.Default.CustomDisplayThirdLine;
 

@@ -11,8 +11,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
     /// <summary>
-    /// Provides a forward-only writer for files in delimited (typically CSV) format. The first line of the output file
-    /// contains column names by default.
+    /// Provides a forward-only writer for files in delimited (typically CSV) format. The first line of the output file contains column names by default.
     /// </summary>
     /// <remarks>
     /// This writer is compatible with Microsoft Excel .csv format.
@@ -21,8 +20,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
     {
         [NotNull]
         private readonly TextWriter target;
-
-        private bool isWriterDisposed;
 
         [NotNull]
         [ItemNotNull]
@@ -38,6 +35,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 
         [NotNull]
         private readonly char[] charactersThatRequireEscaping;
+
+        private bool isWriterDisposed;
 
         private bool headerPassed;
 
@@ -60,8 +59,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="settings">
         /// Settings that customize the behavior of this instance.
         /// </param>
-        public DelimitedValuesWriter([NotNull] TextWriter target,
-            [NotNull] [ItemNotNull] ICollection<string> columnNames,
+        public DelimitedValuesWriter([NotNull] TextWriter target, [NotNull] [ItemNotNull] ICollection<string> columnNames,
             [CanBeNull] DelimitedValuesWriterSettings settings = null)
         {
             Guard.NotNull(target, nameof(target));
@@ -73,7 +71,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             effectiveCulture = this.settings.Culture ?? CultureInfo.InvariantCulture;
             effectiveFieldSeparator = GetEffectiveFieldSeparator();
 
-            charactersThatRequireEscaping = new[] { '\r', '\n', effectiveFieldSeparator, this.settings.TextQualifier };
+            charactersThatRequireEscaping = new[]
+            {
+                '\r',
+                '\n',
+                effectiveFieldSeparator,
+                this.settings.TextQualifier
+            };
         }
 
         [AssertionMethod]
@@ -82,23 +86,25 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             Guard.NotNull(columnNames, nameof(columnNames));
 
             var nameSet = new HashSet<string>();
+
             foreach (string columnName in columnNames)
             {
                 if (string.IsNullOrWhiteSpace(columnName))
                 {
-                    throw new ArgumentException(@"Column names cannot be null, empty or whitespace.",
-                        nameof(columnNames));
+                    throw new ArgumentException("Column names cannot be null, empty or whitespace.", nameof(columnNames));
                 }
+
                 if (nameSet.Contains(columnName))
                 {
                     throw new ArgumentException($"Column '{columnName}' occurs multiple times.", nameof(columnNames));
                 }
+
                 nameSet.Add(columnName);
             }
 
             if (nameSet.Count == 0)
             {
-                throw new ArgumentException(@"List of column names cannot be empty.", nameof(columnNames));
+                throw new ArgumentException("List of column names cannot be empty.", nameof(columnNames));
             }
         }
 
@@ -106,11 +112,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         {
             if (settings.FieldSeparator == null)
             {
-                return effectiveCulture.NumberFormat.NumberDecimalSeparator == "," ||
-                    effectiveCulture.NumberFormat.CurrencyDecimalSeparator == "," ||
+                return effectiveCulture.NumberFormat.NumberDecimalSeparator == "," || effectiveCulture.NumberFormat.CurrencyDecimalSeparator == "," ||
                     effectiveCulture.NumberFormat.PercentDecimalSeparator == ","
-                    ? ';'
-                    : ',';
+                        ? ';'
+                        : ',';
             }
 
             return settings.FieldSeparator.Value;
@@ -124,6 +129,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             if (!isWriterDisposed)
             {
                 EnsureHeaderWritten();
+
                 if (settings.AutoCloseWriter)
                 {
                     target.Dispose();
@@ -132,6 +138,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 {
                     target.Flush();
                 }
+
                 isWriterDisposed = true;
             }
         }
@@ -184,12 +191,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             {
                 WriteRow(innerColumnNames);
             }
+
             headerPassed = true;
         }
 
         private void WriteRow([NotNull] [ItemNotNull] IEnumerable<string> cellValues)
         {
             bool isFirstCell = true;
+
             foreach (string cellValue in cellValues)
             {
                 if (!isFirstCell)
@@ -204,6 +213,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 string cell = EnsureEscaped(cellValue);
                 target.Write(cell);
             }
+
             target.WriteLine();
         }
 
@@ -212,10 +222,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         {
             if (RequiresEscaping(value))
             {
-                string textQualifier = new string(settings.TextQualifier, 1);
+                string textQualifier = new(settings.TextQualifier, 1);
                 value = value.Replace(textQualifier, textQualifier + textQualifier);
                 return textQualifier + value + textQualifier;
             }
+
             return value;
         }
 
@@ -272,6 +283,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 this.target = target;
 
                 cellValues = new List<string>(target.innerColumnNames.Count);
+
                 for (int index = 0; index < target.innerColumnNames.Count; index++)
                 {
                     cellValues.Add(string.Empty);
@@ -295,6 +307,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 AssertRowNotDisposed();
 
                 int index = target.innerColumnNames.FindIndex(c => c == columnName);
+
                 if (index == -1)
                 {
                     throw new ArgumentException($"Column with name '{columnName}' does not exist.", columnName);
@@ -324,7 +337,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             [CanBeNull]
             private string ConvertCell<T>([CanBeNull] T value)
             {
-                TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof (T));
+                TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
                 return value != null ? typeConverter.ConvertToString(NullContext, target.effectiveCulture, value) : null;
             }
         }

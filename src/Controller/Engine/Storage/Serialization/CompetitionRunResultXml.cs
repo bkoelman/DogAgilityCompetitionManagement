@@ -49,12 +49,15 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             Guard.NotNull(source, nameof(source));
             CompetitorXml competitor = AssertCompetitorNotNull(source);
 
-            return
-                new CompetitionRunResult(CompetitorXml.FromXmlObject(competitor)).ChangeTimings(
-                    CompetitionRunTimingsXml.FromXmlObject(source.Timings))
-                    .ChangeFaultCount(source.FaultCount)
-                    .ChangeRefusalCount(source.RefusalCount)
-                    .ChangeIsEliminated(source.IsEliminated);
+            // @formatter:keep_existing_linebreaks true
+
+            return new CompetitionRunResult(CompetitorXml.FromXmlObject(competitor))
+                .ChangeTimings(CompetitionRunTimingsXml.FromXmlObject(source.Timings))
+                .ChangeFaultCount(source.FaultCount)
+                .ChangeRefusalCount(source.RefusalCount)
+                .ChangeIsEliminated(source.IsEliminated);
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         [AssertionMethod]
@@ -65,6 +68,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             {
                 throw new InvalidDataException("Competitor is missing in XML file.");
             }
+
             return source.Competitor;
         }
     }

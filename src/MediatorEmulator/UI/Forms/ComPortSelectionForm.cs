@@ -10,19 +10,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class ComPortSelectionForm : Form
     {
-        public const string AutoText = @"(Auto)";
+        public const string AutoText = "(Auto)";
 
         [CanBeNull]
         public string ComPortName
         {
-            get
-            {
-                return portNameComboBox.Text == AutoText ? null : portNameComboBox.Text;
-            }
-            set
-            {
-                portNameComboBox.Text = value == null || portNameComboBox.Items.IndexOf(value) == -1 ? AutoText : value;
-            }
+            get => portNameComboBox.Text == AutoText ? null : portNameComboBox.Text;
+            set => portNameComboBox.Text = value == null || portNameComboBox.Items.IndexOf(value) == -1 ? AutoText : value;
         }
 
         public ComPortSelectionForm()
