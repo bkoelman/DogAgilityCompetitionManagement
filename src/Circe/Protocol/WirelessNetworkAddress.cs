@@ -75,12 +75,12 @@ namespace DogAgilityCompetition.Circe.Protocol
             return ReferenceEquals(other, null) ? 1 : string.CompareOrdinal(Value, other.Value);
         }
 
-        public bool Equals([CanBeNull] WirelessNetworkAddress other)
+        public bool Equals(WirelessNetworkAddress other)
         {
             return !ReferenceEquals(other, null) && other.Value == Value;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as WirelessNetworkAddress);
         }

@@ -190,7 +190,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private struct SecondaryTime
+        private readonly struct SecondaryTime
         {
             private readonly DateTime startedAt;
 

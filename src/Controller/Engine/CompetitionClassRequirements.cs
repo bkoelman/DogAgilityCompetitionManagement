@@ -160,13 +160,13 @@ namespace DogAgilityCompetition.Controller.Engine
             return mismatches;
         }
 
-        public bool Equals([CanBeNull] CompetitionClassRequirements other)
+        public bool Equals(CompetitionClassRequirements other)
         {
             return !ReferenceEquals(other, null) && IntermediateTimerCount == other.IntermediateTimerCount &&
                 StartFinishMinDelayForSingleSensor == other.StartFinishMinDelayForSingleSensor;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as CompetitionClassRequirements);
         }

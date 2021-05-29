@@ -18,7 +18,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         public WirelessNetworkAddress DeviceAddress { get; set; }
 
         [NotNull]
-        public WirelessNetworkAddress DeviceAddressNotNull => DeviceAddress ?? (DeviceAddress = NetworkAddressGenerator.GetNextFreeAddress());
+        public WirelessNetworkAddress DeviceAddressNotNull => DeviceAddress ??= NetworkAddressGenerator.GetNextFreeAddress();
 
         [DataMember]
         public bool IsInNetwork { get; set; }

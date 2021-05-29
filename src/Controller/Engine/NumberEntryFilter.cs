@@ -316,7 +316,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 }
             }
 
-            private struct ModifiersDownForDevice
+            private readonly struct ModifiersDownForDevice
             {
                 public bool ContainsEnterCurrentCompetitor { get; }
                 public bool ContainsEnterNextCompetitor { get; }

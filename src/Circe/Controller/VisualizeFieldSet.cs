@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Circe.Controller
     /// <remarks>
     /// Deeply immutable by design to allow for safe cross-thread member access.
     /// </remarks>
-    public struct VisualizeFieldSet : IEquatable<VisualizeFieldSet>
+    public readonly struct VisualizeFieldSet : IEquatable<VisualizeFieldSet>
     {
         [CanBeNull]
         public int? CurrentCompetitorNumber { get; }
@@ -107,7 +107,7 @@ namespace DogAgilityCompetition.Circe.Controller
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return obj is VisualizeFieldSet visualizeFieldSet && Equals(visualizeFieldSet);
         }

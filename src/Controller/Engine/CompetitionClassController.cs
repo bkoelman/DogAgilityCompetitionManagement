@@ -788,7 +788,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 string exportFolder = Path.Combine(commonAppDataFolder, "DogAgilityCompetitionController", "AutoExports");
                 Directory.CreateDirectory(exportFolder);
 
-                string exportPath = Path.Combine(exportFolder, $"AgilityRun_{SystemContext.UtcNow().ToString("yyyyMMdd_HHmmss")}.csv");
+                string exportPath = Path.Combine(exportFolder, $"AgilityRun_{SystemContext.UtcNow():yyyyMMdd_HHmmss}.csv");
                 RunResultsExporter.ExportTo(exportPath, modelSnapshot.Results);
             }
         }

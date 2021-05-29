@@ -94,14 +94,14 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public bool Equals([CanBeNull] RecordedTime other)
+        public bool Equals(RecordedTime other)
         {
             return !ReferenceEquals(other, null) && HardwareSynchronizedTime == other.HardwareSynchronizedTime &&
                 SoftwareTimeInUtc == other.SoftwareTimeInUtc && Accuracy == other.Accuracy;
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as RecordedTime);
         }

@@ -237,7 +237,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// <summary>
         /// Represents an entry in the producer/consumer queue.
         /// </summary>
-        private struct WorkItem
+        private readonly struct WorkItem
         {
             [NotNull]
             public TaskCompletionSource<object> TaskSource { get; }

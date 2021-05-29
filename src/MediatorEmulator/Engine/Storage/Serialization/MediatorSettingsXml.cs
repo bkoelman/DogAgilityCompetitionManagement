@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         public WirelessNetworkAddress DeviceAddress { get; set; }
 
         [NotNull]
-        public WirelessNetworkAddress DeviceAddressNotNull => DeviceAddress ?? (DeviceAddress = NetworkAddressGenerator.GetNextFreeAddress());
+        public WirelessNetworkAddress DeviceAddressNotNull => DeviceAddress ??= NetworkAddressGenerator.GetNextFreeAddress();
 
         [DataMember]
         [CanBeNull]
@@ -34,13 +34,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         public string ProtocolVersion { get; set; }
 
         [NotNull]
-        public Version ProtocolVersionOrDefault
-        {
-            get
-            {
-                return Version.TryParse(ProtocolVersion, out Version result) ? result : KeepAliveOperation.CurrentProtocolVersion;
-            }
-        }
+        public Version ProtocolVersionOrDefault => Version.TryParse(ProtocolVersion, out Version result) ? result : KeepAliveOperation.CurrentProtocolVersion;
 
         [DataMember]
         public int? WindowLocationX { get; set; }

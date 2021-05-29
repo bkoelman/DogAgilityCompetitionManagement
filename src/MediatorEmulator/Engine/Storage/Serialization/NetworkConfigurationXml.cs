@@ -23,7 +23,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 
         [NotNull]
         [ItemNotNull]
-        public Collection<GateSettingsXml> GatesOrEmpty => Gates ?? (Gates = new Collection<GateSettingsXml>());
+        public Collection<GateSettingsXml> GatesOrEmpty => Gates ??= new Collection<GateSettingsXml>();
 
         [DataMember]
         [CanBeNull]
@@ -32,7 +32,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 
         [NotNull]
         [ItemNotNull]
-        public Collection<DisplaySettingsXml> DisplaysOrEmpty => Displays ?? (Displays = new Collection<DisplaySettingsXml>());
+        public Collection<DisplaySettingsXml> DisplaysOrEmpty => Displays ??= new Collection<DisplaySettingsXml>();
 
         [DataMember]
         [CanBeNull]
@@ -41,14 +41,14 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 
         [NotNull]
         [ItemNotNull]
-        public Collection<RemoteSettingsXml> RemotesOrEmpty => Remotes ?? (Remotes = new Collection<RemoteSettingsXml>());
+        public Collection<RemoteSettingsXml> RemotesOrEmpty => Remotes ??= new Collection<RemoteSettingsXml>();
 
         [DataMember]
         [CanBeNull]
         public MediatorSettingsXml Mediator { get; set; }
 
         [NotNull]
-        public MediatorSettingsXml MediatorOrDefault => Mediator ?? (Mediator = new MediatorSettingsXml());
+        public MediatorSettingsXml MediatorOrDefault => Mediator ??= new MediatorSettingsXml();
 
         public void RemoveDevice([NotNull] WirelessNetworkAddress address)
         {

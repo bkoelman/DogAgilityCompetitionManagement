@@ -14,7 +14,6 @@ namespace DogAgilityCompetition.WinForms
         [NotNull]
         public T Component { get; }
 
-        [CanBeNull]
         public ISite Site
         {
             get => null;
@@ -31,13 +30,10 @@ namespace DogAgilityCompetition.WinForms
 
             Component = disposable;
 
-            if (container == null)
-            {
-                // The container is managed by the Forms designer and instantiated only when the form/control
-                // contains components. Because we are not a component the designer knows about, we need to
-                // ensure a container ourselves in order for Dispose to be called from generated code.
-                container = new Container();
-            }
+            // The container is managed by the Forms designer and instantiated only when the form/control
+            // contains components. Because we are not a component the designer knows about, we need to
+            // ensure a container ourselves in order for Dispose to be called from generated code.
+            container ??= new Container();
 
             container.Add(this);
         }

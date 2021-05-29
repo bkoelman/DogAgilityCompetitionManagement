@@ -10,13 +10,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
     public sealed partial class GoToCompetitorForm : Form
     {
         [CanBeNull]
-        public int? SelectedCompetitorNumber
-        {
-            get
-            {
-                return int.TryParse(competitorNumberTextBox.Text.Trim(), out int value) ? value : null;
-            }
-        }
+        public int? SelectedCompetitorNumber => int.TryParse(competitorNumberTextBox.Text.Trim(), out int value) ? value : null;
 
         public GoToCompetitorForm()
         {

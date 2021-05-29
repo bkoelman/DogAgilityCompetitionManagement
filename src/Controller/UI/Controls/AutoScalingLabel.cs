@@ -52,7 +52,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 // ReSharper disable once ConstantNullCoalescingCondition
                 // Reason: Although this property is decorated with NotNull, caller could still pass in 'null' anyway.
-                value = value ?? string.Empty;
+                value ??= string.Empty;
 
                 if (value != innerText)
                 {

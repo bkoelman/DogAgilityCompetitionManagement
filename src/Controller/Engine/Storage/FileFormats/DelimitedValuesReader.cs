@@ -308,7 +308,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                             // Check for "" inside a quoted string.
                             if (inTextSection && index + 1 < line.Length && line[index + 1] == owner.settings.TextQualifier)
                             {
-                                cellBuilder = cellBuilder ?? new StringBuilder();
+                                cellBuilder ??= new StringBuilder();
                                 cellBuilder.Append(owner.settings.TextQualifier);
                                 index++;
                             }
@@ -344,13 +344,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                         }
                         else
                         {
-                            cellBuilder = cellBuilder ?? new StringBuilder();
+                            cellBuilder ??= new StringBuilder();
                             cellBuilder.Append(line[index]);
 
-                            if (isPlainCell == null)
-                            {
-                                isPlainCell = true;
-                            }
+                            isPlainCell ??= true;
                         }
                     }
                 }

@@ -133,9 +133,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             int value = 0;
 
-            if (cellValue is int)
+            if (cellValue is int intValue)
             {
-                value = (int)cellValue;
+                value = intValue;
             }
 
             if (value < Minimum)

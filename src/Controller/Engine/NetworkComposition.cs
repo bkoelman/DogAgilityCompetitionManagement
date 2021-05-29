@@ -201,13 +201,13 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public bool Equals([CanBeNull] NetworkComposition other)
+        public bool Equals(NetworkComposition other)
         {
             return !ReferenceEquals(other, null) && rolesPerDevice.SequenceEqual(other.rolesPerDevice) && Requirements == other.Requirements;
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as NetworkComposition);
         }

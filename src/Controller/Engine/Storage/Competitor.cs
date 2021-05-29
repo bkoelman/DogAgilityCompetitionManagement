@@ -69,13 +69,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return textBuilder.ToString();
         }
 
-        public bool Equals([CanBeNull] Competitor other)
+        public bool Equals(Competitor other)
         {
             return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName && other.DogName == DogName &&
                 other.CountryCode == CountryCode;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as Competitor);
         }

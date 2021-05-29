@@ -125,10 +125,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             if (timer.Enabled && TargetControl != null)
             {
-                if (nonHighlightingForeColor == null)
-                {
-                    nonHighlightingForeColor = TargetControl.ForeColor;
-                }
+                nonHighlightingForeColor ??= TargetControl.ForeColor;
 
                 Color nextHighlightColor = GetNextHighlightColor(out bool isAtEndOfCycle);
                 TargetControl.ForeColor = nextHighlightColor;
@@ -142,10 +139,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private Color GetNextHighlightColor(out bool isAtEndOfCycle)
         {
-            if (colorTable == null)
-            {
-                colorTable = CreateColorTable();
-            }
+            colorTable ??= CreateColorTable();
 
             isAtEndOfCycle = false;
 

@@ -165,14 +165,14 @@ namespace DogAgilityCompetition.Circe.Session
             return textBuilder.ToString();
         }
 
-        public bool Equals([CanBeNull] DeviceStatus other)
+        public bool Equals(DeviceStatus other)
         {
             return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.IsInNetwork == IsInNetwork &&
                 other.Capabilities == Capabilities && other.Roles == Roles && other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
                 other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization && other.HasVersionMismatch == HasVersionMismatch;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as DeviceStatus);
         }

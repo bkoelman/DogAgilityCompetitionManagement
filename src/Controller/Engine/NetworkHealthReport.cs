@@ -168,7 +168,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public bool Equals([CanBeNull] NetworkHealthReport other)
+        public bool Equals(NetworkHealthReport other)
         {
             return !ReferenceEquals(other, null) && IsConnected == other.IsConnected && HasProtocolVersionMismatch == other.HasProtocolVersionMismatch &&
                 MediatorStatus == other.MediatorStatus && MisalignedSensors.SequenceEqual(other.MisalignedSensors) &&
@@ -209,7 +209,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as NetworkHealthReport);
         }

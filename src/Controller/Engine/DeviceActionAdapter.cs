@@ -61,7 +61,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
             else
             {
-                Log.Warn($"Discarding {typeof(DeviceAction).Name} from {source} because keys and time are both missing.");
+                Log.Warn($"Discarding {nameof(DeviceAction)} from {source} because keys and time are both missing.");
             }
         }
 

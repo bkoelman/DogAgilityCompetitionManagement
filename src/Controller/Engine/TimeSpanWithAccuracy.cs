@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// <remarks>
     /// Deeply immutable by design to allow for safe cross-thread member access.
     /// </remarks>
-    public struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanWithAccuracy>
+    public readonly struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanWithAccuracy>
     {
         private const string TimeRegexFormat = @"^(?<Seconds>[0-9]{1,3})DecimalSeparatorPlaceholder(?<Milliseconds>[0-9][0-9][0-9])(?<AccuracySymbol>[~*]?)$";
 
@@ -75,7 +75,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [NotNull]
         private static Regex CreateTimeRegexFor([CanBeNull] IFormatProvider formatProvider)
         {
-            formatProvider = formatProvider ?? NumberFormatInfo.InvariantInfo;
+            formatProvider ??= NumberFormatInfo.InvariantInfo;
             var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
             string separator = Regex.Escape(formatInfo.NumberDecimalSeparator);
 
@@ -106,7 +106,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public string ToString([CanBeNull] string format /* discarded */, [CanBeNull] IFormatProvider formatProvider)
         {
-            formatProvider = formatProvider ?? NumberFormatInfo.InvariantInfo;
+            formatProvider ??= NumberFormatInfo.InvariantInfo;
             var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
 
             double secondsTruncated = Math.Truncate(TimeValue.TotalSeconds);
@@ -132,7 +132,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return obj is TimeSpanWithAccuracy timeSpanWithAccuracy && Equals(timeSpanWithAccuracy);
         }

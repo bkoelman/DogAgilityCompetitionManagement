@@ -259,7 +259,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             if (destinationAddresses.Count == 0)
             {
                 NetworkAddressParameter prototypeParameter = ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
-                throw new OperationValidationException(this, $"{typeof(NetworkAddressParameter).Name} {prototypeParameter.Name} must occur one or more times.");
+                throw new OperationValidationException(this, $"{nameof(NetworkAddressParameter)} {prototypeParameter.Name} must occur one or more times.");
             }
         }
 
@@ -273,7 +273,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
                 if (addressSet.Contains(destinationAddress))
                 {
                     throw new OperationValidationException(this,
-                        $"Duplicate {typeof(NetworkAddressParameter).Name} " +
+                        $"Duplicate {nameof(NetworkAddressParameter)} " +
                         $"{PrototypeDestinationAddressParameter.Name} found with value '{destinationAddress.Value}'.");
                 }
 

@@ -255,7 +255,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 
         private static bool HasTrailingWhiteSpace([NotNull] string value)
         {
-            return char.IsWhiteSpace(value[value.Length - 1]);
+            return char.IsWhiteSpace(value[^1]);
         }
 
         private sealed class DelimitedValuesWriterRow : IDelimitedValuesWriterRow
@@ -338,7 +338,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             private string ConvertCell<T>([CanBeNull] T value)
             {
                 TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
-                return value != null ? typeConverter.ConvertToString(NullContext, target.effectiveCulture, value) : null;
+                return value is not null ? typeConverter.ConvertToString(NullContext, target.effectiveCulture, value) : null;
             }
         }
     }

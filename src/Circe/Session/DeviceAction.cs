@@ -67,12 +67,12 @@ namespace DogAgilityCompetition.Circe.Session
             };
         }
 
-        public bool Equals([CanBeNull] DeviceAction other)
+        public bool Equals(DeviceAction other)
         {
             return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.InputKeys == InputKeys && other.SensorTime == SensorTime;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as DeviceAction);
         }
