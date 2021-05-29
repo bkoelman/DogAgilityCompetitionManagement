@@ -268,7 +268,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         private sealed class PacketParseContext
         {
             /// <summary>
-            /// Gets the bytes of the packet. The segment indicates which subrange is being parsed.
+            /// Gets the bytes of the packet. The segment indicates which sub-range is being parsed.
             /// </summary>
             public ArraySegment<byte> Buffer { get; }
 

@@ -172,7 +172,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
         [Test]
         public void
-            When_no_field_separator_is_specified_it_must_give_semicolon_precedence_over_comma_during_autodetection()
+            When_no_field_separator_is_specified_it_must_give_semicolon_precedence_over_comma_during_auto_detection()
         {
             // Arrange
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()

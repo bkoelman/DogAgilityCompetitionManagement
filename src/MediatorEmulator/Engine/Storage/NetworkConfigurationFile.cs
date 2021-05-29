@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
 {
     /// <summary>
-    /// Provides fileystem access to persisted files for emulated wireless networks.
+    /// Provides filesystem access to persisted files for emulated wireless networks.
     /// </summary>
     public sealed class NetworkConfigurationFile
     {
