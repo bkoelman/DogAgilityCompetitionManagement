@@ -361,7 +361,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.SkipWhile(x => true).ToArray();
+            Action action = () => reader.SkipWhile(_ => true).ToArray();
 
             // Assert
             action.Should().Throw<DelimitedValuesParseException>().WithMessage("Missing closing text qualifier.");
@@ -454,7 +454,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
             // Act
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.SkipWhile(x => true).ToArray();
+            Action action = () => reader.SkipWhile(_ => true).ToArray();
 
             // Assert
             action.Should().Throw<DelimitedValuesParseException>();

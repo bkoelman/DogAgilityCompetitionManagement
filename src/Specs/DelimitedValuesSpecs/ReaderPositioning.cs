@@ -134,7 +134,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             {
                 // Act
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                reader.SkipWhile(r => true).ToArray();
+                reader.SkipWhile(_ => true).ToArray();
             }
             catch (DelimitedValuesParseException)
             {

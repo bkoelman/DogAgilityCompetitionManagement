@@ -86,7 +86,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 // Act
                 using (IDelimitedValuesWriterRow row = writer.CreateRow())
                 {
-                    row.SetCell("A", 123, c => "Y");
+                    row.SetCell("A", 123, _ => "Y");
                 }
             }
 

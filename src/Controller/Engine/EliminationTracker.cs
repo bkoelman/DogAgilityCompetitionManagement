@@ -95,7 +95,7 @@ namespace DogAgilityCompetition.Controller.Engine
             this.refusalStepSize = refusalStepSize;
             this.eliminationThreshold = eliminationThreshold;
 
-            maximumCourseTimeTimer = new Timer(state => MaximumCourseTimeTimerTick());
+            maximumCourseTimeTimer = new Timer(_ => MaximumCourseTimeTimerTick());
         }
 
         private void MaximumCourseTimeTimerTick()

@@ -85,7 +85,7 @@ namespace DogAgilityCompetition.Circe.Controller
             Log.Debug("Creating task for reconnect loop.");
 
             Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)
-                .ContinueWith(task => reconnectLoopTerminatedWaitHandle.Set());
+                .ContinueWith(_ => reconnectLoopTerminatedWaitHandle.Set());
         }
 
         public void Dispose()

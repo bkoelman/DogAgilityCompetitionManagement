@@ -110,59 +110,59 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
             emulatorLinkLabel.Visible = HasEmulatorFiles();
 
-            logForm.VisibleChanged += (s, e) => logLinkLabel.Text = logForm.Visible ? "Hide log" : "Show log";
+            logForm.VisibleChanged += (_, _) => logLinkLabel.Text = logForm.Visible ? "Hide log" : "Show log";
 
             networkSetupForm = new NetworkSetupForm(this);
 
-            healthMonitor.HealthChanged += (s, e) => this.EnsureOnMainThread(() =>
+            healthMonitor.HealthChanged += (_, e) => this.EnsureOnMainThread(() =>
             {
                 UpdateControlsEnabledStateAfterHealthChanged(e.Argument);
                 ShowNetworkHealth(e.Argument);
             });
 
-            classController.Component.UnknownErrorDuringSave += (s, e) => this.EnsureOnMainThread(() => ShowError(e.Argument.ToString()));
-            classController.Component.Aborted += (s, e) => this.EnsureOnMainThread(ClassControllerOnAborted);
-            classController.Component.RankingChanged += (s, e) => this.EnsureOnMainThread(() => ClassControllerOnRankingChanged(e));
-            classController.Component.StateTransitioned += (s, e) => this.EnsureOnMainThread(() => stateVisualizer.TransitionTo(e.Argument));
+            classController.Component.UnknownErrorDuringSave += (_, e) => this.EnsureOnMainThread(() => ShowError(e.Argument.ToString()));
+            classController.Component.Aborted += (_, _) => this.EnsureOnMainThread(ClassControllerOnAborted);
+            classController.Component.RankingChanged += (_, e) => this.EnsureOnMainThread(() => ClassControllerOnRankingChanged(e));
+            classController.Component.StateTransitioned += (_, e) => this.EnsureOnMainThread(() => stateVisualizer.TransitionTo(e.Argument));
 
             networkStatusView.SwitchToStatusMode();
 
-            actionAdapter.CommandReceived += (s, e) => classController.Component.HandleCommand(e.Command);
-            actionAdapter.GatePassed += (s, e) => classController.Component.HandleGatePassed(e.SensorTime, e.GatePassage, e.Source);
+            actionAdapter.CommandReceived += (_, e) => classController.Component.HandleCommand(e.Command);
+            actionAdapter.GatePassed += (_, e) => classController.Component.HandleGatePassed(e.SensorTime, e.GatePassage, e.Source);
 
-            numberFilter.NotifyCompetitorSelecting += (s, e) => classController.Component.StartCompetitorSelection(e.IsCurrentCompetitor);
-            numberFilter.NotifyDigitReceived += (s, e) => classController.Component.ReceiveDigit(e.IsCurrentCompetitor, e.CompetitorNumber);
-            numberFilter.NotifyCompetitorSelectCanceled += (s, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, null);
-            numberFilter.NotifyCompetitorSelected += (s, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, e.CompetitorNumber);
-            numberFilter.NotifyUnknownAction += (s, e) => actionAdapter.Adapt(e.Source, e.Key, e.SensorTime);
+            numberFilter.NotifyCompetitorSelecting += (_, e) => classController.Component.StartCompetitorSelection(e.IsCurrentCompetitor);
+            numberFilter.NotifyDigitReceived += (_, e) => classController.Component.ReceiveDigit(e.IsCurrentCompetitor, e.CompetitorNumber);
+            numberFilter.NotifyCompetitorSelectCanceled += (_, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, null);
+            numberFilter.NotifyCompetitorSelected += (_, e) => classController.Component.CompleteCompetitorSelection(e.IsCurrentCompetitor, e.CompetitorNumber);
+            numberFilter.NotifyUnknownAction += (_, e) => actionAdapter.Adapt(e.Source, e.Key, e.SensorTime);
 
-            keyTracker.ModifierKeyDown += (s, e) => numberFilter.HandleModifierKeyDown(e.Source, e.Modifier);
-            keyTracker.KeyDown += (s, e) => numberFilter.HandleKeyDown(e.Source, e.Key, e.SensorTime);
-            keyTracker.ModifierKeyUp += (s, e) => numberFilter.HandleModifierKeyUp(e.Source, e.Modifier);
-            keyTracker.MissingKey += (s, e) => numberFilter.HandleMissingKey(e.Source, e.SensorTime);
+            keyTracker.ModifierKeyDown += (_, e) => numberFilter.HandleModifierKeyDown(e.Source, e.Modifier);
+            keyTracker.KeyDown += (_, e) => numberFilter.HandleKeyDown(e.Source, e.Key, e.SensorTime);
+            keyTracker.ModifierKeyUp += (_, e) => numberFilter.HandleModifierKeyUp(e.Source, e.Modifier);
+            keyTracker.MissingKey += (_, e) => numberFilter.HandleMissingKey(e.Source, e.SensorTime);
 
             sessionManager = new DisposableComponent<CirceControllerSessionManager>(new CirceControllerSessionManager(), ref components);
-            sessionManager.Component.PacketSending += (s, e) => this.EnsureOnMainThread(() => logForm.PulseOutputLed());
-            sessionManager.Component.PacketReceived += (s, e) => this.EnsureOnMainThread(() => logForm.PulseInputLed());
+            sessionManager.Component.PacketSending += (_, _) => this.EnsureOnMainThread(() => logForm.PulseOutputLed());
+            sessionManager.Component.PacketReceived += (_, _) => this.EnsureOnMainThread(() => logForm.PulseInputLed());
 
-            sessionManager.Component.ConnectionStateChanged += (s, e) =>
+            sessionManager.Component.ConnectionStateChanged += (_, e) =>
             {
                 healthMonitor.HandleConnectionStateChanged(e.State);
                 this.EnsureOnMainThread(() => networkStatusView.IsConnected = e.State == ControllerConnectionState.Connected);
             };
 
-            sessionManager.Component.DeviceActionReceived += (s, e) => keyTracker.ProcessDeviceAction(e.Argument);
+            sessionManager.Component.DeviceActionReceived += (_, e) => keyTracker.ProcessDeviceAction(e.Argument);
 
-            sessionManager.Component.DeviceTracker.DeviceAdded += (s, e) => healthMonitor.HandleDeviceAdded(e.Argument);
-            sessionManager.Component.DeviceTracker.DeviceChanged += (s, e) => healthMonitor.HandleDeviceChanged(e.Argument);
-            sessionManager.Component.DeviceTracker.DeviceRemoved += (s, e) => healthMonitor.HandleDeviceRemoved(e.Argument);
-            sessionManager.Component.DeviceTracker.MediatorStatusChanged += (s, e) => healthMonitor.HandleMediatorStatusChanged(e.Argument);
+            sessionManager.Component.DeviceTracker.DeviceAdded += (_, e) => healthMonitor.HandleDeviceAdded(e.Argument);
+            sessionManager.Component.DeviceTracker.DeviceChanged += (_, e) => healthMonitor.HandleDeviceChanged(e.Argument);
+            sessionManager.Component.DeviceTracker.DeviceRemoved += (_, e) => healthMonitor.HandleDeviceRemoved(e.Argument);
+            sessionManager.Component.DeviceTracker.MediatorStatusChanged += (_, e) => healthMonitor.HandleMediatorStatusChanged(e.Argument);
 
             clockSynchronizationMonitor.Initialize(sessionManager.Component);
 
-            sessionManager.Component.DeviceTracker.DeviceAdded += (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
-            sessionManager.Component.DeviceTracker.DeviceChanged += (s, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
-            sessionManager.Component.DeviceTracker.DeviceRemoved += (s, e) => this.EnsureOnMainThread(() => networkStatusView.Remove(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceAdded += (_, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceChanged += (_, e) => this.EnsureOnMainThread(() => networkStatusView.AddOrUpdate(e.Argument));
+            sessionManager.Component.DeviceTracker.DeviceRemoved += (_, e) => this.EnsureOnMainThread(() => networkStatusView.Remove(e.Argument));
 
             networkSetupForm.SessionManager = sessionManager.Component;
         }

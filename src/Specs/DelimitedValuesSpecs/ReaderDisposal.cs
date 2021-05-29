@@ -80,7 +80,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // ReSharper disable once ConvertToLambdaExpression
             Action action = () =>
             {
-                reader.TakeWhile(x => true).ToArray();
+                reader.TakeWhile(_ => true).ToArray();
             };
 
             // Assert

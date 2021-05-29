@@ -79,7 +79,7 @@ namespace DogAgilityCompetition.WinForms.Controls
 
             Color = Color.FromArgb(255, 153, 255, 54);
 
-            timer.Tick += (sender, e) => On = !On;
+            timer.Tick += (_, _) => On = !On;
         }
 
         /// <summary>

@@ -39,10 +39,10 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             Log.Info($"Connecting to mediator on {startupArguments.ComPortName}...");
 
-            stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(phase =>
+            stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(_ =>
             {
                 connection = new CirceComConnection(startupArguments.ComPortName);
-                connection.OperationReceived += (sender, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
+                connection.OperationReceived += (_, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
                 connection.Open();
                 connection.Send(new LoginOperation());
 
@@ -61,7 +61,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             Log.Info("Sending address assignment...");
 
-            stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(phase1 =>
+            stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(_ =>
             {
                 connection.Send(new DeviceSetupOperation(startupArguments.NewAddress)
                 {
@@ -142,11 +142,11 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
 
                 bool transitioned =
-                    stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(phase => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
+                    stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(_ => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
 
                 if (!transitioned)
                 {
-                    stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(phase =>
+                    stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(_ =>
                         owner.IsConfiguringMediator ? (AssignmentPhase)new PhaseAssignmentCompleted(operation.MediatorStatus) : null);
                 }
             }

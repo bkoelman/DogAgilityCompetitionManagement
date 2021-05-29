@@ -72,7 +72,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             Guard.NotNull(deviceStatus, nameof(deviceStatus));
 
-            ExclusiveUpdateWithRaiseEvent(false, previous =>
+            ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
                 devicesMap[deviceStatus.DeviceAddress] = deviceStatus;
                 return GetHealthReportAfterNetworkHasChanged();
@@ -83,7 +83,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             Guard.NotNull(deviceStatus, nameof(deviceStatus));
 
-            ExclusiveUpdateWithRaiseEvent(false, previous =>
+            ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
                 devicesMap[deviceStatus.DeviceAddress] = deviceStatus;
                 return GetHealthReportAfterNetworkHasChanged();
@@ -94,7 +94,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
-            ExclusiveUpdateWithRaiseEvent(false, previous =>
+            ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
                 devicesMap.Remove(deviceAddress);
                 return GetHealthReportAfterNetworkHasChanged();
@@ -144,7 +144,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             Guard.NotNull(classRequirements, nameof(classRequirements));
 
-            ExclusiveUpdateWithRaiseEvent(false, previous =>
+            ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
                 nextRunRequirements.Value = classRequirements;
                 return GetHealthReportAfterNetworkHasChanged();
@@ -153,7 +153,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         public void SelectRunComposition([CanBeNull] NetworkComposition networkComposition)
         {
-            ExclusiveUpdateWithRaiseEvent(false, previous =>
+            ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
                 runComposition.Value = networkComposition;
                 return GetHealthReportAfterNetworkHasChanged();

@@ -25,7 +25,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             using (var testRunner = new CirceUsbLoopbackTestRunner())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.ProtocolVersionMismatch)
                     {
@@ -50,7 +50,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             using (var testRunner = new CirceUsbLoopbackTestRunner())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.MediatorUnconfigured)
                     {
@@ -77,7 +77,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -86,7 +86,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.MediatorStatusChanged += (s, e) =>
+                testRunner.RemoteSessionManager.DeviceTracker.MediatorStatusChanged += (_, e) =>
                 {
                     if (e.Argument == mediatorStatusCode)
                     {
@@ -123,7 +123,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<DeviceStatus>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -138,7 +138,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceAdded += (s, e) => testRunner.SignalSucceeded(e.Argument);
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceAdded += (_, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -178,7 +178,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<DeviceStatus>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -195,7 +195,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceChanged += (s, e) => testRunner.SignalSucceeded(e.Argument);
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceChanged += (_, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -223,7 +223,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<WirelessNetworkAddress>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -235,7 +235,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceTracker.DeviceRemoved += (s, e) => testRunner.SignalSucceeded(e.Argument);
+                testRunner.RemoteSessionManager.DeviceTracker.DeviceRemoved += (_, e) => testRunner.SignalSucceeded(e.Argument);
 
                 testRunner.RunTimeout = TimeSpan.FromSeconds(5);
 
@@ -259,7 +259,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<DeviceAction>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -271,7 +271,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.DeviceActionReceived += (s, e) => testRunner.SignalSucceeded(e.Argument);
+                testRunner.RemoteSessionManager.DeviceActionReceived += (_, e) => testRunner.SignalSucceeded(e.Argument);
 
                 // Act
                 bool succeeded = testRunner.Start();
@@ -294,7 +294,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<AlertOperation>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -302,7 +302,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var alertOperation = e.Operation as AlertOperation;
 
@@ -333,7 +333,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner<NetworkSetupOperation>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -341,7 +341,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var networkSetupOperation = e.Operation as NetworkSetupOperation;
 
@@ -370,7 +370,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             using (var testRunner = new CirceUsbLoopbackTestRunner<SynchronizeClocksOperation>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -378,7 +378,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var synchronizeClocksOperation = e.Operation as SynchronizeClocksOperation;
 
@@ -422,7 +422,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             using (var testRunner = new CirceUsbLoopbackTestRunner<VisualizeOperation>())
             {
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
@@ -430,7 +430,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var visualizeOperation = e.Operation as VisualizeOperation;
 
@@ -466,7 +466,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             // Arrange
             using (var testRunner = new CirceUsbLoopbackTestRunner<LogoutOperation>())
             {
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var logoutOperation = e.Operation as LogoutOperation;
 
@@ -496,7 +496,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
             using (var testRunner = new CirceUsbLoopbackTestRunner())
             {
-                testRunner.OperationReceived += (s, e) =>
+                testRunner.OperationReceived += (_, e) =>
                 {
                     var logoutOperation = e.Operation as LogoutOperation;
 
@@ -506,7 +506,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                     }
                 };
 
-                testRunner.RemoteSessionManager.ConnectionStateChanged += (s, e) =>
+                testRunner.RemoteSessionManager.ConnectionStateChanged += (_, e) =>
                 {
                     if (e.State == ControllerConnectionState.Connected)
                     {
