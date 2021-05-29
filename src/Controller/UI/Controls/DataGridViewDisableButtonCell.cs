@@ -62,9 +62,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                 ButtonRenderer.DrawButton(graphics, buttonArea, PushButtonState.Disabled);
 
-                string buttonText = FormattedValue as string;
-
-                if (buttonText != null)
+                if (FormattedValue is string buttonText)
                 {
                     TextRenderer.DrawText(graphics, buttonText, DataGridView.Font, buttonArea, SystemColors.GrayText);
                 }

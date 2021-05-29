@@ -44,7 +44,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                 return pair.Key;
             }
 
-            return int.TryParse(statusComboBox.Text, out int parsedValue) && parsedValue >= 0 && parsedValue <= 999 ? parsedValue : -1;
+            return int.TryParse(statusComboBox.Text, out int parsedValue) && parsedValue is >= 0 and <= 999 ? parsedValue : -1;
         }
 
         private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)

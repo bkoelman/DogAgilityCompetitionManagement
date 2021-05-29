@@ -109,7 +109,7 @@ namespace DogAgilityCompetition.Circe.Controller
         [Pure]
         public override bool Equals([CanBeNull] object obj)
         {
-            return !ReferenceEquals(obj, null) && obj is VisualizeFieldSet && Equals((VisualizeFieldSet)obj);
+            return obj is VisualizeFieldSet visualizeFieldSet && Equals(visualizeFieldSet);
         }
 
         [Pure]

@@ -134,7 +134,7 @@ namespace DogAgilityCompetition.Controller.Engine
         [Pure]
         public override bool Equals([CanBeNull] object obj)
         {
-            return !ReferenceEquals(obj, null) && obj is TimeSpanWithAccuracy && Equals((TimeSpanWithAccuracy)obj);
+            return obj is TimeSpanWithAccuracy timeSpanWithAccuracy && Equals(timeSpanWithAccuracy);
         }
 
         [Pure]

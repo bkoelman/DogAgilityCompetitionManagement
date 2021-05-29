@@ -51,9 +51,7 @@ namespace DogAgilityCompetition.Controller
 
         private static void CurrentDomainOnUnhandledException([CanBeNull] object sender, [NotNull] UnhandledExceptionEventArgs e)
         {
-            var ex = e.ExceptionObject as Exception;
-
-            if (ex != null)
+            if (e.ExceptionObject is Exception ex)
             {
                 Log.Error($"Unhandled managed exception in AppDomain (isTerminating={e.IsTerminating})", ex);
             }

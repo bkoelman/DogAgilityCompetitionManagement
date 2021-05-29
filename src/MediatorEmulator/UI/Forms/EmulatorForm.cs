@@ -137,9 +137,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void MdiFormOnWindowStateChanging([CanBeNull] object sender, [NotNull] WindowStateChangingEventArgs e)
         {
-            var deviceForm = sender as Form;
-
-            if (deviceForm != null && deviceForm.WindowState == FormWindowState.Maximized)
+            if (sender is Form { WindowState: FormWindowState.Maximized })
             {
                 file.Configuration.IsMaximized = false;
             }

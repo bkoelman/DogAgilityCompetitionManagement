@@ -540,7 +540,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void EmulatorProcessKill()
         {
-            if (emulatorProcess != null && !emulatorProcess.HasExited)
+            if (emulatorProcess is { HasExited: false })
             {
                 emulatorProcess.Kill();
             }

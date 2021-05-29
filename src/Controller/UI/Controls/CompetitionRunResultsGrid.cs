@@ -88,12 +88,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 CompetitionRunResult runResult = DataSource.ElementAtOrDefault(e.RowIndex);
 
-                if (runResult != null)
+                if (runResult is { HasCompleted: true })
                 {
-                    if (runResult.HasCompleted)
-                    {
-                        e.CellStyle.BackColor = runResult.IsEliminated ? Color.FromArgb(255, 224, 194) : Color.FromArgb(224, 255, 194);
-                    }
+                    e.CellStyle.BackColor = runResult.IsEliminated ? Color.FromArgb(255, 224, 194) : Color.FromArgb(224, 255, 194);
                 }
             }
         }
@@ -101,9 +98,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private void RunResultsGrid_CellBeginEdit([CanBeNull] object sender, [NotNull] DataGridViewCellCancelEventArgs e)
         {
             // Prevent that pressing ESC closes the parent form when user wants to cancel cell editing.
-            var parentForm = Parent as Form;
 
-            if (parentForm != null)
+            if (Parent is Form parentForm)
             {
                 parentFormCancelButton = parentForm.CancelButton;
                 parentForm.CancelButton = null;
@@ -112,9 +108,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void RunResultsGrid_CellEndEdit([CanBeNull] object sender, [NotNull] DataGridViewCellEventArgs e)
         {
-            var parentForm = Parent as Form;
-
-            if (parentForm != null)
+            if (Parent is Form parentForm)
             {
                 parentForm.CancelButton = parentFormCancelButton;
             }

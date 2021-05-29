@@ -71,16 +71,12 @@ namespace DogAgilityCompetition.Circe
         [CanBeNull]
         private static MemberExpression GetMemberExpression([CanBeNull] this Expression expression)
         {
-            var memberExpression = expression as MemberExpression;
-
-            if (memberExpression != null)
+            if (expression is MemberExpression memberExpression)
             {
                 return memberExpression;
             }
 
-            var unaryExpression = expression as UnaryExpression;
-
-            if (unaryExpression != null)
+            if (expression is UnaryExpression unaryExpression)
             {
                 memberExpression = (MemberExpression)unaryExpression.Operand;
                 return memberExpression;

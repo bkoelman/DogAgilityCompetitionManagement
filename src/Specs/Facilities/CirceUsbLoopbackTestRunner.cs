@@ -84,9 +84,7 @@ namespace DogAgilityCompetition.Specs.Facilities
 
         private void ConnectionOnOperationReceived([CanBeNull] object sender, [NotNull] IncomingOperationEventArgs e)
         {
-            var loginOperation = e.Operation as LoginOperation;
-
-            if (loginOperation != null)
+            if (e.Operation is LoginOperation)
             {
                 Connection.Send(new KeepAliveOperation(ProtocolVersion, MediatorStatusCode));
             }

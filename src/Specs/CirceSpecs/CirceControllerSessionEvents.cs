@@ -304,9 +304,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var alertOperation = e.Operation as AlertOperation;
-
-                    if (alertOperation != null)
+                    if (e.Operation is AlertOperation alertOperation)
                     {
                         testRunner.SignalSucceeded(alertOperation);
                     }
@@ -343,9 +341,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var networkSetupOperation = e.Operation as NetworkSetupOperation;
-
-                    if (networkSetupOperation != null)
+                    if (e.Operation is NetworkSetupOperation networkSetupOperation)
                     {
                         testRunner.SignalSucceeded(networkSetupOperation);
                     }
@@ -380,9 +376,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var synchronizeClocksOperation = e.Operation as SynchronizeClocksOperation;
-
-                    if (synchronizeClocksOperation != null)
+                    if (e.Operation is SynchronizeClocksOperation synchronizeClocksOperation)
                     {
                         testRunner.SignalSucceeded(synchronizeClocksOperation);
                     }
@@ -432,9 +426,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
 
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var visualizeOperation = e.Operation as VisualizeOperation;
-
-                    if (visualizeOperation != null)
+                    if (e.Operation is VisualizeOperation visualizeOperation)
                     {
                         testRunner.SignalSucceeded(visualizeOperation);
                     }
@@ -468,9 +460,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             {
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var logoutOperation = e.Operation as LogoutOperation;
-
-                    if (logoutOperation != null)
+                    if (e.Operation is LogoutOperation logoutOperation)
                     {
                         testRunner.SignalSucceeded(logoutOperation);
                     }
@@ -498,9 +488,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             {
                 testRunner.OperationReceived += (_, e) =>
                 {
-                    var logoutOperation = e.Operation as LogoutOperation;
-
-                    if (logoutOperation != null)
+                    if (e.Operation is LogoutOperation)
                     {
                         seenLogout.Value = true;
                     }

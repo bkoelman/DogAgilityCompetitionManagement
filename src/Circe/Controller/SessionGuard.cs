@@ -407,9 +407,7 @@ namespace DogAgilityCompetition.Circe.Controller
             // is a reconnect due to incorrect logic regarding version or keep-alive, which is much less problematic
             // than taking an exclusive lock, risking potential deadlocks.
 
-            var keepAliveOperation = e.Operation as KeepAliveOperation;
-
-            if (keepAliveOperation != null)
+            if (e.Operation is KeepAliveOperation keepAliveOperation)
             {
                 // Major and Minor version must match exactly; Build is ignored here and Revision is not used by the CIRCE spec.
 

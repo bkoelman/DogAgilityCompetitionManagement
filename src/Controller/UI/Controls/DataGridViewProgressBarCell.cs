@@ -154,9 +154,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private bool ReflectShowFocusCues()
         {
-            var customGridView = DataGridView as NonFlickeringDataGridView;
-
-            if (customGridView != null)
+            if (DataGridView is NonFlickeringDataGridView customGridView)
             {
                 return customGridView.PublicShowFocusCues;
             }

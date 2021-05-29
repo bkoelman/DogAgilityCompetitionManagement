@@ -37,7 +37,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private static bool IsInRange(int value)
         {
-            return value >= 0 && value <= 999;
+            return value is >= 0 and <= 999;
         }
 
         private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)

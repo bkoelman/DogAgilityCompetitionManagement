@@ -307,9 +307,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private void LastPlayedAnimationFormOnAnimationCompleted([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
         {
-            var source = sender as NotifyPictureForm;
-
-            if (source != null)
+            if (sender is NotifyPictureForm source)
             {
                 source.AnimationCompleted -= LastPlayedAnimationFormOnAnimationCompleted;
             }

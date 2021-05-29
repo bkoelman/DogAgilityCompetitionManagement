@@ -49,7 +49,7 @@ namespace DogAgilityCompetition.Controller.Engine
         public IReadOnlyCollection<NetworkComplianceMismatch> ClassCompliance { get; }
 
         public bool HasErrors =>
-            MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 || (ClassCompliance != null && ClassCompliance.Count > 0);
+            MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 || ClassCompliance is { Count: > 0 };
 
         private NetworkHealthReport(bool isConnected, bool hasProtocolVersionMismatch, int mediatorStatus,
             [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors,

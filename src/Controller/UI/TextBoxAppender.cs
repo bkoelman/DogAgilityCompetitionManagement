@@ -107,7 +107,7 @@ namespace DogAgilityCompetition.Controller.UI
         {
             try
             {
-                if (!isFrozen.Value && logTextBox != null && logTextBox.Created)
+                if (!isFrozen.Value && logTextBox is { Created: true })
                 {
                     bool include = ApplyFilter(loggingEvent);
 

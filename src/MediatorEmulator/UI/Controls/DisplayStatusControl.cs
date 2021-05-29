@@ -49,7 +49,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
         {
-            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+            bool isSecondaryTimeVisible = secondaryTime is { IsVisible: true };
 
             if (primaryTimeStartedAt != null && !isSecondaryTimeVisible)
             {
@@ -122,7 +122,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         void ISimpleVisualizationActor.SetElimination(bool isEliminated)
         {
-            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+            bool isSecondaryTimeVisible = secondaryTime is { IsVisible: true };
 
             // @formatter:keep_existing_linebreaks true
 

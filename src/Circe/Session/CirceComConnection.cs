@@ -219,9 +219,7 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 PacketReceived?.Invoke(this, EventArgs.Empty);
 
-                var logOperation = operation as LogOperation;
-
-                if (logOperation != null)
+                if (operation is LogOperation logOperation)
                 {
                     Log.Debug($"Discarding assembled operation: {logOperation}{logOperation.FormatLogData()}");
                 }

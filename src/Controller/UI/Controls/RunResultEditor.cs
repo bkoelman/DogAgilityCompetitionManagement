@@ -221,7 +221,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void SetScreenValueForEliminated([CanBeNull] CompetitionRunResult runResult)
         {
-            eliminatedCheckBox.Checked = runResult != null && runResult.IsEliminated;
+            eliminatedCheckBox.Checked = runResult is { IsEliminated: true };
         }
 
         private void FinishTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)

@@ -38,9 +38,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
 
         private static void ImportContainerFromKey([NotNull] RegistryKey appSettingsKey, [NotNull] MostRecentlyUsedContainer container)
         {
-            string valueList = appSettingsKey.GetValue(MruRegistryPath) as string;
-
-            if (valueList != null)
+            if (appSettingsKey.GetValue(MruRegistryPath) is string valueList)
             {
                 string[] values = valueList.Split(new[]
                 {
