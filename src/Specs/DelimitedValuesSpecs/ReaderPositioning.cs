@@ -4,7 +4,6 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -17,7 +16,6 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
     [TestFixture]
     public sealed class ReaderPositioning
     {
-        [NotNull]
         private static readonly string DefaultTextQualifier =
             new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
 

@@ -14,8 +14,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </summary>
     public sealed class RunResultsImporter
     {
-        [NotNull]
-        [ItemNotNull]
         private static readonly IReadOnlyCollection<string> RequiredColumnNames = new List<string>
         {
             ImportExportColumns.CompetitorNumber,
@@ -24,8 +22,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             ImportExportColumns.CountryCode
         }.AsReadOnly();
 
-        [NotNull]
-        [ItemNotNull]
         private static readonly IReadOnlyCollection<string> OptionalColumnNames = new List<string>
         {
             ImportExportColumns.IntermediateTime1,
@@ -37,20 +33,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             ImportExportColumns.IsEliminated
         }.AsReadOnly();
 
-        [NotNull]
-        [ItemNotNull]
         private readonly List<CompetitionRunResult> existingRunResults;
 
-        public RunResultsImporter([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> existingRunResults)
+        public RunResultsImporter(IEnumerable<CompetitionRunResult> existingRunResults)
         {
             Guard.NotNull(existingRunResults, nameof(existingRunResults));
 
             this.existingRunResults = existingRunResults.ToList();
         }
 
-        [NotNull]
-        [ItemNotNull]
-        public IEnumerable<CompetitionRunResult> ImportFrom([NotNull] string path, bool mergeDeletes, bool skipTimings)
+        public IEnumerable<CompetitionRunResult> ImportFrom(string path, bool mergeDeletes, bool skipTimings)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
@@ -89,8 +81,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return mergeRunResults;
         }
 
-        [NotNull]
-        private static Dictionary<int, CompetitionRunResult> ImportRunResultsFrom([NotNull] string path)
+        private static Dictionary<int, CompetitionRunResult> ImportRunResultsFrom(string path)
         {
             DateTime currentTimeUtc = SystemContext.UtcNow();
             var imported = new Dictionary<int, CompetitionRunResult>();
@@ -124,7 +115,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         }
 
         [AssertionMethod]
-        private static void AssertRequiredColumnsExist([NotNull] [ItemNotNull] DelimitedValuesReader reader)
+        private static void AssertRequiredColumnsExist(DelimitedValuesReader reader)
         {
             List<string> missingColumnNames = RequiredColumnNames.Where(requiredColumnName => !reader.ColumnNames.Contains(requiredColumnName)).ToList();
 
@@ -134,13 +125,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        private static bool ContainsOptionalColumnNames([NotNull] [ItemNotNull] DelimitedValuesReader reader)
+        private static bool ContainsOptionalColumnNames(DelimitedValuesReader reader)
         {
             return OptionalColumnNames.All(optionalColumnName => reader.ColumnNames.Contains(optionalColumnName));
         }
 
-        [NotNull]
-        private static CompetitionRunResult GetRunResultFrom([NotNull] IDelimitedValuesReaderRow row, bool hasOptionalColumns, DateTime startTimeUtc)
+        private static CompetitionRunResult GetRunResultFrom(IDelimitedValuesReaderRow row, bool hasOptionalColumns, DateTime startTimeUtc)
         {
             Competitor competitor = GetCompetitorFrom(row);
             var runResult = new CompetitionRunResult(competitor);
@@ -152,16 +142,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
                 bool? isEliminated = row.GetCell<bool?>(ImportExportColumns.IsEliminated);
 
                 // Note: We cannot reconstruct whether start time was high precision, because it does not roundtrip
-                // through import/export. However, we do not need to know. A low-precision elapsed time is caused by 
+                // through import/export. However, we do not need to know. A low-precision elapsed time is caused by
                 // either one or both times to be low precision. So although we lost some information, the nett effect
                 // when the precision of an elapsed time is recalculated will be the same as long as we assume that the start
                 // time was high precision.
                 var startTime = new RecordedTime(TimeSpan.Zero, startTimeUtc);
 
-                RecordedTime intermediateTime1 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, startTime);
-                RecordedTime intermediateTime2 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, startTime);
-                RecordedTime intermediateTime3 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, startTime);
-                RecordedTime finishTime = GetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, startTime);
+                RecordedTime? intermediateTime1 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, startTime);
+                RecordedTime? intermediateTime2 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, startTime);
+                RecordedTime? intermediateTime3 = GetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, startTime);
+                RecordedTime? finishTime = GetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, startTime);
 
                 if (intermediateTime1 == null && intermediateTime2 == null && intermediateTime3 == null && finishTime == null)
                 {
@@ -206,13 +196,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return runResult;
         }
 
-        [NotNull]
-        private static Competitor GetCompetitorFrom([NotNull] IDelimitedValuesReaderRow row)
+        private static Competitor GetCompetitorFrom(IDelimitedValuesReaderRow row)
         {
             int competitorNumber = row.GetCell<int>(ImportExportColumns.CompetitorNumber);
-            string handlerName = row.GetCell<string>(ImportExportColumns.HandlerName);
-            string dogName = row.GetCell<string>(ImportExportColumns.DogName);
-            string countryCode = row.GetCell<string>(ImportExportColumns.CountryCode);
+            string? handlerName = row.GetCell<string>(ImportExportColumns.HandlerName);
+            string? dogName = row.GetCell<string>(ImportExportColumns.DogName);
+            string? countryCode = row.GetCell<string>(ImportExportColumns.CountryCode);
 
             if (string.IsNullOrWhiteSpace(handlerName))
             {
@@ -227,9 +216,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return new Competitor(competitorNumber, handlerName, dogName).ChangeCountryCode(countryCode);
         }
 
-        [CanBeNull]
-        private static RecordedTime GetTimeElapsedSinceStart([NotNull] IDelimitedValuesReaderRow row, [NotNull] string columnName,
-            [NotNull] RecordedTime startTime)
+        private static RecordedTime? GetTimeElapsedSinceStart(IDelimitedValuesReaderRow row, string columnName, RecordedTime startTime)
         {
             string timeString = row.GetCell(columnName);
             TimeSpanWithAccuracy? timeWithAccuracy = TimeSpanWithAccuracy.FromString(timeString, Settings.Default.ImportExportCulture);
@@ -237,13 +224,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return timeWithAccuracy != null ? startTime.Add(timeWithAccuracy.Value) : null;
         }
 
-        [NotNull]
-        private static CompetitionRunResult Merge([NotNull] CompetitionRunResult existing, [NotNull] CompetitionRunResult imported, bool skipTimings)
+        private static CompetitionRunResult Merge(CompetitionRunResult existing, CompetitionRunResult imported, bool skipTimings)
         {
             return skipTimings ? existing.ChangeCompetitor(imported.Competitor) : MergeWithTimings();
         }
 
-        [NotNull]
         private static CompetitionRunResult MergeWithTimings()
         {
             // NICE-TO-HAVE: Add merge support for timings.

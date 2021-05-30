@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms
 {
     /// <summary />
     public static class ControlExtensions
     {
-        public static void EnsureOnMainThread([NotNull] this Control control, [NotNull] Action action)
+        public static void EnsureOnMainThread(this Control control, Action action)
         {
             Guard.NotNull(control, nameof(control));
             Guard.NotNull(action, nameof(action));
@@ -22,9 +21,7 @@ namespace DogAgilityCompetition.WinForms
             }
         }
 
-        [NotNull]
-        [ItemNotNull]
-        public static IEnumerable<Control> GetAllChildControlsRecursive([NotNull] this Control control)
+        public static IEnumerable<Control> GetAllChildControlsRecursive(this Control control)
         {
             foreach (Control child in control.Controls)
             {

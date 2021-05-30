@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -14,11 +13,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         public bool IsEnabled { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
-        [NotNull]
-        public static AlertSourceItemXml ToXmlObject([NotNull] AlertSourceItem source)
+        public static AlertSourceItemXml ToXmlObject(AlertSourceItem source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -29,8 +26,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static T FromXmlObject<T>([CanBeNull] AlertSourceItemXml source)
+        public static T FromXmlObject<T>(AlertSourceItemXml? source)
             where T : AlertSourceItem
         {
             // @formatter:keep_existing_linebreaks true

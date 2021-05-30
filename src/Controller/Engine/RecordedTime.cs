@@ -13,13 +13,11 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class RecordedTime : IEquatable<RecordedTime>
     {
-        [CanBeNull]
         public TimeSpan? HardwareSynchronizedTime { get; }
-
         public DateTime SoftwareTimeInUtc { get; }
         public TimeAccuracy Accuracy { get; }
 
-        public RecordedTime([CanBeNull] TimeSpan? hardwareSynchronizedTime, DateTime softwareTimeInUtc, [CanBeNull] TimeAccuracy? accuracy = null)
+        public RecordedTime(TimeSpan? hardwareSynchronizedTime, DateTime softwareTimeInUtc, TimeAccuracy? accuracy = null)
         {
             if (accuracy == null)
             {
@@ -43,7 +41,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return new(source.Year, source.Month, source.Day, source.Hour, source.Minute, source.Second, source.Millisecond, source.Kind);
         }
 
-        public TimeSpanWithAccuracy ElapsedSince([NotNull] RecordedTime other)
+        public TimeSpanWithAccuracy ElapsedSince(RecordedTime other)
         {
             Guard.NotNull(other, nameof(other));
 
@@ -83,7 +81,6 @@ namespace DogAgilityCompetition.Controller.Engine
             return allowHighResolutionMeasure ? TimeAccuracy.HighPrecision : TimeAccuracy.LowPrecision;
         }
 
-        [NotNull]
         public RecordedTime Add(TimeSpanWithAccuracy offset)
         {
             TimeSpan? hardwareTime = offset.Accuracy == TimeAccuracy.HighPrecision ? HardwareSynchronizedTime + offset.TimeValue : null;
@@ -94,14 +91,14 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public bool Equals(RecordedTime other)
+        public bool Equals(RecordedTime? other)
         {
             return !ReferenceEquals(other, null) && HardwareSynchronizedTime == other.HardwareSynchronizedTime &&
                 SoftwareTimeInUtc == other.SoftwareTimeInUtc && Accuracy == other.Accuracy;
         }
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as RecordedTime);
         }
@@ -130,7 +127,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public static bool operator ==([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
+        public static bool operator ==(RecordedTime? left, RecordedTime? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -146,7 +143,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public static bool operator !=([CanBeNull] RecordedTime left, [CanBeNull] RecordedTime right)
+        public static bool operator !=(RecordedTime? left, RecordedTime? right)
         {
             return !(left == right);
         }

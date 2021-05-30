@@ -1,6 +1,5 @@
 using System;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -9,7 +8,7 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public RemoteKey Key { get; }
 
-        public RemoteKeyEventArgs([NotNull] WirelessNetworkAddress source, RemoteKey key, [CanBeNull] TimeSpan? sensorTime)
+        public RemoteKeyEventArgs(WirelessNetworkAddress source, RemoteKey key, TimeSpan? sensorTime)
             : base(source, sensorTime)
         {
             Key = key;

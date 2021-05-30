@@ -13,17 +13,14 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     {
         private const int CharCount = 6;
 
-        [NotNull]
         private static readonly Regex ValueFormatRegex = new("^[0-9A-F]{" + CharCount + "}$", RegexOptions.Compiled);
 
-        [CanBeNull]
-        private string innerValue;
+        private string? innerValue;
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
-        public string Value
+        public string? Value
         {
             get => innerValue;
             set
@@ -65,13 +62,12 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public NetworkAddressParameter([NotNull] string name, int id, bool isRequired)
+        public NetworkAddressParameter(string name, int id, bool isRequired)
             : base(name, id, CharCount, isRequired)
         {
         }
 
-        [CanBeNull]
-        public string GetValueOrNull()
+        public string? GetValueOrNull()
         {
             return HasValue ? Value : null;
         }
@@ -121,7 +117,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
         }
 
-        public static bool IsValidAddress([CanBeNull] string value)
+        public static bool IsValidAddress(string? value)
         {
             return !string.IsNullOrEmpty(value) && ValueFormatRegex.IsMatch(value);
         }

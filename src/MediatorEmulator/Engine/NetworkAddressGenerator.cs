@@ -1,6 +1,5 @@
 ﻿using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine
 {
@@ -9,7 +8,6 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
     /// </summary>
     public static class NetworkAddressGenerator
     {
-        [NotNull]
         public static WirelessNetworkAddress GetNextFreeAddress()
         {
             int lastAddressUsed = RegistrySettingsProvider.GetLastUsedAddress();

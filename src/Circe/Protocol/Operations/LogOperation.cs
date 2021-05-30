@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -23,13 +22,11 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 54;
 
-        [NotNull]
         private readonly BinaryParameter logDataParameter = ParameterFactory.Create(ParameterType.Binary.LogData, true);
 
         /// <summary>
         /// Required. Gets or sets the data to log.
         /// </summary>
-        [NotNull]
         public IList<byte> LogData
         {
             get => logDataParameter.Value;
@@ -42,7 +39,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="logData">
         /// The log data.
         /// </param>
-        public LogOperation([NotNull] IList<byte> logData)
+        public LogOperation(IList<byte> logData)
             : this()
         {
             Guard.NotNull(logData, nameof(logData));
@@ -58,7 +55,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             Parameters.Add(logDataParameter);
         }
 
-        [NotNull]
         public string FormatLogData()
         {
             return LogData.ToArray().FormatHexBuffer();

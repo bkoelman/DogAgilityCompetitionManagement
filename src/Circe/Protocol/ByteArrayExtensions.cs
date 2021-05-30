@@ -22,8 +22,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// The human-readable formatted text.
         /// </returns>
         [Pure]
-        [NotNull]
-        public static string FormatHexBuffer([NotNull] this byte[] buffer, int indent = 2)
+        public static string FormatHexBuffer(this byte[] buffer, int indent = 2)
         {
             Guard.NotNull(buffer, nameof(buffer));
 
@@ -44,7 +43,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// The human-readable formatted text.
         /// </returns>
         [Pure]
-        [NotNull]
         public static string FormatHexBuffer(this ArraySegment<byte> segment, int indent = 2)
         {
             string lineIndent = new(' ', indent);
@@ -72,7 +70,7 @@ namespace DogAgilityCompetition.Circe.Protocol
 
                     if (index < segment.Offset + segment.Count)
                     {
-                        string hexValue = $"{segment.Array[index]:X2} ";
+                        string hexValue = $"{segment.Array![index]:X2} ";
                         hexBuilder.Append(hexValue);
 
                         char ch = segment.Array[index] < 0x20 || segment.Array[index] > 0x7E ? '.' : (char)segment.Array[index];

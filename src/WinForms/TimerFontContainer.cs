@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.WinForms.Properties;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms
 {
@@ -16,10 +15,9 @@ namespace DogAgilityCompetition.WinForms
     /// </summary>
     public sealed class TimerFontContainer
     {
-        [NotNull]
         private readonly DisposableComponent<PrivateFontCollection> fontCollectionWrapper;
 
-        public TimerFontContainer([CanBeNull] ref IContainer components)
+        public TimerFontContainer(ref IContainer? components)
         {
             fontCollectionWrapper = new DisposableComponent<PrivateFontCollection>(new PrivateFontCollection(), ref components);
 
@@ -41,7 +39,7 @@ namespace DogAgilityCompetition.WinForms
             }
         }
 
-        public void ApplyTo([ItemNotNull] [NotNull] params Label[] labels)
+        public void ApplyTo(params Label[] labels)
         {
             Guard.NotNull(labels, nameof(labels));
 

@@ -11,7 +11,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     [Serializable]
     public sealed class IntegerParameter : Parameter
     {
-        [CanBeNull]
         private int? innerValue;
 
         /// <summary>
@@ -27,7 +26,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
         public int? Value
         {
             get => innerValue;
@@ -68,7 +66,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public IntegerParameter([NotNull] string name, int id, int minValue, int maxValue, bool isRequired)
+        public IntegerParameter(string name, int id, int minValue, int maxValue, bool isRequired)
             : base(name, id, CalculateMaxDigitCount(minValue, maxValue), isRequired)
         {
             if (minValue > maxValue)
@@ -100,7 +98,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                 throw new InvalidOperationException($"{GetType().Name} {Name} has no value.");
             }
 
-            string valueString = Value.ToString();
+            string valueString = Value.ToString() ?? string.Empty;
             return Encoding.ASCII.GetBytes(valueString);
         }
 

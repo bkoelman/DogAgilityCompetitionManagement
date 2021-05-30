@@ -13,33 +13,20 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class CompetitionClassInfo
     {
-        [CanBeNull]
-        public string Grade { get; }
-
-        [CanBeNull]
-        public string Type { get; }
-
-        [CanBeNull]
-        public string InspectorName { get; }
-
-        [CanBeNull]
-        public string RingName { get; }
-
-        [CanBeNull]
+        public string? Grade { get; }
+        public string? Type { get; }
+        public string? InspectorName { get; }
+        public string? RingName { get; }
         public TimeSpan? StandardCourseTime { get; }
-
-        [CanBeNull]
         public TimeSpan? MaximumCourseTime { get; }
-
-        [CanBeNull]
         public int? TrackLengthInMeters { get; }
 
         public CompetitionClassInfo()
         {
         }
 
-        private CompetitionClassInfo([CanBeNull] string grade, [CanBeNull] string type, [CanBeNull] string inspectorName, [CanBeNull] string ringName,
-            [CanBeNull] TimeSpan? standardCourseTime, [CanBeNull] TimeSpan? maximumCourseTime, [CanBeNull] int? trackLengthInMeters)
+        private CompetitionClassInfo(string? grade, string? type, string? inspectorName, string? ringName, TimeSpan? standardCourseTime,
+            TimeSpan? maximumCourseTime, int? trackLengthInMeters)
         {
             Grade = grade;
             Type = type;
@@ -50,40 +37,35 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             TrackLengthInMeters = trackLengthInMeters;
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeGrade([CanBeNull] string grade)
+        public CompetitionClassInfo ChangeGrade(string? grade)
         {
             grade = string.IsNullOrWhiteSpace(grade) ? null : grade;
 
             return new CompetitionClassInfo(grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeType([CanBeNull] string type)
+        public CompetitionClassInfo ChangeType(string? type)
         {
             type = string.IsNullOrWhiteSpace(type) ? null : type;
 
             return new CompetitionClassInfo(Grade, type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeInspectorName([CanBeNull] string inspectorName)
+        public CompetitionClassInfo ChangeInspectorName(string? inspectorName)
         {
             inspectorName = string.IsNullOrWhiteSpace(inspectorName) ? null : inspectorName;
 
             return new CompetitionClassInfo(Grade, Type, inspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeRingName([CanBeNull] string ringName)
+        public CompetitionClassInfo ChangeRingName(string? ringName)
         {
-            string value = string.IsNullOrWhiteSpace(ringName) ? null : ringName;
+            string? value = string.IsNullOrWhiteSpace(ringName) ? null : ringName;
 
             return new CompetitionClassInfo(Grade, Type, InspectorName, value, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeStandardCourseTime([CanBeNull] TimeSpan? standardCourseTime)
+        public CompetitionClassInfo ChangeStandardCourseTime(TimeSpan? standardCourseTime)
         {
             if (standardCourseTime != null)
             {
@@ -93,8 +75,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, standardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeMaximumCourseTime([CanBeNull] TimeSpan? maximumCourseTime)
+        public CompetitionClassInfo ChangeMaximumCourseTime(TimeSpan? maximumCourseTime)
         {
             if (maximumCourseTime != null)
             {
@@ -104,8 +85,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, maximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeTrackLengthInMeters([CanBeNull] int? trackLengthInMeters)
+        public CompetitionClassInfo ChangeTrackLengthInMeters(int? trackLengthInMeters)
         {
             if (trackLengthInMeters != null)
             {

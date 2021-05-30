@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms.Controls
 {
@@ -19,13 +18,11 @@ namespace DogAgilityCompetition.WinForms.Controls
     {
         private readonly Color reflectionColor = Color.FromArgb(180, 255, 255, 255);
 
-        [NotNull]
         private readonly Color[] surroundColors =
         {
             Color.FromArgb(0, 255, 255, 255)
         };
 
-        [NotNull]
         private readonly Timer timer = new();
 
         private Color color;
@@ -103,7 +100,7 @@ namespace DogAgilityCompetition.WinForms.Controls
         /// <summary>
         /// Renders the control to an image.
         /// </summary>
-        private void DrawControl([NotNull] Graphics g, bool on)
+        private void DrawControl(Graphics g, bool on)
         {
             // Is the bulb on or off?
             Color lightColor = on ? Color : Color.FromArgb(150, DarkColor);

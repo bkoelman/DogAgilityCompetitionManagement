@@ -4,7 +4,6 @@ using System.Reflection;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -13,17 +12,14 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class RemoteKeyTracker
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private static readonly Dictionary<RawDeviceKeys, RemoteKeyModifier> ModifierKeyTranslationTable = new()
         {
             { RawDeviceKeys.EnterNextCompetitor, RemoteKeyModifier.EnterNextCompetitor },
             { RawDeviceKeys.EnterCurrentCompetitor, RemoteKeyModifier.EnterCurrentCompetitor }
         };
 
-        [NotNull]
         private static readonly Dictionary<RawDeviceKeys, RemoteKey> RegularKeyTranslationTable = new()
         {
             { RawDeviceKeys.Key1OrPlaySoundA, RemoteKey.Key1OrPlaySoundA },
@@ -42,16 +38,15 @@ namespace DogAgilityCompetition.Controller.Engine
             { RawDeviceKeys.Ready, RemoteKey.Ready }
         };
 
-        [NotNull]
         private readonly Dictionary<WirelessNetworkAddress, RawDeviceKeys> precedingRawKeysDownPerDevice = new();
 
-        public event EventHandler<RemoteKeyModifierEventArgs> ModifierKeyDown;
-        public event EventHandler<RemoteKeyEventArgs> KeyDown;
-        public event EventHandler<RemoteKeyEventArgs> KeyUp;
-        public event EventHandler<RemoteKeyModifierEventArgs> ModifierKeyUp;
-        public event EventHandler<DeviceTimeEventArgs> MissingKey;
+        public event EventHandler<RemoteKeyModifierEventArgs>? ModifierKeyDown;
+        public event EventHandler<RemoteKeyEventArgs>? KeyDown;
+        public event EventHandler<RemoteKeyEventArgs>? KeyUp;
+        public event EventHandler<RemoteKeyModifierEventArgs>? ModifierKeyUp;
+        public event EventHandler<DeviceTimeEventArgs>? MissingKey;
 
-        public void ProcessDeviceAction([NotNull] DeviceAction deviceAction)
+        public void ProcessDeviceAction(DeviceAction deviceAction)
         {
             Guard.NotNull(deviceAction, nameof(deviceAction));
 
@@ -66,7 +61,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void ProcessRawKeysDown([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, [CanBeNull] TimeSpan? sensorTime)
+        private void ProcessRawKeysDown(WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, TimeSpan? sensorTime)
         {
             RawDeviceKeys precedingKeysDown = GetPrecedingKeysDownForDevice(source);
 
@@ -81,13 +76,12 @@ namespace DogAgilityCompetition.Controller.Engine
             precedingRawKeysDownPerDevice[source] = rawKeysDown;
         }
 
-        private RawDeviceKeys GetPrecedingKeysDownForDevice([NotNull] WirelessNetworkAddress source)
+        private RawDeviceKeys GetPrecedingKeysDownForDevice(WirelessNetworkAddress source)
         {
             return precedingRawKeysDownPerDevice.ContainsKey(source) ? precedingRawKeysDownPerDevice[source] : RawDeviceKeys.None;
         }
 
-        private void RaiseModifierDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseModifierDownEvents(WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown, TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKeyModifier> entry in ModifierKeyTranslationTable)
             {
@@ -103,8 +97,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseKeyDownEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseKeyDownEvents(WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown, TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKey> entry in RegularKeyTranslationTable)
             {
@@ -120,8 +113,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseKeyUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseKeyUpEvents(WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown, TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKey> entry in RegularKeyTranslationTable)
             {
@@ -137,8 +129,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void RaiseModifierUpEvents([NotNull] WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void RaiseModifierUpEvents(WirelessNetworkAddress source, RawDeviceKeys rawKeysDown, RawDeviceKeys precedingKeysDown, TimeSpan? sensorTime)
         {
             foreach (KeyValuePair<RawDeviceKeys, RemoteKeyModifier> entry in ModifierKeyTranslationTable)
             {

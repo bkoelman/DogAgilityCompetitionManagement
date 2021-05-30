@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
@@ -25,13 +23,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="innerException">
         /// Optional. The exception that caused the current exception.
         /// </param>
-        public ParameterValueFormatException([NotNull] byte[] packet, int errorOffset, [NotNull] string message, [CanBeNull] Exception innerException)
+        public ParameterValueFormatException(byte[] packet, int errorOffset, string message, Exception? innerException)
             : base(packet, errorOffset, message, innerException)
-        {
-        }
-
-        private ParameterValueFormatException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

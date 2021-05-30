@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
@@ -11,9 +10,7 @@ namespace DogAgilityCompetition.Specs.Facilities
     internal sealed class OrderingScenario
     {
         public ulong Value { get; }
-
         public int BitCount { get; }
-
         public OrderExpect Result { get; }
 
         public bool this[int offset]
@@ -39,7 +36,7 @@ namespace DogAgilityCompetition.Specs.Facilities
             Value = value;
         }
 
-        public static ulong FromBits([NotNull] params int[] bits)
+        public static ulong FromBits(params int[] bits)
         {
             Guard.NotNull(bits, nameof(bits));
             Guard.InRangeInclusive(bits.Length, nameof(bits), 1, 64);

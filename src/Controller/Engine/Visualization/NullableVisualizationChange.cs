@@ -7,10 +7,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class NullableVisualizationChange<T> : VisualizationChange
     {
-        [CanBeNull]
-        protected T Value { get; }
+        protected T? Value { get; }
 
-        protected NullableVisualizationChange([CanBeNull] T value)
+        protected NullableVisualizationChange(T? value)
         {
             Value = value;
         }

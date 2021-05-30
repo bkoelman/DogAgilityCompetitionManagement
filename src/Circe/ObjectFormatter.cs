@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -10,16 +9,11 @@ namespace DogAgilityCompetition.Circe
     /// </summary>
     public sealed class ObjectFormatter : IDisposable
     {
-        [CanBeNull]
-        private readonly object outerInstance;
-
-        [CanBeNull]
-        private readonly string outerText;
-
-        [NotNull]
+        private readonly object? outerInstance;
+        private readonly string? outerText;
         private readonly StringBuilder builder;
 
-        public ObjectFormatter([NotNull] StringBuilder builder, [CanBeNull] string outerText = null)
+        public ObjectFormatter(StringBuilder builder, string? outerText = null)
         {
             Guard.NotNull(builder, nameof(builder));
 
@@ -27,7 +21,7 @@ namespace DogAgilityCompetition.Circe
             this.outerText = outerText;
         }
 
-        public ObjectFormatter([NotNull] StringBuilder builder, [CanBeNull] object outerInstance = null)
+        public ObjectFormatter(StringBuilder builder, object? outerInstance = null)
         {
             Guard.NotNull(builder, nameof(builder));
 
@@ -35,7 +29,7 @@ namespace DogAgilityCompetition.Circe
             this.outerInstance = outerInstance;
         }
 
-        public void Append<T>([NotNull] GetReferenceCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+        public void Append<T>(GetReferenceCallback<T> getValue, Expression<Func<object?>> getValueExpression)
             where T : class
         {
             Guard.NotNull(getValue, nameof(getValue));
@@ -43,12 +37,12 @@ namespace DogAgilityCompetition.Circe
 
             // Note: Caller needs to pass same expression twice for better performance.
 
-            T source = getValue();
-            string name = getValueExpression.GetExpressionName();
+            T? source = getValue();
+            string? name = getValueExpression.GetExpressionName();
             AppendToBuilder(source, name);
         }
 
-        public void Append<T>([NotNull] GetValueCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+        public void Append<T>(GetValueCallback<T> getValue, Expression<Func<object>> getValueExpression)
             where T : struct
         {
             Guard.NotNull(getValue, nameof(getValue));
@@ -57,11 +51,11 @@ namespace DogAgilityCompetition.Circe
             // Note: Caller needs to pass same expression twice for better performance.
 
             T source = getValue();
-            string name = getValueExpression.GetExpressionName();
+            string? name = getValueExpression.GetExpressionName();
             AppendToBuilder(source, name);
         }
 
-        public void Append<T>([NotNull] GetOptionalValueCallback<T> getValue, [NotNull] Expression<Func<object>> getValueExpression)
+        public void Append<T>(GetOptionalValueCallback<T> getValue, Expression<Func<object?>> getValueExpression)
             where T : struct
         {
             Guard.NotNull(getValue, nameof(getValue));
@@ -70,11 +64,11 @@ namespace DogAgilityCompetition.Circe
             // Note: Caller needs to pass same expression twice for better performance.
 
             T? source = getValue();
-            string name = getValueExpression.GetExpressionName();
+            string? name = getValueExpression.GetExpressionName();
             AppendToBuilder(source, name);
         }
 
-        public void AppendText([CanBeNull] string text)
+        public void AppendText(string? text)
         {
             if (!string.IsNullOrEmpty(text))
             {
@@ -82,7 +76,7 @@ namespace DogAgilityCompetition.Circe
             }
         }
 
-        private void AppendToBuilder([CanBeNull] object value, [CanBeNull] string name)
+        private void AppendToBuilder(object? value, string? name)
         {
             if (value != null)
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms
 {
@@ -11,10 +10,9 @@ namespace DogAgilityCompetition.WinForms
     public sealed class DisposableComponent<T> : IComponent
         where T : class, IDisposable
     {
-        [NotNull]
         public T Component { get; }
 
-        public ISite Site
+        public ISite? Site
         {
             get => null;
             set
@@ -22,9 +20,9 @@ namespace DogAgilityCompetition.WinForms
             }
         }
 
-        public event EventHandler Disposed;
+        public event EventHandler? Disposed;
 
-        public DisposableComponent([NotNull] T disposable, [CanBeNull] ref IContainer container)
+        public DisposableComponent(T disposable, ref IContainer? container)
         {
             Guard.NotNull(disposable, nameof(disposable));
 

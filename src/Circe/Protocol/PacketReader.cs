@@ -13,13 +13,10 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// </summary>
     public sealed class PacketReader
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [CanBeNull]
-        private ISystemLogger customLogger;
+        private ISystemLogger? customLogger;
 
-        [NotNull]
         public ISystemLogger ActiveLogger
         {
             get => customLogger ?? Log;
@@ -44,8 +41,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <exception cref="UnknownOperationException" />
         /// <exception cref="ParameterValueFormatException" />
         /// <exception cref="OperationValidationException" />
-        [NotNull]
-        public Operation Read([NotNull] byte[] buffer)
+        public Operation Read(byte[] buffer)
         {
             Guard.NotNull(buffer, nameof(buffer));
 
@@ -71,7 +67,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return operation;
         }
 
-        private static int ParseHeader([NotNull] PacketParseContext context)
+        private static int ParseHeader(PacketParseContext context)
         {
             context.ConsumeByte(PacketFormatDelimiters.StartOfText);
             int operationCode = context.ConsumePositiveNumber(2);
@@ -80,7 +76,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return operationCode;
         }
 
-        private static void ParseTrailer([NotNull] PacketParseContext context, bool hasChecksum)
+        private static void ParseTrailer(PacketParseContext context, bool hasChecksum)
         {
             if (hasChecksum)
             {
@@ -91,7 +87,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             context.ConsumeByte(PacketFormatDelimiters.EndOfText);
         }
 
-        private void ParsePayload([NotNull] PacketParseContext context, [NotNull] Operation operation)
+        private void ParsePayload(PacketParseContext context, Operation operation)
         {
             var seenParameters = new HashSet<int>();
 
@@ -117,13 +113,13 @@ namespace DogAgilityCompetition.Circe.Protocol
 
                     ActiveLogger.Warn($"Warning at packet position {displayPosition}: " +
                         $"Ignoring additional occurrence of parameter {parameterId} in packet " +
-                        $"for operation {operation.Code}.{context.Buffer.Array.FormatHexBuffer(4)}");
+                        $"for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
                 }
                 else
                 {
                     try
                     {
-                        Parameter parameter = operation.GetParameterOrNull(parameterId);
+                        Parameter? parameter = operation.GetParameterOrNull(parameterId);
 
                         if (parameter != null)
                         {
@@ -136,12 +132,12 @@ namespace DogAgilityCompetition.Circe.Protocol
 
                             ActiveLogger.Warn($"Warning at packet position {displayPosition}: " +
                                 $"Ignoring unexpected occurrence of parameter {parameterId} in packet " +
-                                $"for operation {operation.Code}.{context.Buffer.Array.FormatHexBuffer(4)}");
+                                $"for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
                         }
                     }
                     catch (ArgumentException ex)
                     {
-                        throw new ParameterValueFormatException(context.Buffer.Array, valueStartOffset, ex.Message, ex);
+                        throw new ParameterValueFormatException(context.Buffer.Array!, valueStartOffset, ex.Message, ex);
                     }
                 }
             }
@@ -155,19 +151,16 @@ namespace DogAgilityCompetition.Circe.Protocol
             /// <summary>
             /// The buffer range that contains the header of the packet.
             /// </summary>
-            [NotNull]
             public PacketParseContext HeaderContext { get; }
 
             /// <summary>
             /// The buffer range that contains the payload (parameters) of the packet.
             /// </summary>
-            [NotNull]
             public PacketParseContext PayloadContext { get; }
 
             /// <summary>
             /// The buffer range that contains the trailer of the packet.
             /// </summary>
-            [NotNull]
             public PacketParseContext TrailerContext { get; }
 
             /// <summary>
@@ -175,7 +168,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             /// </summary>
             public bool HasChecksum { get; }
 
-            public PacketBufferScanner([NotNull] byte[] buffer)
+            public PacketBufferScanner(byte[] buffer)
             {
                 if (buffer.Length < PacketFormat.PacketHeaderLength + PacketFormat.PacketTrailerMinLength)
                 {
@@ -213,7 +206,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 PayloadContext = new PacketParseContext(buffer, PacketFormat.PacketHeaderLength, payloadSize);
             }
 
-            private static void VerifyChecksum([NotNull] byte[] buffer)
+            private static void VerifyChecksum(byte[] buffer)
             {
                 int storedChecksum = ExtractChecksum(buffer);
                 int calculatedChecksum = CalculateChecksum(buffer);
@@ -225,7 +218,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 }
             }
 
-            private static int ExtractChecksum([NotNull] byte[] buffer)
+            private static int ExtractChecksum(byte[] buffer)
             {
                 int checksumOffset = buffer.Length - PacketFormat.ChecksumOffsetFromEndOfPacket;
 
@@ -246,7 +239,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 return checksumValue;
             }
 
-            private static int CalculateChecksum([NotNull] byte[] buffer)
+            private static int CalculateChecksum(byte[] buffer)
             {
                 int checksumOffset = buffer.Length - PacketFormat.ChecksumOffsetFromEndOfPacket;
 
@@ -297,7 +290,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             /// <param name="count">
             /// The number of bytes to parse.
             /// </param>
-            public PacketParseContext([NotNull] byte[] buffer, int offset, int count)
+            public PacketParseContext(byte[] buffer, int offset, int count)
             {
                 Buffer = new ArraySegment<byte>(buffer, offset, count);
                 Position = offset;
@@ -332,7 +325,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 {
                     if (actual < '0' || actual > '9')
                     {
-                        throw new PacketFormatException(Buffer.Array, Position, "Expected digit.");
+                        throw new PacketFormatException(Buffer.Array!, Position, "Expected digit.");
                     }
                 });
             }
@@ -352,7 +345,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 {
                     if (actual != expected)
                     {
-                        throw new PacketFormatException(Buffer.Array, Position, $"Expected 0x{expected:X2} instead of 0x{actual:X2}.");
+                        throw new PacketFormatException(Buffer.Array!, Position, $"Expected 0x{expected:X2} instead of 0x{actual:X2}.");
                     }
                 });
             }
@@ -366,10 +359,10 @@ namespace DogAgilityCompetition.Circe.Protocol
             /// <returns>
             /// The consumed byte.
             /// </returns>
-            public byte Consume([CanBeNull] Action<byte> validateValueCallback = null)
+            public byte Consume(Action<byte>? validateValueCallback = null)
             {
                 AssertOffsetNotAtEnd();
-                byte actual = Buffer.Array[Position];
+                byte actual = Buffer.Array![Position];
 
                 validateValueCallback?.Invoke(actual);
 
@@ -382,7 +375,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             {
                 if (!IsPositionBeforeEnd)
                 {
-                    throw new PacketFormatException(Buffer.Array, Position, "Unexpected end of packet.");
+                    throw new PacketFormatException(Buffer.Array!, Position, "Unexpected end of packet.");
                 }
             }
         }

@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
@@ -35,34 +33,16 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="calculated">
         /// The calculated checksum value.
         /// </param>
-        public ChecksumMismatchException([NotNull] byte[] packet, int errorOffset, int stored, int calculated)
+        public ChecksumMismatchException(byte[] packet, int errorOffset, int stored, int calculated)
             : base(packet, errorOffset, FormatMessage(stored, calculated))
         {
             Stored = stored;
             Calculated = calculated;
         }
 
-        private ChecksumMismatchException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Stored = info.GetInt32("Stored");
-            Calculated = info.GetInt32("Calculated");
-        }
-
-        [NotNull]
         private static string FormatMessage(int stored, int calculated)
         {
             return $"Invalid checksum (stored=0x{stored:X2}, calculated=0x{calculated:X2}).";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            Guard.NotNull(info, nameof(info));
-
-            info.AddValue("Stored", Stored);
-            info.AddValue("Calculated", Calculated);
-
-            base.GetObjectData(info, context);
         }
     }
 }

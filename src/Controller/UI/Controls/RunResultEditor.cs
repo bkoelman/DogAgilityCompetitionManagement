@@ -18,13 +18,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed partial class RunResultEditor : UserControl
     {
-        [NotNull]
-        [ItemNotNull]
         private readonly Lazy<IEnumerable<Control>> allChildControls;
-
-        [CanBeNull]
-        private CompetitionRunResult originalRunVersion;
-
+        private CompetitionRunResult? originalRunVersion;
         private int messageHighlightCount;
 
         private bool HasValidationErrors
@@ -81,8 +76,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private bool EliminatedHasChanges => originalRunVersion != null && originalRunVersion.IsEliminated != ConvertEliminatedFromScreen();
 
-        public event EventHandler<RunResultChangingEventArgs> RunResultChanging;
-        public event EventHandler RunResultChanged;
+        public event EventHandler<RunResultChangingEventArgs>? RunResultChanging;
+        public event EventHandler? RunResultChanged;
 
         public RunResultEditor()
         {
@@ -100,18 +95,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             refusalsUpDown.Increment = CompetitionRunResult.RefusalStepSize;
         }
 
-        private static bool CompetitionRunTimingsElapsedEqual([NotNull] CompetitionRunTimings firstTimings, [NotNull] CompetitionRunTimings secondTimings)
+        private static bool CompetitionRunTimingsElapsedEqual(CompetitionRunTimings firstTimings, CompetitionRunTimings secondTimings)
         {
             return EqualitySupport.EqualsWithNulls(firstTimings.FinishTime, secondTimings.FinishTime, RecordedTimesElapsedEqual);
         }
 
-        private static bool RecordedTimesElapsedEqual([NotNull] RecordedTime firstRecordedTime, [NotNull] RecordedTime secondRecordedTime)
+        private static bool RecordedTimesElapsedEqual(RecordedTime firstRecordedTime, RecordedTime secondRecordedTime)
         {
             TimeSpanWithAccuracy elapsed = firstRecordedTime.ElapsedSince(secondRecordedTime);
             return elapsed.TimeValue == TimeSpan.Zero;
         }
 
-        [NotNull]
         private CompetitionRunTimings ConvertFinishTimeFromScreen(bool forceUserEdited)
         {
             TimeSpanWithAccuracy? finishTime = TimeSpanWithAccuracy.FromString(finishTimeTextBox.Text);
@@ -140,13 +134,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return eliminatedCheckBox.Checked;
         }
 
-        private void BindNumericUpDownToChangeEventHandler([NotNull] NumericUpDown control)
+        private void BindNumericUpDownToChangeEventHandler(NumericUpDown control)
         {
             TextBox innerTextBox = control.Controls.OfType<TextBox>().Single();
             innerTextBox.TextChanged += InputField_ValueChanged;
         }
 
-        public void TryUpdateWith([CanBeNull] CompetitionRunResult runResult)
+        public void TryUpdateWith(CompetitionRunResult? runResult)
         {
             if (!HasChanges)
             {
@@ -154,13 +148,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        public void OverwriteWith([CanBeNull] CompetitionRunResult runResult)
+        public void OverwriteWith(CompetitionRunResult? runResult)
         {
             originalRunVersion = runResult;
             CopyValuesFrom(runResult);
         }
 
-        private void CopyValuesFrom([CanBeNull] CompetitionRunResult runResult)
+        private void CopyValuesFrom(CompetitionRunResult? runResult)
         {
             errorProvider.Clear();
 
@@ -173,14 +167,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             UpdateControlState();
         }
 
-        private void SetScreenValueForCompetitor([CanBeNull] CompetitionRunResult runResult)
+        private void SetScreenValueForCompetitor(CompetitionRunResult? runResult)
         {
             competitorTextBox.Text = runResult == null
                 ? string.Empty
                 : runResult.Competitor.Number + " - " + runResult.Competitor.HandlerName + " - " + runResult.Competitor.DogName;
         }
 
-        private void SetScreenValueForFinishTime([CanBeNull] CompetitionRunResult runResult)
+        private void SetScreenValueForFinishTime(CompetitionRunResult? runResult)
         {
             string text = string.Empty;
 
@@ -193,7 +187,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             finishTimeTextBox.Text = text;
         }
 
-        private void SetScreenValueForFaultCount([CanBeNull] CompetitionRunResult runResult)
+        private void SetScreenValueForFaultCount(CompetitionRunResult? runResult)
         {
             if (runResult == null)
             {
@@ -206,7 +200,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void SetScreenValueForRefusalCount([CanBeNull] CompetitionRunResult runResult)
+        private void SetScreenValueForRefusalCount(CompetitionRunResult? runResult)
         {
             if (runResult == null)
             {
@@ -219,18 +213,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void SetScreenValueForEliminated([CanBeNull] CompetitionRunResult runResult)
+        private void SetScreenValueForEliminated(CompetitionRunResult? runResult)
         {
             eliminatedCheckBox.Checked = runResult is { IsEliminated: true };
         }
 
-        private void FinishTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void FinishTimeTextBox_Validating(object? sender, CancelEventArgs e)
         {
             string errorText = GetErrorForFinishTimeOnScreen();
             errorProvider.SetError(finishTimeTextBox, errorText);
         }
 
-        [NotNull]
         private string GetErrorForFinishTimeOnScreen()
         {
             try
@@ -245,13 +238,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return string.Empty;
         }
 
-        private void FaultsUpDown_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void FaultsUpDown_Validating(object? sender, CancelEventArgs e)
         {
             string errorText = GetErrorForFaultCountOnScreen();
             errorProvider.SetError(faultsUpDown, errorText);
         }
 
-        [NotNull]
         private string GetErrorForFaultCountOnScreen()
         {
             try
@@ -266,13 +258,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return string.Empty;
         }
 
-        private void RefusalsUpDown_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void RefusalsUpDown_Validating(object? sender, CancelEventArgs e)
         {
             string errorText = GetErrorForRefusalCountOnScreen();
             errorProvider.SetError(refusalsUpDown, errorText);
         }
 
-        [NotNull]
         private string GetErrorForRefusalCountOnScreen()
         {
             try
@@ -287,7 +278,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return string.Empty;
         }
 
-        private void AcceptButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void AcceptButton_Click(object? sender, EventArgs e)
         {
             if (ParentForm == null || HasValidationErrors)
             {
@@ -323,27 +314,26 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         }
 
         [AssertionMethod]
-        [NotNull]
         private CompetitionRunResult AssertOriginalRunVersionNotNull()
         {
             return Assertions.InternalValueIsNotNull(() => originalRunVersion, () => originalRunVersion);
         }
 
-        private void ShowAnimatedSuccess([NotNull] string message)
+        private void ShowAnimatedSuccess(string message)
         {
             messageLabel.Visible = true;
             messageLabel.ForeColor = Color.DarkGreen;
             StartHighlightMessage(message, Color.Lime);
         }
 
-        private void ShowAnimatedFailure([NotNull] string message)
+        private void ShowAnimatedFailure(string message)
         {
             messageLabel.Visible = true;
             messageLabel.ForeColor = Color.DarkRed;
             StartHighlightMessage(message, Color.Red);
         }
 
-        private void StartHighlightMessage([NotNull] string message, Color highlightColor)
+        private void StartHighlightMessage(string message, Color highlightColor)
         {
             messageLabel.Text = message;
 
@@ -353,7 +343,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             UpdateControlState();
         }
 
-        private void MessageHighlighter_HighlightCycleFinished([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void MessageHighlighter_HighlightCycleFinished(object? sender, EventArgs e)
         {
             messageHighlightCount++;
 
@@ -365,14 +355,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void RevertButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void RevertButton_Click(object? sender, EventArgs e)
         {
             CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
-            CompetitionRunResult activeVersionOrNull = CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersionNotNull.Competitor.Number);
+
+            CompetitionRunResult? activeVersionOrNull =
+                CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersionNotNull.Competitor.Number);
+
             OverwriteWith(activeVersionOrNull);
         }
 
-        private void InputField_ValueChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void InputField_ValueChanged(object? sender, EventArgs e)
         {
             UpdateControlState();
         }

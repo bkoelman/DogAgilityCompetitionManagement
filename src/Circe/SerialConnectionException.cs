@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -10,13 +8,8 @@ namespace DogAgilityCompetition.Circe
     [Serializable]
     public sealed class SerialConnectionException : Exception
     {
-        public SerialConnectionException([CanBeNull] string message)
+        public SerialConnectionException(string? message)
             : base(message)
-        {
-        }
-
-        private SerialConnectionException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

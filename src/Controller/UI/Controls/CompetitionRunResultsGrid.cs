@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -16,8 +15,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed partial class CompetitionRunResultsGrid : UserControl
     {
-        [CanBeNull]
-        private IButtonControl parentFormCancelButton;
+        private IButtonControl? parentFormCancelButton;
 
         public bool IsEditable
         {
@@ -38,8 +36,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         public bool HideBackColors { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [NotNull]
-        [ItemNotNull]
         public IEnumerable<CompetitionRunResult> DataSource
         {
             get
@@ -82,11 +78,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             DataSource = model.Results;
         }
 
-        private void RunResultsGrid_CellFormatting([CanBeNull] object sender, [NotNull] DataGridViewCellFormattingEventArgs e)
+        private void RunResultsGrid_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
             if (!HideBackColors)
             {
-                CompetitionRunResult runResult = DataSource.ElementAtOrDefault(e.RowIndex);
+                CompetitionRunResult? runResult = DataSource.ElementAtOrDefault(e.RowIndex);
 
                 if (runResult is { HasCompleted: true })
                 {
@@ -95,7 +91,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void RunResultsGrid_CellBeginEdit([CanBeNull] object sender, [NotNull] DataGridViewCellCancelEventArgs e)
+        private void RunResultsGrid_CellBeginEdit(object? sender, DataGridViewCellCancelEventArgs e)
         {
             // Prevent that pressing ESC closes the parent form when user wants to cancel cell editing.
 
@@ -106,7 +102,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void RunResultsGrid_CellEndEdit([CanBeNull] object sender, [NotNull] DataGridViewCellEventArgs e)
+        private void RunResultsGrid_CellEndEdit(object? sender, DataGridViewCellEventArgs e)
         {
             if (Parent is Form parentForm)
             {
@@ -116,9 +112,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             runResultsGrid.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
-        private void RunResultsGrid_CellValidating([CanBeNull] object sender, [NotNull] DataGridViewCellValidatingEventArgs e)
+        private void RunResultsGrid_CellValidating(object? sender, DataGridViewCellValidatingEventArgs e)
         {
-            DataGridViewColumn column = runResultsGrid.Columns[e.ColumnIndex];
+            DataGridViewColumn? column = runResultsGrid.Columns[e.ColumnIndex];
 
             if (IsTimeColumn(column))
             {
@@ -136,7 +132,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 try
                 {
-                    int value = int.Parse(e.FormattedValue.ToString());
+                    int value = int.Parse(e.FormattedValue.ToString()!);
                     CompetitionRunResult.AssertFaultCountIsValid(value);
                 }
                 catch (Exception ex)
@@ -149,7 +145,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 try
                 {
-                    int value = int.Parse(e.FormattedValue.ToString());
+                    int value = int.Parse(e.FormattedValue.ToString()!);
                     CompetitionRunResult.AssertRefusalCountIsValid(value);
                 }
                 catch (Exception ex)
@@ -160,7 +156,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private bool IsTimeColumn([NotNull] DataGridViewColumn column)
+        private bool IsTimeColumn(DataGridViewColumn column)
         {
             return column == IntermediateTime1Column || column == IntermediateTime2Column || column == IntermediateTime3Column || column == FinishTimeColumn;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -12,16 +11,12 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class AlertSource : IDisposable
     {
-        [NotNull]
         public static readonly AlertSource None = new(AlertPictureSourceItem.None, AlertSoundSourceItem.None);
 
-        [NotNull]
         public AlertPictureSourceItem Picture { get; }
-
-        [NotNull]
         public AlertSoundSourceItem Sound { get; }
 
-        public AlertSource([NotNull] AlertPictureSourceItem picture, [NotNull] AlertSoundSourceItem sound)
+        public AlertSource(AlertPictureSourceItem picture, AlertSoundSourceItem sound)
         {
             Guard.NotNull(picture, nameof(picture));
             Guard.NotNull(sound, nameof(sound));

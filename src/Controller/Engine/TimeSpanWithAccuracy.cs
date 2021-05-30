@@ -44,8 +44,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return new(TimeValue, timeAccuracy);
         }
 
-        [CanBeNull]
-        public static TimeSpanWithAccuracy? FromString([CanBeNull] string text, [CanBeNull] IFormatProvider formatProvider = null)
+        public static TimeSpanWithAccuracy? FromString(string? text, IFormatProvider? formatProvider = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -72,8 +71,7 @@ namespace DogAgilityCompetition.Controller.Engine
             throw new FormatException($"Time value '{text}' is invalid. Use format: s.mmm.");
         }
 
-        [NotNull]
-        private static Regex CreateTimeRegexFor([CanBeNull] IFormatProvider formatProvider)
+        private static Regex CreateTimeRegexFor(IFormatProvider? formatProvider)
         {
             formatProvider ??= NumberFormatInfo.InvariantInfo;
             var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
@@ -84,7 +82,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return timeRegex;
         }
 
-        private static TimeAccuracy GetAccuracyForSymbol([CanBeNull] string symbol)
+        private static TimeAccuracy GetAccuracyForSymbol(string? symbol)
         {
             switch (symbol)
             {
@@ -104,7 +102,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public string ToString([CanBeNull] string format /* discarded */, [CanBeNull] IFormatProvider formatProvider)
+        public string ToString(string? format /* discarded */, IFormatProvider? formatProvider)
         {
             formatProvider ??= NumberFormatInfo.InvariantInfo;
             var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
@@ -132,7 +130,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is TimeSpanWithAccuracy timeSpanWithAccuracy && Equals(timeSpanWithAccuracy);
         }

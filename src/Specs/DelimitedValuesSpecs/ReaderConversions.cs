@@ -82,7 +82,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
             // Act
             IDelimitedValuesReaderRow row = reader.First();
-            string cell = row.GetCell("A", _ => "Y");
+            string? cell = row.GetCell("A", _ => "Y");
 
             // Assert
             cell.Should().Be("Y");

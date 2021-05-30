@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.UI.Controls.Shapes;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -18,10 +17,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         private const int ArrowLength = 18;
 
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private static readonly List<ShapeState> StateRenderOrder = new()
         {
             ShapeState.Disabled,
@@ -30,23 +27,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             ShapeState.Selected
         };
 
-        [NotNull]
-        [ItemNotNull]
         private readonly List<Shape> shapes = new();
-
-        [NotNull]
         private readonly StateTransitionArrows arrows;
-
-        [NotNull]
         private readonly StateBlocks blocks;
-
-        [NotNull]
         private readonly Icon errorIcon;
 
         private CompetitionClassState activeState = CompetitionClassState.Offline;
-
         private int intermediateTimerCount = 3;
-
         private bool seenUnsupportedTransition;
 
         public override Font Font
@@ -103,7 +90,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             errorIcon = GetIconFromErrorProvider();
         }
 
-        [CanBeNull]
         private CompetitionClassState? TryGetPreviousState()
         {
             KeyValuePair<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> arrowFromPreviousState =
@@ -112,7 +98,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return arrowFromPreviousState.Key?.Item1;
         }
 
-        [NotNull]
         private static Icon GetIconFromErrorProvider()
         {
             using var provider = new ErrorProvider();
@@ -130,7 +115,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             PaintErrorIcon(e.Graphics);
         }
 
-        private void PaintShapeShadows([NotNull] Graphics graphics)
+        private void PaintShapeShadows(Graphics graphics)
         {
             foreach (Shape shape in shapes.OrderBy(x => StateRenderOrder.IndexOf(x.State)))
             {
@@ -138,7 +123,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void PaintShapeFills([NotNull] Graphics graphics)
+        private void PaintShapeFills(Graphics graphics)
         {
             foreach (Shape shape in shapes.OrderBy(x => StateRenderOrder.IndexOf(x.State)))
             {
@@ -146,7 +131,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void PaintShapeBorders([NotNull] Graphics graphics)
+        private void PaintShapeBorders(Graphics graphics)
         {
             foreach (Shape shape in shapes.OrderBy(x => StateRenderOrder.IndexOf(x.State)))
             {
@@ -154,7 +139,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void PaintErrorIcon([NotNull] Graphics graphics)
+        private void PaintErrorIcon(Graphics graphics)
         {
             if (seenUnsupportedTransition)
             {
@@ -181,7 +166,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             Invalidate();
         }
 
-        private void UpdateShapeStatesForTransition([CanBeNull] CompetitionClassState? previousState, CompetitionClassState nextState)
+        private void UpdateShapeStatesForTransition(CompetitionClassState? previousState, CompetitionClassState nextState)
         {
             ResetShapeStates();
             MarkCandidateShapes(nextState);
@@ -226,15 +211,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [NotNull]
-        private static IEnumerable<CompetitionClassState> AllStatesExcept([NotNull] params CompetitionClassState[] states)
+        private static IEnumerable<CompetitionClassState> AllStatesExcept(params CompetitionClassState[] states)
         {
             return Enum.GetValues(typeof(CompetitionClassState)).Cast<CompetitionClassState>().Except(states).ToArray();
         }
 
-        private void MarkSelectedShapes([CanBeNull] CompetitionClassState? previousState, CompetitionClassState nextState)
+        private void MarkSelectedShapes(CompetitionClassState? previousState, CompetitionClassState nextState)
         {
-            ArrowShape previousToNextArrow = null;
+            ArrowShape? previousToNextArrow = null;
 
             if (previousState != null)
             {
@@ -257,7 +241,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [NotNull]
         private static Tuple<CompetitionClassState, CompetitionClassState> GetTransition(CompetitionClassState from, CompetitionClassState to)
         {
             return new(from, to);
@@ -265,13 +248,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class StateTransitionArrows
         {
-            [NotNull]
             private readonly StateVisualizer owner;
 
-            [NotNull]
             public Dictionary<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> TransitionTable { get; }
 
-            public StateTransitionArrows([NotNull] StateVisualizer owner)
+            public StateTransitionArrows(StateVisualizer owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 this.owner = owner;
@@ -284,7 +265,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            [NotNull]
             private Dictionary<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> CreateTransitionArrowTable()
             {
                 var transitions = new List<Tuple<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape>>
@@ -391,7 +371,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return transitions.ToDictionary(pair => pair.Item1, pair => pair.Item2);
             }
 
-            [NotNull]
             private Tuple<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> ComposeTransition(CompetitionClassState fromState,
                 CompetitionClassState toState, HorizontalAlignment side, VerticalAlignment fromConnection, VerticalAlignment toConnection, int depth = 1)
             {
@@ -407,7 +386,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return Tuple.Create(transition, arrow);
             }
 
-            private static PointF GetPointFor([NotNull] TextBlock block, HorizontalAlignment side, VerticalAlignment connection)
+            private static PointF GetPointFor(TextBlock block, HorizontalAlignment side, VerticalAlignment connection)
             {
                 switch (side)
                 {
@@ -450,7 +429,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            [NotNull]
             private static ArrowShape CreateArrowFor(HorizontalAlignment side, PointF from, PointF to, int depth)
             {
                 switch (side)
@@ -466,13 +444,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            [NotNull]
             private static MultiLineArrow CreateArrowAtLeftSide(PointF from, PointF to, int depth)
             {
                 return new MultiLineArrow.Builder(from).Left(ArrowLength * depth).Up(from.Y - to.Y).Right(ArrowLength * depth).Build();
             }
 
-            [NotNull]
             private static MultiLineArrow CreateArrowAtRightSide(PointF from, PointF to, int depth)
             {
                 return new MultiLineArrow.Builder(from).Right(ArrowLength * depth).Up(from.Y - to.Y).Left(ArrowLength * depth).Build();
@@ -502,8 +478,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            [NotNull]
-            [ItemNotNull]
             private IEnumerable<ArrowShape> GetArrowsConnectedTo(CompetitionClassState state)
             {
                 var shapes = new HashSet<ArrowShape>();
@@ -521,15 +495,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return shapes;
             }
 
-            [NotNull]
-            [ItemNotNull]
             private IEnumerable<ArrowShape> GetIncomingArrowsFor(CompetitionClassState state)
             {
                 return from pair in TransitionTable where pair.Key.Item2 == state select pair.Value;
             }
 
-            [NotNull]
-            [ItemNotNull]
             private IEnumerable<ArrowShape> GetOutgoingArrowsFor(CompetitionClassState state)
             {
                 return from pair in TransitionTable where pair.Key.Item1 == state select pair.Value;
@@ -552,7 +522,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class StateBlocks
         {
-            [NotNull]
             private static readonly Dictionary<CompetitionClassState, string> StateNames = new()
             {
                 { CompetitionClassState.Offline, "Offline" },
@@ -567,13 +536,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 { CompetitionClassState.RunCompleted, "Run completed" }
             };
 
-            [NotNull]
             private readonly StateVisualizer owner;
 
-            [NotNull]
             public Dictionary<CompetitionClassState, TextBlock> Table { get; }
 
-            public StateBlocks([NotNull] StateVisualizer owner)
+            public StateBlocks(StateVisualizer owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 this.owner = owner;
@@ -586,7 +553,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            [NotNull]
             private Dictionary<CompetitionClassState, TextBlock> CreateTextBlockTable()
             {
                 const int offsetBlockX = 75;
@@ -613,7 +579,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return table;
             }
 
-            [NotNull]
             public TextBlock GetBlockForState(CompetitionClassState state)
             {
                 if (Table.ContainsKey(state))
@@ -624,7 +589,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 throw ExceptionFactory.CreateNotSupportedExceptionFor(state);
             }
 
-            public void SetFont([NotNull] Font value)
+            public void SetFont(Font value)
             {
                 foreach (TextBlock textBlock in Table.Values)
                 {

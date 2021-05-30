@@ -16,22 +16,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         private static readonly int CompetitorNumberMaximumValue = int.Parse(new string('9', NumberEntryFilter.MaxCompetitorNumberLength));
 
         public int Number { get; }
-
-        [NotNull]
         public string HandlerName { get; }
-
-        [NotNull]
         public string DogName { get; }
+        public string? CountryCode { get; }
 
-        [CanBeNull]
-        public string CountryCode { get; }
-
-        public Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName)
+        public Competitor(int number, string handlerName, string dogName)
             : this(number, handlerName, dogName, null)
         {
         }
 
-        private Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName, [CanBeNull] string countryCode)
+        private Competitor(int number, string handlerName, string dogName, string? countryCode)
         {
             Guard.InRangeInclusive(number, nameof(number), 1, CompetitorNumberMaximumValue);
             Guard.NotNullNorWhiteSpace(handlerName, nameof(handlerName));
@@ -43,8 +37,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             CountryCode = string.IsNullOrWhiteSpace(countryCode) ? null : countryCode;
         }
 
-        [NotNull]
-        public Competitor ChangeCountryCode([CanBeNull] string countryCode)
+        public Competitor ChangeCountryCode(string? countryCode)
         {
             return new(Number, HandlerName, DogName, countryCode);
         }
@@ -69,13 +62,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return textBuilder.ToString();
         }
 
-        public bool Equals(Competitor other)
+        public bool Equals(Competitor? other)
         {
             return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName && other.DogName == DogName &&
                 other.CountryCode == CountryCode;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Competitor);
         }
@@ -85,7 +78,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^ (CountryCode ?? string.Empty).GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] Competitor left, [CanBeNull] Competitor right)
+        public static bool operator ==(Competitor? left, Competitor? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -100,7 +93,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] Competitor left, [CanBeNull] Competitor right)
+        public static bool operator !=(Competitor? left, Competitor? right)
         {
             return !(left == right);
         }

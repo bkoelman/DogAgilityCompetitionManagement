@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -13,7 +12,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class MediatorStatusSelectionForm : Form
     {
-        [NotNull]
         private static readonly Dictionary<int, string> CodeToTextMap = new();
 
         public int StatusCode
@@ -47,7 +45,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             return int.TryParse(statusComboBox.Text, out int parsedValue) && parsedValue is >= 0 and <= 999 ? parsedValue : -1;
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (StatusCode == -1)
             {
@@ -59,7 +57,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        [NotNull]
         public static string GetTextFor(int statusCode)
         {
             return CodeToTextMap.ContainsKey(statusCode) ? CodeToTextMap[statusCode] : statusCode.ToString(CultureInfo.InvariantCulture);

@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Mediator
 {
@@ -14,10 +13,9 @@ namespace DogAgilityCompetition.Circe.Mediator
         /// <summary>
         /// Gets the name of the COM port, if available.
         /// </summary>
-        [CanBeNull]
-        public string ComPort { get; }
+        public string? ComPort { get; }
 
-        public MediatorConnectionStateEventArgs(MediatorConnectionState state, [CanBeNull] string comPort)
+        public MediatorConnectionStateEventArgs(MediatorConnectionState state, string? comPort)
         {
             State = state;
             ComPort = comPort;

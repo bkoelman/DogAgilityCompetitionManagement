@@ -6,7 +6,6 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
@@ -17,19 +16,9 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     [TestFixture]
     public sealed class NumberEntryFilters
     {
-        [NotNull]
         private static readonly WirelessNetworkAddress ThisRemoteControl = new("AAA111");
-
-        [NotNull]
         private static readonly WirelessNetworkAddress OtherRemoteControl = new("BBB222");
-
-#pragma warning disable 649 // Readonly field is never assigned
-        // Reason: A nullable type with value 'null' is explicitly desired here.
-        [CanBeNull]
-        private static readonly TimeSpan? NullTime;
-#pragma warning restore 649
-
-        [NotNull]
+        private static readonly TimeSpan? NullTime = null!;
         private static readonly TimeSpan? OneMinute = 1.Minutes();
 
         #region Tests for pressing modifier keys
@@ -478,14 +467,11 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         private sealed class FilterEventListener : IDisposable
         {
-            [CanBeNull]
-            private NumberEntryFilter source;
+            private NumberEntryFilter? source;
 
-            [NotNull]
-            [ItemNotNull]
             public List<EventArgsWithName<NumberEntryFilter>> EventsCollected { get; } = new();
 
-            public FilterEventListener([NotNull] NumberEntryFilter source)
+            public FilterEventListener(NumberEntryFilter source)
             {
                 Guard.NotNull(source, nameof(source));
 
@@ -494,27 +480,27 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
                 AttachFilterHandlers();
             }
 
-            private void SourceOnNotifyCompetitorSelecting([CanBeNull] object sender, [NotNull] CompetitorSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelecting(object? sender, CompetitorSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelecting", e));
             }
 
-            private void SourceOnNotifyDigitReceived([CanBeNull] object sender, [NotNull] CompetitorNumberSelectionEventArgs e)
+            private void SourceOnNotifyDigitReceived(object? sender, CompetitorNumberSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyDigitReceived", e));
             }
 
-            private void SourceOnNotifyCompetitorSelected([CanBeNull] object sender, [NotNull] CompetitorNumberSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelected(object? sender, CompetitorNumberSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelected", e));
             }
 
-            private void SourceOnNotifyCompetitorSelectCancelled([CanBeNull] object sender, [NotNull] CompetitorSelectionEventArgs e)
+            private void SourceOnNotifyCompetitorSelectCancelled(object? sender, CompetitorSelectionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyCompetitorSelectCancelled", e));
             }
 
-            private void SourceOnNotifyUnknownAction([CanBeNull] object sender, [NotNull] UnknownDeviceActionEventArgs e)
+            private void SourceOnNotifyUnknownAction(object? sender, UnknownDeviceActionEventArgs e)
             {
                 EventsCollected.Add(new EventArgsWithName<NumberEntryFilter>("NotifyUnknownAction", e));
             }
@@ -557,7 +543,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
     public static class EventArgsWithNameForNumberEntryFilterExtensions
     {
-        public static void ShouldBeNotifyCompetitorSelecting([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
+        public static void ShouldBeNotifyCompetitorSelecting(this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
@@ -568,7 +554,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             competitorSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
         }
 
-        public static void ShouldBeNotifyDigitReceived([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
+        public static void ShouldBeNotifyDigitReceived(this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
             int competitorNumber)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
@@ -581,7 +567,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             competitorNumberSelectionEventArgs.CompetitorNumber.Should().Be(competitorNumber);
         }
 
-        public static void ShouldBeNotifyCompetitorSelected([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
+        public static void ShouldBeNotifyCompetitorSelected(this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor,
             int competitorNumber)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
@@ -594,8 +580,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             competitorNumberSelectionEventArgs.CompetitorNumber.Should().Be(competitorNumber);
         }
 
-        public static void ShouldBeNotifyCompetitorSelectCancelled([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
-            bool isCurrentCompetitor)
+        public static void ShouldBeNotifyCompetitorSelectCancelled(this EventArgsWithName<NumberEntryFilter> eventArgsWithName, bool isCurrentCompetitor)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
 
@@ -606,8 +591,8 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             competitorSelectionEventArgs.IsCurrentCompetitor.Should().Be(isCurrentCompetitor);
         }
 
-        public static void ShouldBeNotifyUnknownAction([NotNull] this EventArgsWithName<NumberEntryFilter> eventArgsWithName,
-            [NotNull] WirelessNetworkAddress source, [CanBeNull] RemoteKey? key, [CanBeNull] TimeSpan? time)
+        public static void ShouldBeNotifyUnknownAction(this EventArgsWithName<NumberEntryFilter> eventArgsWithName, WirelessNetworkAddress source,
+            RemoteKey? key, TimeSpan? time)
         {
             Guard.NotNull(eventArgsWithName, nameof(eventArgsWithName));
             Guard.NotNull(source, nameof(source));

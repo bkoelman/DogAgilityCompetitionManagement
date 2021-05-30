@@ -12,16 +12,13 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// </summary>
     public sealed class BinaryParameter : Parameter
     {
-        [NotNull]
         private static readonly Regex HexFormatRegex = new("^([0-9A-F][0-9A-F])+$", RegexOptions.Compiled);
 
-        [NotNull]
         private readonly List<byte> innerValue = new();
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [NotNull]
         public IList<byte> Value => innerValue;
 
         /// <summary>
@@ -44,7 +41,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public BinaryParameter([NotNull] string name, int id, bool isRequired)
+        public BinaryParameter(string name, int id, bool isRequired)
             : base(name, id, null, isRequired)
         {
         }
@@ -66,8 +63,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             return Encoding.ASCII.GetBytes(hexString);
         }
 
-        [NotNull]
-        private static string BytesToHexEncodedText([NotNull] ICollection<byte> source)
+        private static string BytesToHexEncodedText(ICollection<byte> source)
         {
             var textBuilder = new StringBuilder(source.Count * 2);
 
@@ -99,8 +95,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             ReplaceValueWith(hexEncoded);
         }
 
-        [NotNull]
-        private IEnumerable<byte> HexEncodedTextToBytes([NotNull] string hexText)
+        private IEnumerable<byte> HexEncodedTextToBytes(string hexText)
         {
             if (HexFormatRegex.IsMatch(hexText))
             {
@@ -120,7 +115,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                 $"Value of {GetType().Name} {Name} must consist of even number of characters in range 0-9 or A-F.");
         }
 
-        public void ReplaceValueWith([NotNull] IEnumerable<byte> value)
+        public void ReplaceValueWith(IEnumerable<byte> value)
         {
             Guard.NotNull(value, nameof(value));
 

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -52,7 +51,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             placementLabel.Text = string.Empty;
         }
 
-        public void SetCompetitionRunResult([NotNull] CompetitionRunResult runResult)
+        public void SetCompetitionRunResult(CompetitionRunResult runResult)
         {
             Guard.NotNull(runResult, nameof(runResult));
 

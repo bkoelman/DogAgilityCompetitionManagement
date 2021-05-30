@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms
 {
@@ -8,10 +7,9 @@ namespace DogAgilityCompetition.WinForms
     /// </summary>
     public sealed class DisposableHolder : IDisposable
     {
-        [NotNull]
         private readonly Action disposeAction;
 
-        public DisposableHolder([NotNull] Action disposeAction)
+        public DisposableHolder(Action disposeAction)
         {
             this.disposeAction = disposeAction;
         }

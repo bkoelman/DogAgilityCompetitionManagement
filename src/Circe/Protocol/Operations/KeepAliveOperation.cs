@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -22,14 +21,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 51;
 
-        [NotNull]
+        public static readonly Version CurrentProtocolVersion = new(0, 2, 2);
+
         private readonly VersionParameter protocolVersionParameter = ParameterFactory.Create(ParameterType.Version.ProtocolVersion, true);
-
-        [NotNull]
         private readonly IntegerParameter mediatorStatusParameter = ParameterFactory.Create(ParameterType.Integer.MediatorStatus, true);
-
-        [NotNull]
-        public static Version CurrentProtocolVersion => new(0, 2, 2);
 
         /// <summary>
         /// Required. Gets or sets the version number of the CIRCE protocol that is in use.
@@ -38,8 +33,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// Only <see cref="Version.Major" />, <see cref="Version.Minor" /> and <see cref="Version.Build" /> are used, which map to Major, Minor and Release as
         /// described in the CIRCE spec. This means that <see cref="Version.Revision" /> is discarded.
         /// </remarks>
-        [CanBeNull]
-        public Version ProtocolVersion
+        public Version? ProtocolVersion
         {
             get => protocolVersionParameter.Value;
             set => protocolVersionParameter.Value = value;
@@ -48,7 +42,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Required. Indicates internal status of the mediator device. See <see cref="KnownMediatorStatusCode" /> for some predefined values.
         /// </summary>
-        [CanBeNull]
         public int? MediatorStatus
         {
             get => mediatorStatusParameter.Value;
@@ -64,7 +57,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="mediatorStatus">
         /// Indicates internal status of the mediator device.
         /// </param>
-        public KeepAliveOperation([NotNull] Version protocolVersion, int mediatorStatus)
+        public KeepAliveOperation(Version protocolVersion, int mediatorStatus)
             : this()
         {
             Guard.NotNull(protocolVersion, nameof(protocolVersion));

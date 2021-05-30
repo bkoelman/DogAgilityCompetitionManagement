@@ -5,7 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -123,19 +122,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private static class Reflected
         {
-            [NotNull]
             private static readonly MethodInfo DeflateRectMethod;
-
-            [NotNull]
             private static readonly MethodInfo CreateStringFormatMethod;
 
             static Reflected()
             {
                 Assembly assembly = typeof(Label).Assembly;
-                Type type = assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true);
-                DeflateRectMethod = type.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static);
-
-                CreateStringFormatMethod = typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance);
+                Type type = Require(assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
+                DeflateRectMethod = Require(type.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
+                CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
             }
 
             public static Rectangle DeflateRect(Rectangle rect, Padding padding)
@@ -144,13 +139,22 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     rect,
                     padding
-                });
+                })!;
             }
 
-            [NotNull]
-            public static StringFormat GetStringFormat([NotNull] Control target)
+            public static StringFormat GetStringFormat(Control target)
             {
-                return (StringFormat)CreateStringFormatMethod.Invoke(target, new object[0]);
+                return (StringFormat)CreateStringFormatMethod.Invoke(target, new object[0])!;
+            }
+
+            private static T Require<T>(T? value)
+            {
+                if (ReferenceEquals(value, null))
+                {
+                    throw new Exception("Reflection failure.");
+                }
+
+                return value;
             }
         }
     }

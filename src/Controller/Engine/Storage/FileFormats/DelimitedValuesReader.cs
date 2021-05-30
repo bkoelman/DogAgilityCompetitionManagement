@@ -21,14 +21,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
     /// </remarks>
     public sealed class DelimitedValuesReader : IEnumerable<IDelimitedValuesReaderRow>, IDisposable
     {
-        [NotNull]
         private readonly DelimitedValuesReaderSettings settings;
-
-        [NotNull]
         private readonly DelimitedValuesEnumerator enumerator;
 
-        [CanBeNull]
-        private TextReader source;
+        private TextReader? source;
 
         /// <summary>
         /// Gets the line number in source at which the current row starts.
@@ -45,8 +41,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <summary>
         /// Gets the column names on the first line in source.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(enumerator.ColumnNames);
 
         /// <summary>
@@ -55,7 +49,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <remarks>
         /// Can be used for logging purposes, after parsing into cells has thrown an exception.
         /// </remarks>
-        [NotNull]
         public string Line
         {
             get
@@ -74,7 +67,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="settings">
         /// Settings that customize the behavior of this instance.
         /// </param>
-        public DelimitedValuesReader([NotNull] TextReader source, [CanBeNull] DelimitedValuesReaderSettings settings = null)
+        public DelimitedValuesReader(TextReader source, DelimitedValuesReaderSettings? settings = null)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -137,23 +130,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             private const char CarriageReturnCharCode = (char)13;
             private const char LineFeedCharCode = (char)10;
 
-            [NotNull]
-            [ItemNotNull]
             private readonly DelimitedValuesReader owner;
-
-            [NotNull]
-            [ItemNotNull]
             private readonly List<string> columnNames;
 
             private char effectiveFieldSeparator;
             private int readerLineNumber;
             private int rowStartLineNumber;
-
-            [CanBeNull]
-            private DelimitedValuesReaderRow currentRow;
-
-            [CanBeNull]
-            private string currentLine;
+            private DelimitedValuesReaderRow? currentRow;
+            private string? currentLine;
 
             object IEnumerator.Current => Current;
 
@@ -164,7 +148,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 get
                 {
                     AssertNotBeforeStart();
-                    return currentRow;
+                    return currentRow!;
                 }
             }
 
@@ -177,7 +161,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 }
             }
 
-            [NotNull]
             public string Line
             {
                 get
@@ -187,8 +170,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 }
             }
 
-            [NotNull]
-            [ItemNotNull]
             public List<string> ColumnNames
             {
                 get
@@ -198,10 +179,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 }
             }
 
-            [NotNull]
             public CultureInfo EffectiveCulture { get; }
 
-            public DelimitedValuesEnumerator([NotNull] [ItemNotNull] DelimitedValuesReader owner)
+            public DelimitedValuesEnumerator(DelimitedValuesReader owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 owner.AssertNotDisposed();
@@ -209,7 +189,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 this.owner = owner;
                 EffectiveCulture = this.owner.settings.Culture ?? CultureInfo.InvariantCulture;
 
-                string headerLine = ConsumeLinesForSingleRow();
+                string? headerLine = ConsumeLinesForSingleRow();
 
                 if (headerLine == null)
                 {
@@ -219,9 +199,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 columnNames = ParseColumnHeaders(headerLine);
             }
 
-            [NotNull]
-            [ItemNotNull]
-            private List<string> ParseColumnHeaders([NotNull] string line)
+            private List<string> ParseColumnHeaders(string line)
             {
                 SetEffectiveFieldSeparator(line);
 
@@ -231,7 +209,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return columnHeaderNames;
             }
 
-            private void SetEffectiveFieldSeparator([NotNull] string line)
+            private void SetEffectiveFieldSeparator(string line)
             {
                 if (owner.settings.FieldSeparator != null)
                 {
@@ -242,11 +220,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 effectiveFieldSeparator = AutoDetectFieldSeparator(line);
             }
 
-            private static char AutoDetectFieldSeparator([NotNull] string line)
+            private static char AutoDetectFieldSeparator(string line)
             {
                 // It would be even better to not count occurrences inside qualified text.
                 // But because callers are expected to verify that expected column headers exist
-                // in source, an incorrect separator detection is likely to fail during header 
+                // in source, an incorrect separator detection is likely to fail during header
                 // verification anyway.
 
                 var charCounts = new Dictionary<char, int>
@@ -262,18 +240,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return charCounts.First(pair => pair.Value == highestOccurrence).Key;
             }
 
-            [NotNull]
-            [ItemNotNull]
-            private List<string> ParseLineIntoCells([NotNull] string line)
+            private List<string> ParseLineIntoCells(string line)
             {
-                // A cell must be surrounded by text qualifiers when the cell value contains field separator 
-                // characters, significant leading/trailing whitespace, line breaks or text qualifier 
+                // A cell must be surrounded by text qualifiers when the cell value contains field separator
+                // characters, significant leading/trailing whitespace, line breaks or text qualifier
                 // characters. Any text qualifier characters in the cell value must be duplicated.
                 //
                 // Example: __"_Doe,_John_"__,_"a_""great""_idea"_ => { _Doe,_John_ , a_"great"_idea }
 
                 var cells = new List<string>();
-                StringBuilder cellBuilder = null;
+                StringBuilder? cellBuilder = null;
 
                 // True when cell starts with a normal character (not a text qualifier).
                 bool? isPlainCell = null;
@@ -380,7 +356,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             {
                 owner.AssertNotDisposed();
 
-                string dataLine = ConsumeLinesForSingleRow();
+                string? dataLine = ConsumeLinesForSingleRow();
 
                 if (dataLine == null)
                 {
@@ -394,14 +370,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return true;
             }
 
-            [CanBeNull]
-            private string ConsumeLinesForSingleRow()
+            private string? ConsumeLinesForSingleRow()
             {
                 int newRowStartLineNumber = readerLineNumber + 1;
 
-                string line = ReadToNextLineBreak(out bool missingClosingTextQualifier);
+                string? line = ReadToNextLineBreak(out bool missingClosingTextQualifier);
 
-                // Set properties before parsing into cells, so that callers can inspect/log 
+                // Set properties before parsing into cells, so that callers can inspect/log
                 // the unparsed text line after catching any exceptions raised while parsing.
                 rowStartLineNumber = newRowStartLineNumber;
                 currentLine = line;
@@ -414,8 +389,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return line;
             }
 
-            [CanBeNull]
-            private string ReadToNextLineBreak(out bool missingClosingTextQualifier)
+            private string? ReadToNextLineBreak(out bool missingClosingTextQualifier)
             {
                 // Keep reading until we see a line break outside a quoted field.
                 int charsSeen = 0;
@@ -425,9 +399,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 
                 while (true)
                 {
-                    // ReSharper disable once PossibleNullReferenceException
-                    // Reason: All callers up the call stack have called owner.AssertNotDisposed().
-                    int charCode = owner.source.Read();
+                    // Justification for nullable suppression: All callers up the call stack have called owner.AssertNotDisposed().
+                    int charCode = owner.source!.Read();
 
                     if (charCode != -1)
                     {
@@ -503,7 +476,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             }
 
             [AssertionMethod]
-            private static void AssertNotEmpty([NotNull] [ItemNotNull] List<string> columnHeaderNames)
+            private static void AssertNotEmpty(List<string> columnHeaderNames)
             {
                 if (columnHeaderNames.Count == 0)
                 {
@@ -512,7 +485,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             }
 
             [AssertionMethod]
-            private static void AssertNoDuplicates([NotNull] [ItemNotNull] IEnumerable<string> headerColumnNames)
+            private static void AssertNoDuplicates(IEnumerable<string> headerColumnNames)
             {
                 var columnSet = new HashSet<string>();
 
@@ -528,7 +501,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             }
 
             [AssertionMethod]
-            private void AssertCellCountSameAsColumnCount([NotNull] [ItemNotNull] IReadOnlyCollection<string> cellValues)
+            private void AssertCellCountSameAsColumnCount(IReadOnlyCollection<string> cellValues)
             {
                 if (cellValues.Count != columnNames.Count)
                 {
@@ -539,23 +512,14 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 
         private sealed class DelimitedValuesReaderRow : IDelimitedValuesReaderRow
         {
-#pragma warning disable 649 // Readonly field is never assigned
-            [NotNull]
-            // ReSharper disable once NotNullMemberIsNotInitialized
-            // Reason: This blocks Resharper warning "Possible 'null' assignment to entity marked with 'NotNull' attribute"
-            private static readonly ITypeDescriptorContext NullContext;
-#pragma warning restore 649
+            private static readonly ITypeDescriptorContext NullContext = null!;
 
-            [NotNull]
             private readonly DelimitedValuesEnumerator sourceEnumerator;
-
-            [NotNull]
-            [ItemNotNull]
             private readonly List<string> cellValues;
 
             public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(sourceEnumerator.ColumnNames);
 
-            public DelimitedValuesReaderRow([NotNull] DelimitedValuesEnumerator sourceEnumerator, [NotNull] [ItemNotNull] List<string> cellValues)
+            public DelimitedValuesReaderRow(DelimitedValuesEnumerator sourceEnumerator, List<string> cellValues)
             {
                 this.sourceEnumerator = sourceEnumerator;
                 this.cellValues = cellValues;
@@ -580,7 +544,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return cellValues[index];
             }
 
-            public T GetCell<T>(string columnName, Converter<string, T> converter = null)
+            public T? GetCell<T>(string columnName, Converter<string, T>? converter = null)
             {
                 Guard.NotNullNorEmpty(columnName, nameof(columnName));
 
@@ -588,11 +552,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 return converter != null ? converter(cellValue) : ConvertCell<T>(cellValue);
             }
 
-            [CanBeNull]
-            private T ConvertCell<T>([NotNull] string cellValue)
+            private T? ConvertCell<T>(string cellValue)
             {
                 TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
-                object converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
+                object? converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
                 return (T)converted;
             }
         }

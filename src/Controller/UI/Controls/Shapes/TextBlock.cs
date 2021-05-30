@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 {
@@ -10,7 +9,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
     /// </summary>
     public sealed class TextBlock : Shape
     {
-        [NotNull]
         private readonly string text;
 
         private readonly RectangleF boxRect;
@@ -59,10 +57,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
         public PointF RightBottomConnection => new(boxRect.X + boxRect.Width, boxRect.Y + BottomOffsetY);
 
-        [NotNull]
         public Font Font { get; set; }
 
-        public TextBlock([NotNull] string text, [NotNull] Font font, RectangleF rectangle)
+        public TextBlock(string text, Font font, RectangleF rectangle)
         {
             Guard.NotNullNorWhiteSpace(text, nameof(text));
             Guard.NotNull(font, nameof(font));
@@ -101,7 +98,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
             graphics.DrawRoundedRectangle(Pens.Black, boxRect, 7);
         }
 
-        [NotNull]
         private Brush GetBrushForFill()
         {
             var topRight = new PointF(boxRect.X + boxRect.Size.Width, boxRect.Y);

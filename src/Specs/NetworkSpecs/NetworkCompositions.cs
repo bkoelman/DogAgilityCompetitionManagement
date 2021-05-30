@@ -5,7 +5,6 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -18,7 +17,6 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
     [TestFixture]
     public sealed class NetworkCompositions
     {
-        [NotNull]
         private static readonly WirelessNetworkAddress DeviceAddress = new("ABCDEF");
 
         [Test]
@@ -142,13 +140,12 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
         public void When_adding_an_empty_device_it_must_fail()
         {
             // Arrange
-            const WirelessNetworkAddress missingDevice = null;
+            const WirelessNetworkAddress? missingDevice = null;
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: The goal of this test is to cause failure when no device is specified.
-            Action action = () => composition = composition.ChangeRolesFor(missingDevice,
+            // Justification for nullable suppression: The goal of this test is to cause failure when no device is specified.
+            Action action = () => composition = composition.ChangeRolesFor(missingDevice!,
                 DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert

@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.MediatorEmulator.Engine;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -17,18 +16,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class KeypadControl : UserControl
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private static readonly IReadOnlyCollection<RawDeviceKeys> ModifierRawKeys = new ReadOnlyCollection<RawDeviceKeys>(new List<RawDeviceKeys>
         {
             RawDeviceKeys.EnterCurrentCompetitor,
             RawDeviceKeys.EnterNextCompetitor
         });
 
-        [NotNull]
-        [ItemNotNull]
         private readonly Lazy<Dictionary<ButtonBase, RawDeviceKeys>> buttonToKeyLookupLazy;
 
         private RawDeviceKeys keysDown = RawDeviceKeys.None;
@@ -60,8 +55,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        public event EventHandler StatusChanged;
-        public event EventHandler<EventArgs<RawDeviceKeys>> KeysDownChanged;
+        public event EventHandler? StatusChanged;
+        public event EventHandler<EventArgs<RawDeviceKeys>>? KeysDownChanged;
 
         public KeypadControl()
         {
@@ -72,7 +67,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             UpdateButtons();
         }
 
-        [NotNull]
         private Dictionary<ButtonBase, RawDeviceKeys> CreateButtonToKeyLookupTable()
         {
             return new()
@@ -157,7 +151,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private RawDeviceKeys GetKeyForButton([NotNull] ButtonBase button)
+        private RawDeviceKeys GetKeyForButton(ButtonBase button)
         {
             if (!buttonToKeyLookupLazy.Value.ContainsKey(button))
             {
@@ -167,7 +161,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             return buttonToKeyLookupLazy.Value[button];
         }
 
-        [NotNull]
         private string GetButtonText(RawDeviceKeys key)
         {
             bool hasCore = (Features & RemoteEmulatorFeatures.CoreKeys) != 0;
@@ -214,14 +207,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private void FeatureCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void FeatureCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             UpdateButtons();
 
             StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void CompetitorCheckBox_CheckedChanged([NotNull] object sender, [NotNull] EventArgs e)
+        private void CompetitorCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             UpdateButtons();
 
@@ -233,7 +226,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             HandleKeyChange(keyChanged, isKeyDownEvent);
         }
 
-        private void KeyButton_MouseDown([NotNull] object sender, [NotNull] MouseEventArgs e)
+        private void KeyButton_MouseDown(object sender, MouseEventArgs e)
         {
             // When user presses mouse button, leaves with Alt+Tab and releases the mouse button, then we do not 
             // receive a matching MouseUp event. Even when multiple mice are connected, only one WinForms button 
@@ -267,7 +260,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private void KeyButton_MouseUp([NotNull] object sender, [NotNull] MouseEventArgs e)
+        private void KeyButton_MouseUp(object sender, MouseEventArgs e)
         {
             var button = (ButtonBase)sender;
             Log.Debug($"MouseKeyUp on button {button.Text}");

@@ -54,7 +54,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             bottomPanel.Location = new Point(bottomPanel.Location.X, PaddingTop + h + CellSpacing + h + CellSpacing);
         }
 
-        private void CustomDisplayForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void CustomDisplayForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
@@ -62,7 +62,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void CustomDisplayForm_SizeChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CustomDisplayForm_SizeChanged(object? sender, EventArgs e)
         {
             ResizePanelsToFitForm();
         }
@@ -80,7 +80,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             clockTimer.Enabled = Settings.Default.CustomDisplayModeFirstLineIsSystemTime;
         }
 
-        private void ClockTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ClockTimer_Tick(object? sender, EventArgs e)
         {
             if (Settings.Default.CustomDisplayModeFirstLineIsSystemTime)
             {
@@ -89,7 +89,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         }
 
         [Pure]
-        [NotNull]
         private static string GetCurrentTime()
         {
             return SystemContext.Now().ToShortTimeString();

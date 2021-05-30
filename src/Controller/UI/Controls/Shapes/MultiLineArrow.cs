@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 {
@@ -12,13 +11,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
     /// </summary>
     public sealed class MultiLineArrow : ArrowShape
     {
-        [NotNull]
         private readonly PointF[] arrowPoints;
-
-        [NotNull]
         private readonly PointF[] shadowPoints;
 
-        private MultiLineArrow([NotNull] IEnumerable<PointF> points)
+        private MultiLineArrow(IEnumerable<PointF> points)
         {
             Guard.NotNull(points, nameof(points));
 
@@ -74,7 +70,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
         internal sealed class Builder
         {
-            [NotNull]
             private readonly IList<PointF> arrowPoints;
 
             public Builder(PointF start)
@@ -85,13 +80,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
                 }.ToList();
             }
 
-            [NotNull]
             public Builder Up(float length)
             {
                 return Down(-length);
             }
 
-            [NotNull]
             public Builder Down(float length)
             {
                 PointF lastPoint = arrowPoints.Last();
@@ -99,13 +92,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
                 return this;
             }
 
-            [NotNull]
             public Builder Left(float length)
             {
                 return Right(-length);
             }
 
-            [NotNull]
             public Builder Right(float length)
             {
                 PointF lastPoint = arrowPoints.Last();
@@ -113,7 +104,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
                 return this;
             }
 
-            [NotNull]
             public MultiLineArrow Build()
             {
                 return new(arrowPoints);

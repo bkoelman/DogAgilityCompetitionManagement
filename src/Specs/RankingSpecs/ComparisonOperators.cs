@@ -16,7 +16,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         public void WirelessNetworkAddress()
         {
             // Arrange
-            WirelessNetworkAddress w0 = null;
+            WirelessNetworkAddress? w0 = null;
             var w1 = new WirelessNetworkAddress("111111");
             var w2 = new WirelessNetworkAddress("222222");
 

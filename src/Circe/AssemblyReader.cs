@@ -1,18 +1,16 @@
 ﻿using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
     public static class AssemblyReader
     {
-        [NotNull]
         public static string GetInformationalVersion()
         {
             var assembly = Assembly.GetEntryAssembly();
 
-            CustomAttributeData versionAttribute =
-                assembly.CustomAttributes.FirstOrDefault(data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
+            CustomAttributeData? versionAttribute =
+                assembly?.CustomAttributes.FirstOrDefault(data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
 
             if (versionAttribute != null && versionAttribute.ConstructorArguments.Any())
             {

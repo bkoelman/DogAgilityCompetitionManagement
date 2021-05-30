@@ -6,7 +6,6 @@ using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -75,7 +74,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result < 0 ? OrderExpect.WinnerIsX : result > 0 ? OrderExpect.WinnerIsY : OrderExpect.IsEven;
         }
 
-        [NotNull]
         private static CompetitionRunResult CreateCompetitorForCompletion(bool hasFinished, bool isEliminated)
         {
             var result = new CompetitionRunResult(new Competitor(1, "A", "A"));
@@ -143,9 +141,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static void AssertCompetitorsAreCompatibleWithProposedScenario([NotNull] CompetitionRunResult xCompetitor,
-            [NotNull] CompetitionRunResult yCompetitor, [NotNull] OrderingScenario scenario,
-            [NotNull] CompetitionClassModel model)
+        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor,
+            CompetitionRunResult yCompetitor, OrderingScenario scenario, CompetitionClassModel model)
         {
             var xCalculator = new CompetitorAssessmentCalculator(xCompetitor, model);
             var yCalculator = new CompetitorAssessmentCalculator(yCompetitor, model);
@@ -187,7 +184,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        [NotNull]
         private static CompetitionRunResult CreateCompetitorForPenaltyOverrun(bool penaltyTimeIsGreater,
             bool overrunTimeIsGreater)
         {
@@ -251,7 +247,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        [NotNull]
         private static CompetitionRunResult CreateCompetitorForFinishWithNumber(bool finishTimeIsGreater,
             bool competitorNumberIsGreater)
         {

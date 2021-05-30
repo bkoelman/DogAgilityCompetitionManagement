@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -14,20 +13,17 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     /// </summary>
     public sealed class ModelSerializer
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private readonly string path;
 
-        public ModelSerializer([NotNull] string path)
+        public ModelSerializer(string path)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
             this.path = path;
         }
 
-        [NotNull]
         public CompetitionClassModel Load()
         {
             using var reader = XmlReader.Create(path, new XmlReaderSettings
@@ -39,7 +35,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
             try
             {
-                var xmlObject = (CompetitionClassModelXml)serializer.ReadObject(reader);
+                var xmlObject = (CompetitionClassModelXml)serializer.ReadObject(reader)!;
                 return CompetitionClassModelXml.FromXmlObject(xmlObject);
             }
             catch (Exception ex)
@@ -63,7 +59,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             }
         }
 
-        public void Save([NotNull] CompetitionClassModel model)
+        public void Save(CompetitionClassModel model)
         {
             Guard.NotNull(model, nameof(model));
 

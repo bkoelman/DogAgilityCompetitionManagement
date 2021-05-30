@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -8,10 +7,7 @@ namespace DogAgilityCompetition.Circe
     /// </summary>
     public static class SystemContext
     {
-        [NotNull]
         public static Func<DateTime> Now { get; set; }
-
-        [NotNull]
         public static Func<DateTime> UtcNow { get; set; }
 
         static SystemContext()

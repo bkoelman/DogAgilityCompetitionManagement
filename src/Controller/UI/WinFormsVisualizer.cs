@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Visualization;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI
 {
@@ -12,13 +11,10 @@ namespace DogAgilityCompetition.Controller.UI
     /// </summary>
     public sealed class WinFormsVisualizer : ICompetitionRunVisualizer
     {
-        [NotNull]
         private readonly Control invokeContext;
-
-        [NotNull]
         private readonly IVisualizationActor target;
 
-        public WinFormsVisualizer([NotNull] Control invokeContext, [NotNull] IVisualizationActor target)
+        public WinFormsVisualizer(Control invokeContext, IVisualizationActor target)
         {
             Guard.NotNull(invokeContext, nameof(invokeContext));
             Guard.NotNull(target, nameof(target));

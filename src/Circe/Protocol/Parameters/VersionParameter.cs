@@ -13,17 +13,14 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     {
         private const int MaxCharCount = 11;
 
-        [NotNull]
         private static readonly Regex ValueFormatRegex = new(@"^(?<Major>[0-9]{1,3})\.(?<Minor>[0-9]{1,3})\.(?<Release>[0-9]{1,3})$", RegexOptions.Compiled);
 
-        [CanBeNull]
-        private Version innerValue;
+        private Version? innerValue;
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
-        public Version Value
+        public Version? Value
         {
             get => innerValue;
             set
@@ -57,13 +54,13 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public VersionParameter([NotNull] string name, int id, bool isRequired)
+        public VersionParameter(string name, int id, bool isRequired)
             : base(name, id, MaxCharCount, isRequired)
         {
         }
 
         [AssertionMethod]
-        private void AssertVersionFormatIsValid([NotNull] Version value)
+        private void AssertVersionFormatIsValid(Version value)
         {
             int majorNumber = value.Major;
             int minorNumber = value.Minor;

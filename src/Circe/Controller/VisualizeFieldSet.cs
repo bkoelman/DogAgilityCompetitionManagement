@@ -13,39 +13,22 @@ namespace DogAgilityCompetition.Circe.Controller
     /// </remarks>
     public readonly struct VisualizeFieldSet : IEquatable<VisualizeFieldSet>
     {
-        [CanBeNull]
         public int? CurrentCompetitorNumber { get; }
-
-        [CanBeNull]
         public int? NextCompetitorNumber { get; }
-
         public bool StartPrimaryTimer { get; }
-
-        [CanBeNull]
         public TimeSpan? PrimaryTimerValue { get; }
-
-        [CanBeNull]
         public TimeSpan? SecondaryTimerValue { get; }
-
-        [CanBeNull]
         public int? CurrentFaultCount { get; }
-
-        [CanBeNull]
         public int? CurrentRefusalCount { get; }
-
-        [CanBeNull]
         public bool? CurrentIsEliminated { get; }
-
-        [CanBeNull]
         public int? PreviousPlacement { get; }
 
         public bool IsEmpty =>
             CurrentCompetitorNumber == null && NextCompetitorNumber == null && !StartPrimaryTimer && PrimaryTimerValue == null && SecondaryTimerValue == null &&
             CurrentFaultCount == null && CurrentRefusalCount == null && CurrentIsEliminated == null && PreviousPlacement == null;
 
-        public VisualizeFieldSet([CanBeNull] int? currentCompetitorNumber, [CanBeNull] int? nextCompetitorNumber, bool startPrimaryTimer,
-            [CanBeNull] TimeSpan? primaryTimerValue, [CanBeNull] TimeSpan? secondaryTimerValue, [CanBeNull] int? currentFaultCount,
-            [CanBeNull] int? currentRefusalCount, [CanBeNull] bool? currentIsEliminated, [CanBeNull] int? previousPlacement)
+        public VisualizeFieldSet(int? currentCompetitorNumber, int? nextCompetitorNumber, bool startPrimaryTimer, TimeSpan? primaryTimerValue,
+            TimeSpan? secondaryTimerValue, int? currentFaultCount, int? currentRefusalCount, bool? currentIsEliminated, int? previousPlacement)
         {
             CurrentCompetitorNumber = currentCompetitorNumber;
             NextCompetitorNumber = nextCompetitorNumber;
@@ -107,7 +90,7 @@ namespace DogAgilityCompetition.Circe.Controller
         }
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is VisualizeFieldSet visualizeFieldSet && Equals(visualizeFieldSet);
         }
@@ -120,7 +103,7 @@ namespace DogAgilityCompetition.Circe.Controller
                 GetHashCodeForNullable(CurrentRefusalCount) ^ GetHashCodeForNullable(CurrentIsEliminated) ^ GetHashCodeForNullable(PreviousPlacement);
         }
 
-        private static int GetHashCodeForNullable<T>([CanBeNull] T? value)
+        private static int GetHashCodeForNullable<T>(T? value)
             where T : struct
         {
             return value?.GetHashCode() ?? 0;

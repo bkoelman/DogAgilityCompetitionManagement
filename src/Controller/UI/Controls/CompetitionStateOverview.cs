@@ -7,7 +7,6 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Controller.Engine.Visualization;
 using DogAgilityCompetition.Controller.UI.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -18,11 +17,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         private const int WsExComposited = 0x02000000;
 
-        [CanBeNull]
         private DateTime? startTime;
-
-        [CanBeNull]
-        private Panel rankingsOverlayPanel;
+        private Panel? rankingsOverlayPanel;
 
         protected override CreateParams CreateParams
         {
@@ -39,7 +35,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             InitializeComponent();
         }
 
-        private void CompetitionStateOverview_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CompetitionStateOverview_Load(object? sender, EventArgs e)
         {
             foreach (VisualizationChange change in VisualizationChangeFactory.ClearAll())
             {
@@ -47,7 +43,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        void IVisualizationActor.SetClass(CompetitionClassInfo classInfo)
+        void IVisualizationActor.SetClass(CompetitionClassInfo? classInfo)
         {
         }
 
@@ -57,7 +53,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             displayRefreshTimer.Enabled = true;
         }
 
-        private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayRefreshTimer_Tick(object? sender, EventArgs e)
         {
             if (startTime != null)
             {
@@ -98,7 +94,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             primaryTimeLabel.ForeColor = isEliminated ? RunHistoryLine.EliminationColor : SystemColors.ControlText;
         }
 
-        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor? competitor)
         {
             currentCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
         }
@@ -113,7 +109,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             currentCompetitorNumberHighlighter.IsHighlightEnabled = isEnabled;
         }
 
-        void IVisualizationActor.SetOrClearNextCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearNextCompetitor(Competitor? competitor)
         {
             nextCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
         }
@@ -128,7 +124,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             nextCompetitorNumberHighlighter.IsHighlightEnabled = isEnabled;
         }
 
-        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult competitorRunResult)
+        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult? competitorRunResult)
         {
             if (competitorRunResult != null)
             {
@@ -161,7 +157,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         void IVisualizationActor.SetClockSynchronizationMode(ClockSynchronizationMode mode)
         {
-            string message;
+            string? message;
 
             switch (mode)
             {
@@ -194,8 +190,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [NotNull]
-        private Panel CreateRankingsOverlay([NotNull] string text)
+        private Panel CreateRankingsOverlay(string text)
         {
             Point topLeft = nextPanel.Location;
             Point bottomRight = prevPlacementPanel.Location + prevPlacementPanel.Size;
@@ -224,7 +219,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
         }
 
-        void IVisualizationActor.PlaySound(string path)
+        void IVisualizationActor.PlaySound(string? path)
         {
         }
     }

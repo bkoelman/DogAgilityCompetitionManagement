@@ -6,7 +6,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -19,7 +18,6 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
     [TestFixture]
     public sealed class ReaderParsing
     {
-        [NotNull]
         private static readonly string DefaultTextQualifier =
             new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
 
@@ -462,13 +460,12 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
         private sealed class ReaderThatFailsAfterReadingTooMuch : TextReader
         {
-            [NotNull]
             private readonly TextReader source;
-
             private readonly int maximumNumberOfCharacters;
+
             private int position;
 
-            public ReaderThatFailsAfterReadingTooMuch([NotNull] TextReader source, int maximumNumberOfCharacters)
+            public ReaderThatFailsAfterReadingTooMuch(TextReader source, int maximumNumberOfCharacters)
             {
                 Guard.NotNull(source, nameof(source));
 

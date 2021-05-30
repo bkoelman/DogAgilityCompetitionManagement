@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -15,20 +14,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         private const int InitialScrollStepSize = -1;
         private const int UpdateIntervalInMilliseconds = 10;
 
-        [NotNull]
         private readonly Panel innerPanel = new();
-
-        [NotNull]
         private readonly Timer timer;
-
-        [CanBeNull]
-        private Bitmap innerControlsBitmap;
-
+        private Bitmap? innerControlsBitmap;
         private int scrollOffset;
         private int scrollStepSize = InitialScrollStepSize;
         private bool isUpdating;
-
-        [CanBeNull]
         private DateTime? lastHitBoundaryTime;
 
         public AutoScrollingPanel()
@@ -46,17 +37,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public void ClearInnerControls()
         {
-            // This is a pretty classic WinForms bug, many programmers have been bitten by it. Disposing a control 
-            // also removes it from the parent's Control collection. Most .NET collection classes trigger an 
-            // InvalidOperationException when iterating them changes the collection but that wasn't done for the 
-            // ControlCollection class. The effect is that your for-each loop skips elements, it only disposes the 
+            // This is a pretty classic WinForms bug, many programmers have been bitten by it. Disposing a control
+            // also removes it from the parent's Control collection. Most .NET collection classes trigger an
+            // InvalidOperationException when iterating them changes the collection but that wasn't done for the
+            // ControlCollection class. The effect is that your for-each loop skips elements, it only disposes the
             // even-numbered controls.
-            // This problem is extra-specially nasty because the garbage collector will not finalize the controls. 
-            // After the native window handle for a control is created, it will stay referenced by an internal table 
-            // that maps Window handles to controls. Only destroying the native window removes the reference from 
-            // that table. That never happens in code like this, calling Dispose() is a hard requirement. 
+            // This problem is extra-specially nasty because the garbage collector will not finalize the controls.
+            // After the native window handle for a control is created, it will stay referenced by an internal table
+            // that maps Window handles to controls. Only destroying the native window removes the reference from
+            // that table. That never happens in code like this, calling Dispose() is a hard requirement.
             // Very unusual in .NET.
-            // The solution is to iterate the Controls collection backwards so that disposing controls doesn't affect 
+            // The solution is to iterate the Controls collection backwards so that disposing controls doesn't affect
             // what you iterate.
 
             for (int index = innerPanel.Controls.Count - 1; index >= 0; index--)
@@ -67,7 +58,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             innerPanel.Controls.Clear();
         }
 
-        public void AddToInnerControls([NotNull] Control control)
+        public void AddToInnerControls(Control control)
         {
             innerPanel.Controls.Add(control);
         }
@@ -89,7 +80,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void TimerOnTick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TimerOnTick(object? sender, EventArgs e)
         {
             if (isUpdating || !Visible)
             {
@@ -122,17 +113,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private bool RequiresScrolling()
         {
-            Bitmap bitmap = EnsureBitmap();
+            Bitmap? bitmap = EnsureBitmap();
             return bitmap != null && innerPanel.Height < bitmap.Height;
         }
 
         private bool HasScrolledToEnd()
         {
-            Bitmap bitmap = EnsureBitmap();
+            Bitmap? bitmap = EnsureBitmap();
             return bitmap != null && scrollOffset + innerPanel.Height >= bitmap.Height;
         }
 
-        protected override void OnSizeChanged([NotNull] EventArgs e)
+        protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
 
@@ -147,7 +138,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             Guard.NotNull(e, nameof(e));
             base.OnPaint(e);
 
-            Bitmap bitmap = EnsureBitmap();
+            Bitmap? bitmap = EnsureBitmap();
 
             if (bitmap != null)
             {
@@ -155,8 +146,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [CanBeNull]
-        private Bitmap EnsureBitmap()
+        private Bitmap? EnsureBitmap()
         {
             if (innerControlsBitmap == null)
             {
@@ -190,7 +180,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return innerControlsBitmap;
         }
 
-        private void DrawMissingBorderOnPanels([NotNull] Bitmap controlsBitmap)
+        private void DrawMissingBorderOnPanels(Bitmap controlsBitmap)
         {
             // Bug workaround: For some unknown reason the FixedSingle border style of Panels is not rendered
             // when using Panel.DrawToBitmap. So we draw them ourselves.
@@ -209,7 +199,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        protected override void OnVisibleChanged([NotNull] EventArgs e)
+        protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
 
@@ -243,13 +233,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class TemporarySizeChanger : IDisposable
         {
-            [NotNull]
             private readonly Control control;
-
             private readonly int backupWidth;
             private readonly int backupHeight;
 
-            public TemporarySizeChanger([NotNull] Control control)
+            public TemporarySizeChanger(Control control)
             {
                 Guard.NotNull(control, nameof(control));
 

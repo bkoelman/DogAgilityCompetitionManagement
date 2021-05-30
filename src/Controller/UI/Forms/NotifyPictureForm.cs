@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -18,18 +17,16 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private bool directionIsUp;
         private bool isCompleted;
-
-        [CanBeNull]
         private DateTime? holdStartedAt;
 
-        public event EventHandler AnimationCompleted;
+        public event EventHandler? AnimationCompleted;
 
         public NotifyPictureForm()
         {
             InitializeComponent();
         }
 
-        private void NotifyPictureForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NotifyPictureForm_Load(object? sender, EventArgs e)
         {
             Opacity = MinOpacity;
             directionIsUp = true;
@@ -38,7 +35,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             fadeTimer.Enabled = true;
         }
 
-        public void ShowAnimated([NotNull] Control parentForm, [NotNull] Bitmap picture)
+        public void ShowAnimated(Control parentForm, Bitmap picture)
         {
             Guard.NotNull(parentForm, nameof(parentForm));
             Guard.NotNull(picture, nameof(picture));
@@ -61,7 +58,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void DisplayOverParent([NotNull] Control parentForm)
+        private void DisplayOverParent(Control parentForm)
         {
             Screen currentScreen = Screen.FromControl(parentForm);
             StartPosition = FormStartPosition.Manual;
@@ -71,7 +68,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             WindowState = FormWindowState.Maximized;
         }
 
-        private void NotifyPictureForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void NotifyPictureForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (!isCompleted && e.CloseReason == CloseReason.UserClosing)
             {
@@ -83,7 +80,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void FadeTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void FadeTimer_Tick(object? sender, EventArgs e)
         {
             if (holdStartedAt != null)
             {

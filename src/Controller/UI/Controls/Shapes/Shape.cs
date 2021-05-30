@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 {
@@ -12,15 +11,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
         public ShapeState State { get; set; }
 
-        public virtual void DrawShadow([NotNull] Graphics graphics)
+        public virtual void DrawShadow(Graphics graphics)
         {
         }
 
-        public virtual void DrawFill([NotNull] Graphics graphics)
+        public virtual void DrawFill(Graphics graphics)
         {
         }
 
-        public virtual void DrawBorder([NotNull] Graphics graphics)
+        public virtual void DrawBorder(Graphics graphics)
         {
         }
     }

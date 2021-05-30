@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -14,18 +13,15 @@ namespace DogAgilityCompetition.Circe
         private const string StateLockObtained = ": State lock obtained.";
         private const string StateLockReleased = ": State lock released.";
 
-        [NotNull]
         private readonly ISystemLogger log;
-
-        [NotNull]
         private readonly string source;
 
-        public LockTracker([NotNull] ISystemLogger log, [NotNull] MethodBase source)
+        public LockTracker(ISystemLogger log, MethodBase source)
             : this(log, GetNameOfMethod(source))
         {
         }
 
-        public LockTracker([NotNull] ISystemLogger log, [NotNull] string source)
+        public LockTracker(ISystemLogger log, string source)
         {
             Guard.NotNull(log, nameof(log));
             Guard.NotNullNorEmpty(source, nameof(source));
@@ -36,8 +32,7 @@ namespace DogAgilityCompetition.Circe
             Acquiring();
         }
 
-        [NotNull]
-        private static string GetNameOfMethod([NotNull] MethodBase source)
+        private static string GetNameOfMethod(MethodBase source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -64,7 +59,7 @@ namespace DogAgilityCompetition.Circe
             Released();
         }
 
-        public static bool IsLockMessage([NotNull] string message)
+        public static bool IsLockMessage(string message)
         {
             Guard.NotNull(message, nameof(message));
 

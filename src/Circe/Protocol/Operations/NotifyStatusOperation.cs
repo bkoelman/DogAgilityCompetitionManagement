@@ -1,6 +1,5 @@
 using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -21,42 +20,24 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 52;
 
-        [NotNull]
         private readonly NetworkAddressParameter originatingAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.OriginatingAddress, true);
-
-        [NotNull]
         private readonly BooleanParameter getMembershipParameter = ParameterFactory.Create(ParameterType.Boolean.GetMembership, true);
-
-        [NotNull]
         private readonly IntegerParameter capabilitiesParameter = ParameterFactory.Create(ParameterType.Integer.Capabilities, true);
-
-        [NotNull]
         private readonly IntegerParameter rolesParameter = ParameterFactory.Create(ParameterType.Integer.Roles, true);
-
-        [NotNull]
         private readonly IntegerParameter signalStrengthParameter = ParameterFactory.Create(ParameterType.Integer.SignalStrength, true);
-
-        [NotNull]
         private readonly IntegerParameter batteryStatusParameter = ParameterFactory.Create(ParameterType.Integer.BatteryStatus, false);
-
-        [NotNull]
         private readonly BooleanParameter isAlignedParameter = ParameterFactory.Create(ParameterType.Boolean.IsAligned, false);
-
-        [NotNull]
         private readonly IntegerParameter clockSynchronizationParameter = ParameterFactory.Create(ParameterType.Integer.ClockSynchronization, false);
-
-        [NotNull]
         private readonly BooleanParameter hasVersionMismatchParameter = ParameterFactory.Create(ParameterType.Boolean.HasVersionMismatch, false);
 
         /// <summary>
         /// Required. Gets or sets the originating address of the device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress OriginatingAddress
+        public WirelessNetworkAddress? OriginatingAddress
         {
             get
             {
-                string parameterValue = originatingAddressParameter.GetValueOrNull();
+                string? parameterValue = originatingAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => originatingAddressParameter.Value = value?.Value;
@@ -68,7 +49,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <value>
         /// <c>true</c> when the device is part of the network; <c>false</c> if it is not.
         /// </value>
-        [CanBeNull]
         public bool? GetMembership
         {
             get => getMembershipParameter.Value;
@@ -78,7 +58,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Required. Gets or sets the capabilities that the device can perform.
         /// </summary>
-        [CanBeNull]
         public DeviceCapabilities? Capabilities
         {
             get => (DeviceCapabilities?)capabilitiesParameter.Value;
@@ -88,7 +67,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Required. Gets or sets the roles that the device currently performs in the logical network.
         /// </summary>
-        [CanBeNull]
         public DeviceRoles? Roles
         {
             get => (DeviceRoles?)rolesParameter.Value;
@@ -101,7 +79,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <value>
         /// Range: 0 - 255 (inclusive)
         /// </value>
-        [CanBeNull]
         public int? SignalStrength
         {
             get => signalStrengthParameter.Value;
@@ -114,7 +91,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <value>
         /// Range: 0 - 255 (inclusive)
         /// </value>
-        [CanBeNull]
         public int? BatteryStatus
         {
             get => batteryStatusParameter.Value;
@@ -124,7 +100,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Applies to gates only. Indicates whether this passage detector is properly aligned.
         /// </summary>
-        [CanBeNull]
         public bool? IsAligned
         {
             get => isAlignedParameter.Value;
@@ -134,7 +109,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Indicates the status of hardware clock synchronization for this device.
         /// </summary>
-        [CanBeNull]
         public ClockSynchronizationStatus? ClockSynchronization
         {
             get => clockSynchronizationParameter.Value == null ? null : (ClockSynchronizationStatus?)clockSynchronizationParameter.Value;
@@ -144,7 +118,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Indicates whether the version of a device matches the mediator version.
         /// </summary>
-        [CanBeNull]
         public bool? HasVersionMismatch
         {
             get => hasVersionMismatchParameter.Value;
@@ -169,8 +142,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="signalStrength">
         /// The wireless signal strength. Higher values indicate a better signal.
         /// </param>
-        public NotifyStatusOperation([NotNull] WirelessNetworkAddress originatingAddress, bool getMembership, DeviceCapabilities capabilities,
-            DeviceRoles roles, int signalStrength)
+        public NotifyStatusOperation(WirelessNetworkAddress originatingAddress, bool getMembership, DeviceCapabilities capabilities, DeviceRoles roles,
+            int signalStrength)
             : this()
         {
             Guard.NotNull(originatingAddress, nameof(originatingAddress));

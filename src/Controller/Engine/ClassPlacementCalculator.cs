@@ -10,10 +10,9 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class ClassPlacementCalculator
     {
-        [NotNull]
         private readonly CompetitionRunResultRankingComparer comparer;
 
-        public ClassPlacementCalculator([NotNull] CompetitionClassModel modelSnapshot)
+        public ClassPlacementCalculator(CompetitionClassModel modelSnapshot)
         {
             Guard.NotNull(modelSnapshot, nameof(modelSnapshot));
 
@@ -21,9 +20,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        [NotNull]
-        [ItemNotNull]
-        public IEnumerable<CompetitionRunResult> Recalculate([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public IEnumerable<CompetitionRunResult> Recalculate(IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNull(runResults, nameof(runResults));
 
@@ -33,7 +30,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 var newResults = new List<CompetitionRunResult>();
 
                 int placementCounter = 0;
-                CompetitionRunResult previousResult = null;
+                CompetitionRunResult? previousResult = null;
 
                 foreach (CompetitionRunResult runResult in sorted)
                 {

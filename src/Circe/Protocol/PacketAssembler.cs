@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol
 {
@@ -11,14 +10,13 @@ namespace DogAgilityCompetition.Circe.Protocol
     public sealed class PacketAssembler
     {
         // When non-empty, contains the start bytes of the next packet.
-        [NotNull]
         private readonly Queue<ArraySegment<byte>> startOfPacketQueue = new();
 
-        public event EventHandler<EventArgs<byte[]>> CompletePacketAdded;
+        public event EventHandler<EventArgs<byte[]>>? CompletePacketAdded;
 
         public void Add(ArraySegment<byte> bufferSegment)
         {
-            byte[] packet;
+            byte[]? packet;
 
             while ((packet = ConsumeNextPacket(ref bufferSegment)) != null)
             {
@@ -35,8 +33,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <returns>
         /// The bytes of a complete packet, or <c>null</c> when no more complete packets can be created from the buffers.
         /// </returns>
-        [CanBeNull]
-        private byte[] ConsumeNextPacket(ref ArraySegment<byte> buffer)
+        private byte[]? ConsumeNextPacket(ref ArraySegment<byte> buffer)
         {
             // When preceding buffers are non-empty, we do not have to find a
             // start-of-packet first (because the first byte in the preceding buffers is always a 
@@ -47,7 +44,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             // end-of-packet.
             for (int index = buffer.Offset; index < buffer.Offset + buffer.Count; index++)
             {
-                if (buffer.Array[index] == PacketFormatDelimiters.StartOfText)
+                if (buffer.Array![index] == PacketFormatDelimiters.StartOfText)
                 {
                     // Start-of-packet found before end-of-packet. Any queued buffers will 
                     // not be part of the next packet, so consider them garbage.
@@ -82,7 +79,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 // Only found start-of-packet or the queued buffers were non-empty.
                 // So the range packetStartIndex up to the end of the buffer are part of
                 // a new packet (of which the end has not been received yet).
-                var segment = new ArraySegment<byte>(buffer.Array, packetStartIndex, buffer.Offset + buffer.Count - packetStartIndex);
+                var segment = new ArraySegment<byte>(buffer.Array!, packetStartIndex, buffer.Offset + buffer.Count - packetStartIndex);
                 startOfPacketQueue.Enqueue(segment);
             }
             else
@@ -102,9 +99,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <param name="segments">
         /// The segments to combine.
         /// </param>
-        [NotNull]
-        [ItemNotNull]
-        private static T[] CombineSegments<T>([NotNull] IList<ArraySegment<T>> segments)
+        private static T[] CombineSegments<T>(IList<ArraySegment<T>> segments)
         {
             int bufferSize = segments.Sum(segment => segment.Count);
 
@@ -113,7 +108,7 @@ namespace DogAgilityCompetition.Circe.Protocol
 
             foreach (ArraySegment<T> segment in segments)
             {
-                Buffer.BlockCopy(segment.Array, segment.Offset, bufferItems, bufferOffset, segment.Count);
+                Buffer.BlockCopy(segment.Array!, segment.Offset, bufferItems, bufferOffset, segment.Count);
                 bufferOffset += segment.Count;
             }
 

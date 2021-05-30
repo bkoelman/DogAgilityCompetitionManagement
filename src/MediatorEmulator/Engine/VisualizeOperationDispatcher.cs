@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine
 {
@@ -17,13 +16,10 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         private const int CirceHiddenFaultsRefusals = 99;
         private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
 
-        [NotNull]
         private readonly ISimpleVisualizationActor actor;
-
-        [NotNull]
         private readonly Control invokeContext;
 
-        private VisualizeOperationDispatcher([NotNull] ISimpleVisualizationActor actor, [NotNull] Control invokeContext)
+        private VisualizeOperationDispatcher(ISimpleVisualizationActor actor, Control invokeContext)
         {
             Guard.NotNull(actor, nameof(actor));
             Guard.NotNull(invokeContext, nameof(invokeContext));
@@ -32,8 +28,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             this.invokeContext = invokeContext;
         }
 
-        [NotNull]
-        public static VisualizeOperationDispatcher CreateFor<T>([NotNull] T source)
+        public static VisualizeOperationDispatcher CreateFor<T>(T source)
             where T : Control, ISimpleVisualizationActor
         {
             return new(source, source);
@@ -51,7 +46,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             actor.SetOrClearPreviousCompetitorPlacement(null);
         }
 
-        public void Dispatch([NotNull] VisualizeOperation operation)
+        public void Dispatch(VisualizeOperation operation)
         {
             Guard.NotNull(operation, nameof(operation));
 
@@ -75,7 +70,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             });
         }
 
-        private void DispatchEliminated([NotNull] VisualizeOperation operation)
+        private void DispatchEliminated(VisualizeOperation operation)
         {
             if (operation.Eliminated != null)
             {
@@ -83,7 +78,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchCurrentCompetitorNumber([NotNull] VisualizeOperation operation)
+        private void DispatchCurrentCompetitorNumber(VisualizeOperation operation)
         {
             if (operation.CurrentCompetitorNumber != null)
             {
@@ -92,7 +87,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchNextCompetitorNumber([NotNull] VisualizeOperation operation)
+        private void DispatchNextCompetitorNumber(VisualizeOperation operation)
         {
             if (operation.NextCompetitorNumber != null)
             {
@@ -101,7 +96,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchStartTimer([NotNull] VisualizeOperation operation)
+        private void DispatchStartTimer(VisualizeOperation operation)
         {
             if (operation.StartTimer)
             {
@@ -109,7 +104,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchPrimaryTimerValue([NotNull] VisualizeOperation operation)
+        private void DispatchPrimaryTimerValue(VisualizeOperation operation)
         {
             if (operation.PrimaryTimerValue != null)
             {
@@ -118,7 +113,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchSecondaryTimerValue([NotNull] VisualizeOperation operation)
+        private void DispatchSecondaryTimerValue(VisualizeOperation operation)
         {
             if (operation.SecondaryTimerValue != null)
             {
@@ -127,7 +122,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchFaults([NotNull] VisualizeOperation operation)
+        private void DispatchFaults(VisualizeOperation operation)
         {
             if (operation.FaultCount != null)
             {
@@ -136,7 +131,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchRefusals([NotNull] VisualizeOperation operation)
+        private void DispatchRefusals(VisualizeOperation operation)
         {
             if (operation.RefusalCount != null)
             {
@@ -145,7 +140,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private void DispatchPlacement([NotNull] VisualizeOperation operation)
+        private void DispatchPlacement(VisualizeOperation operation)
         {
             if (operation.PreviousPlacement != null)
             {

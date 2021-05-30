@@ -2,30 +2,22 @@
 using System.Reflection;
 using System.Threading;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
     public sealed class EliminationTracker : IDisposable
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static readonly TimeSpan InfiniteTime = TimeSpan.FromMilliseconds(-1);
 
         private readonly int refusalStepSize;
         private readonly int eliminationThreshold;
-
-        [NotNull]
         private readonly Timer maximumCourseTimeTimer;
 
-        [NotNull]
         private readonly object stateLock = new();
 
         private bool maximumCourseTimeElapsed; // Protected by stateLock
-
         private bool isManuallyEliminated; // Protected by stateLock
-
         private int refusalCount; // Protected by stateLock
 
         private int MaxRefusalsValue => refusalStepSize * eliminationThreshold;
@@ -36,7 +28,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                 lock (stateLock)
                 {
@@ -51,7 +43,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                 lock (stateLock)
                 {
@@ -73,7 +65,7 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             get
             {
-                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                 lock (stateLock)
                 {
@@ -84,8 +76,8 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public event EventHandler<EliminationEventArgs> EliminationChanged;
-        public event EventHandler<EventArgs<int>> RefusalCountChanged;
+        public event EventHandler<EliminationEventArgs>? EliminationChanged;
+        public event EventHandler<EventArgs<int>>? RefusalCountChanged;
 
         public EliminationTracker(int refusalStepSize, int eliminationThreshold)
         {
@@ -125,7 +117,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        public void StartMonitorCourseTime([CanBeNull] TimeSpan? maximumCourseTime)
+        public void StartMonitorCourseTime(TimeSpan? maximumCourseTime)
         {
             if (maximumCourseTime != null)
             {
@@ -140,12 +132,12 @@ namespace DogAgilityCompetition.Controller.Engine
 
         public void Reset()
         {
-            // Note: Intentionally not raising any events here, because caller wants to 
+            // Note: Intentionally not raising any events here, because caller wants to
             // combine multiple changes in single network packet (performance optimization).
 
             StopMonitorCourseTime();
 
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -162,12 +154,12 @@ namespace DogAgilityCompetition.Controller.Engine
             maximumCourseTimeTimer.Dispose();
         }
 
-        private void RaiseEventsOnChangeWithLock([NotNull] Action action)
+        private void RaiseEventsOnChangeWithLock(Action action)
         {
-            EliminationEventArgs argsForEliminationChanged;
-            EventArgs<int> argsForRefusalCountChanged;
+            EliminationEventArgs? argsForEliminationChanged;
+            EventArgs<int>? argsForRefusalCountChanged;
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!))
             {
                 lock (stateLock)
                 {

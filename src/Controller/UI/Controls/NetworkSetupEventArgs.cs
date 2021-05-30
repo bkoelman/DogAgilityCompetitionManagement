@@ -3,24 +3,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
     /// <summary />
     public sealed class NetworkSetupEventArgs : EventArgs
     {
-        [CanBeNull]
-        private Task task;
+        private Task? task;
 
-        [NotNull]
         public WirelessNetworkAddress DestinationAddress { get; }
-
         public bool JoinNetwork { get; }
         public DeviceRoles Roles { get; }
 
-        [CanBeNull]
-        public Task Task
+        public Task? Task
         {
             get => task;
             set
@@ -32,7 +27,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public CancellationToken CancelToken { get; }
 
-        public NetworkSetupEventArgs([NotNull] WirelessNetworkAddress destinationAddress, bool joinNetwork, DeviceRoles roles, CancellationToken cancelToken)
+        public NetworkSetupEventArgs(WirelessNetworkAddress destinationAddress, bool joinNetwork, DeviceRoles roles, CancellationToken cancelToken)
         {
             Guard.NotNull(destinationAddress, nameof(destinationAddress));
 

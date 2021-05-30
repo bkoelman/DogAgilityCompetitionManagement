@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -14,23 +13,23 @@ namespace DogAgilityCompetition.Circe
     {
         // ReSharper disable UnusedMember.Global
 
-        void Debug([CanBeNull] object message);
+        void Debug(object? message);
 
-        void Debug([CanBeNull] object message, [CanBeNull] Exception exception);
-
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
-        void Error([CanBeNull] object message);
+        void Debug(object? message, Exception? exception);
 
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
-        void Error([CanBeNull] object message, [CanBeNull] Exception exception);
+        void Error(object? message);
 
-        void Info([CanBeNull] object message);
+        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
+        void Error(object? message, Exception? exception);
 
-        void Info([CanBeNull] object message, [CanBeNull] Exception exception);
+        void Info(object? message);
 
-        void Warn([CanBeNull] object message);
+        void Info(object? message, Exception? exception);
 
-        void Warn([CanBeNull] object message, [CanBeNull] Exception exception);
+        void Warn(object? message);
+
+        void Warn(object? message, Exception? exception);
 
         // ReSharper restore UnusedMember.Global
     }

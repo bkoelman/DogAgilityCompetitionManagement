@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DogAgilityCompetition.Controller.UI.Forms;
-using JetBrains.Annotations;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -16,8 +15,7 @@ namespace DogAgilityCompetition.Controller
     /// </summary>
     internal static class Program
     {
-        [NotNull]
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
         /// <summary>
         /// The main entry point for the application.
@@ -43,13 +41,13 @@ namespace DogAgilityCompetition.Controller
             Log.Info("Application ended.");
         }
 
-        private static void TaskSchedulerOnUnobservedTaskException([CanBeNull] object sender, [NotNull] UnobservedTaskExceptionEventArgs e)
+        private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             Log.Error("Unhandled exception in TaskScheduler.", e.Exception);
             e.SetObserved();
         }
 
-        private static void CurrentDomainOnUnhandledException([CanBeNull] object sender, [NotNull] UnhandledExceptionEventArgs e)
+        private static void CurrentDomainOnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
             {

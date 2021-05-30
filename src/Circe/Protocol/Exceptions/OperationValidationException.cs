@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
@@ -10,7 +8,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
     [Serializable]
     public sealed class OperationValidationException : Exception
     {
-        [NotNull]
         public Operation Operation { get; }
 
         /// <summary>
@@ -22,7 +19,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="message">
         /// The message that describes the error.
         /// </param>
-        public OperationValidationException([NotNull] Operation operation, [NotNull] string message)
+        public OperationValidationException(Operation operation, string message)
             : base(FormatMessage(operation, message))
         {
             Guard.NotNull(operation, nameof(operation));
@@ -30,25 +27,9 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Operation = operation;
         }
 
-        private OperationValidationException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Operation = (Operation)info.GetValue("Operation", typeof(Operation));
-        }
-
-        [NotNull]
-        private static string FormatMessage([NotNull] Operation operation, [NotNull] string message)
+        private static string FormatMessage(Operation operation, string message)
         {
             return $"{operation.GetType().Name} ({operation.Code}): {message}";
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            Guard.NotNull(info, nameof(info));
-
-            info.AddValue("Operation", Operation);
-
-            base.GetObjectData(info, context);
         }
     }
 }

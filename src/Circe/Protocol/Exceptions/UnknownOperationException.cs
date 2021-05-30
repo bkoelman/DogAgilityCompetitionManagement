@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
@@ -24,25 +22,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="code">
         /// The code of the unknown operation.
         /// </param>
-        public UnknownOperationException([NotNull] byte[] packet, int code)
+        public UnknownOperationException(byte[] packet, int code)
             : base(packet, 0, $"Unsupported operation code {code}.")
         {
             Code = code;
-        }
-
-        private UnknownOperationException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Code = info.GetInt32("Code");
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            Guard.NotNull(info, nameof(info));
-
-            info.AddValue("Code", Code);
-
-            base.GetObjectData(info, context);
         }
     }
 }

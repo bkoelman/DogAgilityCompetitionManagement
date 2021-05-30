@@ -6,7 +6,6 @@ using System.Threading;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine.Storage.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage
 {
@@ -15,29 +14,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </summary>
     public sealed class CacheManager
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        [NotNull]
-        [ItemNotNull]
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static readonly Lazy<CacheManager> InnerDefaultInstance = new(CreateDefaultInstance, LazyThreadSafetyMode.ExecutionAndPublication);
 
-        [NotNull]
         private readonly ModelSerializer serializer;
-
-        [NotNull]
         private readonly object stateLock = new();
+        private readonly FreshObjectReference<CompetitionClassModel> activeModel = new(new CompetitionClassModel());
 
-        [NotNull]
-        private readonly FreshNotNullableReference<CompetitionClassModel> activeModel = new(new CompetitionClassModel());
-
-        [NotNull]
         public static CacheManager DefaultInstance => InnerDefaultInstance.Value;
 
-        [NotNull]
         public CompetitionClassModel ActiveModel => activeModel.Value;
 
-        private CacheManager([NotNull] string stateFilePath)
+        private CacheManager(string stateFilePath)
         {
             serializer = new ModelSerializer(stateFilePath);
 
@@ -49,7 +37,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        [NotNull]
         private static CacheManager CreateDefaultInstance()
         {
             string commonAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -57,13 +44,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return new CacheManager(defaultPath);
         }
 
-        [NotNull]
-        public CompetitionClassModel ReplaceModel([NotNull] CompetitionClassModel replacementVersion, [NotNull] CompetitionClassModel originalVersion)
+        public CompetitionClassModel ReplaceModel(CompetitionClassModel replacementVersion, CompetitionClassModel originalVersion)
         {
             Guard.NotNull(replacementVersion, nameof(replacementVersion));
             Guard.NotNull(originalVersion, nameof(originalVersion));
 
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {

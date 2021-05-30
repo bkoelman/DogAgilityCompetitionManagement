@@ -4,7 +4,6 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
@@ -14,10 +13,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     /// </summary>
     public sealed class KeyScenarios
     {
-        [NotNull]
         private static readonly WirelessNetworkAddress Source = new("ABCDEF");
-
-        [CanBeNull]
         private static readonly TimeSpan? NullTime = null;
 
         // Note: For an explanation of these scenarios, see file: "\doc\Interpreting numeric input from remote control keys.md"

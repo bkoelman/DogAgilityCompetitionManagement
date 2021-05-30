@@ -4,7 +4,6 @@ using System.IO;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Controller.Properties;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage
 {
@@ -13,8 +12,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </summary>
     public static class RunResultsExporter
     {
-        [NotNull]
-        [ItemNotNull]
         private static readonly ReadOnlyCollection<string> ExportColumnNames = new List<string>
         {
             ImportExportColumns.CompetitorNumber,
@@ -31,7 +28,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             ImportExportColumns.Placement
         }.AsReadOnly();
 
-        public static void ExportTo([NotNull] string path, [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public static void ExportTo(string path, IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
             Guard.NotNull(runResults, nameof(runResults));
@@ -72,8 +69,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        private static void SetTimeElapsedSinceStart([NotNull] IDelimitedValuesWriterRow row, [NotNull] string columnName,
-            [NotNull] CompetitionRunResult runResult, [CanBeNull] RecordedTime time)
+        private static void SetTimeElapsedSinceStart(IDelimitedValuesWriterRow row, string columnName, CompetitionRunResult runResult, RecordedTime? time)
         {
             TimeSpanWithAccuracy? elapsed = GetElapsedSinceStart(runResult.Timings, time);
 
@@ -83,8 +79,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        [CanBeNull]
-        private static TimeSpanWithAccuracy? GetElapsedSinceStart([CanBeNull] CompetitionRunTimings timings, [CanBeNull] RecordedTime time)
+        private static TimeSpanWithAccuracy? GetElapsedSinceStart(CompetitionRunTimings? timings, RecordedTime? time)
         {
             return timings != null && time != null ? time.ElapsedSince(timings.StartTime) : null;
         }

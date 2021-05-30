@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
@@ -9,11 +8,9 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     public sealed class ComPortRotator
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [CanBeNull]
-        private string activePort;
+        private string? activePort;
 
         /// <summary>
         /// Gets the name of the next system COM port.
@@ -21,8 +18,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// <returns>
         /// The name of the next system COM port, or <c>null</c> when no ports are available.
         /// </returns>
-        [CanBeNull]
-        public string GetNextPortName()
+        public string? GetNextPortName()
         {
             IList<string> systemPorts = SystemPortProvider.GetAllComPorts();
 
@@ -35,7 +31,7 @@ namespace DogAgilityCompetition.Circe.Session
                 string displayPortNames = string.Join(", ", systemPorts);
                 Log.Debug($"System COM ports: {displayPortNames}");
 
-                int index = systemPorts.IndexOf(activePort);
+                int index = activePort == null ? -1 : systemPorts.IndexOf(activePort);
 
                 if (index == -1 || index == systemPorts.Count - 1)
                 {

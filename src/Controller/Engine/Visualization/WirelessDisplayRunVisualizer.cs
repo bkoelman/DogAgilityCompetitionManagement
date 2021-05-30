@@ -15,17 +15,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public sealed class WirelessDisplayRunVisualizer : ICompetitionRunVisualizer
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [CanBeNull]
-        private CirceControllerSessionManager circeSessionManager;
-
-        [NotNull]
-        [ItemNotNull]
+        private CirceControllerSessionManager? circeSessionManager;
         private IReadOnlyList<WirelessNetworkAddress> displaysInRunComposition = new List<WirelessNetworkAddress>();
 
-        public void InitializeRun([NotNull] CirceControllerSessionManager sessionManager, [NotNull] NetworkComposition runComposition)
+        public void InitializeRun(CirceControllerSessionManager sessionManager, NetworkComposition runComposition)
         {
             Guard.NotNull(sessionManager, nameof(sessionManager));
             Guard.NotNull(runComposition, nameof(runComposition));
@@ -54,7 +49,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             });
         }
 
-        private void ApplyFieldSet([NotNull] CirceControllerSessionManager sessionManager, VisualizeFieldSet fieldSet)
+        private void ApplyFieldSet(CirceControllerSessionManager sessionManager, VisualizeFieldSet fieldSet)
         {
             // Due to limited size of hardware buffers, we currently send the operation for each device individually.
             foreach (WirelessNetworkAddress display in displaysInRunComposition)
@@ -74,7 +69,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             }
         }
 
-        private void AssertPreconditions([NotNull] Action<CirceControllerSessionManager> action)
+        private void AssertPreconditions(Action<CirceControllerSessionManager> action)
         {
             CirceControllerSessionManager sessionManager = AssertSessionNotNull();
 
@@ -85,7 +80,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         }
 
         [AssertionMethod]
-        [NotNull]
         private CirceControllerSessionManager AssertSessionNotNull()
         {
             return Assertions.InternalValueIsNotNull(() => circeSessionManager, () => circeSessionManager);

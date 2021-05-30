@@ -1,5 +1,4 @@
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -8,10 +7,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class PlaySound : NullableVisualizationChange<string>
     {
-        [NotNull]
         public static PlaySound Mute => new(null);
 
-        public PlaySound([CanBeNull] string path)
+        public PlaySound(string? path)
             : base(path)
         {
         }

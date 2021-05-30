@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Controller
 {
@@ -10,13 +8,5 @@ namespace DogAgilityCompetition.Circe.Controller
     [Serializable]
     public sealed class NotConnectedToMediatorException : Exception
     {
-        public NotConnectedToMediatorException()
-        {
-        }
-
-        private NotConnectedToMediatorException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

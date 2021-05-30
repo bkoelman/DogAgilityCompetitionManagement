@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Threading;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.DeviceConfigurer.Phases;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.DeviceConfigurer
 {
@@ -12,28 +11,25 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// </summary>
     public sealed class AssignmentStateMachine
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private readonly object stateLock = new();
 
-        [NotNull]
         private AssignmentPhase currentPhase;
 
-        public AssignmentStateMachine([NotNull] AssignmentPhase startPhase)
+        public AssignmentStateMachine(AssignmentPhase startPhase)
         {
             Guard.NotNull(startPhase, nameof(startPhase));
 
             currentPhase = startPhase;
         }
 
-        public bool ExecuteIfInPhase<TPhase>([NotNull] Func<TPhase, AssignmentPhase> callback)
+        public bool ExecuteIfInPhase<TPhase>(Func<TPhase, AssignmentPhase?> callback)
             where TPhase : AssignmentPhase
         {
             Guard.NotNull(callback, nameof(callback));
 
-            using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()));
+            using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()!));
 
             lock (stateLock)
             {
@@ -41,7 +37,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
                 if (typeof(TPhase) == currentPhase.GetType())
                 {
-                    AssignmentPhase newPhase = callback((TPhase)currentPhase);
+                    AssignmentPhase? newPhase = callback((TPhase)currentPhase);
 
                     if (newPhase != null)
                     {
@@ -54,20 +50,18 @@ namespace DogAgilityCompetition.DeviceConfigurer
             return false;
         }
 
-        [NotNull]
-        private static string GetDisplayNameFor<TPhase>([NotNull] MethodBase source)
+        private static string GetDisplayNameFor<TPhase>(MethodBase source)
             where TPhase : AssignmentPhase
         {
             return source.Name + "<" + typeof(TPhase).Name + ">";
         }
 
-        [NotNull]
         public TPhase WaitForPhase<TPhase>()
             where TPhase : AssignmentPhase
         {
             while (true)
             {
-                using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()));
+                using var lockTracker = new LockTracker(Log, GetDisplayNameFor<TPhase>(MethodBase.GetCurrentMethod()!));
 
                 lock (stateLock)
                 {

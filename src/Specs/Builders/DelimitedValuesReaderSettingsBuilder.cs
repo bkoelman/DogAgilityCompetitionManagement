@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders
 {
@@ -9,13 +8,8 @@ namespace DogAgilityCompetition.Specs.Builders
     /// </summary>
     public sealed class DelimitedValuesReaderSettingsBuilder : ITestDataBuilder<DelimitedValuesReaderSettings>
     {
-        [CanBeNull]
         private char? fieldSeparator;
-
-        [CanBeNull]
-        private CultureInfo culture;
-
-        [CanBeNull]
+        private CultureInfo? culture;
         private int? maximumLineLength;
 
         public DelimitedValuesReaderSettings Build()
@@ -28,22 +22,19 @@ namespace DogAgilityCompetition.Specs.Builders
             };
         }
 
-        [NotNull]
-        public DelimitedValuesReaderSettingsBuilder WithFieldSeparator([CanBeNull] char? separator)
+        public DelimitedValuesReaderSettingsBuilder WithFieldSeparator(char? separator)
         {
             fieldSeparator = separator;
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderSettingsBuilder WithCulture([CanBeNull] CultureInfo c)
+        public DelimitedValuesReaderSettingsBuilder WithCulture(CultureInfo? c)
         {
             culture = c;
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderSettingsBuilder WithMaximumLineLength([CanBeNull] int? length)
+        public DelimitedValuesReaderSettingsBuilder WithMaximumLineLength(int? length)
         {
             maximumLineLength = length;
             return this;

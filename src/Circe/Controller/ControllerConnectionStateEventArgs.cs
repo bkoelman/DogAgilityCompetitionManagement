@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Controller
 {
@@ -14,10 +13,9 @@ namespace DogAgilityCompetition.Circe.Controller
         /// <summary>
         /// Gets the name of the COM port, if available.
         /// </summary>
-        [CanBeNull]
-        public string ComPort { get; }
+        public string? ComPort { get; }
 
-        public ControllerConnectionStateEventArgs(ControllerConnectionState state, [CanBeNull] string comPort)
+        public ControllerConnectionStateEventArgs(ControllerConnectionState state, string? comPort)
         {
             State = state;
             ComPort = comPort;

@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Controller.Engine;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders
 {
@@ -17,7 +16,6 @@ namespace DogAgilityCompetition.Specs.Builders
             return new(hardwareOffset, FrozenUtcNow + hardwareOffset);
         }
 
-        [NotNull]
         public RecordedTimeBuilder At(TimeSpan offset)
         {
             hardwareOffset = offset;

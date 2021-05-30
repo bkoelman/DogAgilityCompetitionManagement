@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.UI.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -17,15 +16,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         [Category("Behavior")]
         [DefaultValue(typeof(ErrorProvider), null)]
-        [CanBeNull]
-        public ErrorProvider ErrorProvider { get; set; }
+        public ErrorProvider? ErrorProvider { get; set; }
 
         [Category("Appearance")]
         [DefaultValue(typeof(string), "")]
-        [CanBeNull]
-        public string AlertName { get; set; }
+        public string? AlertName { get; set; }
 
-        [NotNull]
         public AlertPictureSourceItem Item
         {
             get => new(enabledCheckBox.Checked, pathTextBox.Text);
@@ -45,7 +41,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             AlertName = string.Empty;
         }
 
-        private void EnabledCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void EnabledCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             picturePreviewButton.Enabled = enabledCheckBox.Checked;
             pathTextBox.Enabled = enabledCheckBox.Checked;
@@ -54,13 +50,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             ValidateChildren();
         }
 
-        private void PicturePreviewButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PicturePreviewButton_Click(object? sender, EventArgs e)
         {
             Form parentFormNotNull = Assertions.InternalValueIsNotNull(() => ParentForm, () => ParentForm);
             PicturePreviewForm.ShowPreview(pathTextBox.Text, AlertName ?? string.Empty, parentFormNotNull);
         }
 
-        private void PathTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void PathTextBox_Validating(object? sender, CancelEventArgs e)
         {
             if (ErrorProvider != null)
             {
@@ -76,7 +72,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void ValidatePictureExistsAndCanBeLoaded([NotNull] ErrorProvider errorProvider)
+        private void ValidatePictureExistsAndCanBeLoaded(ErrorProvider errorProvider)
         {
             if (pathTextBox.Text.Length > 0)
             {
@@ -102,7 +98,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             errorProvider.SetError(pathTextBox, string.Empty);
         }
 
-        private void BrowseButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void BrowseButton_Click(object? sender, EventArgs e)
         {
             BrowseForPicture();
         }

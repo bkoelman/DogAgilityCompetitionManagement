@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -46,14 +45,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        public event EventHandler StatusChanged;
+        public event EventHandler? StatusChanged;
 
         public NetworkStatusControl()
         {
             InitializeComponent();
         }
 
-        private void IsInNetworkCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void IsInNetworkCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             StatusChanged?.Invoke(this, EventArgs.Empty);
         }

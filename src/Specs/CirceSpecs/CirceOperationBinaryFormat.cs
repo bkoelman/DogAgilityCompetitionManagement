@@ -5,7 +5,6 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -1000,10 +999,9 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             return (byte)ch;
         }
 
-        [NotNull]
         // ReSharper disable once UnusedMember.Local
-        // Reason: Handy helper when writing new tests.
-        private static string DumpBytes([NotNull] IEnumerable<byte> bytes)
+        // Justification: This is a handy helper when writing new tests.
+        private static string DumpBytes(IEnumerable<byte> bytes)
         {
             var textBuilder = new StringBuilder();
 

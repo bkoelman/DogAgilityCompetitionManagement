@@ -1,23 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
     /// <summary />
     public static class EnumerableExtensions
     {
-        [NotNull]
-        [ItemCanBeNull]
-        public static IEnumerable<T> EmptyIfNull<T>([CanBeNull] [ItemCanBeNull] this IEnumerable<T> source)
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
+            where T : class?
         {
             return source ?? Enumerable.Empty<T>();
         }
 
-        [NotNull]
-        [ItemCanBeNull]
-        public static Collection<T> ToCollection<T>([CanBeNull] [ItemCanBeNull] this IEnumerable<T> source)
+        public static Collection<T> ToCollection<T>(this IEnumerable<T>? source)
+            where T : class?
         {
             var result = new Collection<T>();
 

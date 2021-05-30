@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -9,7 +8,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class LogMessageForm : Form
     {
-        [NotNull]
         public string Message
         {
             get => messageTextBox.Text;
@@ -21,13 +19,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             InitializeComponent();
         }
 
-        private void LogMessageForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void LogMessageForm_Load(object? sender, EventArgs e)
         {
             messageTextBox.SelectAll();
             messageTextBox.Select();
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Message))
             {

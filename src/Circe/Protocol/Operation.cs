@@ -16,8 +16,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Gets the operation parameters.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         protected internal IList<Parameter> Parameters { get; }
 
         /// <summary>
@@ -57,15 +55,14 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <param name="acceptor">
         /// The object accepting this operation.
         /// </param>
-        public abstract void Visit([NotNull] IOperationAcceptor acceptor);
+        public abstract void Visit(IOperationAcceptor acceptor);
 
         protected internal virtual bool AllowMultiple(int parameterId)
         {
             return false;
         }
 
-        [CanBeNull]
-        protected internal virtual Parameter GetParameterOrNull(int parameterId)
+        protected internal virtual Parameter? GetParameterOrNull(int parameterId)
         {
             return Parameters.FirstOrDefault(p => p.Id == parameterId);
         }

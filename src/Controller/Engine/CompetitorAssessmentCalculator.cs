@@ -1,7 +1,6 @@
 ﻿using System;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -10,10 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class CompetitorAssessmentCalculator
     {
-        [NotNull]
         private readonly CompetitionRunResult competitor;
-
-        [NotNull]
         private readonly CompetitionClassModel modelSnapshot;
 
         /// <summary>
@@ -73,7 +69,7 @@ namespace DogAgilityCompetition.Controller.Engine
         /// </value>
         public TimeSpan FaultRefusalTime => TimeSpan.FromSeconds(competitor.FaultCount + competitor.RefusalCount);
 
-        public CompetitorAssessmentCalculator([NotNull] CompetitionRunResult competitor, [NotNull] CompetitionClassModel modelSnapshot)
+        public CompetitorAssessmentCalculator(CompetitionRunResult competitor, CompetitionClassModel modelSnapshot)
         {
             Guard.NotNull(competitor, nameof(competitor));
             Guard.NotNull(modelSnapshot, nameof(modelSnapshot));

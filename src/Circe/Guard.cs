@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using IsNotNullOnReturn = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -11,8 +12,7 @@ namespace DogAgilityCompetition.Circe
     public static class Guard
     {
         [AssertionMethod]
-        [ContractAnnotation("value: null => halt")]
-        public static void NotNull<T>([CanBeNull] [NoEnumeration] T value, [NotNull] [InvokerParameterName] string name)
+        public static void NotNull<T>([IsNotNullOnReturn] [NoEnumeration] T? value, [InvokerParameterName] string name)
         {
             if (ReferenceEquals(value, null))
             {
@@ -21,8 +21,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        [ContractAnnotation("value: null => halt")]
-        public static void NotNullNorEmpty<T>([CanBeNull] [ItemCanBeNull] IEnumerable<T> value, [NotNull] [InvokerParameterName] string name)
+        public static void NotNullNorEmpty<T>([IsNotNullOnReturn] IEnumerable<T?>? value, [InvokerParameterName] string name)
         {
             NotNull(value, name);
 
@@ -33,8 +32,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        [ContractAnnotation("value: null => halt")]
-        public static void NotNullNorWhiteSpace([CanBeNull] string value, [NotNull] [InvokerParameterName] string name)
+        public static void NotNullNorWhiteSpace([IsNotNullOnReturn] string? value, [InvokerParameterName] string name)
         {
             NotNull(value, name);
 
@@ -45,7 +43,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void InRangeInclusive(int value, [NotNull] [InvokerParameterName] string name, int minValue, int maxValue)
+        public static void InRangeInclusive(int value, [InvokerParameterName] string name, int minValue, int maxValue)
         {
             if (value < minValue || value > maxValue)
             {
@@ -59,7 +57,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void InRangeInclusive(ulong value, [NotNull] [InvokerParameterName] string name, ulong minValue, ulong maxValue)
+        public static void InRangeInclusive(ulong value, [InvokerParameterName] string name, ulong minValue, ulong maxValue)
         {
             if (value < minValue || value > maxValue)
             {
@@ -73,7 +71,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void GreaterOrEqual(int value, [NotNull] [InvokerParameterName] string name, int minValue)
+        public static void GreaterOrEqual(int value, [InvokerParameterName] string name, int minValue)
         {
             if (value < minValue)
             {
@@ -82,7 +80,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void GreaterOrEqual(TimeSpan value, [NotNull] [InvokerParameterName] string name, TimeSpan minValue)
+        public static void GreaterOrEqual(TimeSpan value, [InvokerParameterName] string name, TimeSpan minValue)
         {
             if (value < minValue)
             {
@@ -91,7 +89,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static void LessOrEqual(int value, [NotNull] [InvokerParameterName] string name, int maxValue)
+        public static void LessOrEqual(int value, [InvokerParameterName] string name, int maxValue)
         {
             if (value > maxValue)
             {

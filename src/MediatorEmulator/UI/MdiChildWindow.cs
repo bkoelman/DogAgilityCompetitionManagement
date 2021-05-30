@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI
 {
@@ -17,8 +16,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
         private const int MenuStripHeight = 24;
         private const int ExtraSpace = 5;
 
-        public static void Register([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings, bool initiallyMaximized,
-            [CanBeNull] ref IContainer container)
+        public static void Register(FormWithWindowStateChangeEvent form, IWindowSettings settings, bool initiallyMaximized, ref IContainer? container)
         {
             Guard.NotNull(form, nameof(form));
             Guard.NotNull(settings, nameof(settings));
@@ -28,20 +26,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
                 throw new InvalidOperationException("Form must be an MDI child.");
             }
 
-            // ReSharper disable once ObjectCreationAsStatement
-            // Reason: Object registers itself to get disposed along with specified container on Form.
-            new DisposableComponent<TargetWindow>(new TargetWindow(form, settings, initiallyMaximized), ref container);
+            // Justification for discard: Object registers itself to get disposed along with specified container on Form.
+            _ = new DisposableComponent<TargetWindow>(new TargetWindow(form, settings, initiallyMaximized), ref container);
         }
 
         private sealed class TargetWindow : IDisposable
         {
-            [NotNull]
             private readonly FormWithWindowStateChangeEvent form;
-
-            [NotNull]
             private readonly IWindowSettings settings;
 
-            public TargetWindow([NotNull] FormWithWindowStateChangeEvent form, [NotNull] IWindowSettings settings, bool initiallyMaximized)
+            public TargetWindow(FormWithWindowStateChangeEvent form, IWindowSettings settings, bool initiallyMaximized)
             {
                 Guard.NotNull(form, nameof(form));
                 Guard.NotNull(settings, nameof(settings));
@@ -56,19 +50,19 @@ namespace DogAgilityCompetition.MediatorEmulator.UI
                 UpdateLayoutFromSettings(initiallyMaximized);
             }
 
-            private void FormOnLocationChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+            private void FormOnLocationChanged(object? sender, EventArgs eventArgs)
             {
                 settings.WindowLocationX = form.WindowState == FormWindowState.Normal ? form.Location.X : form.RestoreBounds.Location.X;
                 settings.WindowLocationY = form.WindowState == FormWindowState.Normal ? form.Location.Y : form.RestoreBounds.Location.Y;
             }
 
-            private void FormOnSizeChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+            private void FormOnSizeChanged(object? sender, EventArgs eventArgs)
             {
                 settings.WindowHeight = form.WindowState == FormWindowState.Normal ? form.Size.Height : form.RestoreBounds.Height;
                 settings.WindowWidth = form.WindowState == FormWindowState.Normal ? form.Size.Width : form.RestoreBounds.Width;
             }
 
-            private void FormOnWindowStateChanged([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+            private void FormOnWindowStateChanged(object? sender, EventArgs eventArgs)
             {
                 settings.IsMinimized = form.WindowState == FormWindowState.Minimized;
             }

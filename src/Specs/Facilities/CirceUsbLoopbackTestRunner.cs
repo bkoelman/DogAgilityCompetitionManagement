@@ -5,7 +5,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
@@ -16,19 +15,12 @@ namespace DogAgilityCompetition.Specs.Facilities
     {
         private static readonly TimeSpan DefaultRunTimeout = TimeSpan.FromMilliseconds(1000);
 
-        [NotNull]
         private readonly ManualResetEvent manualResetEvent;
 
-        [CanBeNull]
         private TimeSpan? timeout;
+        private Version? protocolVersion;
 
-        [CanBeNull]
-        private Version protocolVersion;
-
-        [NotNull]
         public CirceControllerSessionManager RemoteSessionManager { get; }
-
-        [NotNull]
         public CirceComConnection Connection { get; }
 
         public TimeSpan RunTimeout
@@ -37,7 +29,6 @@ namespace DogAgilityCompetition.Specs.Facilities
             set => timeout = value;
         }
 
-        [NotNull]
         public Version ProtocolVersion
         {
             get => protocolVersion ?? KeepAliveOperation.CurrentProtocolVersion;
@@ -50,7 +41,7 @@ namespace DogAgilityCompetition.Specs.Facilities
 
         public int MediatorStatusCode { get; set; }
 
-        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
+        public event EventHandler<IncomingOperationEventArgs>? OperationReceived;
 
         public CirceUsbLoopbackTestRunner()
         {
@@ -72,17 +63,17 @@ namespace DogAgilityCompetition.Specs.Facilities
             }
         }
 
-        private void AttachConnectionHandlers([NotNull] CirceComConnection connection)
+        private void AttachConnectionHandlers(CirceComConnection connection)
         {
             connection.OperationReceived += ConnectionOnOperationReceived;
         }
 
-        private void DetachConnectionHandlers([NotNull] CirceComConnection connection)
+        private void DetachConnectionHandlers(CirceComConnection connection)
         {
             connection.OperationReceived -= ConnectionOnOperationReceived;
         }
 
-        private void ConnectionOnOperationReceived([CanBeNull] object sender, [NotNull] IncomingOperationEventArgs e)
+        private void ConnectionOnOperationReceived(object? sender, IncomingOperationEventArgs e)
         {
             if (e.Operation is LoginOperation)
             {

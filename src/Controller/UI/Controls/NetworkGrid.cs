@@ -12,7 +12,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -26,15 +25,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private const DeviceRoles IntermediateRoles = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static readonly TimeSpan TaskTimeout = TimeSpan.FromSeconds(3);
-
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         private static readonly Color LightBlue = Color.FromArgb(255, 96, 192, 192);
         private static readonly Color LightGray = Color.FromArgb(255, 192, 192, 192);
 
-        [NotNull]
         private static readonly Dictionary<DeviceRoles, string> RoleToDisplayNameLookup = new()
         {
             { DeviceRoles.StartTimer, "Start" },
@@ -46,10 +41,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             { DeviceRoles.Display, "Display" }
         };
 
-        [NotNull]
         private readonly Dictionary<int, Dictionary<Rectangle, DeviceRoles>> rolesCellCheckboxOffsetMap = new();
-
-        [NotNull]
         private readonly DeviceAddressToRowIndexCache rowCache;
 
         private bool inStatusMode;
@@ -72,11 +64,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [NotNull]
         public NetworkComposition NetworkComposition { get; private set; }
 
-        public event EventHandler<NetworkSetupEventArgs> NetworkSetupRequested;
-        public event EventHandler<AlertEventArgs> AlertRequested;
+        public event EventHandler<NetworkSetupEventArgs>? NetworkSetupRequested;
+        public event EventHandler<AlertEventArgs>? AlertRequested;
 
         public NetworkGrid()
         {
@@ -101,11 +92,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             var indexesOfRowsToRemove = new List<int>();
 
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            // Reason: Procedural algorithm is more readable and easier to understand here.
             foreach (DataGridViewRow gridViewRow in dataGridView.Rows)
             {
-                var rowState = (DeviceRowState)gridViewRow.Tag;
+                var rowState = (DeviceRowState)gridViewRow.Tag!;
 
                 if (!rowState.Status.IsInNetwork)
                 {
@@ -124,7 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             rowCache.Clear();
         }
 
-        public void AddOrUpdate([NotNull] DeviceStatus status)
+        public void AddOrUpdate(DeviceStatus status)
         {
             Guard.NotNull(status, nameof(status));
 
@@ -142,8 +131,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
             else
             {
-                Task existingSetupTask = null;
-                Task existingAlertTask = null;
+                Task? existingSetupTask = null;
+                Task? existingAlertTask = null;
 
                 int rowIndex;
 
@@ -156,7 +145,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     rowIndex = rowCache[status.DeviceAddress];
 
-                    var existingRowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag;
+                    var existingRowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag!;
                     existingSetupTask = existingRowState.SetupTask;
                     existingAlertTask = existingRowState.AlertTask;
                 }
@@ -173,7 +162,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        public void Remove([NotNull] WirelessNetworkAddress deviceAddress)
+        public void Remove(WirelessNetworkAddress deviceAddress)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -181,7 +170,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 int rowIndex = rowCache[deviceAddress];
 
-                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag;
+                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag!;
                 rowState.IsDeleted = true;
 
                 UpdateRowFromState(rowIndex);
@@ -190,7 +179,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void UpdateRowFromState(int rowIndex)
         {
-            var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag;
+            var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag!;
             DataGridViewRow gridViewRow = dataGridView.Rows[rowIndex];
 
             gridViewRow.Cells[UseColumn.Index].Value = rowState.Status.IsInNetwork;
@@ -213,7 +202,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             if (rowIndex >= 0)
             {
                 var backColor = Color.Empty;
-                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag;
+                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag!;
 
                 if (rowState.IsDeleted)
                 {
@@ -234,11 +223,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             var newComposition = NetworkComposition.Empty;
 
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            // Reason: Procedural algorithm is more readable and easier to understand here.
             foreach (DataGridViewRow gridViewRow in dataGridView.Rows)
             {
-                var rowState = (DeviceRowState)gridViewRow.Tag;
+                var rowState = (DeviceRowState)gridViewRow.Tag!;
 
                 if (!rowState.IsDeleted && rowState.Status.IsInNetwork)
                 {
@@ -252,12 +239,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void DataGridView_SelectionChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             dataGridView.ClearSelection();
         }
 
-        private void DataGridView_CurrentCellDirtyStateChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DataGridView_CurrentCellDirtyStateChanged(object? sender, EventArgs e)
         {
             if (dataGridView.IsCurrentCellDirty)
             {
@@ -265,11 +252,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void DataGridView_CellContentClick([CanBeNull] object sender, [NotNull] DataGridViewCellEventArgs e)
+        private void DataGridView_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+                var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
                 var taskCancelTokenSource = new CancellationTokenSource();
 
                 if (e.ColumnIndex == BlinkColumn.Index && AllowBlink(rowState))
@@ -293,8 +280,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void OnAlertRequested([NotNull] AlertEventArgs args, [NotNull] WirelessNetworkAddress deviceAddress,
-            [NotNull] CancellationTokenSource taskCancelTokenSource)
+        private void OnAlertRequested(AlertEventArgs args, WirelessNetworkAddress deviceAddress, CancellationTokenSource taskCancelTokenSource)
         {
             AlertRequested?.Invoke(this, args);
 
@@ -302,7 +288,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 AutoCancelTaskAfterTimeout(args.Task, taskCancelTokenSource);
 
-                DeviceRowState rowState = GetRowStateForDeviceAddressOrNull(deviceAddress);
+                DeviceRowState? rowState = GetRowStateForDeviceAddressOrNull(deviceAddress);
 
                 if (rowState != null)
                 {
@@ -333,8 +319,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void OnNetworkSetupRequested([NotNull] NetworkSetupEventArgs args, [NotNull] WirelessNetworkAddress deviceAddress,
-            [NotNull] CancellationTokenSource taskCancelTokenSource)
+        private void OnNetworkSetupRequested(NetworkSetupEventArgs args, WirelessNetworkAddress deviceAddress, CancellationTokenSource taskCancelTokenSource)
         {
             NetworkSetupRequested?.Invoke(this, args);
 
@@ -342,7 +327,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 AutoCancelTaskAfterTimeout(args.Task, taskCancelTokenSource);
 
-                DeviceRowState rowState = GetRowStateForDeviceAddressOrNull(deviceAddress);
+                DeviceRowState? rowState = GetRowStateForDeviceAddressOrNull(deviceAddress);
 
                 if (rowState != null)
                 {
@@ -373,7 +358,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private static void AutoCancelTaskAfterTimeout([NotNull] Task taskToWatch, [NotNull] CancellationTokenSource taskCancelTokenSource)
+        private static void AutoCancelTaskAfterTimeout(Task taskToWatch, CancellationTokenSource taskCancelTokenSource)
         {
             Task.Factory.StartNew(() =>
             {
@@ -393,20 +378,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
         }
 
-        [CanBeNull]
-        private DeviceRowState GetRowStateForDeviceAddressOrNull([NotNull] WirelessNetworkAddress deviceAddress)
+        private DeviceRowState? GetRowStateForDeviceAddressOrNull(WirelessNetworkAddress deviceAddress)
         {
             if (rowCache.Contains(deviceAddress))
             {
                 int rowIndex = rowCache[deviceAddress];
-                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag;
+                var rowState = (DeviceRowState)dataGridView.Rows[rowIndex].Tag!;
                 return rowState;
             }
 
             return null;
         }
 
-        private void TryInvalidateDeviceRow([NotNull] WirelessNetworkAddress deviceAddress)
+        private void TryInvalidateDeviceRow(WirelessNetworkAddress deviceAddress)
         {
             if (rowCache.Contains(deviceAddress))
             {
@@ -415,11 +399,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void DataGridView_CellMouseClick([CanBeNull] object sender, [NotNull] DataGridViewCellMouseEventArgs e)
+        private void DataGridView_CellMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+                var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
 
                 if (e.ColumnIndex == RolesColumn.Index && e.Button == MouseButtons.Left && AllowChangeRoles(rowState))
                 {
@@ -484,8 +468,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         {
             if (rolesCellCheckboxOffsetMap.ContainsKey(rowIndex))
             {
-                // ReSharper disable once LoopCanBeConvertedToQuery
-                // Reason: Procedural algorithm is more readable and easier to understand here.
                 foreach (KeyValuePair<Rectangle, DeviceRoles> rectWithRole in rolesCellCheckboxOffsetMap[rowIndex])
                 {
                     if (rectWithRole.Key.Contains(x, y))
@@ -498,15 +480,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return DeviceRoles.None;
         }
 
-        private void CleanupTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CleanupTimer_Tick(object? sender, EventArgs e)
         {
             var indexesOfRowsToRemove = new List<int>();
 
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            // Reason: Procedural algorithm is more readable and easier to understand here.
             foreach (DataGridViewRow gridViewRow in dataGridView.Rows)
             {
-                var rowState = (DeviceRowState)gridViewRow.Tag;
+                var rowState = (DeviceRowState)gridViewRow.Tag!;
 
                 if (rowState.HasExpired)
                 {
@@ -525,7 +505,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             rowCache.Clear();
         }
 
-        private void DataGridView_CellPainting([CanBeNull] object sender, [NotNull] DataGridViewCellPaintingEventArgs e)
+        private void DataGridView_CellPainting(object? sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
@@ -548,9 +528,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private void PaintUseCell([NotNull] DataGridViewCellPaintingEventArgs e)
+        private void PaintUseCell(DataGridViewCellPaintingEventArgs e)
         {
-            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
 
             // @formatter:keep_existing_linebreaks true
 
@@ -568,12 +548,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             e.Handled = true;
         }
 
-        private void PaintRolesCell([NotNull] DataGridViewCellPaintingEventArgs e)
+        private void PaintRolesCell(DataGridViewCellPaintingEventArgs e)
         {
             Rectangle shiftingRect = e.CellBounds;
             rolesCellCheckboxOffsetMap[e.RowIndex] = new Dictionary<Rectangle, DeviceRoles>();
 
-            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
             bool areCheckBoxesEnabled = AllowChangeRoles(rowState);
 
             e.PaintBackground(e.ClipBounds, true);
@@ -618,24 +598,24 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             e.Handled = true;
         }
 
-        private bool AllowBlink([NotNull] DeviceRowState rowState)
+        private bool AllowBlink(DeviceRowState rowState)
         {
             return !inStatusMode && !rowState.IsDeleted && rowState.AlertTask == null && IsConnected;
         }
 
-        private bool AllowChangeRoles([NotNull] DeviceRowState rowState)
+        private bool AllowChangeRoles(DeviceRowState rowState)
         {
             return !inStatusMode && !rowState.IsDeleted && rowState.Status.IsInNetwork && rowState.SetupTask == null && IsConnected;
         }
 
-        private bool AllowJoinLeaveNetwork([NotNull] DeviceRowState rowState)
+        private bool AllowJoinLeaveNetwork(DeviceRowState rowState)
         {
             return !inStatusMode && !rowState.IsDeleted && rowState.SetupTask == null && IsConnected;
         }
 
-        private void PaintAlignedCell([NotNull] DataGridViewCellPaintingEventArgs e)
+        private void PaintAlignedCell(DataGridViewCellPaintingEventArgs e)
         {
-            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
 
             // @formatter:keep_existing_linebreaks true
 
@@ -651,17 +631,16 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             e.Handled = true;
         }
 
-        private void PaintSyncCell([NotNull] DataGridViewCellPaintingEventArgs e)
+        private void PaintSyncCell(DataGridViewCellPaintingEventArgs e)
         {
-            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag;
+            var rowState = (DeviceRowState)dataGridView.Rows[e.RowIndex].Tag!;
             CheckBoxState? checkState = GetCheckStateFor(rowState.Status.ClockSynchronization);
 
             PaintCheckBoxCell(e, checkState);
             e.Handled = true;
         }
 
-        [CanBeNull]
-        private static CheckBoxState? GetCheckStateFor([CanBeNull] ClockSynchronizationStatus? synchronizationStatus)
+        private static CheckBoxState? GetCheckStateFor(ClockSynchronizationStatus? synchronizationStatus)
         {
             switch (synchronizationStatus)
             {
@@ -674,7 +653,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private static void PaintCheckBoxCell([NotNull] DataGridViewCellPaintingEventArgs e, [CanBeNull] CheckBoxState? checkState)
+        private static void PaintCheckBoxCell(DataGridViewCellPaintingEventArgs e, CheckBoxState? checkState)
         {
             e.PaintBackground(e.ClipBounds, true);
 
@@ -693,13 +672,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class DeviceAddressToRowIndexCache
         {
-            [NotNull]
             private readonly DataGridView source;
 
-            [CanBeNull]
-            private Dictionary<WirelessNetworkAddress, int> deviceAddressToRowIndexTable;
+            private Dictionary<WirelessNetworkAddress, int>? deviceAddressToRowIndexTable;
 
-            public int this[[NotNull] WirelessNetworkAddress deviceAddress]
+            public int this[WirelessNetworkAddress deviceAddress]
             {
                 get
                 {
@@ -723,14 +700,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            public DeviceAddressToRowIndexCache([NotNull] DataGridView source)
+            public DeviceAddressToRowIndexCache(DataGridView source)
             {
                 Guard.NotNull(source, nameof(source));
 
                 this.source = source;
             }
 
-            public bool Contains([NotNull] WirelessNetworkAddress deviceAddress)
+            public bool Contains(WirelessNetworkAddress deviceAddress)
             {
                 Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -743,7 +720,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 deviceAddressToRowIndexTable = null;
             }
 
-            [NotNull]
             private Dictionary<WirelessNetworkAddress, int> EnsureRowCache()
             {
                 if (deviceAddressToRowIndexTable == null)
@@ -752,7 +728,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                     foreach (DataGridViewRow gridViewRow in source.Rows)
                     {
-                        var rowState = (DeviceRowState)gridViewRow.Tag;
+                        var rowState = (DeviceRowState)gridViewRow.Tag!;
                         int rowIndex = gridViewRow.Index;
 
                         deviceAddressToRowIndexTable[rowState.Status.DeviceAddress] = rowIndex;
@@ -765,29 +741,20 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class DeviceRowState
         {
-            [CanBeNull]
             private DateTime? removedAtUtc;
-
-            [CanBeNull]
-            [ItemNotNull]
-            private DeviceRoleSet roleSetCached;
-
-            [NotNull]
+            private DeviceRoleSet? roleSetCached;
             private DeviceStatus status;
 
             /// <summary>
             /// Optional. The currently running Task for SetupNetwork operation.
             /// </summary>
-            [CanBeNull]
-            public Task SetupTask { get; set; }
+            public Task? SetupTask { get; set; }
 
             /// <summary>
             /// Optional. The currently running Task for Alert operation.
             /// </summary>
-            [CanBeNull]
-            public Task AlertTask { get; set; }
+            public Task? AlertTask { get; set; }
 
-            [NotNull]
             public DeviceStatus Status
             {
                 get => status;
@@ -806,24 +773,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             public bool HasExpired => removedAtUtc != null && removedAtUtc.Value.AddSeconds(15) < SystemContext.UtcNow();
 
-            [NotNull]
-            [ItemNotNull]
             public DeviceRoleSet RoleSetCached
             {
                 get
                 {
-                    // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
-                    // Reason: Assignment inside expression (side effect) decreases code readability.
-                    if (roleSetCached == null)
-                    {
-                        roleSetCached = new DeviceRoleSet(Status.Capabilities, Status.Roles);
-                    }
-
-                    return roleSetCached;
+                    return roleSetCached ??= new DeviceRoleSet(Status.Capabilities, Status.Roles);
                 }
             }
 
-            public DeviceRowState([NotNull] DeviceStatus status)
+            public DeviceRowState(DeviceStatus status)
             {
                 Guard.NotNull(status, nameof(status));
                 this.status = status;
@@ -837,8 +795,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class DeviceRoleSet : IEnumerable<DeviceRoleAssignment>
         {
-            [NotNull]
-            [ItemNotNull]
             private readonly List<DeviceRoleAssignment> items = new();
 
             public DeviceRoleSet(DeviceCapabilities capabilities, DeviceRoles rolesAssigned)

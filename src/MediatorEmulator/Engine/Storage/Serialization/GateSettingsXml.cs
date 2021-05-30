@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 {
@@ -14,10 +13,8 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         public bool IsPoweredOn { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public WirelessNetworkAddress DeviceAddress { get; set; }
+        public WirelessNetworkAddress? DeviceAddress { get; set; }
 
-        [NotNull]
         public WirelessNetworkAddress DeviceAddressNotNull => DeviceAddress ??= NetworkAddressGenerator.GetNextFreeAddress();
 
         [DataMember]

@@ -9,61 +9,44 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class NetworkComplianceMismatch
     {
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingKeypad = new("MissingKeypad", "Network must contain a device in role Keypad.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingStartTimer = new("MissingStartTimer", "Network must contain a device in role StartTimer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingIntermediate1Timer =
             new("MissingIntermediate1Timer", "Network must contain a device in role Intermediate 1 Timer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingIntermediate2Timer =
             new("MissingIntermediate2Timer", "Network must contain a device in role Intermediate 2 Timer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingIntermediate3Timer =
             new("MissingIntermediate3Timer", "Network must contain a device in role Intermediate 3 Timer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingFinishTimer = new("MissingFinishTimer", "Network must contain a device in role FinishTimer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch MissingDelayForStartFinishTimer =
             new("MissingDelayForStartFinishTimer", "Must specify minimum delay between passage of Start and Finish when using single Start/Finish gate.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch GateIsStartAndIntermediate =
             new("GateIsStartAndIntermediate", "Gate cannot be in both roles Start Timer and Intermediate Timer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch GateIsFinishAndIntermediate =
             new("GateIsFinishAndIntermediate", "Gate cannot be in both roles Intermediate Timer and Finish Timer.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch GateInMultipleIntermediateTimerRoles =
             new("GateInMultipleIntermediateTimerRoles", "Gate cannot be in role Intermediate 1/2/3 Timer at the same time.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch IntermediateMissing32 =
             new("IntermediateMissing32", "Network cannot contain a device in role Intermediate 3 without another device in role Intermediate 2.");
 
-        [NotNull]
         public static readonly NetworkComplianceMismatch IntermediateMissing21 =
             new("IntermediateMissing21", "Network cannot contain a device in role Intermediate 2 without another device in role Intermediate 1.");
 
-        [NotNull]
         public string Name { get; }
-
-        [NotNull]
         public string Message { get; }
+        public WirelessNetworkAddress? DeviceAddress { get; }
 
-        [CanBeNull]
-        public WirelessNetworkAddress DeviceAddress { get; }
-
-        private NetworkComplianceMismatch([NotNull] string name, [NotNull] string message, [CanBeNull] WirelessNetworkAddress deviceAddress = null)
+        private NetworkComplianceMismatch(string name, string message, WirelessNetworkAddress? deviceAddress = null)
         {
             Guard.NotNullNorEmpty(name, nameof(name));
             Guard.NotNullNorEmpty(message, nameof(message));
@@ -73,8 +56,7 @@ namespace DogAgilityCompetition.Controller.Engine
             DeviceAddress = deviceAddress;
         }
 
-        [NotNull]
-        public static NetworkComplianceMismatch CreateForOfflineDevice([NotNull] WirelessNetworkAddress deviceAddress)
+        public static NetworkComplianceMismatch CreateForOfflineDevice(WirelessNetworkAddress deviceAddress)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 

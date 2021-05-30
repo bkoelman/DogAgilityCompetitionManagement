@@ -15,7 +15,6 @@ using DogAgilityCompetition.Controller.Engine.Visualization;
 using DogAgilityCompetition.Controller.Properties;
 using DogAgilityCompetition.Controller.UI.Controls;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -24,52 +23,23 @@ namespace DogAgilityCompetition.Controller.UI.Forms
     /// </summary>
     public sealed partial class MainForm : FormWithHandleManagement
     {
-        [NotNull]
         private readonly DisposableComponent<CirceControllerSessionManager> sessionManager;
-
-        [NotNull]
         private readonly NetworkHealthMonitor healthMonitor = new();
-
-        [NotNull]
         private readonly ClockSynchronizationMonitor clockSynchronizationMonitor = new();
-
-        [NotNull]
         private readonly DisposableComponent<CompetitionClassController> classController;
-
-        [NotNull]
         private readonly DeviceActionAdapter actionAdapter = new();
-
-        [NotNull]
         private readonly NumberEntryFilter numberFilter = new();
-
-        [NotNull]
         private readonly RemoteKeyTracker keyTracker = new();
-
-        [NotNull]
         private readonly NetworkSetupForm networkSetupForm;
-
-        [NotNull]
         private readonly TimerDisplayForm timerDisplayForm = new();
-
-        [NotNull]
         private readonly WirelessDisplayRunVisualizer wirelessRunVisualizer = new();
-
-        [NotNull]
         private readonly ClassResultsDisplayForm classResultsDisplayForm = new();
-
-        [NotNull]
         private readonly CustomDisplayForm customDisplayForm = new();
-
-        [NotNull]
         private readonly LogForm logForm = new();
 
-        [NotNull]
         private CompetitionClassRequirements requirements = CompetitionClassRequirements.Default;
+        private Process? emulatorProcess;
 
-        [CanBeNull]
-        private Process emulatorProcess;
-
-        [NotNull]
         private CompetitionClassRequirements Requirements
         {
             get => requirements;
@@ -89,9 +59,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
             Text += AssemblyReader.GetInformationalVersion();
 
-            // ReSharper disable once ObjectCreationAsStatement
-            // Reason: Assignment is unneeded because this registers a callback to the allocated object.
-            new DisposableComponent<DisposableHolder>(new DisposableHolder(EmulatorProcessKill), ref components);
+            // Justification for discard: This registers a callback to the allocated object.
+            _ = new DisposableComponent<DisposableHolder>(new DisposableHolder(EmulatorProcessKill), ref components);
 
             var runVisualizer = new CompositeRunVisualizer(new ICompetitionRunVisualizer[]
             {
@@ -167,12 +136,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             networkSetupForm.SessionManager = sessionManager.Component;
         }
 
-        private void ShowError([NotNull] string message)
+        private void ShowError(string message)
         {
             MessageBox.Show(this, message, @"Error - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void MainForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void MainForm_Load(object? sender, EventArgs e)
         {
             LoadSettings();
 
@@ -194,7 +163,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             Settings.Default.Reload();
         }
 
-        private void MainForm_FormClosed([CanBeNull] object sender, [NotNull] FormClosedEventArgs e)
+        private void MainForm_FormClosed(object? sender, FormClosedEventArgs e)
         {
             Settings.Default.DebugTextBoxMode = TextBoxAppender.Mode.ToString();
             Settings.Default.DebugTextBoxSwitches = TextBoxAppender.Switches.ToString();
@@ -203,7 +172,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             Settings.Default.Save();
         }
 
-        private void UpdateControlsEnabledStateAfterHealthChanged([NotNull] NetworkHealthReport report)
+        private void UpdateControlsEnabledStateAfterHealthChanged(NetworkHealthReport report)
         {
             bool isRunInProgress = report.RunComposition != null;
 
@@ -220,7 +189,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             noneRadioButton.Enabled = !isRunInProgress;
         }
 
-        private void SetupClassButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void SetupClassButton_Click(object? sender, EventArgs e)
         {
             using var form = new ClassSetupForm();
 
@@ -244,7 +213,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             CompetitionClassModel modelSnapshot = CacheManager.DefaultInstance.ActiveModel;
 
-            CompetitionRunResult lastCompleted = modelSnapshot.GetLastCompletedOrNull();
+            CompetitionRunResult? lastCompleted = modelSnapshot.GetLastCompletedOrNull();
             lastCompletedRunEditor.TryUpdateWith(lastCompleted);
 
             IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
@@ -254,7 +223,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             stateVisualizer.IntermediateTimerCount = modelSnapshot.IntermediateTimerCount;
         }
 
-        private void ClassControllerOnRankingChanged([NotNull] RankingChangeEventArgs e)
+        private void ClassControllerOnRankingChanged(RankingChangeEventArgs e)
         {
             classResultsDisplayForm.UpdateRankings(e.Rankings);
 
@@ -264,7 +233,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void ResultsButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ResultsButton_Click(object? sender, EventArgs e)
         {
             using var form = new ClassResultsForm();
 
@@ -274,7 +243,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void CustomDisplayButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CustomDisplayButton_Click(object? sender, EventArgs e)
         {
             using var form = new CustomDisplaySetupForm();
 
@@ -284,7 +253,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void DisplayModeRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayModeRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             healthMonitor.ForceChanged();
 
@@ -306,7 +275,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void ToggleActiveDisplay([CanBeNull] Form formToShow)
+        private void ToggleActiveDisplay(Form? formToShow)
         {
             List<Form> formsToHide = new Form[]
             {
@@ -327,12 +296,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void MaximizeFormOnAlternateScreen([NotNull] Form form)
+        private void MaximizeFormOnAlternateScreen(Form form)
         {
             if (!form.Visible)
             {
                 Screen currentScreen = Screen.FromControl(this);
-                Screen otherScreen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName != currentScreen.DeviceName);
+                Screen? otherScreen = Screen.AllScreens.FirstOrDefault(s => s.DeviceName != currentScreen.DeviceName);
 
                 if (otherScreen != null)
                 {
@@ -346,7 +315,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void StartClassButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void StartClassButton_Click(object? sender, EventArgs e)
         {
             NetworkComposition compositionSnapshot = networkStatusView.NetworkComposition;
             compositionSnapshot = compositionSnapshot.ChangeRequirements(Requirements);
@@ -362,7 +331,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             classController.Component.StartClass(Requirements);
         }
 
-        private void StopClassButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void StopClassButton_Click(object? sender, EventArgs e)
         {
             classController.Component.RequestAbort();
         }
@@ -376,12 +345,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             healthMonitor.SelectRunComposition(null);
         }
 
-        private void NetworkSetupButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NetworkSetupButton_Click(object? sender, EventArgs e)
         {
             networkSetupForm.ShowDialog();
         }
 
-        private void ShowNetworkHealth([NotNull] NetworkHealthReport healthReport)
+        private void ShowNetworkHealth(NetworkHealthReport healthReport)
         {
             var messageBuilder = new StringBuilder();
 
@@ -433,22 +402,22 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             healthTextBox.Text = messageBuilder.ToString();
         }
 
-        private void LastCompletedRunEditor_RunResultChanging([CanBeNull] object sender, [NotNull] RunResultChangingEventArgs e)
+        private void LastCompletedRunEditor_RunResultChanging(object? sender, RunResultChangingEventArgs e)
         {
-            string errorMessage = classController.Component.TryUpdateRunResult(e.OriginalRunResult, e.NewRunResult);
+            string? errorMessage = classController.Component.TryUpdateRunResult(e.OriginalRunResult, e.NewRunResult);
             e.ErrorMessage = errorMessage;
         }
 
-        private void LastCompletedRunEditor_RunResultChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void LastCompletedRunEditor_RunResultChanged(object? sender, EventArgs e)
         {
             ApplyModelChangesToDisplayForms();
         }
 
-        private void EmulatorLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
+        private void EmulatorLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
             if (emulatorProcess == null)
             {
-                string emulatorExePath = GetEmulatorExePath();
+                string? emulatorExePath = GetEmulatorExePath();
 
                 if (emulatorExePath == null)
                 {
@@ -456,7 +425,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                     return;
                 }
 
-                string emulatorXmlPath = GetEmulatorXmlPath();
+                string? emulatorXmlPath = GetEmulatorXmlPath();
 
                 if (emulatorXmlPath == null)
                 {
@@ -498,30 +467,27 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             return GetEmulatorExePath() != null && GetEmulatorXmlPath() != null;
         }
 
-        [CanBeNull]
-        private static string GetEmulatorExePath()
+        private static string? GetEmulatorExePath()
         {
             string emulatorExePath = GetPathForFileInApplicationFolder("DogAgilityCompetitionMediatorEmulator.exe");
 
             return File.Exists(emulatorExePath) ? emulatorExePath : null;
         }
 
-        [CanBeNull]
-        private static string GetEmulatorXmlPath()
+        private static string? GetEmulatorXmlPath()
         {
             string emulatorXmlPath = GetPathForFileInApplicationFolder("RemoteForDebug.xml");
             return File.Exists(emulatorXmlPath) ? emulatorXmlPath : null;
         }
 
-        [NotNull]
-        private static string GetPathForFileInApplicationFolder([NotNull] string fileName)
+        private static string GetPathForFileInApplicationFolder(string fileName)
         {
-            string applicationPath = Assembly.GetEntryAssembly().Location;
-            string applicationFolder = Path.GetDirectoryName(applicationPath);
+            string applicationPath = Assembly.GetEntryAssembly()!.Location;
+            string applicationFolder = Path.GetDirectoryName(applicationPath)!;
             return Path.GetFullPath(Path.Combine(applicationFolder, fileName));
         }
 
-        private void EmulatorProcessOnExited([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+        private void EmulatorProcessOnExited(object? sender, EventArgs eventArgs)
         {
             this.EnsureOnMainThread(() =>
             {
@@ -543,7 +509,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void LogLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
+        private void LogLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
             logForm.Visible = !logForm.Visible;
         }

@@ -4,7 +4,6 @@ using System.IO;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -77,14 +76,12 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             lines.Should().HaveCount(1);
         }
 
-        [NotNull]
-        [ItemNotNull]
-        private static IEnumerable<string> TextToLines([NotNull] string text)
+        private static IEnumerable<string> TextToLines(string text)
         {
             var lines = new List<string>();
 
             using var reader = new StringReader(text);
-            string nextLine;
+            string? nextLine;
 
             while ((nextLine = reader.ReadLine()) != null)
             {

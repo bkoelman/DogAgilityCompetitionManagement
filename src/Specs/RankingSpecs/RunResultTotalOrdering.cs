@@ -6,7 +6,6 @@ using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 // @formatter:keep_existing_linebreaks true
@@ -143,12 +142,10 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        [NotNull]
-        [ItemNotNull]
-        private static IEnumerable<OrderingScenario> ExplodeCombinations([NotNull] [ItemNotNull] IEnumerable<OrderingScenario> primaryScenarios,
-            [NotNull] [ItemNotNull] List<OrderingScenario> secondaryScenarios, [NotNull] [ItemNotNull] List<OrderingScenario> tertiaryScenarios)
+        private static IEnumerable<OrderingScenario> ExplodeCombinations(IEnumerable<OrderingScenario> primaryScenarios,
+            List<OrderingScenario> secondaryScenarios, List<OrderingScenario> tertiaryScenarios)
         {
-            return
+            IEnumerable<OrderingScenario?> scenarios =
                 from primaryScenario in primaryScenarios
                 from secondaryScenario in secondaryScenarios
                 from tertiaryScenario in tertiaryScenarios
@@ -156,11 +153,13 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 into combined
                 where combined != null
                 select combined;
+
+            IEnumerable<OrderingScenario> result = scenarios.Cast<OrderingScenario>();
+            return result;
         }
 
-        [CanBeNull]
-        private static OrderingScenario CreateCombinedScenario([NotNull] OrderingScenario primaryScenario,
-            [NotNull] OrderingScenario secondaryScenario, [NotNull] OrderingScenario tertiaryScenario)
+        private static OrderingScenario? CreateCombinedScenario(OrderingScenario primaryScenario,
+            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
         {
             OrderExpect result = CombineResult(primaryScenario, secondaryScenario, tertiaryScenario);
 
@@ -178,8 +177,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return null;
         }
 
-        private static OrderExpect CombineResult([NotNull] OrderingScenario primaryScenario,
-            [NotNull] OrderingScenario secondaryScenario, [NotNull] OrderingScenario tertiaryScenario)
+        private static OrderExpect CombineResult(OrderingScenario primaryScenario,
+            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
         {
             if (primaryScenario.Result == OrderExpect.DoNotCare ||
                 secondaryScenario.Result == OrderExpect.DoNotCare ||
@@ -195,8 +194,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                     : tertiaryScenario.Result;
         }
 
-        private static ulong CreateBitSequenceFor([NotNull] OrderingScenario primaryScenario,
-            [NotNull] OrderingScenario secondaryScenario, [NotNull] OrderingScenario tertiaryScenario)
+        private static ulong CreateBitSequenceFor(OrderingScenario primaryScenario,
+            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
         {
             ulong leftNibble = primaryScenario.Value << (tertiaryScenario.BitCount + secondaryScenario.BitCount);
             ulong middleNibble = secondaryScenario.Value << tertiaryScenario.BitCount;
@@ -205,7 +204,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return leftNibble | middleNibble | rightNibble;
         }
 
-        private static bool IsImpossibleCombination([NotNull] OrderingScenario scenario)
+        private static bool IsImpossibleCombination(OrderingScenario scenario)
         {
             bool xHasFinished = scenario[0];
             bool yHasFinished = scenario[2];
@@ -266,8 +265,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return false;
         }
 
-        [NotNull]
-        private static CompetitionRunResult CreateCompetitorFor([NotNull] string name, bool hasFinished,
+        private static CompetitionRunResult CreateCompetitorFor(string name, bool hasFinished,
             bool isEliminated, bool otherHasFinished, bool penaltyTimeIsGreater, bool overrunTimeIsGreater,
             bool otherPenaltyTimeIsGreater, bool otherOverrunTimeIsGreater, bool finishTimeIsGreater,
             bool competitorNumberIsGreater, bool otherFinishTimeIsGreater, bool otherCompetitorNumberIsGreater)
@@ -372,8 +370,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result < 0 ? OrderExpect.WinnerIsX : result > 0 ? OrderExpect.WinnerIsY : OrderExpect.IsEven;
         }
 
-        private static void AssertCompetitorsAreCompatibleWithProposedScenario([NotNull] CompetitionRunResult xCompetitor,
-            [NotNull] CompetitionRunResult yCompetitor, [NotNull] OrderingScenario scenario, [NotNull] CompetitionClassModel model)
+        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor,
+            CompetitionRunResult yCompetitor, OrderingScenario scenario, CompetitionClassModel model)
         {
             var xCalculator = new CompetitorAssessmentCalculator(xCompetitor, model);
             var yCalculator = new CompetitorAssessmentCalculator(yCompetitor, model);
@@ -492,7 +490,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         /// </summary>
         private sealed class FakeCompetitionRunResult : CompetitionRunResult
         {
-            public FakeCompetitionRunResult([NotNull] CompetitionRunResult source, int fakeFaultCount)
+            public FakeCompetitionRunResult(CompetitionRunResult source, int fakeFaultCount)
                 : base(source.Competitor, source.Timings, fakeFaultCount, source.RefusalCount, source.IsEliminated,
                     source.Placement)
             {

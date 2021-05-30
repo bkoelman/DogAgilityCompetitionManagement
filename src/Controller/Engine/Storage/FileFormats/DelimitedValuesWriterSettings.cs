@@ -1,5 +1,4 @@
 using System.Globalization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
@@ -30,7 +29,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <value>
         /// The field separator character. Set to <c>null</c> to use auto-detection based on culture (default).
         /// </value>
-        [CanBeNull]
         public char? FieldSeparator { get; set; }
 
         /// <summary>
@@ -47,8 +45,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <value>
         /// The culture. Set to <c>null</c> (default) to use the invariant culture.
         /// </value>
-        [CanBeNull]
-        public CultureInfo Culture { get; set; }
+        public CultureInfo? Culture { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelimitedValuesWriterSettings" /> class.
@@ -63,7 +60,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <summary>
         /// Creates a copy of this instance.
         /// </summary>
-        [NotNull]
         public DelimitedValuesWriterSettings Clone()
         {
             return new()

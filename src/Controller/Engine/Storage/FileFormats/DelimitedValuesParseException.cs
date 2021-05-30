@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
@@ -10,13 +8,8 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
     [Serializable]
     public sealed class DelimitedValuesParseException : Exception
     {
-        public DelimitedValuesParseException([CanBeNull] string message)
+        public DelimitedValuesParseException(string? message)
             : base(message)
-        {
-        }
-
-        private DelimitedValuesParseException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

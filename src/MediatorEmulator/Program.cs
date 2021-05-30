@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.MediatorEmulator.UI.Forms;
-using JetBrains.Annotations;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -15,14 +14,13 @@ namespace DogAgilityCompetition.MediatorEmulator
     /// </summary>
     internal static class Program
     {
-        [NotNull]
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main([NotNull] [ItemNotNull] string[] args)
+        private static void Main(string[] args)
         {
             ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("log4net.config"));

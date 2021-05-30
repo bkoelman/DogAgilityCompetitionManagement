@@ -26,52 +26,28 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 7;
 
-        [NotNull]
         private static readonly NetworkAddressParameter PrototypeDestinationAddressParameter =
             ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
 
-        [NotNull]
-        [ItemNotNull]
         private readonly WirelessNetworkAddressCollection destinationAddresses;
-
-        [NotNull]
         private readonly IntegerParameter currentCompetitorNumberParameter = ParameterFactory.Create(ParameterType.Integer.CurrentCompetitorNumber, false);
-
-        [NotNull]
         private readonly IntegerParameter nextCompetitorNumberParameter = ParameterFactory.Create(ParameterType.Integer.NextCompetitorNumber, false);
-
-        [NotNull]
         private readonly IntegerParameter startTimerParameter = ParameterFactory.Create(ParameterType.Integer.StartTimer, false);
-
-        [NotNull]
         private readonly IntegerParameter primaryTimerValueParameter = ParameterFactory.Create(ParameterType.Integer.PrimaryTimerValue, false);
-
-        [NotNull]
         private readonly IntegerParameter secondaryTimerValueParameter = ParameterFactory.Create(ParameterType.Integer.SecondaryTimerValue, false);
-
-        [NotNull]
         private readonly IntegerParameter faultCountParameter = ParameterFactory.Create(ParameterType.Integer.FaultCount, false);
-
-        [NotNull]
         private readonly IntegerParameter refusalCountParameter = ParameterFactory.Create(ParameterType.Integer.RefusalCount, false);
-
-        [NotNull]
         private readonly BooleanParameter eliminatedParameter = ParameterFactory.Create(ParameterType.Boolean.Eliminated, false);
-
-        [NotNull]
         private readonly IntegerParameter previousPlacementParameter = ParameterFactory.Create(ParameterType.Integer.PreviousPlacement, false);
 
         /// <summary>
         /// Required. Gets or sets the destination addresses of the devices in the wireless network.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         public ICollection<WirelessNetworkAddress> DestinationAddresses => destinationAddresses;
 
         /// <summary>
         /// Optional. Gets or sets the value to display for current competitor number, or 0 to hide it.
         /// </summary>
-        [CanBeNull]
         public int? CurrentCompetitorNumber
         {
             get => currentCompetitorNumberParameter.Value;
@@ -81,7 +57,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the value to display for next competitor number, or 0 to hide it.
         /// </summary>
-        [CanBeNull]
         public int? NextCompetitorNumber
         {
             get => nextCompetitorNumberParameter.Value;
@@ -100,7 +75,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the primary time value (in milliseconds) to display for current competitor, or 999999 to hide it.
         /// </summary>
-        [CanBeNull]
         public TimeSpan? PrimaryTimerValue
         {
             get
@@ -133,7 +107,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the secondary time value (in milliseconds) to display for current competitor, or 999999 to hide it.
         /// </summary>
-        [CanBeNull]
         public TimeSpan? SecondaryTimerValue
         {
             get
@@ -166,7 +139,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the value to display for fault count, or 99 to hide it.
         /// </summary>
-        [CanBeNull]
         public int? FaultCount
         {
             get => faultCountParameter.Value;
@@ -176,7 +148,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the value to display for refusal count, or 99 to hide it.
         /// </summary>
-        [CanBeNull]
         public int? RefusalCount
         {
             get => refusalCountParameter.Value;
@@ -186,7 +157,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Toggles display of the elimination indicator.
         /// </summary>
-        [CanBeNull]
         public bool? Eliminated
         {
             get => eliminatedParameter.Value;
@@ -196,7 +166,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the value to display for placement of previous competitor, or 0 to hide it.
         /// </summary>
-        [CanBeNull]
         public int? PreviousPlacement
         {
             get => previousPlacementParameter.Value;
@@ -209,7 +178,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="destinationAddresses">
         /// The destination addresses of the devices in the wireless network.
         /// </param>
-        public VisualizeOperation([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> destinationAddresses)
+        public VisualizeOperation(IEnumerable<WirelessNetworkAddress> destinationAddresses)
             : this()
         {
             Guard.NotNull(destinationAddresses, nameof(destinationAddresses));
@@ -310,7 +279,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             return parameterId == PrototypeDestinationAddressParameter.Id;
         }
 
-        protected internal override Parameter GetParameterOrNull(int parameterId)
+        protected internal override Parameter? GetParameterOrNull(int parameterId)
         {
             return parameterId == PrototypeDestinationAddressParameter.Id ? destinationAddresses.CreateAttachParameter() : base.GetParameterOrNull(parameterId);
         }

@@ -8,15 +8,13 @@ namespace DogAgilityCompetition.Circe
     public static class Assertions
     {
         [AssertionMethod]
-        [NotNull]
-        public static T InternalValueIsNotNull<T>([NotNull] GetReferenceCallback<T> memberAsFunc,
-            [NotNull] Expression<GetReferenceCallback<T>> memberAsExpression)
+        public static T InternalValueIsNotNull<T>(GetReferenceCallback<T> memberAsFunc, Expression<GetReferenceCallback<T>> memberAsExpression)
             where T : class
         {
             Guard.NotNull(memberAsFunc, nameof(memberAsFunc));
             Guard.NotNull(memberAsExpression, nameof(memberAsExpression));
 
-            T value = memberAsFunc();
+            T? value = memberAsFunc();
 
             if (value == null)
             {
@@ -28,8 +26,7 @@ namespace DogAgilityCompetition.Circe
         }
 
         [AssertionMethod]
-        public static T InternalValueIsNotNull<T>([NotNull] GetOptionalValueCallback<T> memberAsFunc,
-            [NotNull] Expression<GetOptionalValueCallback<T>> memberAsExpression)
+        public static T InternalValueIsNotNull<T>(GetOptionalValueCallback<T> memberAsFunc, Expression<GetOptionalValueCallback<T>> memberAsExpression)
             where T : struct
         {
             Guard.NotNull(memberAsFunc, nameof(memberAsFunc));

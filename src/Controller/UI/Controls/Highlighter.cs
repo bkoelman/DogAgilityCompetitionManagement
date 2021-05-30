@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -16,22 +15,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         private static readonly Color DefaultHighlightColor = Color.White;
 
-        [NotNull]
         private readonly Timer timer = new();
 
-        [CanBeNull]
         private Color? nonHighlightingForeColor;
-
         private bool isHighlightEnabled;
         private int highlightSpeed = 50;
         private int indexInColorTable;
+        private IReadOnlyCollection<Color>? colorTable;
 
-        [CanBeNull]
-        private IReadOnlyCollection<Color> colorTable;
-
-        [CanBeNull]
-        public Control TargetControl { get; set; }
-
+        public Control? TargetControl { get; set; }
         public Color HighlightColor { get; set; }
 
         [DefaultValue(false)]
@@ -89,7 +81,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        public event EventHandler HighlightCycleFinished;
+        public event EventHandler? HighlightCycleFinished;
 
         public Highlighter()
         {
@@ -121,7 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             base.Dispose(disposing);
         }
 
-        private void TimerOnTick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TimerOnTick(object? sender, EventArgs e)
         {
             if (timer.Enabled && TargetControl != null)
             {
@@ -154,7 +146,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return colorTable.ElementAt(indexInColorTable);
         }
 
-        [NotNull]
         private IReadOnlyCollection<Color> CreateColorTable()
         {
             int tableSize = 1000 / highlightSpeed;
@@ -165,6 +156,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private sealed class ColorTableBuilder
         {
+            private readonly Lazy<IReadOnlyCollection<Color>> colorTableLazy;
             private readonly byte alpha;
             private readonly double hue;
             private readonly double lightness;
@@ -172,13 +164,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             private readonly int tableSize;
             private readonly double stepSize;
 
-            [NotNull]
-            [ItemNotNull]
-            private readonly Lazy<IReadOnlyCollection<Color>> colorTableLazy;
-
             private bool directionIsUp;
 
-            [NotNull]
             public IReadOnlyCollection<Color> ColorTable => colorTableLazy.Value;
 
             public ColorTableBuilder(Color startColor, int tableSize)
@@ -194,7 +181,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 colorTableLazy = new Lazy<IReadOnlyCollection<Color>>(CreateColorTable);
             }
 
-            [NotNull]
             private IReadOnlyCollection<Color> CreateColorTable()
             {
                 var table = new List<Color>();

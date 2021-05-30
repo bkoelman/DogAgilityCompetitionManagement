@@ -4,7 +4,6 @@ using System.Text;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.DeviceConfigurer
 {
@@ -12,7 +11,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// Code generation for examples appendix in CIRCE protocol specification.
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    // Reason: Used only for rendering example dumps as a result of a CIRCE protocol change.
+    // Justification: Used only for rendering example dumps as a result of a CIRCE protocol change.
     internal static class CirceSpecExamples
     {
         public static void DumpScenarios()
@@ -22,8 +21,8 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 AssigningUniqueNetworkAddresses,
                 FormingLogicalNetwork,
                 SynchronizingClocks,
-                ReportingEventsDuringACompetitionRun
-                //GetLargestPossibleOperation
+                ReportingEventsDuringACompetitionRun,
+                GetLargestPossibleOperation
             };
 
             foreach (Func<IEnumerable<Operation>> displayExample in examplesToDisplay)
@@ -37,8 +36,6 @@ namespace DogAgilityCompetition.DeviceConfigurer
             }
         }
 
-        [NotNull]
-        [ItemNotNull]
         private static IEnumerable<Operation> AssigningUniqueNetworkAddresses()
         {
             var mediator = new WirelessNetworkAddress("123456");
@@ -71,8 +68,6 @@ namespace DogAgilityCompetition.DeviceConfigurer
             yield return new LogoutOperation();
         }
 
-        [NotNull]
-        [ItemNotNull]
         private static IEnumerable<Operation> FormingLogicalNetwork()
         {
             var remote = new WirelessNetworkAddress("AAAAAA");
@@ -108,8 +103,6 @@ namespace DogAgilityCompetition.DeviceConfigurer
             yield return new NetworkSetupOperation(gate2, true, DeviceRoles.FinishTimer);
         }
 
-        [NotNull]
-        [ItemNotNull]
         private static IEnumerable<Operation> SynchronizingClocks()
         {
             var remote = new WirelessNetworkAddress("AAAAAA");
@@ -155,8 +148,6 @@ namespace DogAgilityCompetition.DeviceConfigurer
             };
         }
 
-        [NotNull]
-        [ItemNotNull]
         private static IEnumerable<Operation> ReportingEventsDuringACompetitionRun()
         {
             var remote = new WirelessNetworkAddress("AAAAAA");
@@ -197,8 +188,6 @@ namespace DogAgilityCompetition.DeviceConfigurer
             };
         }
 
-        [NotNull]
-        [ItemNotNull]
         private static IEnumerable<Operation> GetLargestPossibleOperation()
         {
             var destinations = new[]
@@ -228,17 +217,11 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
         private static class HumanReadablePacketFormatter
         {
-            [NotNull]
             private static readonly string StartOfText = new((char)PacketFormatDelimiters.StartOfText, 1);
-
-            [NotNull]
             private static readonly string EndOfText = new((char)PacketFormatDelimiters.EndOfText, 1);
-
-            [NotNull]
             private static readonly string Tab = new((char)PacketFormatDelimiters.Tab, 1);
 
-            [NotNull]
-            public static string FormatOperation([NotNull] Operation operation)
+            public static string FormatOperation(Operation operation)
             {
                 Guard.NotNull(operation, nameof(operation));
 
@@ -246,8 +229,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 return FormatPacket(packet);
             }
 
-            [NotNull]
-            private static string FormatPacket([NotNull] byte[] packet)
+            private static string FormatPacket(byte[] packet)
             {
                 string text = new(Encoding.ASCII.GetChars(packet));
                 text = text.Replace(StartOfText, "<STX>").Replace(EndOfText, "<ETX>").Replace(Tab, "<TAB>");

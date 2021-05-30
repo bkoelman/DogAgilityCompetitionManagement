@@ -19,22 +19,18 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public const int MaxCompetitorNumberLength = 3;
 
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private readonly NumberEntryState numberEntryState = new();
-
-        [NotNull]
         private readonly DeviceModifiersState modifierStatePerDevice = new();
 
-        public event EventHandler<CompetitorSelectionEventArgs> NotifyCompetitorSelecting;
-        public event EventHandler<CompetitorNumberSelectionEventArgs> NotifyDigitReceived;
-        public event EventHandler<CompetitorSelectionEventArgs> NotifyCompetitorSelectCanceled;
-        public event EventHandler<CompetitorNumberSelectionEventArgs> NotifyCompetitorSelected;
-        public event EventHandler<UnknownDeviceActionEventArgs> NotifyUnknownAction;
+        public event EventHandler<CompetitorSelectionEventArgs>? NotifyCompetitorSelecting;
+        public event EventHandler<CompetitorNumberSelectionEventArgs>? NotifyDigitReceived;
+        public event EventHandler<CompetitorSelectionEventArgs>? NotifyCompetitorSelectCanceled;
+        public event EventHandler<CompetitorNumberSelectionEventArgs>? NotifyCompetitorSelected;
+        public event EventHandler<UnknownDeviceActionEventArgs>? NotifyUnknownAction;
 
-        public void HandleModifierKeyDown([NotNull] WirelessNetworkAddress source, RemoteKeyModifier modifier)
+        public void HandleModifierKeyDown(WirelessNetworkAddress source, RemoteKeyModifier modifier)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -64,7 +60,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public void HandleKeyDown([NotNull] WirelessNetworkAddress source, RemoteKey key, [CanBeNull] TimeSpan? sensorTime)
+        public void HandleKeyDown(WirelessNetworkAddress source, RemoteKey key, TimeSpan? sensorTime)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -76,9 +72,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 if (numberEntryState.AppendToNumber(digit))
                 {
-                    // ReSharper disable once PossibleInvalidOperationException
-                    // Reason: Call to AppendToNumber() above guarantees that value is not null.
-                    int number = numberEntryState.Number.Value;
+                    // Justification for nullable suppression: Call to AppendToNumber() above guarantees that value is not null.
+                    int number = numberEntryState.Number!.Value;
 
                     if (number > 0)
                     {
@@ -95,7 +90,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private bool HasModifierDownThatMatchesEntryState([NotNull] WirelessNetworkAddress deviceAddress)
+        private bool HasModifierDownThatMatchesEntryState(WirelessNetworkAddress deviceAddress)
         {
             if (modifierStatePerDevice.IsDown(deviceAddress, RemoteKeyModifier.EnterNextCompetitor) &&
                 numberEntryState.Mode == NumberEntryMode.EnteringNextCompetitor)
@@ -167,7 +162,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public void HandleModifierKeyUp([NotNull] WirelessNetworkAddress source, RemoteKeyModifier modifier)
+        public void HandleModifierKeyUp(WirelessNetworkAddress source, RemoteKeyModifier modifier)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -196,7 +191,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public void HandleMissingKey([NotNull] WirelessNetworkAddress source, [CanBeNull] TimeSpan? sensorTime)
+        public void HandleMissingKey(WirelessNetworkAddress source, TimeSpan? sensorTime)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -206,12 +201,10 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private sealed class NumberEntryState
         {
-            [NotNull]
             private readonly StringBuilder numberBuilder = new();
 
             public NumberEntryMode Mode { get; private set; }
 
-            [CanBeNull]
             public int? Number => numberBuilder.Length == 0 ? null : int.Parse(numberBuilder.ToString());
 
             public void ChangeMode(NumberEntryMode mode)
@@ -246,10 +239,9 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private sealed class DeviceModifiersState
         {
-            [NotNull]
             private readonly Dictionary<WirelessNetworkAddress, ModifiersDownForDevice> statePerDevice = new();
 
-            public bool IsEmpty([NotNull] WirelessNetworkAddress deviceAddress)
+            public bool IsEmpty(WirelessNetworkAddress deviceAddress)
             {
                 if (statePerDevice.ContainsKey(deviceAddress))
                 {
@@ -259,7 +251,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 return true;
             }
 
-            public bool IsDown([NotNull] WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
+            public bool IsDown(WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
             {
                 if (statePerDevice.ContainsKey(deviceAddress))
                 {
@@ -275,7 +267,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 return false;
             }
 
-            public void EnsureDown([NotNull] WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
+            public void EnsureDown(WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
             {
                 ModifiersDownForDevice deviceState = !statePerDevice.ContainsKey(deviceAddress) ? new ModifiersDownForDevice() : statePerDevice[deviceAddress];
 
@@ -294,7 +286,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 statePerDevice[deviceAddress] = deviceState;
             }
 
-            public void EnsureNotDown([NotNull] WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
+            public void EnsureNotDown(WirelessNetworkAddress deviceAddress, RemoteKeyModifier modifier)
             {
                 if (statePerDevice.ContainsKey(deviceAddress))
                 {

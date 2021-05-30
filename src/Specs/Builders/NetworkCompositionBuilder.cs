@@ -2,7 +2,6 @@
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Controller.Engine;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders
 {
@@ -11,7 +10,6 @@ namespace DogAgilityCompetition.Specs.Builders
     /// </summary>
     public sealed class NetworkCompositionBuilder : ITestDataBuilder<NetworkComposition>
     {
-        [NotNull]
         private NetworkComposition composition = NetworkComposition.Empty
             .ChangeRequirements(CompetitionClassRequirements.Default.ChangeStartFinishMinDelayForSingleSensor(5.Minutes()))
             .ChangeRolesFor(new WirelessNetworkAddress("AAAAAA"), DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad, DeviceRoles.Keypad)
@@ -23,22 +21,19 @@ namespace DogAgilityCompetition.Specs.Builders
             return composition;
         }
 
-        [NotNull]
         public NetworkCompositionBuilder WithStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
         {
             composition = composition.ChangeRequirements(composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(startFinishMinDelayForSingleSensor));
             return this;
         }
 
-        [NotNull]
         public NetworkCompositionBuilder WithoutStartFinishMinDelayForSingleSensor()
         {
             composition = composition.ChangeRequirements(composition.Requirements.ChangeStartFinishMinDelayForSingleSensor(TimeSpan.Zero));
             return this;
         }
 
-        [NotNull]
-        public NetworkCompositionBuilder WithDeviceInRoles([NotNull] WirelessNetworkAddress deviceAddress, DeviceCapabilities capabilities, DeviceRoles roles)
+        public NetworkCompositionBuilder WithDeviceInRoles(WirelessNetworkAddress deviceAddress, DeviceCapabilities capabilities, DeviceRoles roles)
         {
             composition = composition.ChangeRolesFor(deviceAddress, capabilities, roles);
             return this;

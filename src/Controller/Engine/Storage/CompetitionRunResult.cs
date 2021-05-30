@@ -19,33 +19,28 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
         public const int EliminationThreshold = 3;
         public const int MaxRefusalsValue = RefusalStepSize * EliminationThreshold;
 
-        [NotNull]
         public Competitor Competitor { get; }
-
-        [CanBeNull]
-        public CompetitionRunTimings Timings { get; }
-
+        public CompetitionRunTimings? Timings { get; }
         public int FaultCount { get; }
         public int RefusalCount { get; }
         public bool IsEliminated { get; }
         public int Placement { get; }
 
-        [NotNull]
         public string PlacementText => Placement > 0 ? Placement.ToString() : string.Empty;
 
         public bool HasCompleted => IsEliminated || HasFinished;
 
         public bool HasFinished => Timings?.FinishTime != null;
 
-        public CompetitionRunResult([NotNull] Competitor competitor)
+        public CompetitionRunResult(Competitor competitor)
         {
             Guard.NotNull(competitor, nameof(competitor));
 
             Competitor = competitor;
         }
 
-        protected CompetitionRunResult([NotNull] Competitor competitor, [CanBeNull] CompetitionRunTimings timings, int faultCount, int refusalCount,
-            bool isEliminated, int placement)
+        protected CompetitionRunResult(Competitor competitor, CompetitionRunTimings? timings, int faultCount, int refusalCount, bool isEliminated,
+            int placement)
             : this(competitor)
         {
             Timings = timings;
@@ -55,21 +50,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             Placement = placement;
         }
 
-        [NotNull]
-        public CompetitionRunResult ChangeCompetitor([NotNull] Competitor competitor)
+        public CompetitionRunResult ChangeCompetitor(Competitor competitor)
         {
             Guard.NotNull(competitor, nameof(competitor));
 
             return new CompetitionRunResult(competitor, Timings, FaultCount, RefusalCount, IsEliminated, Placement);
         }
 
-        [NotNull]
-        public CompetitionRunResult ChangeTimings([CanBeNull] CompetitionRunTimings timings)
+        public CompetitionRunResult ChangeTimings(CompetitionRunTimings? timings)
         {
             return new(Competitor, timings, FaultCount, RefusalCount, IsEliminated, Placement);
         }
 
-        [NotNull]
         public CompetitionRunResult ChangeFaultCount(int faultCount)
         {
             AssertFaultCountIsValid(faultCount);
@@ -87,7 +79,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        [NotNull]
         public CompetitionRunResult ChangeRefusalCount(int refusalCount)
         {
             AssertRefusalCountIsValid(refusalCount);
@@ -105,21 +96,18 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             }
         }
 
-        [NotNull]
         public CompetitionRunResult ChangeIsEliminated(bool isEliminated)
         {
             return new(Competitor, Timings, FaultCount, RefusalCount, isEliminated, Placement);
         }
 
-        [NotNull]
         public CompetitionRunResult ChangePlacement(int placement)
         {
             return new(Competitor, Timings, FaultCount, RefusalCount, IsEliminated, placement);
         }
 
-        [NotNull]
-        public CompetitionRunTimings UpdateTimingsFrom([CanBeNull] TimeSpanWithAccuracy? intermediateTime1, [CanBeNull] TimeSpanWithAccuracy? intermediateTime2,
-            [CanBeNull] TimeSpanWithAccuracy? intermediateTime3, [CanBeNull] TimeSpanWithAccuracy? finishTime)
+        public CompetitionRunTimings UpdateTimingsFrom(TimeSpanWithAccuracy? intermediateTime1, TimeSpanWithAccuracy? intermediateTime2,
+            TimeSpanWithAccuracy? intermediateTime3, TimeSpanWithAccuracy? finishTime)
         {
             RecordedTime startTime = CreateBestPossibleStartTime();
 
@@ -138,19 +126,17 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return timings;
         }
 
-        [NotNull]
         private RecordedTime CreateBestPossibleStartTime()
         {
-            // Note: In case we have no start time, we generate one here (with high precision). A low-precision elapsed 
+            // Note: In case we have no start time, we generate one here (with high precision). A low-precision elapsed
             // time is caused by either one or both times to be low precision. Although we cannot know the
-            // precision of start time here, the nett effect when the precision of an elapsed time is recalculated will 
+            // precision of start time here, the nett effect when the precision of an elapsed time is recalculated will
             // be the same as long as we assume that the start time was high precision.
             RecordedTime startTime = Timings?.StartTime ?? new RecordedTime(TimeSpan.Zero, SystemContext.UtcNow());
             return startTime;
         }
 
-        [NotNull]
-        public CompetitionRunTimings UpdateFinishTimeFrom([CanBeNull] TimeSpanWithAccuracy? finishTime)
+        public CompetitionRunTimings UpdateFinishTimeFrom(TimeSpanWithAccuracy? finishTime)
         {
             RecordedTime startTime = CreateBestPossibleStartTime();
 
@@ -160,8 +146,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return timings;
         }
 
-        [CanBeNull]
-        private static RecordedTime TryCreateRecordedTime([NotNull] RecordedTime startTime, [CanBeNull] TimeSpanWithAccuracy? elapsed)
+        private static RecordedTime? TryCreateRecordedTime(RecordedTime startTime, TimeSpanWithAccuracy? elapsed)
         {
             return elapsed != null ? startTime.Add(elapsed.Value) : null;
         }
@@ -200,33 +185,33 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return textBuilder.ToString();
         }
 
-        public static bool AreEquivalent([CanBeNull] CompetitionRunResult first, [CanBeNull] CompetitionRunResult second)
+        public static bool AreEquivalent(CompetitionRunResult? first, CompetitionRunResult? second)
         {
             return EqualitySupport.EqualsWithNulls(first, second, CompetitorRunResultsAreEqual);
         }
 
-        public static bool AreEquivalentRun([CanBeNull] CompetitionRunResult first, [CanBeNull] CompetitionRunResult second)
+        public static bool AreEquivalentRun(CompetitionRunResult? first, CompetitionRunResult? second)
         {
             return EqualitySupport.EqualsWithNulls(first, second, RunResultsAreEqual);
         }
 
-        private static bool CompetitorRunResultsAreEqual([NotNull] CompetitionRunResult first, [NotNull] CompetitionRunResult second)
+        private static bool CompetitorRunResultsAreEqual(CompetitionRunResult first, CompetitionRunResult second)
         {
             return CompetitorsAreEqual(first, second) && RunResultsAreEqual(first, second);
         }
 
-        private static bool CompetitorsAreEqual([NotNull] CompetitionRunResult first, [NotNull] CompetitionRunResult second)
+        private static bool CompetitorsAreEqual(CompetitionRunResult first, CompetitionRunResult second)
         {
             return first.Competitor == second.Competitor;
         }
 
-        private static bool RunResultsAreEqual([NotNull] CompetitionRunResult first, [NotNull] CompetitionRunResult second)
+        private static bool RunResultsAreEqual(CompetitionRunResult first, CompetitionRunResult second)
         {
             return EqualitySupport.EqualsWithNulls(first.Timings, second.Timings, FinishTimesAreEqual) && first.FaultCount == second.FaultCount &&
                 first.RefusalCount == second.RefusalCount && first.IsEliminated == second.IsEliminated;
         }
 
-        private static bool FinishTimesAreEqual([NotNull] CompetitionRunTimings firstTimings, [NotNull] CompetitionRunTimings secondTimings)
+        private static bool FinishTimesAreEqual(CompetitionRunTimings firstTimings, CompetitionRunTimings secondTimings)
         {
             return firstTimings.FinishTime == secondTimings.FinishTime;
         }

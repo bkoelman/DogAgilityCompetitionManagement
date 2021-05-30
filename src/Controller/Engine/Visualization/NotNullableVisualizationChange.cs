@@ -8,10 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class NotNullableVisualizationChange<T> : VisualizationChange
     {
-        [NotNull]
         protected T Value { get; }
 
-        protected NotNullableVisualizationChange([NotNull] T value)
+        protected NotNullableVisualizationChange(T value)
         {
             Guard.NotNull(value, nameof(value));
             Value = value;

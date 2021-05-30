@@ -1,5 +1,4 @@
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -8,13 +7,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class RefusalCountUpdate : NullableVisualizationChange<int?>
     {
-        [NotNull]
         public static RefusalCountUpdate Hidden => new(null);
-
-        [NotNull]
         public static RefusalCountUpdate Zero => new(0);
 
-        public RefusalCountUpdate([CanBeNull] int? value)
+        public RefusalCountUpdate(int? value)
             : base(value)
         {
         }

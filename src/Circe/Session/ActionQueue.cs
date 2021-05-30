@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
@@ -21,17 +20,13 @@ namespace DogAgilityCompetition.Circe.Session
     /// </remarks>
     public sealed class ActionQueue : IDisposable
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private readonly BlockingCollection<WorkItem> workQueue = new();
-
-        [NotNull]
         private readonly object stateLock = new();
 
-        private bool isConsumerRunning;
-        private bool disposeRequested;
+        private bool isConsumerRunning; // Protected by stateLock
+        private bool disposeRequested; // Protected by stateLock
 
         public ActionQueue()
         {
@@ -44,7 +39,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Start()
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -69,7 +64,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Pause()
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -94,7 +89,7 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Dispose()
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -128,13 +123,12 @@ namespace DogAgilityCompetition.Circe.Session
         /// <returns>
         /// The <see cref="Task" /> that represents the enqueued action.
         /// </returns>
-        [NotNull]
-        public Task Enqueue([NotNull] Action action, CancellationToken cancelToken)
+        public Task Enqueue(Action action, CancellationToken cancelToken)
         {
             Guard.NotNull(action, nameof(action));
 
             Log.Debug("Adding queue entry.");
-            var taskSource = new TaskCompletionSource<object>();
+            var taskSource = new TaskCompletionSource<object?>();
             workQueue.Add(new WorkItem(taskSource, action, cancelToken), cancelToken);
 
             Log.Debug($"Created task {taskSource.Task.Id}.");
@@ -166,7 +160,7 @@ namespace DogAgilityCompetition.Circe.Session
                         continue;
                     }
 
-                    using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                    using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                     lock (stateLock)
                     {
@@ -235,15 +229,11 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         private readonly struct WorkItem
         {
-            [NotNull]
-            public TaskCompletionSource<object> TaskSource { get; }
-
-            [NotNull]
+            public TaskCompletionSource<object?> TaskSource { get; }
             public Action Action { get; }
-
             public CancellationToken CancelToken { get; }
 
-            public WorkItem([NotNull] TaskCompletionSource<object> taskSource, [NotNull] Action action, CancellationToken cancelToken)
+            public WorkItem(TaskCompletionSource<object?> taskSource, Action action, CancellationToken cancelToken)
                 : this()
             {
                 Guard.NotNull(taskSource, nameof(taskSource));

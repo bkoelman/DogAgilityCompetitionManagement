@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -14,7 +13,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class PowerStatusControl : UserControl
     {
-        [NotNull]
         private readonly FreshBoolean threadSafeIsPoweredOn = new(false);
 
         public bool SupportsBlink
@@ -45,14 +43,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ThreadSafeIsPoweredOn => threadSafeIsPoweredOn.Value;
 
-        public event EventHandler StatusChanged;
+        public event EventHandler? StatusChanged;
 
         public PowerStatusControl()
         {
             InitializeComponent();
         }
 
-        [NotNull]
         public Task BlinkAsync()
         {
             if (SupportsBlink)
@@ -60,7 +57,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 return Task.Factory.StartNew(Blink, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
             }
 
-            return Task.FromResult((object)null);
+            return Task.CompletedTask;
         }
 
         private void Blink()
@@ -80,7 +77,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             statusLed.Blink(0);
         }
 
-        private void PowerButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PowerButton_Click(object? sender, EventArgs e)
         {
             Toggle();
         }

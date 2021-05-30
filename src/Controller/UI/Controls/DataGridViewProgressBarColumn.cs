@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -9,7 +8,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class DataGridViewProgressBarColumn : DataGridViewTextBoxColumn
     {
-        [NotNull]
         private DataGridViewProgressBarCell ProgressBarCell
         {
             get
@@ -43,7 +41,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                         for (int i = 0; i < rowCount; i++)
                         {
-                            DataGridViewRow r = DataGridView.Rows.SharedRow(i);
+                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
                             ((DataGridViewProgressBarCell)r.Cells[Index]).Maximum = value;
                         }
                     }
@@ -69,7 +67,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                         for (int i = 0; i < rowCount; i++)
                         {
-                            DataGridViewRow r = DataGridView.Rows.SharedRow(i);
+                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
                             ((DataGridViewProgressBarCell)r.Cells[Index]).Minimum = value;
                         }
                     }

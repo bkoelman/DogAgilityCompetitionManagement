@@ -1,5 +1,4 @@
 using System.Threading;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
@@ -18,7 +17,6 @@ namespace DogAgilityCompetition.Circe.Session
 
         private int innerValue;
 
-        [CanBeNull]
         public bool? Value
         {
             get
@@ -33,13 +31,12 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        public FreshNullableBoolean([CanBeNull] bool? value)
+        public FreshNullableBoolean(bool? value)
         {
             Value = value;
         }
 
-        [CanBeNull]
-        public bool? CompareExchange([CanBeNull] bool? newValue, [CanBeNull] bool? comparand)
+        public bool? CompareExchange(bool? newValue, bool? comparand)
         {
             int newIntValue = ToInt32(newValue);
             int comparandInt = ToInt32(comparand);
@@ -47,13 +44,12 @@ namespace DogAgilityCompetition.Circe.Session
             return FromInt32(previousIntValue);
         }
 
-        [CanBeNull]
         private static bool? FromInt32(int value)
         {
             return value == TrueValue ? true : value == FalseValue ? false : null;
         }
 
-        private static int ToInt32([CanBeNull] bool? value)
+        private static int ToInt32(bool? value)
         {
             return value == true ? TrueValue : value == false ? FalseValue : NullValue;
         }

@@ -26,8 +26,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// The binary contents of the created packet.
         /// </returns>
         /// <exception cref="OperationValidationException" />
-        [NotNull]
-        public static byte[] Write([NotNull] Operation operation, bool includeChecksum)
+        public static byte[] Write(Operation operation, bool includeChecksum)
         {
             Guard.NotNull(operation, nameof(operation));
 
@@ -53,14 +52,13 @@ namespace DogAgilityCompetition.Circe.Protocol
             return packetBytes;
         }
 
-        [NotNull]
         private static byte[] GetPacketHeaderBytes(int operationCode)
         {
             string operationCodeString = $"{operationCode:00}";
             byte[] operationCodeBytes = Encoding.ASCII.GetBytes(operationCodeString);
 
             // ReSharper disable once RedundantExplicitArraySize
-            // Reason: Extra compiler check when packet format changes.
+            // Justification: Extra compiler check when packet format changes.
             return new byte[PacketFormat.PacketHeaderLength]
             {
                 PacketFormatDelimiters.StartOfText,
@@ -70,8 +68,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             };
         }
 
-        [NotNull]
-        private static byte[] GetPacketPayloadBytes([NotNull] [ItemNotNull] IEnumerable<Parameter> parameters)
+        private static byte[] GetPacketPayloadBytes(IEnumerable<Parameter> parameters)
         {
             byte[] buffer = StreamToBuffer(stream =>
             {
@@ -84,8 +81,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return buffer;
         }
 
-        [NotNull]
-        private static byte[] StreamToBuffer([NotNull] Action<Stream> writeCallback)
+        private static byte[] StreamToBuffer(Action<Stream> writeCallback)
         {
             using var stream = new MemoryStream();
             writeCallback(stream);
@@ -96,7 +92,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return buffer;
         }
 
-        private static void WriteParameterBytesTo([NotNull] Parameter parameter, [NotNull] Stream output)
+        private static void WriteParameterBytesTo(Parameter parameter, Stream output)
         {
             string parameterIdString = $"{parameter.Id:000}";
             byte[] parameterIdBytes = Encoding.ASCII.GetBytes(parameterIdString);
@@ -109,8 +105,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        [NotNull]
-        private static byte[] GetPacketTrailerBytes([CanBeNull] int? checksum)
+        private static byte[] GetPacketTrailerBytes(int? checksum)
         {
             if (checksum != null)
             {
@@ -118,7 +113,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 byte[] checksumBytes = Encoding.ASCII.GetBytes(checksumString);
 
                 // ReSharper disable once RedundantExplicitArraySize
-                // Reason: Extra compiler check when packet format changes.
+                // Justification: Extra compiler check when packet format changes.
                 return new byte[PacketFormat.PacketTrailerMinLength + PacketFormat.OptionalChecksumLength]
                 {
                     checksumBytes[0],
@@ -128,14 +123,14 @@ namespace DogAgilityCompetition.Circe.Protocol
             }
 
             // ReSharper disable once RedundantExplicitArraySize
-            // Reason: Extra compiler check when packet format changes.
+            // Justification: Extra compiler check when packet format changes.
             return new byte[PacketFormat.PacketTrailerMinLength]
             {
                 PacketFormatDelimiters.EndOfText
             };
         }
 
-        private static void UpdateChecksum([NotNull] IEnumerable<byte> buffer, [CanBeNull] ref int? checksum)
+        private static void UpdateChecksum(IEnumerable<byte> buffer, ref int? checksum)
         {
             if (checksum != null)
             {
@@ -148,8 +143,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        [NotNull]
-        private static byte[] CombineBuffers([NotNull] [ItemNotNull] IList<byte[]> buffers)
+        private static byte[] CombineBuffers(IList<byte[]> buffers)
         {
             int size = buffers.Sum(sourceBuffer => sourceBuffer.Length);
 

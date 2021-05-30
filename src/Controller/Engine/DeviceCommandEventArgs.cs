@@ -1,5 +1,4 @@
 ﻿using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -8,7 +7,7 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public DeviceCommand Command { get; }
 
-        public DeviceCommandEventArgs([NotNull] WirelessNetworkAddress source, DeviceCommand command)
+        public DeviceCommandEventArgs(WirelessNetworkAddress source, DeviceCommand command)
             : base(source)
         {
             Command = command;

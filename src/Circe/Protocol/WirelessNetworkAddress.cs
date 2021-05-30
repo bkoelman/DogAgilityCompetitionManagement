@@ -13,13 +13,11 @@ namespace DogAgilityCompetition.Circe.Protocol
     [Serializable]
     public sealed class WirelessNetworkAddress : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
     {
-        [NotNull]
         public static readonly WirelessNetworkAddress Default = new("000000");
 
-        [NotNull]
         public string Value { get; private set; }
 
-        public WirelessNetworkAddress([NotNull] string value)
+        public WirelessNetworkAddress(string value)
         {
             AssertValidAddress(value);
             Value = value;
@@ -32,7 +30,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [AssertionMethod]
-        private static void AssertValidAddress([NotNull] string value)
+        private static void AssertValidAddress(string value)
         {
             Guard.NotNullNorEmpty(value, nameof(value));
 
@@ -70,17 +68,17 @@ namespace DogAgilityCompetition.Circe.Protocol
             return Value;
         }
 
-        public int CompareTo([CanBeNull] WirelessNetworkAddress other)
+        public int CompareTo(WirelessNetworkAddress? other)
         {
             return ReferenceEquals(other, null) ? 1 : string.CompareOrdinal(Value, other.Value);
         }
 
-        public bool Equals(WirelessNetworkAddress other)
+        public bool Equals(WirelessNetworkAddress? other)
         {
             return !ReferenceEquals(other, null) && other.Value == Value;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as WirelessNetworkAddress);
         }
@@ -88,11 +86,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public override int GetHashCode()
         {
             // ReSharper disable once NonReadonlyMemberInGetHashCode
-            // Reason: GetHashCode() is not expected to be called before deserialization has completed.
+            // Justification: GetHashCode() is not expected to be called before deserialization has completed.
             return Value.GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator ==(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -107,27 +105,27 @@ namespace DogAgilityCompetition.Circe.Protocol
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator !=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return !(left == right);
         }
 
-        public static bool operator <([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator <(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null ? right != null : left.CompareTo(right) == -1;
         }
 
-        public static bool operator <=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator <=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null || left.CompareTo(right) <= 0;
         }
 
-        public static bool operator >([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator >(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left?.CompareTo(right) == 1;
         }
 
-        public static bool operator >=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator >=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null ? right == null : left.CompareTo(right) >= 0;
         }

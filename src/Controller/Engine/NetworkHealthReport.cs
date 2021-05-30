@@ -17,45 +17,28 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class NetworkHealthReport : IEquatable<NetworkHealthReport>
     {
-        [NotNull]
         public static readonly NetworkHealthReport Default =
             new(false, false, 0, new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], null, null);
 
         public bool IsConnected { get; }
-
         public bool HasProtocolVersionMismatch { get; }
-
         public int MediatorStatus { get; }
-
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<WirelessNetworkAddress> MisalignedSensors { get; }
-
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<WirelessNetworkAddress> UnsyncedSensors { get; }
-
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<WirelessNetworkAddress> VersionMismatchingSensors { get; }
 
         // The composition used by the current run, or null when no competition run is active.
-        [CanBeNull]
-        public NetworkComposition RunComposition { get; }
+        public NetworkComposition? RunComposition { get; }
 
         // Empty when no mismatches; null when not applicable (class requirements unknown).
-        [CanBeNull]
-        [ItemNotNull]
-        public IReadOnlyCollection<NetworkComplianceMismatch> ClassCompliance { get; }
+        public IReadOnlyCollection<NetworkComplianceMismatch>? ClassCompliance { get; }
 
-        public bool HasErrors =>
-            MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 || ClassCompliance is { Count: > 0 };
+        public bool HasErrors => MediatorStatus != KnownMediatorStatusCode.Normal || MisalignedSensors.Count > 0 || ClassCompliance is { Count: > 0 };
 
         private NetworkHealthReport(bool isConnected, bool hasProtocolVersionMismatch, int mediatorStatus,
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors,
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> unsyncedSensors,
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors, [CanBeNull] NetworkComposition runComposition,
-            [CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> classCompliance)
+            IEnumerable<WirelessNetworkAddress> misalignedSensors, IEnumerable<WirelessNetworkAddress> unsyncedSensors,
+            IEnumerable<WirelessNetworkAddress> versionMismatchingSensors, NetworkComposition? runComposition,
+            IEnumerable<NetworkComplianceMismatch>? classCompliance)
         {
             IsConnected = isConnected;
             HasProtocolVersionMismatch = hasProtocolVersionMismatch;
@@ -67,29 +50,25 @@ namespace DogAgilityCompetition.Controller.Engine
             ClassCompliance = classCompliance == null ? null : new ReadOnlyCollection<NetworkComplianceMismatch>(classCompliance.ToList());
         }
 
-        [NotNull]
         public NetworkHealthReport ChangeIsConnected(bool isConnected)
         {
             return new(isConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
                 ClassCompliance);
         }
 
-        [NotNull]
         public NetworkHealthReport ChangeHasProtocolVersionMismatch(bool hasProtocolVersionMismatch)
         {
             return new(IsConnected, hasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
                 ClassCompliance);
         }
 
-        [NotNull]
         public NetworkHealthReport ChangeMediatorStatus(int mediatorStatus)
         {
             return new(IsConnected, HasProtocolVersionMismatch, mediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
                 ClassCompliance);
         }
 
-        [NotNull]
-        public NetworkHealthReport ChangeMisalignedSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> misalignedSensors)
+        public NetworkHealthReport ChangeMisalignedSensors(IEnumerable<WirelessNetworkAddress> misalignedSensors)
         {
             Guard.NotNull(misalignedSensors, nameof(misalignedSensors));
 
@@ -97,8 +76,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 VersionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
-        [NotNull]
-        public NetworkHealthReport ChangeUnsyncedSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> unsyncedSensors)
+        public NetworkHealthReport ChangeUnsyncedSensors(IEnumerable<WirelessNetworkAddress> unsyncedSensors)
         {
             Guard.NotNull(unsyncedSensors, nameof(unsyncedSensors));
 
@@ -106,8 +84,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 VersionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
-        [NotNull]
-        public NetworkHealthReport ChangeVersionMismatchingSensors([NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> versionMismatchingSensors)
+        public NetworkHealthReport ChangeVersionMismatchingSensors(IEnumerable<WirelessNetworkAddress> versionMismatchingSensors)
         {
             Guard.NotNull(versionMismatchingSensors, nameof(versionMismatchingSensors));
 
@@ -115,15 +92,13 @@ namespace DogAgilityCompetition.Controller.Engine
                 versionMismatchingSensors, RunComposition, ClassCompliance);
         }
 
-        [NotNull]
-        public NetworkHealthReport ChangeRunComposition([CanBeNull] NetworkComposition runComposition)
+        public NetworkHealthReport ChangeRunComposition(NetworkComposition? runComposition)
         {
             return new(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, runComposition,
                 ClassCompliance);
         }
 
-        [NotNull]
-        public NetworkHealthReport ChangeClassCompliance([CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> classCompliance)
+        public NetworkHealthReport ChangeClassCompliance(IEnumerable<NetworkComplianceMismatch>? classCompliance)
         {
             return new(IsConnected, HasProtocolVersionMismatch, MediatorStatus, MisalignedSensors, UnsyncedSensors, VersionMismatchingSensors, RunComposition,
                 classCompliance);
@@ -149,7 +124,6 @@ namespace DogAgilityCompetition.Controller.Engine
             return textBuilder.ToString();
         }
 
-        [NotNull]
         private string GetClassComplianceString()
         {
             if (ClassCompliance == null)
@@ -168,7 +142,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public bool Equals(NetworkHealthReport other)
+        public bool Equals(NetworkHealthReport? other)
         {
             return !ReferenceEquals(other, null) && IsConnected == other.IsConnected && HasProtocolVersionMismatch == other.HasProtocolVersionMismatch &&
                 MediatorStatus == other.MediatorStatus && MisalignedSensors.SequenceEqual(other.MisalignedSensors) &&
@@ -176,7 +150,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 RunCompositionEquals(other.RunComposition) && ClassComplianceEquals(other.ClassCompliance);
         }
 
-        private bool RunCompositionEquals([CanBeNull] NetworkComposition other)
+        private bool RunCompositionEquals(NetworkComposition? other)
         {
             if (ReferenceEquals(RunComposition, other))
             {
@@ -192,7 +166,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return false;
         }
 
-        private bool ClassComplianceEquals([CanBeNull] [ItemNotNull] IEnumerable<NetworkComplianceMismatch> other)
+        private bool ClassComplianceEquals(IEnumerable<NetworkComplianceMismatch>? other)
         {
             if (ReferenceEquals(ClassCompliance, other))
             {
@@ -209,7 +183,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as NetworkHealthReport);
         }
@@ -223,7 +197,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public static bool operator ==([CanBeNull] NetworkHealthReport left, [CanBeNull] NetworkHealthReport right)
+        public static bool operator ==(NetworkHealthReport? left, NetworkHealthReport? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -239,7 +213,7 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [Pure]
-        public static bool operator !=([CanBeNull] NetworkHealthReport left, [CanBeNull] NetworkHealthReport right)
+        public static bool operator !=(NetworkHealthReport? left, NetworkHealthReport? right)
         {
             return !(left == right);
         }

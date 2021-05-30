@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -16,13 +15,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
     /// </summary>
     public sealed partial class ClassSetupForm : Form
     {
-        [NotNull]
-        [ItemNotNull]
         private readonly Lazy<IEnumerable<Control>> allChildControls;
 
-        [NotNull]
         private CompetitionClassModel originalVersion;
-
         private bool hasImportedCompetitors;
 
         private bool HasValidationErrors
@@ -41,7 +36,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             originalVersion = CacheManager.DefaultInstance.ActiveModel;
         }
 
-        private void ClassSetupForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ClassSetupForm_Load(object? sender, EventArgs e)
         {
             competitorsGrid.DataSource = originalVersion.Results;
             gradeTextBox.Text = originalVersion.ClassInfo.Grade;
@@ -81,12 +76,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void ClearButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ClearButton_Click(object? sender, EventArgs e)
         {
             competitorsGrid.DataSource = new List<CompetitionRunResult>();
         }
 
-        private void ImportButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ImportButton_Click(object? sender, EventArgs e)
         {
             using var dialog = new OpenFileDialog
             {
@@ -152,22 +147,22 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void StandardCourseTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void StandardCourseTimeTextBox_Validating(object? sender, CancelEventArgs e)
         {
             ValidateNullOrPositiveIntegerTextBox(standardCourseTimeTextBox);
         }
 
-        private void MaximumCourseTimeTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void MaximumCourseTimeTextBox_Validating(object? sender, CancelEventArgs e)
         {
             ValidateNullOrPositiveIntegerTextBox(maximumCourseTimeTextBox);
         }
 
-        private void TrackLengthTextBox_Validating([CanBeNull] object sender, [NotNull] CancelEventArgs e)
+        private void TrackLengthTextBox_Validating(object? sender, CancelEventArgs e)
         {
             ValidateNullOrPositiveIntegerTextBox(trackLengthTextBox);
         }
 
-        private void ValidateNullOrPositiveIntegerTextBox([NotNull] TextBox textBox)
+        private void ValidateNullOrPositiveIntegerTextBox(TextBox textBox)
         {
             if (!string.IsNullOrWhiteSpace(textBox.Text) && (!int.TryParse(textBox.Text, out int value) || value < 1))
             {
@@ -179,12 +174,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void StartFinishMinDelayCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void StartFinishMinDelayCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             startFinishMinDelayUpDown.Enabled = startFinishMinDelayCheckBox.Checked;
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (HasValidationErrors)
             {
@@ -225,24 +220,22 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             DialogResult = DialogResult.OK;
         }
 
-        [CanBeNull]
-        private static TimeSpan? NullableTimeSpanFromTextBox([NotNull] TextBox source)
+        private static TimeSpan? NullableTimeSpanFromTextBox(TextBox source)
         {
             return string.IsNullOrWhiteSpace(source.Text) ? null : TimeSpan.FromSeconds(int.Parse(source.Text.Trim()));
         }
 
-        [CanBeNull]
-        private static int? NullableIntFromTextBox([NotNull] TextBox source)
+        private static int? NullableIntFromTextBox(TextBox source)
         {
             return string.IsNullOrWhiteSpace(source.Text) ? null : int.Parse(source.Text.Trim());
         }
 
-        private void ApplyModelChange([NotNull] CompetitionClassModel newVersion)
+        private void ApplyModelChange(CompetitionClassModel newVersion)
         {
             originalVersion = CacheManager.DefaultInstance.ReplaceModel(newVersion, originalVersion);
         }
 
-        private void ClassSetupForm_FormClosed([CanBeNull] object sender, [NotNull] FormClosedEventArgs e)
+        private void ClassSetupForm_FormClosed(object? sender, FormClosedEventArgs e)
         {
             SystemSound.PlayWaveFile(null);
         }

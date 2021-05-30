@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
 {
@@ -17,44 +16,30 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
         public bool IsMaximized { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        [ItemNotNull]
-        public Collection<GateSettingsXml> Gates { get; set; }
+        public Collection<GateSettingsXml>? Gates { get; set; }
 
-        [NotNull]
-        [ItemNotNull]
         public Collection<GateSettingsXml> GatesOrEmpty => Gates ??= new Collection<GateSettingsXml>();
 
         [DataMember]
-        [CanBeNull]
-        [ItemNotNull]
-        public Collection<DisplaySettingsXml> Displays { get; set; }
+        public Collection<DisplaySettingsXml>? Displays { get; set; }
 
-        [NotNull]
-        [ItemNotNull]
         public Collection<DisplaySettingsXml> DisplaysOrEmpty => Displays ??= new Collection<DisplaySettingsXml>();
 
         [DataMember]
-        [CanBeNull]
-        [ItemNotNull]
-        public Collection<RemoteSettingsXml> Remotes { get; set; }
+        public Collection<RemoteSettingsXml>? Remotes { get; set; }
 
-        [NotNull]
-        [ItemNotNull]
         public Collection<RemoteSettingsXml> RemotesOrEmpty => Remotes ??= new Collection<RemoteSettingsXml>();
 
         [DataMember]
-        [CanBeNull]
-        public MediatorSettingsXml Mediator { get; set; }
+        public MediatorSettingsXml? Mediator { get; set; }
 
-        [NotNull]
         public MediatorSettingsXml MediatorOrDefault => Mediator ??= new MediatorSettingsXml();
 
-        public void RemoveDevice([NotNull] WirelessNetworkAddress address)
+        public void RemoveDevice(WirelessNetworkAddress address)
         {
             Guard.NotNull(address, nameof(address));
 
-            GateSettingsXml gateToRemove = GatesOrEmpty.FirstOrDefault(gate => gate.DeviceAddressNotNull == address);
+            GateSettingsXml? gateToRemove = GatesOrEmpty.FirstOrDefault(gate => gate.DeviceAddressNotNull == address);
 
             if (gateToRemove != null)
             {
@@ -62,7 +47,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
                 return;
             }
 
-            RemoteSettingsXml remoteToRemove = RemotesOrEmpty.FirstOrDefault(remote => remote.DeviceAddressNotNull == address);
+            RemoteSettingsXml? remoteToRemove = RemotesOrEmpty.FirstOrDefault(remote => remote.DeviceAddressNotNull == address);
 
             if (remoteToRemove != null)
             {
@@ -70,7 +55,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization
                 return;
             }
 
-            DisplaySettingsXml displayToRemove = DisplaysOrEmpty.FirstOrDefault(display => display.DeviceAddressNotNull == address);
+            DisplaySettingsXml? displayToRemove = DisplaysOrEmpty.FirstOrDefault(display => display.DeviceAddressNotNull == address);
 
             if (displayToRemove != null)
             {

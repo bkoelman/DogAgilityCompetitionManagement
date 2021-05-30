@@ -1,6 +1,5 @@
 using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -18,41 +17,33 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 5;
 
-        [NotNull]
         private readonly NetworkAddressParameter destinationAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, false);
-
-        [NotNull]
         private readonly NetworkAddressParameter assignAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.AssignAddress, true);
-
-        [NotNull]
         private readonly IntegerParameter capabilitiesParameter = ParameterFactory.Create(ParameterType.Integer.Capabilities, false);
 
         /// <summary>
         /// Optional. Gets or sets the destination address of the device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress DestinationAddress
+        public WirelessNetworkAddress? DestinationAddress
         {
             get
             {
-                string parameterValue = destinationAddressParameter.GetValueOrNull();
+                string? parameterValue = destinationAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => destinationAddressParameter.Value = value?.Value;
         }
 
-        [NotNull]
         public WirelessNetworkAddress DestinationAddressOrDefault => DestinationAddress ?? WirelessNetworkAddress.Default;
 
         /// <summary>
         /// Required. Gets or sets the address to assign to the new hardware device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress AssignAddress
+        public WirelessNetworkAddress? AssignAddress
         {
             get
             {
-                string parameterValue = assignAddressParameter.GetValueOrNull();
+                string? parameterValue = assignAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => assignAddressParameter.Value = value?.Value;
@@ -61,7 +52,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the capabilities that the device can perform.
         /// </summary>
-        [CanBeNull]
         public DeviceCapabilities? Capabilities
         {
             get => (DeviceCapabilities?)capabilitiesParameter.Value;
@@ -76,7 +66,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="assignAddress">
         /// The address to assign to the new hardware device in the wireless network.
         /// </param>
-        public DeviceSetupOperation([NotNull] WirelessNetworkAddress assignAddress)
+        public DeviceSetupOperation(WirelessNetworkAddress assignAddress)
             : this()
         {
             Guard.NotNull(assignAddress, nameof(assignAddress));

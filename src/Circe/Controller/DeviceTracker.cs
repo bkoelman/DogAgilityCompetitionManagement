@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Threading;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Controller
 {
@@ -21,25 +20,21 @@ namespace DogAgilityCompetition.Circe.Controller
         private const int DeviceLifetimeExpiredInMilliseconds = 3000;
 #endif
 
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
         private readonly Dictionary<WirelessNetworkAddress, DeviceMapEntry> deviceMap = new();
-
-        [NotNull]
         private readonly object stateLock = new();
 
-        private int lastMediatorStatus;
+        private int lastMediatorStatus; // Protected by stateLock
 
-        public event EventHandler<EventArgs<DeviceStatus>> DeviceAdded;
-        public event EventHandler<EventArgs<DeviceStatus>> DeviceChanged;
-        public event EventHandler<EventArgs<WirelessNetworkAddress>> DeviceRemoved;
-        public event EventHandler<EventArgs<int>> MediatorStatusChanged;
+        public event EventHandler<EventArgs<DeviceStatus>>? DeviceAdded;
+        public event EventHandler<EventArgs<DeviceStatus>>? DeviceChanged;
+        public event EventHandler<EventArgs<WirelessNetworkAddress>>? DeviceRemoved;
+        public event EventHandler<EventArgs<int>>? MediatorStatusChanged;
 
         public void UpdateMediatorStatus(int mediatorStatus)
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -55,11 +50,11 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        public void SetDeviceStatus([NotNull] DeviceStatus status)
+        public void SetDeviceStatus(DeviceStatus status)
         {
             Guard.NotNull(status, nameof(status));
 
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -90,11 +85,11 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        public void NotifyDeviceIsAlive([NotNull] WirelessNetworkAddress deviceAddress)
+        public void NotifyDeviceIsAlive(WirelessNetworkAddress deviceAddress)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -110,7 +105,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
         public void Dispose()
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -125,17 +120,18 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        private void RemoveTimerTick([NotNull] object state)
+        private void RemoveTimerTick(object? state)
         {
             try
             {
-                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                 lock (stateLock)
                 {
                     lockTracker.Acquired();
 
-                    var entry = (DeviceMapEntry)state;
+                    // Justification for nullable suppression: 'state' parameter is optional in TimerCallback delegate, but we always pass a value.
+                    var entry = (DeviceMapEntry)state!;
 
                     WirelessNetworkAddress address = entry.LastStatus.DeviceAddress;
 
@@ -156,19 +152,17 @@ namespace DogAgilityCompetition.Circe.Controller
 
         private sealed class DeviceMapEntry : IDisposable
         {
-            [NotNull]
             private readonly Timer expiryTimer;
 
-            [NotNull]
             public DeviceStatus LastStatus { get; private set; }
 
-            public DeviceMapEntry([NotNull] DeviceStatus status, [NotNull] TimerCallback entryExpiredCallback)
+            public DeviceMapEntry(DeviceStatus status, TimerCallback entryExpiredCallback)
             {
                 LastStatus = status;
                 expiryTimer = new Timer(entryExpiredCallback, this, Timeout.Infinite, Timeout.Infinite);
             }
 
-            public bool ApplyChanges([NotNull] DeviceStatus newStatus)
+            public bool ApplyChanges(DeviceStatus newStatus)
             {
                 if (LastStatus == newStatus)
                 {

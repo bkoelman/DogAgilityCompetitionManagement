@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller
 {
@@ -19,7 +18,7 @@ namespace DogAgilityCompetition.Controller
             PlaySystemAsync(SystemEventLabels.DeviceDisconnect);
         }
 
-        private static void PlaySystemAsync([NotNull] string systemName)
+        private static void PlaySystemAsync(string systemName)
         {
             const NativeMethods.SoundFlags flags = NativeMethods.SoundFlags.SndAlias | NativeMethods.SoundFlags.SndAsync |
                 NativeMethods.SoundFlags.SndNodefault;
@@ -27,12 +26,12 @@ namespace DogAgilityCompetition.Controller
             NativeMethods.PlaySound(systemName, UIntPtr.Zero, flags);
         }
 
-        public static void PlayWaveFile([CanBeNull] string path)
+        public static void PlayWaveFile(string? path)
         {
             PlayFileAsync(path);
         }
 
-        private static void PlayFileAsync([CanBeNull] string path)
+        private static void PlayFileAsync(string? path)
         {
             const NativeMethods.SoundFlags flags = NativeMethods.SoundFlags.SndFilename | NativeMethods.SoundFlags.SndAsync |
                 NativeMethods.SoundFlags.SndNodefault;
@@ -44,8 +43,7 @@ namespace DogAgilityCompetition.Controller
         {
             [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool PlaySound([MarshalAs(UnmanagedType.LPWStr)] [CanBeNull]
-                string pszSound, UIntPtr hmod, SoundFlags fdwSound);
+            public static extern bool PlaySound([MarshalAs(UnmanagedType.LPWStr)] string? pszSound, UIntPtr hmod, SoundFlags fdwSound);
 
             [Flags]
 #pragma warning disable CA2217 // Do not mark Enum with FlagsAttribute

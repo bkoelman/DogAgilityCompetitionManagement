@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -17,7 +16,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="classInfo">
         /// The class information, or <c>null</c> to hide.
         /// </param>
-        void SetClass([CanBeNull] CompetitionClassInfo classInfo);
+        void SetClass(CompetitionClassInfo? classInfo);
 
         /// <summary>
         /// Signals to start (from zero) a local, on-screen running timer, which represents the time passed.
@@ -30,7 +29,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="time">
         /// The time value to display, or <c>null</c> to hide.
         /// </param>
-        void StopAndSetOrClearPrimaryTime([CanBeNull] TimeSpan? time);
+        void StopAndSetOrClearPrimaryTime(TimeSpan? time);
 
         /// <summary>
         /// Replaces the secondary time with the specified value.
@@ -41,7 +40,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="doBlink">
         /// If set to <c>true</c>, blink shortly after change.
         /// </param>
-        void SetOrClearSecondaryTime([CanBeNull] TimeSpan? time, bool doBlink);
+        void SetOrClearSecondaryTime(TimeSpan? time, bool doBlink);
 
         /// <summary>
         /// Changes the fault count with the specified value.
@@ -49,7 +48,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="count">
         /// The fault count to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearFaultCount([CanBeNull] int? count);
+        void SetOrClearFaultCount(int? count);
 
         /// <summary>
         /// Changes the refusal count with the specified value.
@@ -57,7 +56,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="count">
         /// The refusal count to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearRefusalCount([CanBeNull] int? count);
+        void SetOrClearRefusalCount(int? count);
 
         /// <summary>
         /// Turns the visualization for elimination on or off.
@@ -73,7 +72,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="competitor">
         /// The competitor, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearCurrentCompetitor([CanBeNull] Competitor competitor);
+        void SetOrClearCurrentCompetitor(Competitor? competitor);
 
         /// <summary>
         /// In the process of number entry, changes the current competitor number.
@@ -97,7 +96,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="competitor">
         /// The competitor, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearNextCompetitor([CanBeNull] Competitor competitor);
+        void SetOrClearNextCompetitor(Competitor? competitor);
 
         /// <summary>
         /// In the process of number entry, changes the next competitor number.
@@ -121,7 +120,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="competitorRunResult">
         /// The competitor result, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearPreviousCompetitorRun([CanBeNull] CompetitionRunResult competitorRunResult);
+        void SetOrClearPreviousCompetitorRun(CompetitionRunResult? competitorRunResult);
 
         /// <summary>
         /// Updates the displayed rankings to the specified values.
@@ -129,7 +128,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="rankings">
         /// The rankings to use, or an empty list to hide.
         /// </param>
-        void SetOrClearRankings([NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> rankings);
+        void SetOrClearRankings(IEnumerable<CompetitionRunResult> rankings);
 
         /// <summary>
         /// Shows or hides a message regarding clock synchronization status.
@@ -145,7 +144,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="bitmap">
         /// The picture to animate.
         /// </param>
-        void StartAnimation([NotNull] Bitmap bitmap);
+        void StartAnimation(Bitmap bitmap);
 
         /// <summary>
         /// Instructs to start playing the specified sound file.
@@ -153,6 +152,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         /// <param name="path">
         /// Full path to the sound file to play, or <c>null</c> to mute.
         /// </param>
-        void PlaySound([CanBeNull] string path);
+        void PlaySound(string? path);
     }
 }

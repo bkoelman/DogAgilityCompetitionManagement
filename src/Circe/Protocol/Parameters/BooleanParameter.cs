@@ -13,7 +13,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
         public bool? Value { get; set; }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public BooleanParameter([NotNull] string name, int id, bool isRequired)
+        public BooleanParameter(string name, int id, bool isRequired)
             : base(name, id, 1, isRequired)
         {
         }

@@ -1,6 +1,5 @@
 ﻿using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -14,7 +13,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             InitializeComponent();
         }
 
-        public static void ShowPreview([NotNull] string path, [NotNull] string title, [NotNull] Form parent)
+        public static void ShowPreview(string path, string title, Form parent)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
             Guard.NotNullNorEmpty(title, nameof(title));
@@ -32,7 +31,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             form.ShowDialog(parent);
         }
 
-        private void PicturePreviewForm_KeyDown([CanBeNull] object sender, [NotNull] KeyEventArgs e)
+        private void PicturePreviewForm_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
             {

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -17,7 +16,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         // - Remove TextFormatFlags.WordBreak when not using CompatibleTextRendering
         // But to accomplish this, a lot of code duplication from System.Windows.Forms.Label is needed.
 
-        [NotNull]
         private readonly Reflected reflected;
 
         public SingleLineLabel()
@@ -33,7 +31,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             reflected.Animate();
             ImageAnimator.UpdateFrames(Image);
             Rectangle r = reflected.LayoutUtilsDeflateRect(ClientRectangle, Padding);
-            Image image = Image;
+            Image? image = Image;
 
             if (image != null)
             {
@@ -98,54 +96,33 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            var handler = (PaintEventHandler)Events[reflected.ControlEventPaint];
+            var handler = Events[reflected.ControlEventPaint] as PaintEventHandler;
             handler?.Invoke(this, e);
         }
 
         private sealed class Reflected
         {
-            [NotNull]
             private static readonly MethodInfo AnimateMethod;
-
-            [NotNull]
             private static readonly MethodInfo LayoutUtilsDeflateRectMethod;
-
-            [NotNull]
             private static readonly ConstructorInfo InteropHdcConstructor;
-
-            [NotNull]
             private static readonly MethodInfo InteropGetNearestColorMethod;
-
-            [NotNull]
             private static readonly MethodInfo ControlDisabledColorPropertyGetMethod;
-
-            [NotNull]
             private static readonly FieldInfo ShowToolTipField;
-
-            [NotNull]
             private static readonly MethodInfo CreateStringFormatMethod;
-
-            [NotNull]
             private static readonly MethodInfo CreateTextFormatFlagsMethod;
-
-            [NotNull]
             private static readonly MethodInfo TextRendererDisabledTextColorMethod;
-
-            [NotNull]
             private static readonly FieldInfo ControlEventPaintField;
 
-            [NotNull]
             private readonly Label owner;
 
-            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0]);
+            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0])!;
 
             public bool ShowToolTip
             {
                 set => ShowToolTipField.SetValue(owner, value);
             }
 
-            [CanBeNull]
-            public object ControlEventPaint => ControlEventPaintField.GetValue(null);
+            public object ControlEventPaint => ControlEventPaintField.GetValue(null)!;
 
             static Reflected()
             {
@@ -187,14 +164,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 ControlEventPaintField = Require(typeof(Control).GetField("s_paintEvent", BindingFlags.NonPublic | BindingFlags.Static));
             }
 
-            public Reflected([NotNull] Label owner)
+            public Reflected(Label owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 this.owner = owner;
             }
 
-            [NotNull]
-            private static T Require<T>([CanBeNull] T value)
+            private static T Require<T>(T? value)
             {
                 if (ReferenceEquals(value, null))
                 {
@@ -215,7 +191,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     clientRectangle,
                     padding
-                });
+                })!;
             }
 
             public int InteropGetNearestColor(IntPtr handle, int color)
@@ -229,20 +205,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     hdc,
                     color
-                });
+                })!;
             }
 
-            [NotNull]
             public StringFormat CreateStringFormat()
             {
-                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, new object[0]);
+                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, new object[0])!;
                 result.FormatFlags |= StringFormatFlags.NoWrap;
                 return result;
             }
 
             public TextFormatFlags CreateTextFormatFlags()
             {
-                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, new object[0]);
+                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, new object[0])!;
                 result &= ~TextFormatFlags.WordBreak;
                 return result;
             }
@@ -252,7 +227,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return (Color)TextRendererDisabledTextColorMethod.Invoke(null, new object[]
                 {
                     backColor
-                });
+                })!;
             }
         }
     }

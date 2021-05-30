@@ -13,7 +13,6 @@ namespace DogAgilityCompetition.Controller
         /// <summary>
         /// Creates an execution scope in which the system does not enter any of the sleep states on idle.
         /// </summary>
-        [NotNull]
         public static IDisposable InStateDisabled
         {
             get

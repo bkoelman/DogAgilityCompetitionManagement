@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -12,13 +11,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class AutoScalingLabel : Label
     {
-        [CanBeNull]
         private float? sizeCache;
-
-        [CanBeNull]
         private PointF? drawPointCache;
-
-        [NotNull]
         private string innerText = string.Empty;
 
         // AutoSize defeats the whole purpose of this control when set to True, so block it.
@@ -44,14 +38,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        [NotNull]
         public override string Text
         {
             get => innerText;
             set
             {
                 // ReSharper disable once ConstantNullCoalescingCondition
-                // Reason: Although this property is decorated with NotNull, caller could still pass in 'null' anyway.
+                // Justification: Although this property is not nullable, caller could still pass in 'null' anyway.
                 value ??= string.Empty;
 
                 if (value != innerText)
@@ -90,7 +83,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             drawPointCache = null;
         }
 
-        private void EnsureCache([NotNull] Graphics graphics)
+        private void EnsureCache(Graphics graphics)
         {
             if (sizeCache == null || drawPointCache == null)
             {
@@ -159,7 +152,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             return new PointF(offsetX, offsetY);
         }
 
-        private void RenderText([NotNull] Graphics graphics)
+        private void RenderText(Graphics graphics)
         {
             if (sizeCache != null && drawPointCache != null && !float.IsInfinity(sizeCache.Value))
             {
@@ -172,7 +165,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        protected override void OnSizeChanged([NotNull] EventArgs e)
+        protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
             ResetCache();

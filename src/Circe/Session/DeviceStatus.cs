@@ -16,27 +16,16 @@ namespace DogAgilityCompetition.Circe.Session
     {
         private const DeviceRoles IntermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
-        [NotNull]
         public WirelessNetworkAddress DeviceAddress { get; }
-
         public bool IsInNetwork { get; }
         public DeviceCapabilities Capabilities { get; }
         public DeviceRoles Roles { get; }
         public int SignalStrength { get; }
-
-        [CanBeNull]
         public int? BatteryStatus { get; }
-
-        [CanBeNull]
         public bool? IsAligned { get; }
-
-        [CanBeNull]
         public ClockSynchronizationStatus? ClockSynchronization { get; }
-
-        [CanBeNull]
         public bool? HasVersionMismatch { get; }
 
-        [NotNull]
         public string DeviceType
         {
             get
@@ -58,9 +47,8 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        public DeviceStatus([NotNull] WirelessNetworkAddress deviceAddress, bool isInNetwork, DeviceCapabilities capabilities, DeviceRoles roles,
-            int signalStrength, [CanBeNull] int? batteryStatus, [CanBeNull] bool? isAligned, [CanBeNull] ClockSynchronizationStatus? clockSynchronization,
-            [CanBeNull] bool? hasVersionMismatch)
+        public DeviceStatus(WirelessNetworkAddress deviceAddress, bool isInNetwork, DeviceCapabilities capabilities, DeviceRoles roles, int signalStrength,
+            int? batteryStatus, bool? isAligned, ClockSynchronizationStatus? clockSynchronization, bool? hasVersionMismatch)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -107,20 +95,15 @@ namespace DogAgilityCompetition.Circe.Session
             return roles & allowed;
         }
 
-        [NotNull]
-        public static DeviceStatus FromOperation([NotNull] NotifyStatusOperation operation)
+        public static DeviceStatus FromOperation(NotifyStatusOperation operation)
         {
             Guard.NotNull(operation, nameof(operation));
 
-            // ReSharper disable PossibleInvalidOperationException
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: Operation has been validated for required parameters when this code is reached.
-            return new DeviceStatus(operation.OriginatingAddress, operation.GetMembership.Value, operation.Capabilities.Value, operation.Roles.Value,
-                operation.SignalStrength.Value, operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization, operation.HasVersionMismatch);
-            // ReSharper restore PossibleInvalidOperationException
+            // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+            return new DeviceStatus(operation.OriginatingAddress!, operation.GetMembership!.Value, operation.Capabilities!.Value, operation.Roles!.Value,
+                operation.SignalStrength!.Value, operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization, operation.HasVersionMismatch);
         }
 
-        [NotNull]
         public NotifyStatusOperation ToOperation()
         {
             return new(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength)
@@ -132,13 +115,11 @@ namespace DogAgilityCompetition.Circe.Session
             };
         }
 
-        [NotNull]
         public DeviceStatus ChangeIsInNetwork(bool isInNetwork)
         {
             return new(DeviceAddress, isInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
-        [NotNull]
         public DeviceStatus ChangeRoles(DeviceRoles roles)
         {
             return new(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
@@ -165,14 +146,14 @@ namespace DogAgilityCompetition.Circe.Session
             return textBuilder.ToString();
         }
 
-        public bool Equals(DeviceStatus other)
+        public bool Equals(DeviceStatus? other)
         {
             return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.IsInNetwork == IsInNetwork &&
                 other.Capabilities == Capabilities && other.Roles == Roles && other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
                 other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization && other.HasVersionMismatch == HasVersionMismatch;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as DeviceStatus);
         }
@@ -183,7 +164,7 @@ namespace DogAgilityCompetition.Circe.Session
                 BatteryStatus.GetHashCode() ^ IsAligned.GetHashCode() ^ ClockSynchronization.GetHashCode() ^ HasVersionMismatch.GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] DeviceStatus left, [CanBeNull] DeviceStatus right)
+        public static bool operator ==(DeviceStatus? left, DeviceStatus? right)
         {
             if (ReferenceEquals(left, right))
             {
@@ -198,7 +179,7 @@ namespace DogAgilityCompetition.Circe.Session
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] DeviceStatus left, [CanBeNull] DeviceStatus right)
+        public static bool operator !=(DeviceStatus? left, DeviceStatus? right)
         {
             return !(left == right);
         }

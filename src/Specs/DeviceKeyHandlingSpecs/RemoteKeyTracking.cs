@@ -5,7 +5,6 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
@@ -14,10 +13,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     [TestFixture]
     public sealed class RemoteKeyTracking
     {
-        [NotNull]
         private static readonly WirelessNetworkAddress Source = new("ABCDEF");
-
-        [CanBeNull]
         private static readonly TimeSpan? NullTime = null;
 
         [Test]

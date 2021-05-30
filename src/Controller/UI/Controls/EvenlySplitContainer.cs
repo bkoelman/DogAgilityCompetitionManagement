@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -26,7 +25,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             SplitterDistance = distance / 2;
         }
 
-        protected override void OnResize([NotNull] EventArgs e)
+        protected override void OnResize(EventArgs e)
         {
             ResizePanels();
             base.OnResize(e);

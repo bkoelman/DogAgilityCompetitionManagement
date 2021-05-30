@@ -18,33 +18,19 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
     /// </remarks>
     public sealed class DelimitedValuesWriter : IDisposable
     {
-        [NotNull]
         private readonly TextWriter target;
-
-        [NotNull]
-        [ItemNotNull]
         private readonly List<string> innerColumnNames;
-
-        [NotNull]
         private readonly DelimitedValuesWriterSettings settings;
-
-        [NotNull]
         private readonly CultureInfo effectiveCulture;
-
         private readonly char effectiveFieldSeparator;
-
-        [NotNull]
         private readonly char[] charactersThatRequireEscaping;
 
         private bool isWriterDisposed;
-
         private bool headerPassed;
 
         /// <summary>
         /// Gets the column names, used to identify cell values.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(innerColumnNames);
 
         /// <summary>
@@ -59,8 +45,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="settings">
         /// Settings that customize the behavior of this instance.
         /// </param>
-        public DelimitedValuesWriter([NotNull] TextWriter target, [NotNull] [ItemNotNull] ICollection<string> columnNames,
-            [CanBeNull] DelimitedValuesWriterSettings settings = null)
+        public DelimitedValuesWriter(TextWriter target, ICollection<string> columnNames, DelimitedValuesWriterSettings? settings = null)
         {
             Guard.NotNull(target, nameof(target));
             AssertValidColumnNames(columnNames);
@@ -81,7 +66,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         }
 
         [AssertionMethod]
-        private static void AssertValidColumnNames([NotNull] [ItemNotNull] IEnumerable<string> columnNames)
+        private static void AssertValidColumnNames(IEnumerable<string> columnNames)
         {
             Guard.NotNull(columnNames, nameof(columnNames));
 
@@ -149,7 +134,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="line">
         /// The line of text to write.
         /// </param>
-        public void WriteLine([CanBeNull] string line)
+        public void WriteLine(string? line)
         {
             AssertWriterNotDisposed();
             target.WriteLine(line);
@@ -161,7 +146,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <returns>
         /// The row object.
         /// </returns>
-        [NotNull]
         public IDelimitedValuesWriterRow CreateRow()
         {
             AssertWriterNotDisposed();
@@ -177,7 +161,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             }
         }
 
-        private void WriteDataRow([NotNull] [ItemNotNull] IEnumerable<string> cellValues)
+        private void WriteDataRow(IEnumerable<string> cellValues)
         {
             AssertWriterNotDisposed();
 
@@ -195,7 +179,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             headerPassed = true;
         }
 
-        private void WriteRow([NotNull] [ItemNotNull] IEnumerable<string> cellValues)
+        private void WriteRow(IEnumerable<string> cellValues)
         {
             bool isFirstCell = true;
 
@@ -217,8 +201,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             target.WriteLine();
         }
 
-        [NotNull]
-        private string EnsureEscaped([NotNull] string value)
+        private string EnsureEscaped(string value)
         {
             if (RequiresEscaping(value))
             {
@@ -230,7 +213,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             return value;
         }
 
-        private bool RequiresEscaping([NotNull] string value)
+        private bool RequiresEscaping(string value)
         {
             if (value.IndexOfAny(charactersThatRequireEscaping) != -1)
             {
@@ -248,37 +231,28 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             return false;
         }
 
-        private static bool HasLeadingWhiteSpace([NotNull] string value)
+        private static bool HasLeadingWhiteSpace(string value)
         {
             return char.IsWhiteSpace(value[0]);
         }
 
-        private static bool HasTrailingWhiteSpace([NotNull] string value)
+        private static bool HasTrailingWhiteSpace(string value)
         {
             return char.IsWhiteSpace(value[^1]);
         }
 
         private sealed class DelimitedValuesWriterRow : IDelimitedValuesWriterRow
         {
-#pragma warning disable 649 // Readonly field is never assigned
-            [NotNull]
-            // ReSharper disable once NotNullMemberIsNotInitialized
-            // Reason: This blocks Resharper warning "Possible 'null' assignment to entity marked with 'NotNull' attribute"
-            private static readonly ITypeDescriptorContext NullContext;
-#pragma warning restore 649
+            private static readonly ITypeDescriptorContext NullContext = null!;
 
-            [NotNull]
             private readonly DelimitedValuesWriter target;
-
-            [NotNull]
-            [ItemNotNull]
             private readonly List<string> cellValues;
 
             private bool isRowDisposed;
 
             public IReadOnlyCollection<string> ColumnNames => target.ColumnNames;
 
-            public DelimitedValuesWriterRow([NotNull] DelimitedValuesWriter target)
+            public DelimitedValuesWriterRow(DelimitedValuesWriter target)
             {
                 this.target = target;
 
@@ -301,7 +275,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 }
             }
 
-            public void SetCell(string columnName, string value)
+            public void SetCell(string columnName, string? value)
             {
                 Guard.NotNullNorEmpty(columnName, nameof(columnName));
                 AssertRowNotDisposed();
@@ -325,17 +299,16 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
                 }
             }
 
-            public void SetCell<T>(string columnName, T value, Converter<T, string> converter = null)
+            public void SetCell<T>(string columnName, T? value, Converter<T?, string>? converter = null)
             {
                 Guard.NotNullNorEmpty(columnName, nameof(columnName));
                 AssertRowNotDisposed();
 
-                string cellValue = converter != null ? converter(value) : ConvertCell(value);
+                string? cellValue = converter != null ? converter(value) : ConvertCell(value);
                 SetCell(columnName, cellValue);
             }
 
-            [CanBeNull]
-            private string ConvertCell<T>([CanBeNull] T value)
+            private string? ConvertCell<T>(T? value)
             {
                 TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
                 return value is not null ? typeConverter.ConvertToString(NullContext, target.effectiveCulture, value) : null;

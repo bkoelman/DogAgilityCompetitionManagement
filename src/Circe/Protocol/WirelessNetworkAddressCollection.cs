@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol
 {
@@ -13,14 +12,10 @@ namespace DogAgilityCompetition.Circe.Protocol
     [Serializable]
     internal sealed class WirelessNetworkAddressCollection : ICollection<WirelessNetworkAddress>
     {
-        [NotNull]
         private readonly Operation owner;
-
         private readonly ParameterType.NetworkAddress parameterType;
         private readonly int parameterId;
 
-        [NotNull]
-        [ItemNotNull]
         private IEnumerable<NetworkAddressParameter> OwnerAddressParameters
         {
             get
@@ -33,7 +28,7 @@ namespace DogAgilityCompetition.Circe.Protocol
 
         public bool IsReadOnly => false;
 
-        public WirelessNetworkAddressCollection([NotNull] Operation owner, ParameterType.NetworkAddress parameterType)
+        public WirelessNetworkAddressCollection(Operation owner, ParameterType.NetworkAddress parameterType)
         {
             Guard.NotNull(owner, nameof(owner));
 
@@ -55,16 +50,13 @@ namespace DogAgilityCompetition.Circe.Protocol
             return GetEnumerator();
         }
 
-        [NotNull]
-        [ItemNotNull]
         private IEnumerable<WirelessNetworkAddress> ToWirelessNetworkAddresses()
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: The parameters this class wraps are always required parameters.
-            return OwnerAddressParameters.Select(addressParameter => new WirelessNetworkAddress(addressParameter.Value));
+            // Justification for nullable suppression: The parameters this class wraps are always required parameters.
+            return OwnerAddressParameters.Select(addressParameter => new WirelessNetworkAddress(addressParameter.Value!));
         }
 
-        public void Add([NotNull] WirelessNetworkAddress item)
+        public void Add(WirelessNetworkAddress item)
         {
             Guard.NotNull(item, nameof(item));
 
@@ -72,7 +64,6 @@ namespace DogAgilityCompetition.Circe.Protocol
             parameter.Value = item.Value;
         }
 
-        [NotNull]
         internal NetworkAddressParameter CreateAttachParameter()
         {
             NetworkAddressParameter parameter = ParameterFactory.Create(parameterType, true);
@@ -97,7 +88,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             return OwnerAddressParameters.Any(addressParameter => addressParameter.Value == item.Value);
         }
 
-        public void CopyTo([ItemNotNull] WirelessNetworkAddress[] array, int arrayIndex)
+        public void CopyTo(WirelessNetworkAddress[] array, int arrayIndex)
         {
             WirelessNetworkAddress[] contents = ToWirelessNetworkAddresses().ToArray();
             Array.Copy(contents, 0, array, arrayIndex, contents.Length);
@@ -107,7 +98,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         {
             Guard.NotNull(item, nameof(item));
 
-            NetworkAddressParameter parameterToRemove = OwnerAddressParameters.FirstOrDefault(addressParameter => addressParameter.Value == item.Value);
+            NetworkAddressParameter? parameterToRemove = OwnerAddressParameters.FirstOrDefault(addressParameter => addressParameter.Value == item.Value);
 
             if (parameterToRemove != null)
             {

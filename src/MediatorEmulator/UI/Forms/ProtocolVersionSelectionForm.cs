@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -9,8 +8,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class ProtocolVersionSelectionForm : Form
     {
-        [CanBeNull]
-        public Version Version
+        public Version? Version
         {
             get
             {
@@ -40,7 +38,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             return value is >= 0 and <= 999;
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (Version == null)
             {

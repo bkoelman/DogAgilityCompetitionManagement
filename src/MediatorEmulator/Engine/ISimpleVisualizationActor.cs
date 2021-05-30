@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine
 {
@@ -19,7 +18,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="time">
         /// The time value to display, or <c>null</c> to hide.
         /// </param>
-        void StopAndSetOrClearPrimaryTime([CanBeNull] TimeSpan? time);
+        void StopAndSetOrClearPrimaryTime(TimeSpan? time);
 
         /// <summary>
         /// Changes the display of secondary time value.
@@ -27,7 +26,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="time">
         /// The time value to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearSecondaryTime([CanBeNull] TimeSpan? time);
+        void SetOrClearSecondaryTime(TimeSpan? time);
 
         /// <summary>
         /// Changes the fault count with the specified value.
@@ -35,7 +34,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="count">
         /// The fault count to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearFaultCount([CanBeNull] int? count);
+        void SetOrClearFaultCount(int? count);
 
         /// <summary>
         /// Changes the refusal count with the specified value.
@@ -43,7 +42,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="count">
         /// The refusal count to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearRefusalCount([CanBeNull] int? count);
+        void SetOrClearRefusalCount(int? count);
 
         /// <summary>
         /// Turns the visualization for elimination on or off.
@@ -59,7 +58,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="number">
         /// The competitor number to display, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearCurrentCompetitorNumber([CanBeNull] int? number);
+        void SetOrClearCurrentCompetitorNumber(int? number);
 
         /// <summary>
         /// Changes the next competitor number.
@@ -67,7 +66,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="number">
         /// The competitor number to display, or <c>null</c> to hide..
         /// </param>
-        void SetOrClearNextCompetitorNumber([CanBeNull] int? number);
+        void SetOrClearNextCompetitorNumber(int? number);
 
         /// <summary>
         /// Changes the placement for previous competitor.
@@ -75,6 +74,6 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// <param name="placement">
         /// The competitor placement, or <c>null</c> to hide.
         /// </param>
-        void SetOrClearPreviousCompetitorPlacement([CanBeNull] int? placement);
+        void SetOrClearPreviousCompetitorPlacement(int? placement);
     }
 }

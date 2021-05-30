@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -8,6 +7,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public interface ICompetitionRunVisualizer
     {
-        void Apply([NotNull] [ItemNotNull] IReadOnlyCollection<VisualizationChange> changes);
+        void Apply(IReadOnlyCollection<VisualizationChange> changes);
     }
 }

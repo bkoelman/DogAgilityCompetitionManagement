@@ -6,7 +6,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -15,25 +14,15 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class NetworkHealthMonitor
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        [NotNull]
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static readonly object StateLock = new();
 
-        [NotNull]
         private readonly Dictionary<WirelessNetworkAddress, DeviceStatus> devicesMap = new();
+        private readonly FreshObjectReference<NetworkHealthReport> previousReport = new(NetworkHealthReport.Default);
+        private readonly FreshObjectReference<NetworkComposition?> runComposition = new(null);
+        private readonly FreshObjectReference<CompetitionClassRequirements?> nextRunRequirements = new(null);
 
-        [NotNull]
-        private readonly FreshNotNullableReference<NetworkHealthReport> previousReport = new(NetworkHealthReport.Default);
-
-        [NotNull]
-        private readonly FreshReference<NetworkComposition> runComposition = new(null);
-
-        [NotNull]
-        private readonly FreshReference<CompetitionClassRequirements> nextRunRequirements = new(null);
-
-        public event EventHandler<EventArgs<NetworkHealthReport>> HealthChanged;
+        public event EventHandler<EventArgs<NetworkHealthReport>>? HealthChanged;
 
         public void ForceChanged()
         {
@@ -45,8 +34,7 @@ namespace DogAgilityCompetition.Controller.Engine
             ExclusiveUpdateWithRaiseEvent(false, previous => GetHealthReportAfterConnectionStateChanged(state, previous));
         }
 
-        [NotNull]
-        private static NetworkHealthReport GetHealthReportAfterConnectionStateChanged(ControllerConnectionState state, [NotNull] NetworkHealthReport previous)
+        private static NetworkHealthReport GetHealthReportAfterConnectionStateChanged(ControllerConnectionState state, NetworkHealthReport previous)
         {
             previous = previous.ChangeIsConnected(state == ControllerConnectionState.Connected);
 
@@ -68,7 +56,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return previous;
         }
 
-        public void HandleDeviceAdded([NotNull] DeviceStatus deviceStatus)
+        public void HandleDeviceAdded(DeviceStatus deviceStatus)
         {
             Guard.NotNull(deviceStatus, nameof(deviceStatus));
 
@@ -79,7 +67,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        public void HandleDeviceChanged([NotNull] DeviceStatus deviceStatus)
+        public void HandleDeviceChanged(DeviceStatus deviceStatus)
         {
             Guard.NotNull(deviceStatus, nameof(deviceStatus));
 
@@ -90,7 +78,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        public void HandleDeviceRemoved([NotNull] WirelessNetworkAddress deviceAddress)
+        public void HandleDeviceRemoved(WirelessNetworkAddress deviceAddress)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -106,12 +94,12 @@ namespace DogAgilityCompetition.Controller.Engine
             ExclusiveUpdateWithRaiseEvent(false, previous => previous.ChangeMediatorStatus(mediatorStatus));
         }
 
-        private void ExclusiveUpdateWithRaiseEvent(bool forceChanged, [NotNull] Func<NetworkHealthReport, NetworkHealthReport> updateCallback)
+        private void ExclusiveUpdateWithRaiseEvent(bool forceChanged, Func<NetworkHealthReport, NetworkHealthReport> updateCallback)
         {
-            EventArgs<NetworkHealthReport> eventArgs;
+            EventArgs<NetworkHealthReport>? eventArgs;
 
             // Must lock despite of FreshReference, to prevent concurrent calls overwriting each others changes.
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!))
             {
                 lock (StateLock)
                 {
@@ -134,13 +122,12 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        [NotNull]
         public NetworkHealthReport GetLatest()
         {
             return previousReport.Value;
         }
 
-        public void SetClassRequirements([NotNull] CompetitionClassRequirements classRequirements)
+        public void SetClassRequirements(CompetitionClassRequirements classRequirements)
         {
             Guard.NotNull(classRequirements, nameof(classRequirements));
 
@@ -151,7 +138,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        public void SelectRunComposition([CanBeNull] NetworkComposition networkComposition)
+        public void SelectRunComposition(NetworkComposition? networkComposition)
         {
             ExclusiveUpdateWithRaiseEvent(false, _ =>
             {
@@ -160,17 +147,15 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        [NotNull]
         private NetworkHealthReport GetHealthReportAfterNetworkHasChanged()
         {
-            NetworkComposition runCompositionSnapshot = runComposition.Value;
+            NetworkComposition? runCompositionSnapshot = runComposition.Value;
 
             return runCompositionSnapshot != null
                 ? GetHealthReportForActiveRunAfterNetworkHasChanged(runCompositionSnapshot)
                 : GetHealthReportForInactiveRunAfterNetworkHasChanged();
         }
 
-        [NotNull]
         private NetworkHealthReport GetHealthReportForInactiveRunAfterNetworkHasChanged()
         {
             List<DeviceStatus> devicesAliveAndInNetwork = GetDevicesAliveAndInNetwork();
@@ -181,7 +166,7 @@ namespace DogAgilityCompetition.Controller.Engine
             IEnumerable<WirelessNetworkAddress> versionMismatchingSensors =
                 from device in devicesAliveAndInNetwork where device.HasVersionMismatch == true select device.DeviceAddress;
 
-            IList<NetworkComplianceMismatch> classCompliance = null;
+            IList<NetworkComplianceMismatch>? classCompliance = null;
 
             if (nextRunRequirements.Value != null)
             {
@@ -203,8 +188,7 @@ namespace DogAgilityCompetition.Controller.Engine
             // @formatter:keep_existing_linebreaks restore
         }
 
-        [NotNull]
-        private NetworkHealthReport GetHealthReportForActiveRunAfterNetworkHasChanged([NotNull] NetworkComposition runCompositionSnapshot)
+        private NetworkHealthReport GetHealthReportForActiveRunAfterNetworkHasChanged(NetworkComposition runCompositionSnapshot)
         {
             List<DeviceStatus> devicesAliveAndInNetwork = GetDevicesAliveAndInNetwork();
 
@@ -230,8 +214,8 @@ namespace DogAgilityCompetition.Controller.Engine
                 where device.ClockSynchronization == ClockSynchronizationStatus.RequiresSync
                 select device.DeviceAddress;
 
-            // Create a temporary composition from the subset of devices that are both alive and were selected 
-            // for this run, then assert compliance. 
+            // Create a temporary composition from the subset of devices that are both alive and were selected
+            // for this run, then assert compliance.
             // This effectively determines if, due to off-line devices, the current network has become invalid.
             NetworkComposition tempComposition = CreateTemporaryCompositionFrom(devicesAliveAndInComposition, runCompositionSnapshot.Requirements);
 
@@ -250,8 +234,6 @@ namespace DogAgilityCompetition.Controller.Engine
             // @formatter:keep_existing_linebreaks restore
         }
 
-        [NotNull]
-        [ItemNotNull]
         private List<DeviceStatus> GetDevicesAliveAndInNetwork()
         {
             IEnumerable<DeviceStatus> devices = from device in devicesMap.Values where device.IsInNetwork select device;
@@ -259,15 +241,11 @@ namespace DogAgilityCompetition.Controller.Engine
             return devices.ToList();
         }
 
-        [NotNull]
-        private static NetworkComposition CreateTemporaryCompositionFrom([NotNull] [ItemNotNull] IEnumerable<DeviceStatus> devicesAlive,
-            [NotNull] CompetitionClassRequirements requirements)
+        private static NetworkComposition CreateTemporaryCompositionFrom(IEnumerable<DeviceStatus> devicesAlive, CompetitionClassRequirements requirements)
         {
             var composition = NetworkComposition.Empty;
             composition = composition.ChangeRequirements(requirements);
 
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            // Reason: Procedural algorithm is more readable and easier to understand here.
             foreach (DeviceStatus device in devicesAlive)
             {
                 composition = composition.ChangeRolesFor(device.DeviceAddress, device.Capabilities, device.Roles);

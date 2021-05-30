@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine
 {
@@ -12,13 +11,8 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
     public sealed class MostRecentlyUsedContainer
     {
         private readonly bool ignoreCase;
-
-        [NotNull]
-        [ItemNotNull]
         private readonly List<string> mruList = new();
 
-        [NotNull]
-        [ItemNotNull]
         public IReadOnlyCollection<string> Items => mruList.AsReadOnly();
 
         public MostRecentlyUsedContainer(bool ignoreCase = true)
@@ -26,11 +20,13 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             this.ignoreCase = ignoreCase;
         }
 
-        public void Import([NotNull] [ItemCanBeNull] IEnumerable<string> items)
+        public void Import(IEnumerable<string?> items)
         {
             Guard.NotNull(items, nameof(items));
 
-            foreach (string item in items.Reverse().Where(item => !string.IsNullOrWhiteSpace(item)))
+            IEnumerable<string> itemsReversed = items.Reverse().Where(item => !string.IsNullOrWhiteSpace(item)).Cast<string>();
+
+            foreach (string item in itemsReversed)
             {
                 MarkAsUsed(item);
             }
@@ -40,7 +36,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
         /// Updates the MRU list with the specified text. If the MRU list already contains this text, it is moved to the top of the list (preserving existing
         /// case).
         /// </summary>
-        public void MarkAsUsed([NotNull] string text)
+        public void MarkAsUsed(string text)
         {
             Guard.NotNullNorEmpty(text, nameof(text));
 
@@ -61,7 +57,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        public void Remove([NotNull] string path)
+        public void Remove(string path)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
@@ -73,7 +69,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
             }
         }
 
-        private int GetExistingIndex([NotNull] string text)
+        private int GetExistingIndex(string text)
         {
             for (int itemIndex = 0; itemIndex < mruList.Count; itemIndex++)
             {

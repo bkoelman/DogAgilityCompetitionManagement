@@ -8,7 +8,6 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.MediatorEmulator.Engine;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -17,18 +16,10 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class DisplayForm : FormWithWindowStateChangeEvent, IWirelessDevice
     {
-        [NotNull]
         private readonly DisplaySettingsXml settings;
-
         private readonly bool initiallyMaximized;
-
-        [NotNull]
-        private readonly FreshNotNullableReference<CirceMediatorSessionManager> sessionManager;
-
-        [NotNull]
-        private readonly FreshReference<DeviceStatus> lastStatus = new(null);
-
-        [NotNull]
+        private readonly FreshObjectReference<CirceMediatorSessionManager> sessionManager;
+        private readonly FreshObjectReference<DeviceStatus?> lastStatus = new(null);
         private readonly VisualizeOperationDispatcher operationDispatcher;
 
         // Prevents endless recursion when updating controls that raise change events.
@@ -38,16 +29,16 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
 
-        public event EventHandler<EventArgs<WirelessNetworkAddress>> DeviceRemoved;
+        public event EventHandler<EventArgs<WirelessNetworkAddress>>? DeviceRemoved;
 
-        public DisplayForm([NotNull] DisplaySettingsXml displaySettings, bool initiallyMaximized, [NotNull] CirceMediatorSessionManager mediatorSessionManager)
+        public DisplayForm(DisplaySettingsXml displaySettings, bool initiallyMaximized, CirceMediatorSessionManager mediatorSessionManager)
         {
             Guard.NotNull(displaySettings, nameof(displaySettings));
             Guard.NotNull(mediatorSessionManager, nameof(mediatorSessionManager));
 
             settings = displaySettings;
             this.initiallyMaximized = initiallyMaximized;
-            sessionManager = new FreshNotNullableReference<CirceMediatorSessionManager>(mediatorSessionManager);
+            sessionManager = new FreshObjectReference<CirceMediatorSessionManager>(mediatorSessionManager);
             sessionManager.Value.Devices[settings.DeviceAddressNotNull] = this;
 
             InitializeComponent();
@@ -56,7 +47,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             operationDispatcher = VisualizeOperationDispatcher.CreateFor(displayStatus);
         }
 
-        private void RemoteDisplayForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void RemoteDisplayForm_Load(object? sender, EventArgs e)
         {
             MdiChildWindow.Register(this, settings, initiallyMaximized, ref components);
 
@@ -112,7 +103,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                 : null;
         }
 
-        private void PowerStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PowerStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -122,7 +113,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void NetworkStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NetworkStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -132,7 +123,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void HardwareStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void HardwareStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -143,7 +134,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void StatusUpdateTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void StatusUpdateTimer_Tick(object? sender, EventArgs e)
         {
             if (lastStatus.Value != null)
             {
@@ -151,7 +142,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void DisplayForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void DisplayForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out _);
 
@@ -177,11 +168,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             this.EnsureOnMainThread(() =>
             {
-                // ReSharper disable PossibleInvalidOperationException
-                // Reason: Operation has been validated for required parameters when this code is reached.
-                settings.IsInNetwork = operation.SetMembership.Value;
-                settings.RolesAssigned = operation.Roles.Value;
-                // ReSharper restore PossibleInvalidOperationException
+                // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+                settings.IsInNetwork = operation.SetMembership!.Value;
+                settings.RolesAssigned = operation.Roles!.Value;
 
                 UpdateControlsFromSettings();
                 UpdateLastStatusFromSettings();

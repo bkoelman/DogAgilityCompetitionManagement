@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -9,7 +8,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class DataGridViewDisableButtonColumn : DataGridViewButtonColumn
     {
-        [NotNull]
         private DataGridViewDisableButtonCell DisableButtonCell
         {
             get
@@ -40,7 +38,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                         for (int i = 0; i < rowCount; i++)
                         {
-                            DataGridViewRow r = DataGridView.Rows.SharedRow(i);
+                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
                             ((DataGridViewDisableButtonCell)r.Cells[Index]).Enabled = value;
                         }
                     }

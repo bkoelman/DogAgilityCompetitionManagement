@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
@@ -12,15 +11,11 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <summary>
         /// Gets the column names.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         IReadOnlyCollection<string> ColumnNames { get; }
 
         /// <summary>
         /// Gets the cell values as strings.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         IReadOnlyCollection<string> GetCells();
 
         /// <summary>
@@ -32,8 +27,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <returns>
         /// The cell value.
         /// </returns>
-        [NotNull]
-        string GetCell([NotNull] string columnName);
+        string GetCell(string columnName);
 
         /// <summary>
         /// Gets the cell value at the specified column and converts it to the specified type.
@@ -50,7 +44,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <returns>
         /// The converted cell value.
         /// </returns>
-        [CanBeNull]
-        T GetCell<T>([NotNull] string columnName, [CanBeNull] Converter<string, T> converter = null);
+        T? GetCell<T>(string columnName, Converter<string, T>? converter = null);
     }
 }

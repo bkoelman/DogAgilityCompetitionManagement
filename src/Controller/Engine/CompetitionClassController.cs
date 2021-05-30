@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,48 +22,25 @@ namespace DogAgilityCompetition.Controller.Engine
     public sealed class CompetitionClassController : IDisposable
     {
         // This class raises events inside an exclusive lock. Although doing so is generally not recommended (due to
-        // potential deadlocks because event subscribers can do anything), in this application the event subscribers 
+        // potential deadlocks because event subscribers can do anything), in this application the event subscribers
         // only asynchronously update UI-elements or enqueue outgoing packets, so it's not an actual problem here.
 
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        [NotNull]
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
         private static readonly ICollection<CompetitionClassState> AllStates = StatesInRange(CompetitionClassState.Offline, CompetitionClassState.RunCompleted);
 
-        [NotNull]
         private readonly object stateLock = new();
-
-        [NotNull]
         private readonly CompetitionRunData runData = new();
-
-        [NotNull]
         private readonly Func<NetworkHealthReport> networkHealthNeededCallback;
-
-        [NotNull]
         private readonly ClockSynchronizationMonitor synchronizationMonitor;
-
-        [NotNull]
         private readonly ICompetitionRunVisualizer visualizer;
 
         private CompetitionClassState classState = CompetitionClassState.Offline;
-
-        [CanBeNull]
-        private CompetitionClassRequirements classRequirements;
-
-        [NotNull]
+        private CompetitionClassRequirements? classRequirements;
         private CompetitionClassModel modelSnapshot;
-
-        [CanBeNull]
         private int? currentCompetitorNumber;
-
-        [CanBeNull]
         private int? nextCompetitorNumberTyped;
-
-        [CanBeNull]
         private int? nextCompetitorNumberGenerated;
 
-        [CanBeNull]
         private int? NextCompetitorNumber => nextCompetitorNumberTyped ?? nextCompetitorNumberGenerated;
 
         public bool CanStartClass
@@ -71,7 +49,7 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 bool result;
 
-                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+                using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
                 lock (stateLock)
                 {
@@ -90,13 +68,13 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public event EventHandler Aborted;
-        public event EventHandler<RankingChangeEventArgs> RankingChanged;
-        public event EventHandler<EventArgs<Exception>> UnknownErrorDuringSave;
-        public event EventHandler<EventArgs<CompetitionClassState>> StateTransitioned;
+        public event EventHandler? Aborted;
+        public event EventHandler<RankingChangeEventArgs>? RankingChanged;
+        public event EventHandler<EventArgs<Exception>>? UnknownErrorDuringSave;
+        public event EventHandler<EventArgs<CompetitionClassState>>? StateTransitioned;
 
-        public CompetitionClassController([NotNull] Func<NetworkHealthReport> healthNeededCallback,
-            [NotNull] ClockSynchronizationMonitor clockSynchronizationMonitor, [NotNull] ICompetitionRunVisualizer runVisualizer)
+        public CompetitionClassController(Func<NetworkHealthReport> healthNeededCallback, ClockSynchronizationMonitor clockSynchronizationMonitor,
+            ICompetitionRunVisualizer runVisualizer)
         {
             Guard.NotNull(healthNeededCallback, nameof(healthNeededCallback));
             Guard.NotNull(clockSynchronizationMonitor, nameof(clockSynchronizationMonitor));
@@ -116,7 +94,7 @@ namespace DogAgilityCompetition.Controller.Engine
             modelSnapshot = CacheManager.DefaultInstance.ActiveModel;
         }
 
-        private void EliminationTrackerOnEliminationChanged([CanBeNull] object sender, [NotNull] EliminationEventArgs e)
+        private void EliminationTrackerOnEliminationChanged(object? sender, EliminationEventArgs e)
         {
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
@@ -128,9 +106,11 @@ namespace DogAgilityCompetition.Controller.Engine
 
                 if (e.IsEliminated)
                 {
-                    if (modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem != null)
+                    Bitmap? picture = modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem;
+
+                    if (picture != null)
                     {
-                        collector.Include(new StartAnimation(modelSnapshot.Alerts.Eliminated.Picture.EffectiveItem));
+                        collector.Include(new StartAnimation(picture));
                     }
 
                     if (modelSnapshot.Alerts.Eliminated.Sound.EffectivePath != null)
@@ -141,7 +121,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void EliminationTrackerOnRefusalCountChanged([CanBeNull] object sender, [NotNull] EventArgs<int> e)
+        private void EliminationTrackerOnRefusalCountChanged(object? sender, EventArgs<int> e)
         {
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
@@ -153,13 +133,13 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void ClockSynchronizationMonitorOnSyncRecommended([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ClockSynchronizationMonitorOnSyncRecommended(object? sender, EventArgs e)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.ReadyToStart,
                 () => VisualizationUpdateCollector.Single(visualizer, new ClockSynchronizationUpdate(ClockSynchronizationMode.RecommendSynchronization)));
         }
 
-        private void ClockSynchronizationMonitorOnSyncRequired([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ClockSynchronizationMonitorOnSyncRequired(object? sender, EventArgs e)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.ReadyToStart, () =>
             {
@@ -169,26 +149,25 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        [CanBeNull]
-        public string TryUpdateRunResult([NotNull] CompetitionRunResult originalRunVersion, [NotNull] CompetitionRunResult newRunVersion)
+        public string? TryUpdateRunResult(CompetitionRunResult originalRunVersion, CompetitionRunResult newRunVersion)
         {
             Guard.NotNull(originalRunVersion, nameof(originalRunVersion));
             Guard.NotNull(newRunVersion, nameof(newRunVersion));
 
-            string result = null;
+            string? result = null;
 
             ExecuteExclusiveIfStateIn(AllStates, () =>
             {
                 // Assumptions:
                 // 1] When class is started, underlying cache can never be changed from the outside.
-                // 2] When no run active (state Offline), we are not in control of underlying cache 
+                // 2] When no run active (state Offline), we are not in control of underlying cache
                 //    (so snapshot field should not be read because it is likely outdated).
 
                 CompetitionClassModel activeModelVersion = classState == CompetitionClassState.Offline
                     ? CacheManager.DefaultInstance.ActiveModel
                     : modelSnapshot;
 
-                CompetitionRunResult activeRunVersion = activeModelVersion.GetRunResultOrNull(originalRunVersion.Competitor.Number);
+                CompetitionRunResult? activeRunVersion = activeModelVersion.GetRunResultOrNull(originalRunVersion.Competitor.Number);
 
                 if (activeRunVersion == null)
                 {
@@ -222,7 +201,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
                     if (newRunVersion.Competitor.Number == modelSnapshot.LastCompletedCompetitorNumber)
                     {
-                        CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
+                        CompetitionRunResult? previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
                         collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
                     }
                 }
@@ -231,7 +210,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return result;
         }
 
-        public void StartClass([NotNull] CompetitionClassRequirements requirements)
+        public void StartClass(CompetitionClassRequirements requirements)
         {
             Guard.NotNull(requirements, nameof(requirements));
 
@@ -258,7 +237,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 UpdateCurrentCompetitorVisualization(collector);
                 UpdateNextCompetitorVisualization(collector);
 
-                CompetitionRunResult previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
+                CompetitionRunResult? previousCompetitorOrNull = modelSnapshot.GetLastCompletedOrNull();
                 collector.Include(new PreviousCompetitorRunUpdate(previousCompetitorOrNull));
 
                 IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
@@ -278,7 +257,6 @@ namespace DogAgilityCompetition.Controller.Engine
                 () => VisualizationUpdateCollector.Single(visualizer, VisualizationChangeFactory.CompetitorNumberBlinkOn(isCurrentCompetitor)));
         }
 
-        [NotNull]
         private static string CurrentOrNext(bool isCurrentCompetitor)
         {
             return isCurrentCompetitor ? "current" : "next";
@@ -297,7 +275,7 @@ namespace DogAgilityCompetition.Controller.Engine
                     VisualizationChangeFactory.CompetitorNumberUpdate(isCurrentCompetitor, competitorNumber)));
         }
 
-        public void CompleteCompetitorSelection(bool isCurrentCompetitor, [CanBeNull] int? competitorNumber)
+        public void CompleteCompetitorSelection(bool isCurrentCompetitor, int? competitorNumber)
         {
             Log.Debug($"Entering CompleteCompetitorSelection with number {competitorNumber} for {CurrentOrNext(isCurrentCompetitor)} competitor.");
 
@@ -347,20 +325,20 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void UpdateCurrentCompetitorVisualization([NotNull] VisualizationUpdateCollector collector)
+        private void UpdateCurrentCompetitorVisualization(VisualizationUpdateCollector collector)
         {
-            Competitor currentCompetitor = currentCompetitorNumber != null ? modelSnapshot.GetRunResultFor(currentCompetitorNumber.Value).Competitor : null;
+            Competitor? currentCompetitor = currentCompetitorNumber != null ? modelSnapshot.GetRunResultFor(currentCompetitorNumber.Value).Competitor : null;
             collector.Include(new CurrentCompetitorUpdate(currentCompetitor));
         }
 
-        private void UpdateNextCompetitorVisualization([NotNull] VisualizationUpdateCollector collector)
+        private void UpdateNextCompetitorVisualization(VisualizationUpdateCollector collector)
         {
-            Competitor nextCompetitorOrNull = NextCompetitorNumber != null ? modelSnapshot.GetRunResultFor(NextCompetitorNumber.Value).Competitor : null;
+            Competitor? nextCompetitorOrNull = NextCompetitorNumber != null ? modelSnapshot.GetRunResultFor(NextCompetitorNumber.Value).Competitor : null;
 
             collector.Include(new NextCompetitorUpdate(nextCompetitorOrNull));
         }
 
-        public void HandleGatePassed([CanBeNull] TimeSpan? sensorTime, GatePassage passageGate, [NotNull] WirelessNetworkAddress source)
+        public void HandleGatePassed(TimeSpan? sensorTime, GatePassage passageGate, WirelessNetworkAddress source)
         {
             string timeText = sensorTime != null ? "with time " + sensorTime : "without time";
             Log.Debug($"Entering HandleGatePassed for {passageGate} {timeText}.");
@@ -397,13 +375,13 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private bool DeviceHasTimeSensorCapability([NotNull] WirelessNetworkAddress deviceAddress)
+        private bool DeviceHasTimeSensorCapability(WirelessNetworkAddress deviceAddress)
         {
             NetworkHealthReport health = networkHealthNeededCallback();
             return health.RunComposition != null && health.RunComposition.HasCapability(deviceAddress, DeviceCapabilities.TimeSensor);
         }
 
-        private void HandlePassStartOrFinishWhenSingleSensor([NotNull] RecordedTime passageTime)
+        private void HandlePassStartOrFinishWhenSingleSensor(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.ReadyToStart, CompetitionClassState.Intermediate3Passed), () =>
             {
@@ -437,20 +415,18 @@ namespace DogAgilityCompetition.Controller.Engine
         }
 
         [AssertionMethod]
-        [NotNull]
         private CompetitionClassRequirements AssertClassRequirementsNotNull()
         {
             return Assertions.InternalValueIsNotNull(() => classRequirements, () => classRequirements);
         }
 
         [AssertionMethod]
-        [NotNull]
         private CompetitionRunTimings AssertRunDataTimingsNotNull()
         {
             return Assertions.InternalValueIsNotNull(() => runData.Timings, () => runData.Timings);
         }
 
-        private void HandlePassStart([NotNull] RecordedTime passageTime)
+        private void HandlePassStart(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.ReadyToStart, () =>
             {
@@ -467,7 +443,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void HandlePassIntermediate1([NotNull] RecordedTime passageTime)
+        private void HandlePassIntermediate1(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.StartPassed, () =>
             {
@@ -485,7 +461,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void HandlePassIntermediate2([NotNull] RecordedTime passageTime)
+        private void HandlePassIntermediate2(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.Intermediate1Passed, () =>
             {
@@ -503,7 +479,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void HandlePassIntermediate3([NotNull] RecordedTime passageTime)
+        private void HandlePassIntermediate3(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.Intermediate2Passed, () =>
             {
@@ -521,7 +497,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void HandlePassFinish([NotNull] RecordedTime passageTime)
+        private void HandlePassFinish(RecordedTime passageTime)
         {
             ExecuteExclusiveIfStateIn(StatesInRange(CompetitionClassState.StartPassed, CompetitionClassState.Intermediate3Passed), () =>
             {
@@ -606,7 +582,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void PrepareForRun([NotNull] VisualizationUpdateCollector collector, bool isFirstRun)
+        private void PrepareForRun(VisualizationUpdateCollector collector, bool isFirstRun)
         {
             if (!isFirstRun)
             {
@@ -647,7 +623,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void CompleteActiveRun([NotNull] VisualizationUpdateCollector collector)
+        private void CompleteActiveRun(VisualizationUpdateCollector collector)
         {
             runData.EliminationTracker.StopMonitorCourseTime();
 
@@ -672,7 +648,7 @@ namespace DogAgilityCompetition.Controller.Engine
             AnimateForRunCompleted(collector);
         }
 
-        private void AnimateForRunCompleted([NotNull] VisualizationUpdateCollector collector)
+        private void AnimateForRunCompleted(VisualizationUpdateCollector collector)
         {
             if (runData.HasFaultsOrRefusalsOrIsEliminated)
             {
@@ -697,9 +673,11 @@ namespace DogAgilityCompetition.Controller.Engine
 
             if (MatchesConditionsForFirstPlaceAlert())
             {
-                if (modelSnapshot.Alerts.FirstPlace.Picture.EffectiveItem != null)
+                Bitmap? picture = modelSnapshot.Alerts.FirstPlace.Picture.EffectiveItem;
+
+                if (picture != null)
                 {
-                    collector.Include(new StartAnimation(modelSnapshot.Alerts.FirstPlace.Picture.EffectiveItem));
+                    collector.Include(new StartAnimation(picture));
                     firstPlaceAnimated = true;
                 }
 
@@ -712,9 +690,11 @@ namespace DogAgilityCompetition.Controller.Engine
 
             if (!firstPlaceAnimated)
             {
-                if (modelSnapshot.Alerts.CleanRunInStandardCourseTime.Picture.EffectiveItem != null)
+                Bitmap? picture = modelSnapshot.Alerts.CleanRunInStandardCourseTime.Picture.EffectiveItem;
+
+                if (picture != null)
                 {
-                    collector.Include(new StartAnimation(modelSnapshot.Alerts.CleanRunInStandardCourseTime.Picture.EffectiveItem));
+                    collector.Include(new StartAnimation(picture));
                 }
 
                 if (modelSnapshot.Alerts.CleanRunInStandardCourseTime.Sound.EffectivePath != null)
@@ -784,7 +764,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void StartClockSynchronization([NotNull] VisualizationUpdateCollector collector)
+        private void StartClockSynchronization(VisualizationUpdateCollector collector)
         {
             collector.Include(VisualizationChangeFactory.ClearCurrentRun());
 
@@ -800,8 +780,7 @@ namespace DogAgilityCompetition.Controller.Engine
             synchronizationMonitor.StartNetworkSynchronization(devicesToSynchronize.ToList());
         }
 
-        [NotNull]
-        private static NetworkHealthReport AssertNotNull([CanBeNull] NetworkHealthReport networkHealth)
+        private static NetworkHealthReport AssertNotNull(NetworkHealthReport? networkHealth)
         {
             if (networkHealth == null)
             {
@@ -811,8 +790,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return networkHealth;
         }
 
-        [NotNull]
-        private static NetworkComposition AssertCompositionIsNotNull([NotNull] NetworkHealthReport networkHealth)
+        private static NetworkComposition AssertCompositionIsNotNull(NetworkHealthReport networkHealth)
         {
             if (networkHealth.RunComposition == null)
             {
@@ -822,7 +800,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return networkHealth.RunComposition;
         }
 
-        private void ClockSynchronizationMonitorOnSyncCompleted([CanBeNull] object sender, [NotNull] ClockSynchronizationCompletedEventArgs e)
+        private void ClockSynchronizationMonitorOnSyncCompleted(object? sender, ClockSynchronizationCompletedEventArgs e)
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.WaitingForSync, () =>
             {
@@ -930,7 +908,7 @@ namespace DogAgilityCompetition.Controller.Engine
             });
         }
 
-        private void GoOffline([NotNull] VisualizationUpdateCollector collector)
+        private void GoOffline(VisualizationUpdateCollector collector)
         {
             synchronizationMonitor.Suspend();
             collector.Include(new ClockSynchronizationUpdate(ClockSynchronizationMode.Normal));
@@ -943,14 +921,14 @@ namespace DogAgilityCompetition.Controller.Engine
             Aborted?.Invoke(this, EventArgs.Empty);
         }
 
-        private void ClearCurrentRunOrShowExistingRun([NotNull] VisualizationUpdateCollector collector)
+        private void ClearCurrentRunOrShowExistingRun(VisualizationUpdateCollector collector)
         {
             int currentCompetitorNumberNotNull = AssertCurrentCompetitorNumberNotNull();
             CompetitionRunResult existingRunResult = modelSnapshot.GetRunResultFor(currentCompetitorNumberNotNull);
 
             if (existingRunResult.HasCompleted)
             {
-                RecordedTime latestIntermediateTimeOrNull = modelSnapshot.GetLatestIntermediateTimeOrNull(currentCompetitorNumberNotNull);
+                RecordedTime? latestIntermediateTimeOrNull = modelSnapshot.GetLatestIntermediateTimeOrNull(currentCompetitorNumberNotNull);
                 collector.Include(VisualizationChangeFactory.ForExistingRun(existingRunResult, latestIntermediateTimeOrNull));
 
                 runData.Reset(true);
@@ -965,7 +943,7 @@ namespace DogAgilityCompetition.Controller.Engine
             SetState(CompetitionClassState.ReadyToStart);
         }
 
-        private void ExecuteExclusiveIfStateIn(CompetitionClassState stateAllowed, [NotNull] Action action)
+        private void ExecuteExclusiveIfStateIn(CompetitionClassState stateAllowed, Action action)
         {
             ExecuteExclusiveIfStateIn(new[]
             {
@@ -973,9 +951,9 @@ namespace DogAgilityCompetition.Controller.Engine
             }, action);
         }
 
-        private void ExecuteExclusiveIfStateIn([NotNull] ICollection<CompetitionClassState> statesAllowed, [NotNull] Action action)
+        private void ExecuteExclusiveIfStateIn(ICollection<CompetitionClassState> statesAllowed, Action action)
         {
-            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod());
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
             lock (stateLock)
             {
@@ -1004,7 +982,6 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        [NotNull]
         private static ICollection<CompetitionClassState> StatesInRange(CompetitionClassState first, CompetitionClassState lastInclusive)
         {
             // @formatter:keep_existing_linebreaks true
@@ -1034,10 +1011,8 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             private bool isShowingExistingRunResult;
 
-            [CanBeNull]
-            public CompetitionRunTimings Timings { get; set; }
+            public CompetitionRunTimings? Timings { get; set; }
 
-            [NotNull]
             public EliminationTracker EliminationTracker { get; } = new(CompetitionRunResult.RefusalStepSize, CompetitionRunResult.EliminationThreshold);
 
             public int FaultCount { get; set; }
@@ -1046,8 +1021,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
             public bool HasFinished => Timings?.FinishTime != null;
 
-            [NotNull]
-            public CompetitionRunResult ToRunResultFor([NotNull] Competitor competitor)
+            public CompetitionRunResult ToRunResultFor(Competitor competitor)
             {
                 // @formatter:keep_existing_linebreaks true
 
@@ -1060,7 +1034,6 @@ namespace DogAgilityCompetition.Controller.Engine
                 // @formatter:keep_existing_linebreaks restore
             }
 
-            [NotNull]
             public string GetMessageFor(int competitorNumber)
             {
                 var textBuilder = new StringBuilder();
@@ -1136,7 +1109,7 @@ namespace DogAgilityCompetition.Controller.Engine
                 EliminationTracker.Dispose();
             }
 
-            public void HideExistingRunResultIfAny([NotNull] VisualizationUpdateCollector collector)
+            public void HideExistingRunResultIfAny(VisualizationUpdateCollector collector)
             {
                 Guard.NotNull(collector, nameof(collector));
 

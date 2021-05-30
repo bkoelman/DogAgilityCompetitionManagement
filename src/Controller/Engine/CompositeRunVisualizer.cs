@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Visualization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -12,14 +11,11 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class CompositeRunVisualizer : ICompetitionRunVisualizer
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        [NotNull]
-        [ItemNotNull]
         private readonly IEnumerable<ICompetitionRunVisualizer> children;
 
-        public CompositeRunVisualizer([NotNull] [ItemNotNull] IEnumerable<ICompetitionRunVisualizer> children)
+        public CompositeRunVisualizer(IEnumerable<ICompetitionRunVisualizer> children)
         {
             Guard.NotNull(children, nameof(children));
             this.children = children;
@@ -35,7 +31,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private static void LogChanges([NotNull] [ItemNotNull] IEnumerable<VisualizationChange> changes)
+        private static void LogChanges(IEnumerable<VisualizationChange> changes)
         {
             var writer = new StringWriter();
 

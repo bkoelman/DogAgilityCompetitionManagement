@@ -1,6 +1,5 @@
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.DeviceConfigurer.Phases
 {
@@ -9,10 +8,9 @@ namespace DogAgilityCompetition.DeviceConfigurer.Phases
     /// </summary>
     public sealed class PhaseWaitingForSetupResponse : AssignmentPhase
     {
-        [NotNull]
         public WirelessNetworkAddress NewAddress { get; }
 
-        public PhaseWaitingForSetupResponse([NotNull] WirelessNetworkAddress newAddress)
+        public PhaseWaitingForSetupResponse(WirelessNetworkAddress newAddress)
         {
             Guard.NotNull(newAddress, nameof(newAddress));
 

@@ -1,6 +1,5 @@
 using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -26,24 +25,18 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 4;
 
-        [NotNull]
         private readonly NetworkAddressParameter destinationAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
-
-        [NotNull]
         private readonly BooleanParameter setMembershipParameter = ParameterFactory.Create(ParameterType.Boolean.SetMembership, true);
-
-        [NotNull]
         private readonly IntegerParameter rolesParameter = ParameterFactory.Create(ParameterType.Integer.Roles, true);
 
         /// <summary>
         /// Required. Gets or sets the destination address of the device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress DestinationAddress
+        public WirelessNetworkAddress? DestinationAddress
         {
             get
             {
-                string parameterValue = destinationAddressParameter.GetValueOrNull();
+                string? parameterValue = destinationAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => destinationAddressParameter.Value = value?.Value;
@@ -55,7 +48,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <value>
         /// <c>true</c> to join network; <c>false</c> to leave network.
         /// </value>
-        [CanBeNull]
         public bool? SetMembership
         {
             get => setMembershipParameter.Value;
@@ -65,7 +57,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Required. Gets or sets the roles that the device is going to perform in the logical network.
         /// </summary>
-        [CanBeNull]
         public DeviceRoles? Roles
         {
             get => (DeviceRoles?)rolesParameter.Value;
@@ -85,7 +76,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="roles">
         /// The subset of capabilities that a device performs or is going to perform in the logical network.
         /// </param>
-        public NetworkSetupOperation([NotNull] WirelessNetworkAddress destinationAddress, bool setMembership, DeviceRoles roles)
+        public NetworkSetupOperation(WirelessNetworkAddress destinationAddress, bool setMembership, DeviceRoles roles)
             : this()
         {
             Guard.NotNull(destinationAddress, nameof(destinationAddress));

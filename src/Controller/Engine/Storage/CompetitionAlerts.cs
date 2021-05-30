@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage
 {
@@ -12,29 +11,21 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class CompetitionAlerts : IDisposable
     {
-        [NotNull]
         public static readonly CompetitionAlerts Empty = new(AlertSource.None, AlertSource.None, AlertSource.None, AlertSource.None, AlertSource.None);
 
-        [NotNull]
         public AlertSource Eliminated { get; }
-
-        [NotNull]
         public AlertSource FirstPlace { get; }
 
         /// <summary>
         /// A run with no faults and finished within Standard Course Time.
         /// </summary>
-        [NotNull]
         public AlertSource CleanRunInStandardCourseTime { get; }
 
-        [NotNull]
         public AlertSource ReadyToStart { get; }
-
-        [NotNull]
         public AlertSource CustomItemA { get; }
 
-        public CompetitionAlerts([NotNull] AlertSource eliminated, [NotNull] AlertSource firstPlace, [NotNull] AlertSource cleanRunInStandardCourseTime,
-            [NotNull] AlertSource readyToStart, [NotNull] AlertSource customItemA)
+        public CompetitionAlerts(AlertSource eliminated, AlertSource firstPlace, AlertSource cleanRunInStandardCourseTime, AlertSource readyToStart,
+            AlertSource customItemA)
         {
             Guard.NotNull(eliminated, nameof(eliminated));
             Guard.NotNull(firstPlace, nameof(firstPlace));

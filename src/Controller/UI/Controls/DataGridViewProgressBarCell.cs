@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -26,7 +25,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// </summary>
         public int Minimum { get; set; }
 
-        [NotNull]
         public override Type ValueType => typeof(int);
 
         public override object DefaultNewRowValue => 0;
@@ -46,8 +44,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         }
 
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState,
-            [CanBeNull] object value, [CanBeNull] object formattedValue, [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
-            DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
+            object? value, object? formattedValue, string? errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle,
+            DataGridViewPaintParts paintParts)
         {
             Guard.NotNull(graphics, nameof(graphics));
             Guard.NotNull(cellStyle, nameof(cellStyle));
@@ -99,7 +97,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 graphics.FillRectangle(fillBrush, barBounds);
             }
 
-            if (DataGridView.CurrentCellAddress.X == ColumnIndex && DataGridView.CurrentCellAddress.Y == RowIndex &&
+            if (DataGridView!.CurrentCellAddress.X == ColumnIndex && DataGridView.CurrentCellAddress.Y == RowIndex &&
                 (paintParts & DataGridViewPaintParts.Focus) == DataGridViewPaintParts.Focus && DataGridView.Focused && ReflectShowFocusCues())
             {
                 Rectangle focusRect = paintRect;
@@ -125,7 +123,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             }
         }
 
-        private double CalculateRate([CanBeNull] object cellValue)
+        private double CalculateRate(object? cellValue)
         {
             int value = 0;
 
@@ -155,12 +153,12 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return customGridView.PublicShowFocusCues;
             }
 
-            // Note: The cell should only show the focus rectangle when this.DataGridView.ShowFocusCues is true. 
+            // Note: The cell should only show the focus rectangle when this.DataGridView.ShowFocusCues is true.
             // However that property is protected internal and can't be accessed directly.
 
-            PropertyInfo propertyInfo = DataGridView.GetType().GetProperty("ShowFocusCues", BindingFlags.Instance | BindingFlags.NonPublic);
-            MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
-            bool showFocusCues = (bool)getMethodInfo.Invoke(DataGridView, new object[0]);
+            PropertyInfo? propertyInfo = DataGridView!.GetType().GetProperty("ShowFocusCues", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo? getMethodInfo = propertyInfo!.GetGetMethod(true);
+            bool showFocusCues = (bool)getMethodInfo!.Invoke(DataGridView, new object[0])!;
             return showFocusCues;
         }
     }

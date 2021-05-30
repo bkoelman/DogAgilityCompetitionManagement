@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -12,8 +11,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     {
         public const string AutoText = "(Auto)";
 
-        [CanBeNull]
-        public string ComPortName
+        public string? ComPortName
         {
             get => portNameComboBox.Text == AutoText ? null : portNameComboBox.Text;
             set => portNameComboBox.Text = value == null || portNameComboBox.Items.IndexOf(value) == -1 ? AutoText : value;

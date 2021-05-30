@@ -8,9 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class VisualizationChange
     {
-        public abstract void ApplyTo([NotNull] IVisualizationActor actor);
+        public abstract void ApplyTo(IVisualizationActor actor);
 
-        public void WriteTo([NotNull] TextWriter writer)
+        public void WriteTo(TextWriter writer)
         {
             writer.Write(ToString());
         }

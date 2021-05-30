@@ -6,7 +6,6 @@ using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
 using System.Security;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
@@ -15,8 +14,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     public static class SystemPortProvider
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
         /// <summary>
         /// Gets the names of all serial ports on this system.
@@ -24,8 +22,6 @@ namespace DogAgilityCompetition.Circe.Session
         /// <returns>
         /// The list of serial ports.
         /// </returns>
-        [NotNull]
-        [ItemNotNull]
         public static IList<string> GetAllComPorts(bool inReverseOrder = false)
         {
             Exception error;
@@ -66,7 +62,7 @@ namespace DogAgilityCompetition.Circe.Session
             return new List<string>();
         }
 
-        private static bool IsPortNameSupported([NotNull] string portName)
+        private static bool IsPortNameSupported(string portName)
         {
             // System.IO.Ports.SerialPort only supports port names like COMxxx.
             return portName.StartsWith("com", StringComparison.OrdinalIgnoreCase);

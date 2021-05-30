@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -13,24 +12,18 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     {
         internal const int TypeCode = 53;
 
-        [NotNull]
         private readonly NetworkAddressParameter originatingAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.OriginatingAddress, true);
-
-        [NotNull]
         private readonly IntegerParameter inputKeysParameter = ParameterFactory.Create(ParameterType.Integer.InputKeys, false);
-
-        [NotNull]
         private readonly IntegerParameter sensorTimeParameter = ParameterFactory.Create(ParameterType.Integer.SensorTime, false);
 
         /// <summary>
         /// Required. Gets or sets the originating address of the device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress OriginatingAddress
+        public WirelessNetworkAddress? OriginatingAddress
         {
             get
             {
-                string parameterValue = originatingAddressParameter.GetValueOrNull();
+                string? parameterValue = originatingAddressParameter.GetValueOrNull();
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => originatingAddressParameter.Value = value?.Value;
@@ -39,7 +32,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the input keys on a remote control that are currently pushed down.
         /// </summary>
-        [CanBeNull]
         public RawDeviceKeys? InputKeys
         {
             get => inputKeysParameter.Value == null ? null : (RawDeviceKeys?)inputKeysParameter.Value;
@@ -49,7 +41,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Optional. Gets or sets the time (in whole milliseconds precision) at which a time sensor detected motion.
         /// </summary>
-        [CanBeNull]
         public TimeSpan? SensorTime
         {
             get
@@ -85,7 +76,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <param name="originatingAddress">
         /// The originating address of the device in the wireless network.
         /// </param>
-        public NotifyActionOperation([NotNull] WirelessNetworkAddress originatingAddress)
+        public NotifyActionOperation(WirelessNetworkAddress originatingAddress)
             : this()
         {
             Guard.NotNull(originatingAddress, nameof(originatingAddress));
