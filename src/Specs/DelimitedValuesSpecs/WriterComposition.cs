@@ -62,7 +62,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Assert
-            action.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("columnNames");
+            action.Should().ThrowExactly<ArgumentNullException>().And.ParamName.Should().Be("columnNames");
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Assert
-            action.Should().Throw<ArgumentException>().WithMessage("List of column names cannot be empty.*");
+            action.Should().ThrowExactly<ArgumentException>().WithMessage("List of column names cannot be empty.*");
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Assert
-            action.Should().Throw<ArgumentException>().WithMessage("Column names cannot be null, empty or whitespace.*");
+            action.Should().ThrowExactly<ArgumentException>().WithMessage("Column names cannot be null, empty or whitespace.*");
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Assert
-            action.Should().Throw<ArgumentException>().WithMessage("Column 'A' occurs multiple times.*");
+            action.Should().ThrowExactly<ArgumentException>().WithMessage("Column 'A' occurs multiple times.*");
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.Should().Throw<ArgumentException>().WithMessage("Column with name 'B' does not exist.*");
+            action.Should().ThrowExactly<ArgumentException>().WithMessage("Column with name 'B' does not exist.*");
         }
 
         [Test]

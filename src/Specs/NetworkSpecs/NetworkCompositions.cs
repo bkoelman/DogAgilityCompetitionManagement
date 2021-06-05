@@ -31,7 +31,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             Action action = () => requirements.ChangeStartFinishMinDelayForSingleSensor(negativeTime);
 
             // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>();
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
                 DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
-            action.Should().Throw<ArgumentNullException>();
+            action.Should().ThrowExactly<ArgumentNullException>();
         }
 
         [Test]

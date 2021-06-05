@@ -45,7 +45,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Action action = () => reader.Read(buffer);
 
             // Assert
-            action.Should().Throw<ParameterValueFormatException>()
+            action.Should().ThrowExactly<ParameterValueFormatException>()
                 .WithMessage("Error at position 9: Value of NetworkAddressParameter DestinationAddress must consist of 6 characters in range 0-9 or A-F.*");
         }
 
@@ -163,7 +163,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Action action = () => reader.Read(buffer);
 
             // Assert
-            action.Should().Throw<ChecksumMismatchException>()
+            action.Should().ThrowExactly<ChecksumMismatchException>()
                 .WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
         }
 
@@ -186,7 +186,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Action action = () => reader.Read(buffer);
 
             // Assert
-            action.Should().Throw<UnknownOperationException>()
+            action.Should().ThrowExactly<UnknownOperationException>()
                 .WithMessage("Error at position 1: Unsupported operation code 11.*");
         }
 

@@ -28,7 +28,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             };
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
     }
 }
