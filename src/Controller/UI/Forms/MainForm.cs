@@ -421,7 +421,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
                 if (emulatorExePath == null)
                 {
-                    MessageBox.Show("DogAgilityCompetitionMediatorEmulator.exe not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("DogAgilityCompetition.MediatorEmulator.exe not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -469,7 +469,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private static string? GetEmulatorExePath()
         {
-            string emulatorExePath = GetPathForFileInApplicationFolder("DogAgilityCompetitionMediatorEmulator.exe");
+            string emulatorExePath = GetPathForFileInApplicationFolder("DogAgilityCompetition.MediatorEmulator.exe");
 
             return File.Exists(emulatorExePath) ? emulatorExePath : null;
         }

@@ -7,4 +7,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
  </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Workaround for error:
+        "Could not copy the file "XXX.deps.json" because it was not found."
+        during subsequent builds when using shared bin folder.
+        See also: https://github.com/dotnet/sdk/issues/17645
+    -->
+    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    <OutputPath>$(MSBuildThisFileDirectory)\..\bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
 </Project>

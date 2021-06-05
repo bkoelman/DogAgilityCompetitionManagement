@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.WinForms
 
             // Critical: do not check whether Invoke is required, because it can change the order of execution.
 
-            if (!control.IsDisposed)
+            if (!control.IsDisposed && control.IsHandleCreated)
             {
                 control.BeginInvoke(new MethodInvoker(action));
             }
