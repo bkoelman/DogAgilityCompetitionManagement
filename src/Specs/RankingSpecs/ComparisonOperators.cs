@@ -1,16 +1,15 @@
 ﻿using DogAgilityCompetition.Circe.Protocol;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.RankingSpecs
 {
     /// <summary>
     /// Basic tests for ordering of competitor run results.
     /// </summary>
-    [TestFixture]
     public sealed class ComparisonOperators
     {
-        [Test]
+        [Fact]
         public void WirelessNetworkAddress()
         {
             // Arrange

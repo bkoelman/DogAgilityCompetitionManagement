@@ -3,17 +3,16 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Exceptions;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
     /// Tests for parsing CIRCE binary packets.
     /// </summary>
-    [TestFixture]
     public sealed class CircePacketBinaryFormat
     {
-        [Test]
+        [Fact]
         public void When_parameter_format_is_invalid_it_must_throw()
         {
             // Arrange
@@ -47,7 +46,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 .WithMessage("Error at position 9: Value of NetworkAddressParameter DestinationAddress must consist of 6 characters in range 0-9 or A-F.*");
         }
 
-        [Test]
+        [Fact]
         public void When_packet_contains_unexpected_parameter_it_must_warn()
         {
             // Arrange
@@ -88,7 +87,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 "Warning at packet position 5: Ignoring unexpected occurrence of parameter 14 in packet for operation 1.");
         }
 
-        [Test]
+        [Fact]
         public void When_packet_contains_duplicate_parameter_it_must_warn()
         {
             // Arrange
@@ -140,7 +139,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 "Warning at packet position 16: Ignoring additional occurrence of parameter 14 in packet for operation 3.");
         }
 
-        [Test]
+        [Fact]
         public void When_checksum_is_invalid_it_must_throw()
         {
             // Arrange
@@ -164,7 +163,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             action.Should().ThrowExactly<ChecksumMismatchException>().WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
         }
 
-        [Test]
+        [Fact]
         public void When_operation_code_is_unknown_it_must_throw()
         {
             // Arrange

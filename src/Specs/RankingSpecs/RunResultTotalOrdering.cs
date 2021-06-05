@@ -6,7 +6,7 @@ using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 // @formatter:keep_existing_linebreaks true
 
@@ -15,7 +15,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
     /// <summary>
     /// Tests for total/complete ordering of competitor run results.
     /// </summary>
-    [TestFixture]
     public sealed class RunResultTotalOrdering
     {
         private const int LowOrSameCompetitorNumber = 3;
@@ -32,7 +31,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
         private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(80);
 
-        [Test]
+        [Fact]
         public void RunExploded()
         {
             // Arrange

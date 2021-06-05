@@ -4,7 +4,7 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
@@ -18,7 +18,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 
         // Note: For an explanation of these scenarios, see file: "\doc\Interpreting numeric input from remote control keys.md"
 
-        [Test]
+        [Fact]
         public void Scenario1()
         {
             var tracker = new RemoteKeyTracker();
@@ -43,7 +43,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [Test]
+        [Fact]
         public void Scenario2()
         {
             var tracker = new RemoteKeyTracker();
@@ -122,7 +122,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [Test]
+        [Fact]
         public void Scenario3()
         {
             var tracker = new RemoteKeyTracker();
@@ -219,7 +219,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [Test]
+        [Fact]
         public void Scenario4()
         {
             var tracker = new RemoteKeyTracker();
@@ -316,7 +316,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [Test]
+        [Fact]
         public void Scenario5()
         {
             var tracker = new RemoteKeyTracker();
@@ -376,7 +376,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             }
         }
 
-        [Test]
+        [Fact]
         public void Scenario6()
         {
             var tracker = new RemoteKeyTracker();

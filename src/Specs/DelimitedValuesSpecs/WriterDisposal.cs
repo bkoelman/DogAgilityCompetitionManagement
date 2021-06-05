@@ -4,7 +4,7 @@ using System.IO;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 // @formatter:keep_existing_linebreaks true
 
@@ -13,10 +13,9 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
     /// <summary>
     /// Tests for lifetime management in <see cref="DelimitedValuesWriter" />.
     /// </summary>
-    [TestFixture]
     public sealed class WriterDisposal
     {
-        [Test]
+        [Fact]
         public void When_creating_row_after_disposal_it_should_fail()
         {
             // Arrange
@@ -34,7 +33,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_completing_row_creation_after_disposal_it_should_fail()
         {
             // Arrange
@@ -49,7 +48,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_disposing_row_multiple_times_it_should_write_the_row_only_once()
         {
             // Arrange
@@ -76,22 +75,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             lines.Should().HaveCount(1);
         }
 
-        private static IEnumerable<string> TextToLines(string text)
-        {
-            var lines = new List<string>();
-
-            using var reader = new StringReader(text);
-            string? nextLine;
-
-            while ((nextLine = reader.ReadLine()) != null)
-            {
-                lines.Add(nextLine);
-            }
-
-            return lines;
-        }
-
-        [Test]
+        [Fact]
         public void When_not_closing_underlying_reader_it_should_flush_on_disposal()
         {
             // Arrange
@@ -109,6 +93,21 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 
             // Assert
             outputStream.Length.Should().BeGreaterThan(0);
+        }
+
+        private static IEnumerable<string> TextToLines(string text)
+        {
+            var lines = new List<string>();
+
+            using var reader = new StringReader(text);
+            string? nextLine;
+
+            while ((nextLine = reader.ReadLine()) != null)
+            {
+                lines.Add(nextLine);
+            }
+
+            return lines;
         }
     }
 }

@@ -5,7 +5,7 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using NUnit.Framework;
+using Xunit;
 
 // @formatter:keep_existing_linebreaks true
 
@@ -14,12 +14,11 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
     /// <summary>
     /// Tests for composing logical networks.
     /// </summary>
-    [TestFixture]
     public sealed class NetworkCompositions
     {
         private static readonly WirelessNetworkAddress DeviceAddress = new("ABCDEF");
 
-        [Test]
+        [Fact]
         public void When_setting_a_negative_delay_it_must_fail()
         {
             // Arrange
@@ -34,7 +33,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             action.Should().ThrowExactly<ArgumentOutOfRangeException>();
         }
 
-        [Test]
+        [Fact]
         public void When_delay_is_specified_and_start_and_finish_is_same_sensor_it_must_succeed()
         {
             // Arrange
@@ -54,7 +53,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsStartFinishGate(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_no_delay_is_specified_and_start_and_finish_is_same_sensor_it_must_fail()
         {
             // Arrange
@@ -72,7 +71,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             mismatches[0].Name.Should().Be("MissingDelayForStartFinishTimer");
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_start_timer_it_must_be_stored()
         {
             // Arrange
@@ -85,7 +84,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsInRoleStartTimer(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_devices_in_role_intermediate_timer_they_must_be_stored()
         {
             // Arrange
@@ -106,7 +105,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsInRoleIntermediateTimer3(timer3).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_finish_timer_it_must_be_stored()
         {
             // Arrange
@@ -119,7 +118,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsInRoleFinishTimer(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_display_it_must_be_stored()
         {
             // Arrange
@@ -132,7 +131,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsInRoleDisplay(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_an_empty_device_it_must_fail()
         {
             // Arrange
@@ -147,7 +146,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             action.Should().ThrowExactly<ArgumentNullException>();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_with_an_empty_role_it_must_not_be_in_any_known_roles()
         {
             // Arrange

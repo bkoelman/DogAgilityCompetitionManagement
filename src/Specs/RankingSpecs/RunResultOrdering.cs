@@ -6,7 +6,7 @@ using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Specs.Builders;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 // @formatter:keep_existing_linebreaks true
 
@@ -15,7 +15,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
     /// <summary>
     /// Basic tests for ordering of competitor run results.
     /// </summary>
-    [TestFixture]
     public sealed class RunResultOrdering
     {
         private const int LowCompetitorNumber = 3;
@@ -27,7 +26,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         private static readonly TimeSpan HighPenaltyTime = TimeSpan.FromSeconds(80);
         private static readonly TimeSpan StandardCourseTime = TimeSpan.FromSeconds(40);
 
-        [Test]
+        [Fact]
         public void RunCompletion1()
         {
             // Arrange
@@ -68,33 +67,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static OrderExpect TranslateComparerResult(int result)
-        {
-            return result < 0 ? OrderExpect.WinnerIsX : result > 0 ? OrderExpect.WinnerIsY : OrderExpect.IsEven;
-        }
-
-        private static CompetitionRunResult CreateCompetitorForCompletion(bool hasFinished, bool isEliminated)
-        {
-            var result = new CompetitionRunResult(new Competitor(1, "A", "A"));
-
-            if (isEliminated)
-            {
-                result = result.ChangeIsEliminated(true);
-            }
-
-            if (hasFinished)
-            {
-                result = result
-                    .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
-                            .At(TimeSpan.FromSeconds(10)).Build())
-                        .ChangeFinishTime(new RecordedTimeBuilder()
-                            .At(TimeSpan.FromSeconds(25)).Build()));
-            }
-
-            return result;
-        }
-
-        [Test]
+        [Fact]
         public void PenaltyOverrun2()
         {
             // Arrange
@@ -139,6 +112,73 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 OrderExpect actual = TranslateComparerResult(result);
                 actual.Should().Be(scenario.Result, scenario.ToString());
             }
+        }
+
+        [Fact]
+        public void FinishNumber3()
+        {
+            // Arrange
+            var scenarios = new List<OrderingScenario>
+            {
+                // Bits: FinishTime X > Y, CompetitorNumber X > Y, FinishTime Y > X, CompetitorNumber Y > X
+                new(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
+                new(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
+                new(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
+                new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
+            };
+
+            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(), RankingComparisonMode.OnlyPhaseFinishNumber);
+
+            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
+            {
+                CompetitionRunResult xCompetitor = CreateCompetitorForFinishWithNumber(scenario[0], scenario[1]);
+                CompetitionRunResult yCompetitor = CreateCompetitorForFinishWithNumber(scenario[2], scenario[3]);
+
+                // Act
+                int result = comparer.Compare(xCompetitor, yCompetitor);
+
+                // Assert
+                OrderExpect actual = TranslateComparerResult(result);
+                actual.Should().Be(scenario.Result, scenario.ToString());
+            }
+        }
+
+        private static OrderExpect TranslateComparerResult(int result)
+        {
+            return result < 0 ? OrderExpect.WinnerIsX : result > 0 ? OrderExpect.WinnerIsY : OrderExpect.IsEven;
+        }
+
+        private static CompetitionRunResult CreateCompetitorForCompletion(bool hasFinished, bool isEliminated)
+        {
+            var result = new CompetitionRunResult(new Competitor(1, "A", "A"));
+
+            if (isEliminated)
+            {
+                result = result.ChangeIsEliminated(true);
+            }
+
+            if (hasFinished)
+            {
+                result = result
+                    .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
+                            .At(TimeSpan.FromSeconds(10)).Build())
+                        .ChangeFinishTime(new RecordedTimeBuilder()
+                            .At(TimeSpan.FromSeconds(25)).Build()));
+            }
+
+            return result;
         }
 
         private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor, CompetitionRunResult yCompetitor,
@@ -203,47 +243,6 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             result = result.ChangeFaultCount(fr);
 
             return result;
-        }
-
-        [Test]
-        public void FinishNumber3()
-        {
-            // Arrange
-            var scenarios = new List<OrderingScenario>
-            {
-                // Bits: FinishTime X > Y, CompetitorNumber X > Y, FinishTime Y > X, CompetitorNumber Y > X
-                new(4, OrderingScenario.FromBits(0, 0, 0, 0), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(0, 0, 0, 1), OrderExpect.WinnerIsX),
-                new(4, OrderingScenario.FromBits(0, 0, 1, 0), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(0, 0, 1, 1), OrderExpect.WinnerIsX),
-                new(4, OrderingScenario.FromBits(0, 1, 0, 0), OrderExpect.WinnerIsY),
-                new(4, OrderingScenario.FromBits(0, 1, 0, 1), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(0, 1, 1, 0), OrderExpect.WinnerIsX),
-                new(4, OrderingScenario.FromBits(0, 1, 1, 1), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 0, 0, 0), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 0, 0, 1), OrderExpect.WinnerIsY),
-                new(4, OrderingScenario.FromBits(1, 0, 1, 0), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 0, 1, 1), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 1, 0, 0), OrderExpect.WinnerIsY),
-                new(4, OrderingScenario.FromBits(1, 1, 0, 1), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 1, 1, 0), OrderExpect.DoNotCare),
-                new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
-            };
-
-            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(), RankingComparisonMode.OnlyPhaseFinishNumber);
-
-            foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
-            {
-                CompetitionRunResult xCompetitor = CreateCompetitorForFinishWithNumber(scenario[0], scenario[1]);
-                CompetitionRunResult yCompetitor = CreateCompetitorForFinishWithNumber(scenario[2], scenario[3]);
-
-                // Act
-                int result = comparer.Compare(xCompetitor, yCompetitor);
-
-                // Assert
-                OrderExpect actual = TranslateComparerResult(result);
-                actual.Should().Be(scenario.Result, scenario.ToString());
-            }
         }
 
         private static CompetitionRunResult CreateCompetitorForFinishWithNumber(bool finishTimeIsGreater, bool competitorNumberIsGreater)

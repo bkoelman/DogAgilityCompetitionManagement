@@ -3,17 +3,16 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for lifetime management in <see cref="DelimitedValuesReader" />.
     /// </summary>
-    [TestFixture]
     public sealed class ReaderDisposal
     {
-        [Test]
+        [Fact]
         public void When_accessing_line_number_after_disposal_it_should_fail()
         {
             // Arrange
@@ -31,7 +30,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_accessing_line_after_disposal_it_should_fail()
         {
             // Arrange
@@ -49,7 +48,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_getting_enumerator_after_disposal_it_should_fail()
         {
             // Arrange
@@ -68,7 +67,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_enumerating_after_disposal_it_should_fail()
         {
             // Arrange
