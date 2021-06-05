@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DogAgilityCompetition.Circe.Protocol.Exceptions;
@@ -10,7 +9,6 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// <summary>
     /// Represents the base class for all CIRCE operations that can be exchanged between an application controller and a mediator device.
     /// </summary>
-    [Serializable]
     public abstract class Operation
     {
         /// <summary>

@@ -5,7 +5,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
     /// <summary>
     /// Represents the error that is thrown when the logical contents of a CIRCE packet is not compliant with the protocol specification.
     /// </summary>
-    [Serializable]
     public sealed class OperationValidationException : Exception
     {
         public Operation Operation { get; }

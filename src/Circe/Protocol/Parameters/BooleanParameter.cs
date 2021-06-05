@@ -7,7 +7,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates either <c>true</c> or <c>false</c>.
     /// </summary>
-    [Serializable]
     public sealed class BooleanParameter : Parameter
     {
         /// <summary>

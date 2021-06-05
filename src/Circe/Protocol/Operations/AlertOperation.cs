@@ -1,4 +1,3 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
@@ -6,7 +5,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// <summary>
     /// This operation can be used by a controller to activate a presence indication on a wireless device.
     /// </summary>
-    [Serializable]
     public sealed class AlertOperation : Operation
     {
         internal const int TypeCode = 3;

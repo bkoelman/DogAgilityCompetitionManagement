@@ -1,5 +1,3 @@
-using System;
-
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
     /// <summary>
@@ -9,7 +7,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// This operation is sent by a controller to terminate communications. After receiving this operation, the mediator should not send any more operations
     /// until another Login (01) operation has been received.
     /// </remarks>
-    [Serializable]
     public sealed class LogoutOperation : Operation
     {
         internal const int TypeCode = 2;

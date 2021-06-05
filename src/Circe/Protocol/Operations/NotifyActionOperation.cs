@@ -7,7 +7,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// This operation is used by a mediator to notify about an activity that occurred in the logical network configuration. For instance, when a gate is
     /// signaled or a key on a remote control has been pressed.
     /// </summary>
-    [Serializable]
     public sealed class NotifyActionOperation : Operation
     {
         internal const int TypeCode = 53;

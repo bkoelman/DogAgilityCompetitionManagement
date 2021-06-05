@@ -21,7 +21,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// display device.
     /// </para>
     /// </remarks>
-    [Serializable]
     public sealed class VisualizeOperation : Operation
     {
         internal const int TypeCode = 7;

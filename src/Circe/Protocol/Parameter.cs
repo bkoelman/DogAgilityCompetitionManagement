@@ -7,7 +7,6 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// <summary>
     /// Represents the base class for a parameter inside a CIRCE <see cref="Operation" />.
     /// </summary>
-    [Serializable]
     public abstract class Parameter
     {
         /// <summary>

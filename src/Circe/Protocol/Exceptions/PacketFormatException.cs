@@ -5,7 +5,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
     /// <summary>
     /// Represents the error that is thrown when the bytes of a CIRCE packet could not be parsed.
     /// </summary>
-    [Serializable]
     public class PacketFormatException : Exception
     {
         /// <summary>

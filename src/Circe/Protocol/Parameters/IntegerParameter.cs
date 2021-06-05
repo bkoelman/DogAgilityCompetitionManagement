@@ -8,7 +8,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a whole number.
     /// </summary>
-    [Serializable]
     public sealed class IntegerParameter : Parameter
     {
         private int? innerValue;

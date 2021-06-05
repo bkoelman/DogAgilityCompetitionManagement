@@ -1,4 +1,3 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
@@ -15,7 +14,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// elapsed since its previous status notification was sent.
     /// </para>
     /// </remarks>
-    [Serializable]
     public sealed class NotifyStatusOperation : Operation
     {
         internal const int TypeCode = 52;

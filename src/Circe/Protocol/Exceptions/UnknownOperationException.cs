@@ -1,11 +1,8 @@
-using System;
-
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
     /// Represents the error when a packet with an unknown operation code is encountered.
     /// </summary>
-    [Serializable]
     public sealed class UnknownOperationException : PacketFormatException
     {
         /// <summary>

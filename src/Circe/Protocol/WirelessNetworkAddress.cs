@@ -10,7 +10,6 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// <summary>
     /// Represents the address of a hardware device in the CIRCE wireless network.
     /// </summary>
-    [Serializable]
     public sealed class WirelessNetworkAddress : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
     {
         public static readonly WirelessNetworkAddress Default = new("000000");
@@ -23,6 +22,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             Value = value;
         }
 
+        [UsedImplicitly]
         private WirelessNetworkAddress()
         {
             // Private constructor is required for XML serialization.

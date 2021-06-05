@@ -16,7 +16,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// connection has become idle.
     /// </para>
     /// </remarks>
-    [Serializable]
     public sealed class KeepAliveOperation : Operation
     {
         internal const int TypeCode = 51;

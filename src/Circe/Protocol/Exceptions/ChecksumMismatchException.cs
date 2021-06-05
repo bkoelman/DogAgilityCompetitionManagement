@@ -1,11 +1,8 @@
-using System;
-
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
     /// Represents the error that is thrown when the calculated checksum of a CIRCE packet differs from the checksum that is stored in the packet.
     /// </summary>
-    [Serializable]
     public sealed class ChecksumMismatchException : PacketFormatException
     {
         /// <summary>

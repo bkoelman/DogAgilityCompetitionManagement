@@ -1,5 +1,3 @@
-using System;
-
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
     /// <summary>
@@ -9,7 +7,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// The controller can determine whether the synchronization succeeded by waiting for three seconds on incoming Notify Status (52) operations from
     /// devices, which are expected to include the Clock Synchronization parameter with value Sync Succeeded.
     /// </remarks>
-    [Serializable]
     public sealed class SynchronizeClocksOperation : Operation
     {
         internal const int TypeCode = 6;

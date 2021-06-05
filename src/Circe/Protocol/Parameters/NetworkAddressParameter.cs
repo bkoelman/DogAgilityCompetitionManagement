@@ -8,7 +8,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a wireless network address.
     /// </summary>
-    [Serializable]
     public sealed class NetworkAddressParameter : Parameter
     {
         private const int CharCount = 6;

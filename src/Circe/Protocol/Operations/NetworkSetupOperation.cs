@@ -1,4 +1,3 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
@@ -20,7 +19,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// logical network configuration.
     /// </para>
     /// </remarks>
-    [Serializable]
     public sealed class NetworkSetupOperation : Operation
     {
         internal const int TypeCode = 4;

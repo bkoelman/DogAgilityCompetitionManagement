@@ -9,7 +9,6 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// <summary>
     /// A collection of <see cref="WirelessNetworkAddress" /> objects that is tied to an operation.
     /// </summary>
-    [Serializable]
     internal sealed class WirelessNetworkAddressCollection : ICollection<WirelessNetworkAddress>
     {
         private readonly Operation owner;

@@ -8,7 +8,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a version number.
     /// </summary>
-    [Serializable]
     public sealed class VersionParameter : Parameter
     {
         private const int MaxCharCount = 11;

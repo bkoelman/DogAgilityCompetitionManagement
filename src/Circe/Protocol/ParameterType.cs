@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
@@ -12,7 +11,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="IntegerParameter" /> types.
         /// </summary>
-        [Serializable]
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Integer")]
         public enum Integer
         {
@@ -37,7 +35,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="BooleanParameter" /> types.
         /// </summary>
-        [Serializable]
         [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Boolean")]
         public enum Boolean
         {
@@ -51,7 +48,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="NetworkAddressParameter" /> types.
         /// </summary>
-        [Serializable]
         public enum NetworkAddress
         {
             DestinationAddress,
@@ -62,7 +58,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="VersionParameter" /> types.
         /// </summary>
-        [Serializable]
         public enum Version
         {
             ProtocolVersion
@@ -71,7 +66,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="BinaryParameter" /> types.
         /// </summary>
-        [Serializable]
         [SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces")]
         public enum Binary
         {

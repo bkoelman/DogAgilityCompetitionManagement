@@ -1,4 +1,3 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
@@ -12,7 +11,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// the included address to itself when capabilities are omitted. Otherwise, the included address is assigned to the wireless device that matches the
     /// destination address. When destination address is missing, the mediator assumes address 000000.
     /// </remarks>
-    [Serializable]
     public sealed class DeviceSetupOperation : Operation
     {
         internal const int TypeCode = 5;
