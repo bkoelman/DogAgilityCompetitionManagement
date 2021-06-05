@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </summary>
     public sealed class CacheManager
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly Lazy<CacheManager> InnerDefaultInstance = new(CreateDefaultInstance, LazyThreadSafetyMode.ExecutionAndPublication);
 
         private readonly ModelSerializer serializer;

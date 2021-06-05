@@ -9,7 +9,7 @@ namespace DogAgilityCompetition.Circe
     /// </summary>
     public sealed class CodeTimer : IDisposable
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly string text;
         private readonly Stopwatch stopwatch = new();

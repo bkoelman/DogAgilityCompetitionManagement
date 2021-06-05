@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Circe.Controller
     {
         private const int TryNextComPortDelayInMilliseconds = 100;
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly Version ProtocolVersionExpected =
             new(KeepAliveOperation.CurrentProtocolVersion.Major, KeepAliveOperation.CurrentProtocolVersion.Minor);

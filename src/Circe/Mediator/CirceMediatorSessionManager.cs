@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Circe.Mediator
     /// </summary>
     public sealed class CirceMediatorSessionManager : IDisposable
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly TimeSpan MaxIdleTime = TimeSpan.FromMilliseconds(700);
 
         private readonly FreshEnum<MediatorConnectionState> connectionState = new(MediatorConnectionState.Disconnected);

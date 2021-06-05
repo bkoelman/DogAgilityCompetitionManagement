@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// </summary>
     public sealed class AssignmentStateMachine
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly object stateLock = new();
 

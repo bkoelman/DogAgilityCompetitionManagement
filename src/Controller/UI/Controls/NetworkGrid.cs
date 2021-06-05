@@ -25,7 +25,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private const DeviceRoles IntermediateRoles = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly TimeSpan TaskTimeout = TimeSpan.FromSeconds(3);
         private static readonly Color LightBlue = Color.FromArgb(255, 96, 192, 192);
         private static readonly Color LightGray = Color.FromArgb(255, 192, 192, 192);

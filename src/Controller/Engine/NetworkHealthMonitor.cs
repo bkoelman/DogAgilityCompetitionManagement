@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class NetworkHealthMonitor
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly object StateLock = new();
 
         private readonly Dictionary<WirelessNetworkAddress, DeviceStatus> devicesMap = new();

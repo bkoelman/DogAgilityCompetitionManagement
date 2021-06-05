@@ -7,7 +7,7 @@ namespace DogAgilityCompetition.Controller.Engine
 {
     public sealed class EliminationTracker : IDisposable
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly TimeSpan InfiniteTime = TimeSpan.FromMilliseconds(-1);
 
         private readonly int refusalStepSize;

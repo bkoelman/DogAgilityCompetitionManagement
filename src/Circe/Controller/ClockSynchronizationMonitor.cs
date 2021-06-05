@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.Circe.Controller
     /// </summary>
     public sealed class ClockSynchronizationMonitor
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly TimeSpan SyncReplyTimeout = TimeSpan.FromSeconds(3);
         private static readonly TimeSpan RecommendSyncAfter = TimeSpan.FromMinutes(10);

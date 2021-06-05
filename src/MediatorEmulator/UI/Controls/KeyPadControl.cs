@@ -16,7 +16,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class KeypadControl : UserControl
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly IReadOnlyCollection<RawDeviceKeys> ModifierRawKeys = new ReadOnlyCollection<RawDeviceKeys>(new List<RawDeviceKeys>
         {

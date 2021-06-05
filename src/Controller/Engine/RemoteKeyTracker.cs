@@ -12,7 +12,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class RemoteKeyTracker
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly Dictionary<RawDeviceKeys, RemoteKeyModifier> ModifierKeyTranslationTable = new()
         {

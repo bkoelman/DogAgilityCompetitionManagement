@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Circe.Session
         // http://blogs.msdn.com/b/bclteam/archive/2006/10/10/top-5-serialport-tips-_5b00_kim-hamilton_5d00_.aspx
         // http://zachsaw.blogspot.nl/2010/07/net-serialport-woes.html
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly SerialPort comPort;
         private readonly PacketAssembler assembler = new();

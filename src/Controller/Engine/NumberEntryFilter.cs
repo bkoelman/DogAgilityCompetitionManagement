@@ -19,7 +19,7 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public const int MaxCompetitorNumberLength = 3;
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly NumberEntryState numberEntryState = new();
         private readonly DeviceModifiersState modifierStatePerDevice = new();

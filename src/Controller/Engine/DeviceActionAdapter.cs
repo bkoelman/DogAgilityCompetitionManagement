@@ -12,7 +12,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class DeviceActionAdapter
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly Dictionary<RemoteKey, DeviceCommand> KeyToCommandLookupTable = new()
         {

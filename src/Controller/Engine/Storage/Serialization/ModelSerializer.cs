@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     /// </summary>
     public sealed class ModelSerializer
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly string path;
 

@@ -8,7 +8,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     public sealed class ComPortRotator
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private string? activePort;
 

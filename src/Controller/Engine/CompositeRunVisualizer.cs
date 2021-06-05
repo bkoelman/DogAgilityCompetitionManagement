@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class CompositeRunVisualizer : ICompetitionRunVisualizer
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly IEnumerable<ICompetitionRunVisualizer> children;
 

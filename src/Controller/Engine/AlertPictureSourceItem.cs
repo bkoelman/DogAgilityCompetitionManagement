@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class AlertPictureSourceItem : AlertSourceItem, IDisposable
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         public static readonly AlertPictureSourceItem None = new(false, null);
 

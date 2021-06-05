@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Circe.Controller
         private const int DeviceLifetimeExpiredInMilliseconds = 3000;
 #endif
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly Dictionary<WirelessNetworkAddress, DeviceMapEntry> deviceMap = new();
         private readonly object stateLock = new();

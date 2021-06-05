@@ -15,7 +15,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public sealed class WirelessDisplayRunVisualizer : ICompetitionRunVisualizer
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private CirceControllerSessionManager? circeSessionManager;
         private IReadOnlyList<WirelessNetworkAddress> displaysInRunComposition = new List<WirelessNetworkAddress>();

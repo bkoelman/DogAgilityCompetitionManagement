@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         private const int ArrowLength = 18;
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly List<ShapeState> StateRenderOrder = new()
         {

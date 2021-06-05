@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// </summary>
     public sealed class PacketReader
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private ISystemLogger? customLogger;
 

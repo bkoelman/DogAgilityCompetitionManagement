@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Circe.Mediator
     /// </summary>
     public sealed class DeviceStatusChangeLogger
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly ConcurrentDictionary<WirelessNetworkAddress, DeviceStatus?> deviceStatusMap = new();
 

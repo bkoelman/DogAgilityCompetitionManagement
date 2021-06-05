@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     public static class ComPortSelector
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         public static CirceComConnection GetConnection(Action<CirceComConnection>? attachHandlersCallback = null,
             Action<CirceComConnection>? detachHandlersCallback = null, string? specificComPort = null)

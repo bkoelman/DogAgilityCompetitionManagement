@@ -25,7 +25,7 @@ namespace DogAgilityCompetition.Controller.Engine
         // potential deadlocks because event subscribers can do anything), in this application the event subscribers
         // only asynchronously update UI-elements or enqueue outgoing packets, so it's not an actual problem here.
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
         private static readonly ICollection<CompetitionClassState> AllStates = StatesInRange(CompetitionClassState.Offline, CompetitionClassState.RunCompleted);
 
         private readonly object stateLock = new();

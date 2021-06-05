@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     public static class SystemPortProvider
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         /// <summary>
         /// Gets the names of all serial ports on this system.

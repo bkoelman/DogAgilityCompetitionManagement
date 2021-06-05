@@ -20,7 +20,7 @@ namespace DogAgilityCompetition.Circe.Session
     /// </remarks>
     public sealed class ActionQueue : IDisposable
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly BlockingCollection<WorkItem> workQueue = new();
         private readonly object stateLock = new();

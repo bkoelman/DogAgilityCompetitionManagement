@@ -17,7 +17,7 @@ namespace DogAgilityCompetition.Circe.Controller
         // When performance stagnates on high load, consider increasing Thread-pool size. 
         // Defaults for .exe are: Min=8, Max=1000
 
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private readonly ActionQueue outgoingOperationsQueue;
         private readonly SessionGuard sessionGuard;
@@ -177,7 +177,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
         private sealed class ControllerIncomingOperationDispatcher : IOperationAcceptor
         {
-            private static readonly ISystemLogger InnerLog = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+            private static readonly ISystemLogger InnerLog = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
             private readonly CirceControllerSessionManager owner;
             private readonly object nonReentrantProcessIncomingOperationLock = new();
