@@ -79,8 +79,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             {
                 if (e.State == ControllerConnectionState.Connected)
                 {
-                    testRunner.Connection.Send(new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion,
-                        mediatorStatusCode));
+                    testRunner.Connection.Send(new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion, mediatorStatusCode));
                 }
             };
 
@@ -107,8 +106,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             var deviceAddress = new WirelessNetworkAddress("AABBCC");
             const bool getMembership = true;
 
-            const DeviceCapabilities capabilities =
-                DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
+            const DeviceCapabilities capabilities = DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
                 DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
 
             const DeviceRoles roles = DeviceRoles.StartTimer | DeviceRoles.FinishTimer;
@@ -124,8 +122,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             {
                 if (e.State == ControllerConnectionState.Connected)
                 {
-                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership,
-                        capabilities, roles, signalStrength)
+                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership, capabilities, roles, signalStrength)
                     {
                         BatteryStatus = batteryStatus,
                         IsAligned = isAligned,
@@ -162,8 +159,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             var deviceAddress = new WirelessNetworkAddress("AABBCC");
             const bool getMembership = true;
 
-            const DeviceCapabilities capabilities =
-                DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
+            const DeviceCapabilities capabilities = DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
                 DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor;
 
             const DeviceRoles roles = DeviceRoles.StartTimer | DeviceRoles.FinishTimer;
@@ -178,11 +174,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             {
                 if (e.State == ControllerConnectionState.Connected)
                 {
-                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership,
-                        capabilities, roles, 25));
-
-                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership,
-                        capabilities, roles, signalStrength)
+                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership, capabilities, roles, 25));
+                    testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, getMembership, capabilities, roles, signalStrength)
                     {
                         BatteryStatus = batteryStatus,
                         IsAligned = isAligned,
@@ -223,10 +216,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
                 if (e.State == ControllerConnectionState.Connected)
                 {
                     testRunner.Connection.Send(new NotifyStatusOperation(deviceAddress, true,
-                        DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad |
-                        DeviceCapabilities.StartSensor | DeviceCapabilities.FinishSensor |
-                        DeviceCapabilities.IntermediateSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer,
-                        25));
+                        DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor | DeviceCapabilities.FinishSensor |
+                        DeviceCapabilities.IntermediateSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer, 25));
                 }
             };
 

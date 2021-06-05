@@ -5,8 +5,6 @@ using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using NUnit.Framework;
 
-// @formatter:keep_existing_linebreaks true
-
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
@@ -163,8 +161,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Action action = () => reader.Read(buffer);
 
             // Assert
-            action.Should().ThrowExactly<ChecksumMismatchException>()
-                .WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
+            action.Should().ThrowExactly<ChecksumMismatchException>().WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
         }
 
         [Test]
@@ -186,8 +183,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Action action = () => reader.Read(buffer);
 
             // Assert
-            action.Should().ThrowExactly<UnknownOperationException>()
-                .WithMessage("Error at position 1: Unsupported operation code 11.*");
+            action.Should().ThrowExactly<UnknownOperationException>().WithMessage("Error at position 1: Unsupported operation code 11.*");
         }
 
         private static byte ByteFor(char ch)

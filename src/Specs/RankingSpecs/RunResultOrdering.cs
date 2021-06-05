@@ -52,8 +52,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.IsEven)
             };
 
-            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
-                RankingComparisonMode.OnlyPhaseCompletion);
+            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(), RankingComparisonMode.OnlyPhaseCompletion);
 
             foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
             {
@@ -85,10 +84,11 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             if (hasFinished)
             {
-                result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
-                        .At(TimeSpan.FromSeconds(10)).Build())
-                    .ChangeFinishTime(new RecordedTimeBuilder()
-                        .At(TimeSpan.FromSeconds(25)).Build()));
+                result = result
+                    .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
+                            .At(TimeSpan.FromSeconds(10)).Build())
+                        .ChangeFinishTime(new RecordedTimeBuilder()
+                            .At(TimeSpan.FromSeconds(25)).Build()));
             }
 
             return result;
@@ -141,8 +141,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor,
-            CompetitionRunResult yCompetitor, OrderingScenario scenario, CompetitionClassModel model)
+        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor, CompetitionRunResult yCompetitor,
+            OrderingScenario scenario, CompetitionClassModel model)
         {
             var xCalculator = new CompetitorAssessmentCalculator(xCompetitor, model);
             var yCalculator = new CompetitorAssessmentCalculator(yCompetitor, model);
@@ -184,8 +184,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static CompetitionRunResult CreateCompetitorForPenaltyOverrun(bool penaltyTimeIsGreater,
-            bool overrunTimeIsGreater)
+        private static CompetitionRunResult CreateCompetitorForPenaltyOverrun(bool penaltyTimeIsGreater, bool overrunTimeIsGreater)
         {
             TimeSpan overrunTime = overrunTimeIsGreater ? HighOverrunTime : LowOverrunTime;
             TimeSpan penaltyTime = penaltyTimeIsGreater ? HighPenaltyTime : LowPenaltyTime;
@@ -194,10 +193,11 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             TimeSpan startTime = TimeSpan.FromSeconds(10);
 
-            result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
-                    .At(startTime).Build())
-                .ChangeFinishTime(new RecordedTimeBuilder()
-                    .At(startTime + overrunTime + StandardCourseTime).Build()));
+            result = result
+                .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
+                        .At(startTime).Build())
+                    .ChangeFinishTime(new RecordedTimeBuilder()
+                        .At(startTime + overrunTime + StandardCourseTime).Build()));
 
             int fr = (int)(penaltyTime - overrunTime).TotalSeconds;
             result = result.ChangeFaultCount(fr);
@@ -230,8 +230,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
-            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(),
-                RankingComparisonMode.OnlyPhaseFinishNumber);
+            var comparer = new CompetitionRunResultRankingComparer(new CompetitionClassModel(), RankingComparisonMode.OnlyPhaseFinishNumber);
 
             foreach (OrderingScenario scenario in scenarios.Where(s => s.Result != OrderExpect.DoNotCare))
             {
@@ -247,8 +246,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             }
         }
 
-        private static CompetitionRunResult CreateCompetitorForFinishWithNumber(bool finishTimeIsGreater,
-            bool competitorNumberIsGreater)
+        private static CompetitionRunResult CreateCompetitorForFinishWithNumber(bool finishTimeIsGreater, bool competitorNumberIsGreater)
         {
             int competitorNumber = competitorNumberIsGreater ? HighCompetitorNumber : LowCompetitorNumber;
             TimeSpan finishTime = TimeSpan.FromSeconds(finishTimeIsGreater ? 50 : 25);
@@ -257,10 +255,11 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
 
             TimeSpan startTime = TimeSpan.FromSeconds(10);
 
-            result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
-                    .At(startTime).Build())
-                .ChangeFinishTime(new RecordedTimeBuilder()
-                    .At(startTime + finishTime).Build()));
+            result = result
+                .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
+                        .At(startTime).Build())
+                    .ChangeFinishTime(new RecordedTimeBuilder()
+                        .At(startTime + finishTime).Build()));
 
             return result;
         }

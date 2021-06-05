@@ -45,8 +45,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
                 .Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.TimeSensor,
-                DeviceRoles.StartTimer | DeviceRoles.FinishTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.TimeSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer);
 
             // Assert
             composition.IsInRoleStartTimer(DeviceAddress).Should().BeTrue();
@@ -80,8 +79,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.StartSensor,
-                DeviceRoles.StartTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.StartSensor, DeviceRoles.StartTimer);
 
             // Assert
             composition.IsInRoleStartTimer(DeviceAddress).Should().BeTrue();
@@ -115,8 +113,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.FinishSensor,
-                DeviceRoles.FinishTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
             composition.IsInRoleFinishTimer(DeviceAddress).Should().BeTrue();
@@ -129,8 +126,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.Display,
-                DeviceRoles.Display);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.Display, DeviceRoles.Display);
 
             // Assert
             composition.IsInRoleDisplay(DeviceAddress).Should().BeTrue();
@@ -145,8 +141,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
 
             // Act
             // Justification for nullable suppression: The goal of this test is to cause failure when no device is specified.
-            Action action = () => composition = composition.ChangeRolesFor(missingDevice!,
-                DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
+            Action action = () => composition = composition.ChangeRolesFor(missingDevice!, DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();

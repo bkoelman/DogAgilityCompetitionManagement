@@ -16,8 +16,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
     [TestFixture]
     public sealed class ReaderPositioning
     {
-        private static readonly string DefaultTextQualifier =
-            new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
+        private static readonly string DefaultTextQualifier = new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
 
         [Test]
         public void When_only_header_has_been_read_it_should_be_positioned_at_first_line()
@@ -93,8 +92,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         }
 
         [Test]
-        public void
-            When_lines_are_broken_using_carriage_returns_followed_by_with_line_feeds_it_should_report_the_correct_starting_line_number()
+        public void When_lines_are_broken_using_carriage_returns_followed_by_with_line_feeds_it_should_report_the_correct_starting_line_number()
         {
             // Arrange
             const string lineBreaker = "\r\n";

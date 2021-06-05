@@ -2,8 +2,6 @@
 using FluentAssertions;
 using NUnit.Framework;
 
-// @formatter:keep_existing_linebreaks true
-
 namespace DogAgilityCompetition.Specs.RankingSpecs
 {
     /// <summary>

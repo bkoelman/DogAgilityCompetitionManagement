@@ -7,8 +7,6 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NUnit.Framework;
 
-// @formatter:keep_existing_linebreaks true
-
 namespace DogAgilityCompetition.Specs.CirceSpecs
 {
     /// <summary>
@@ -268,8 +266,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             var operation = new DeviceSetupOperation(new WirelessNetworkAddress("ABCDEF"))
             {
                 DestinationAddress = new WirelessNetworkAddress("654321"),
-                Capabilities =
-                    DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
+                Capabilities = DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
                     DeviceCapabilities.FinishSensor | DeviceCapabilities.IntermediateSensor
             };
 
@@ -367,8 +364,7 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             var expected = new DeviceSetupOperation(new WirelessNetworkAddress("ABCDEF"))
             {
                 DestinationAddress = new WirelessNetworkAddress("654321"),
-                Capabilities =
-                    DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
+                Capabilities = DeviceCapabilities.ControlKeypad | DeviceCapabilities.NumericKeypad | DeviceCapabilities.StartSensor |
                     DeviceCapabilities.IntermediateSensor | DeviceCapabilities.FinishSensor
             };
 
@@ -466,8 +462,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
         public void When_writing_notify_status_operation_it_must_be_correct()
         {
             // Arrange
-            var operation = new NotifyStatusOperation(new WirelessNetworkAddress("ABCDEF"), true,
-                DeviceCapabilities.TimeSensor, DeviceRoles.IntermediateTimer3, 253)
+            var operation = new NotifyStatusOperation(new WirelessNetworkAddress("ABCDEF"), true, DeviceCapabilities.TimeSensor, DeviceRoles.IntermediateTimer3,
+                253)
             {
                 BatteryStatus = 241,
                 IsAligned = true,
@@ -625,8 +621,8 @@ namespace DogAgilityCompetition.Specs.CirceSpecs
             Operation operation = reader.Read(buffer);
 
             // Assert
-            var expected = new NotifyStatusOperation(new WirelessNetworkAddress("ABCDEF"), true,
-                DeviceCapabilities.TimeSensor, DeviceRoles.IntermediateTimer3, 253)
+            var expected = new NotifyStatusOperation(new WirelessNetworkAddress("ABCDEF"), true, DeviceCapabilities.TimeSensor, DeviceRoles.IntermediateTimer3,
+                253)
             {
                 BatteryStatus = 241,
                 IsAligned = true,

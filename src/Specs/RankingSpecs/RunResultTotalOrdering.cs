@@ -99,8 +99,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 new(4, OrderingScenario.FromBits(1, 1, 1, 1), OrderExpect.DoNotCare)
             };
 
-            IEnumerable<OrderingScenario> exploded = ExplodeCombinations(runCompletionScenarios, penaltyOverrunScenarios,
-                finishNumberScenarios);
+            IEnumerable<OrderingScenario> exploded = ExplodeCombinations(runCompletionScenarios, penaltyOverrunScenarios, finishNumberScenarios);
 
             CompetitionClassModel model = new CompetitionClassModel()
                 .ChangeClassInfo(new CompetitionClassInfo()
@@ -123,13 +122,13 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 bool yFinishTimeIsGreater = scenario[10];
                 bool yCompetitorNumberIsGreater = scenario[11];
 
-                CompetitionRunResult xCompetitor = CreateCompetitorFor("X", xHasFinished, xIsEliminated, yHasFinished,
-                    xPenaltyTimeIsGreater, xOverrunTimeIsGreater, yPenaltyTimeIsGreater, yOverrunTimeIsGreater,
-                    xFinishTimeIsGreater, xCompetitorNumberIsGreater, yFinishTimeIsGreater, yCompetitorNumberIsGreater);
+                CompetitionRunResult xCompetitor = CreateCompetitorFor("X", xHasFinished, xIsEliminated, yHasFinished, xPenaltyTimeIsGreater,
+                    xOverrunTimeIsGreater, yPenaltyTimeIsGreater, yOverrunTimeIsGreater, xFinishTimeIsGreater, xCompetitorNumberIsGreater, yFinishTimeIsGreater,
+                    yCompetitorNumberIsGreater);
 
-                CompetitionRunResult yCompetitor = CreateCompetitorFor("Y", yHasFinished, yIsEliminated, xHasFinished,
-                    yPenaltyTimeIsGreater, yOverrunTimeIsGreater, xPenaltyTimeIsGreater, xOverrunTimeIsGreater,
-                    yFinishTimeIsGreater, yCompetitorNumberIsGreater, xFinishTimeIsGreater, xCompetitorNumberIsGreater);
+                CompetitionRunResult yCompetitor = CreateCompetitorFor("Y", yHasFinished, yIsEliminated, xHasFinished, yPenaltyTimeIsGreater,
+                    yOverrunTimeIsGreater, xPenaltyTimeIsGreater, xOverrunTimeIsGreater, yFinishTimeIsGreater, yCompetitorNumberIsGreater, xFinishTimeIsGreater,
+                    xCompetitorNumberIsGreater);
 
                 AssertCompetitorsAreCompatibleWithProposedScenario(xCompetitor, yCompetitor, scenario, model);
 
@@ -158,8 +157,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result;
         }
 
-        private static OrderingScenario? CreateCombinedScenario(OrderingScenario primaryScenario,
-            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
+        private static OrderingScenario? CreateCombinedScenario(OrderingScenario primaryScenario, OrderingScenario secondaryScenario,
+            OrderingScenario tertiaryScenario)
         {
             OrderExpect result = CombineResult(primaryScenario, secondaryScenario, tertiaryScenario);
 
@@ -177,11 +176,9 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return null;
         }
 
-        private static OrderExpect CombineResult(OrderingScenario primaryScenario,
-            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
+        private static OrderExpect CombineResult(OrderingScenario primaryScenario, OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
         {
-            if (primaryScenario.Result == OrderExpect.DoNotCare ||
-                secondaryScenario.Result == OrderExpect.DoNotCare ||
+            if (primaryScenario.Result == OrderExpect.DoNotCare || secondaryScenario.Result == OrderExpect.DoNotCare ||
                 tertiaryScenario.Result == OrderExpect.DoNotCare)
             {
                 return OrderExpect.DoNotCare;
@@ -194,8 +191,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                     : tertiaryScenario.Result;
         }
 
-        private static ulong CreateBitSequenceFor(OrderingScenario primaryScenario,
-            OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
+        private static ulong CreateBitSequenceFor(OrderingScenario primaryScenario, OrderingScenario secondaryScenario, OrderingScenario tertiaryScenario)
         {
             ulong leftNibble = primaryScenario.Value << (tertiaryScenario.BitCount + secondaryScenario.BitCount);
             ulong middleNibble = secondaryScenario.Value << tertiaryScenario.BitCount;
@@ -216,30 +212,26 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             bool yFinishTimeIsGreater = scenario[10];
 
             // Two competitors can never both have the same input greater than the other.
-            if ((xPenaltyTimeIsGreater && yPenaltyTimeIsGreater) ||
-                (xOverrunTimeIsGreater && yOverrunTimeIsGreater) ||
+            if ((xPenaltyTimeIsGreater && yPenaltyTimeIsGreater) || (xOverrunTimeIsGreater && yOverrunTimeIsGreater) ||
                 (xFinishTimeIsGreater && yFinishTimeIsGreater))
             {
                 return true;
             }
 
             // An unfinished competitor has finish time 0, so it cannot have a higher finish time.
-            if ((!yHasFinished && yFinishTimeIsGreater) ||
-                (!xHasFinished && xFinishTimeIsGreater))
+            if ((!yHasFinished && yFinishTimeIsGreater) || (!xHasFinished && xFinishTimeIsGreater))
             {
                 return true;
             }
 
             // An unfinished competitor has overrun time 0, so it cannot have a higher overrun time.
-            if ((!yHasFinished && yOverrunTimeIsGreater) ||
-                (!xHasFinished && xOverrunTimeIsGreater))
+            if ((!yHasFinished && yOverrunTimeIsGreater) || (!xHasFinished && xOverrunTimeIsGreater))
             {
                 return true;
             }
 
             // An unfinished competitor has penalty time 0, so it cannot have a higher penalty time.
-            if ((!yHasFinished && yPenaltyTimeIsGreater) ||
-                (!xHasFinished && xPenaltyTimeIsGreater))
+            if ((!yHasFinished && yPenaltyTimeIsGreater) || (!xHasFinished && xPenaltyTimeIsGreater))
             {
                 return true;
             }
@@ -254,8 +246,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                 return true;
             }
 
-            if ((xFinishTimeIsGreater && yOverrunTimeIsGreater) ||
-                (yFinishTimeIsGreater && xOverrunTimeIsGreater))
+            if ((xFinishTimeIsGreater && yOverrunTimeIsGreater) || (yFinishTimeIsGreater && xOverrunTimeIsGreater))
             {
                 // Because StandardCourseTime is a constant, greater finish time implies 
                 // greater overrun time (or same when zero; lower is not possible).
@@ -265,9 +256,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return false;
         }
 
-        private static CompetitionRunResult CreateCompetitorFor(string name, bool hasFinished,
-            bool isEliminated, bool otherHasFinished, bool penaltyTimeIsGreater, bool overrunTimeIsGreater,
-            bool otherPenaltyTimeIsGreater, bool otherOverrunTimeIsGreater, bool finishTimeIsGreater,
+        private static CompetitionRunResult CreateCompetitorFor(string name, bool hasFinished, bool isEliminated, bool otherHasFinished,
+            bool penaltyTimeIsGreater, bool overrunTimeIsGreater, bool otherPenaltyTimeIsGreater, bool otherOverrunTimeIsGreater, bool finishTimeIsGreater,
             bool competitorNumberIsGreater, bool otherFinishTimeIsGreater, bool otherCompetitorNumberIsGreater)
         {
             int competitorNumber = !competitorNumberIsGreater && !otherCompetitorNumberIsGreater
@@ -326,16 +316,15 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
                     finishTimeAbsolute += StandardCourseTime;
                 }
 
-                result = result.ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
-                        .At(startTime).Build())
-                    .ChangeFinishTime(new RecordedTimeBuilder()
-                        .At(finishTimeAbsolute).Build()));
+                result = result
+                    .ChangeTimings(new CompetitionRunTimings(new RecordedTimeBuilder()
+                            .At(startTime).Build())
+                        .ChangeFinishTime(new RecordedTimeBuilder()
+                            .At(finishTimeAbsolute).Build()));
 
                 TimeSpan finishTimeElapsed = finishTimeAbsolute - startTime;
 
-                TimeSpan actualOverrunTime = finishTimeElapsed > StandardCourseTime
-                    ? finishTimeElapsed - StandardCourseTime
-                    : TimeSpan.Zero;
+                TimeSpan actualOverrunTime = finishTimeElapsed > StandardCourseTime ? finishTimeElapsed - StandardCourseTime : TimeSpan.Zero;
 
                 int fr = (int)(penaltyTime - actualOverrunTime).TotalSeconds;
                 int refusals = GetRefusalsFor(fr, isEliminated);
@@ -370,8 +359,8 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             return result < 0 ? OrderExpect.WinnerIsX : result > 0 ? OrderExpect.WinnerIsY : OrderExpect.IsEven;
         }
 
-        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor,
-            CompetitionRunResult yCompetitor, OrderingScenario scenario, CompetitionClassModel model)
+        private static void AssertCompetitorsAreCompatibleWithProposedScenario(CompetitionRunResult xCompetitor, CompetitionRunResult yCompetitor,
+            OrderingScenario scenario, CompetitionClassModel model)
         {
             var xCalculator = new CompetitorAssessmentCalculator(xCompetitor, model);
             var yCalculator = new CompetitorAssessmentCalculator(yCompetitor, model);
@@ -491,8 +480,7 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
         private sealed class FakeCompetitionRunResult : CompetitionRunResult
         {
             public FakeCompetitionRunResult(CompetitionRunResult source, int fakeFaultCount)
-                : base(source.Competitor, source.Timings, fakeFaultCount, source.RefusalCount, source.IsEliminated,
-                    source.Placement)
+                : base(source.Competitor, source.Timings, fakeFaultCount, source.RefusalCount, source.IsEliminated, source.Placement)
             {
             }
         }

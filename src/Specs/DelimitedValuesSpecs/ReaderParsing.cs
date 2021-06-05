@@ -18,8 +18,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
     [TestFixture]
     public sealed class ReaderParsing
     {
-        private static readonly string DefaultTextQualifier =
-            new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
+        private static readonly string DefaultTextQualifier = new DelimitedValuesReaderSettings().TextQualifier.ToString(CultureInfo.InvariantCulture);
 
         [Test]
         public void When_source_is_empty_it_should_fail()
@@ -169,8 +168,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         }
 
         [Test]
-        public void
-            When_no_field_separator_is_specified_it_must_give_semicolon_precedence_over_comma_during_auto_detection()
+        public void When_no_field_separator_is_specified_it_must_give_semicolon_precedence_over_comma_during_auto_detection()
         {
             // Arrange
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
@@ -204,8 +202,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Action action = () => reader.Take(1).ToArray();
 
             // Assert
-            action.Should().ThrowExactly<DelimitedValuesParseException>()
-                .WithMessage("Text qualifier must be the first non-whitespace character of a cell.");
+            action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Text qualifier must be the first non-whitespace character of a cell.");
         }
 
         [Test]
@@ -276,9 +273,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string cellValue = "A \"nice\" day...";
 
-            string escaped = DefaultTextQualifier +
-                cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) +
-                DefaultTextQualifier;
+            string escaped = DefaultTextQualifier + cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) + DefaultTextQualifier;
 
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
@@ -300,9 +295,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string cellValue = "\"A nice day...\"";
 
-            string escaped = DefaultTextQualifier +
-                cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) +
-                DefaultTextQualifier;
+            string escaped = DefaultTextQualifier + cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) + DefaultTextQualifier;
 
             DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
