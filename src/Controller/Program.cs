@@ -33,6 +33,7 @@ namespace DogAgilityCompetition.Controller
 
             using (SystemPowerManagementProvider.InStateDisabled)
             {
+                Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new MainForm());
