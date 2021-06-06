@@ -45,14 +45,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.devicesGrid.IsConnected = false;
             this.devicesGrid.Location = new System.Drawing.Point(12, 12);
             this.devicesGrid.Name = "devicesGrid";
-            this.devicesGrid.Size = new System.Drawing.Size(857, 335);
+            this.devicesGrid.Size = new System.Drawing.Size(907, 335);
             this.devicesGrid.TabIndex = 0;
             // 
             // closeButton
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(794, 353);
+            this.closeButton.Location = new System.Drawing.Point(844, 353);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 1;
@@ -62,10 +62,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // NetworkSetupForm
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(881, 388);
+            this.ClientSize = new System.Drawing.Size(931, 388);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.devicesGrid);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
