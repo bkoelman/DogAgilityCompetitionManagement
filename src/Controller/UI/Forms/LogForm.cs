@@ -112,7 +112,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             Clipboard.SetText(logTextBox.Text);
         }
 
-        private void ClearLog_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+        private void ClearLogLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
             logTextBox.Text = string.Empty;
         }

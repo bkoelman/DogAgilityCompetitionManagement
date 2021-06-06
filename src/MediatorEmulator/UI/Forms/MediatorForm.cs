@@ -122,6 +122,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
                 Version version = settings.ProtocolVersionOrDefault;
                 versionLinkLabel.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
+
+                // When the links are disabled, their text gets cut off. But tracked at: https://github.com/dotnet/winforms/issues/3780
             }
             finally
             {

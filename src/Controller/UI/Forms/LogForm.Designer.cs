@@ -36,9 +36,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.logPanel = new System.Windows.Forms.Panel();
             this.copyLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.freezeLogTextBox = new System.Windows.Forms.CheckBox();
-            this.packetOutputPulsingLed = new LedBulb();
+            this.packetOutputPulsingLed = new DogAgilityCompetition.WinForms.Controls.LedBulb();
             this.label5 = new System.Windows.Forms.Label();
-            this.packetInputPulsingLed = new LedBulb();
+            this.packetInputPulsingLed = new DogAgilityCompetition.WinForms.Controls.LedBulb();
             this.label4 = new System.Windows.Forms.Label();
             this.hideLockSleepCheckBox = new System.Windows.Forms.CheckBox();
             this.packetsRadioButton = new System.Windows.Forms.RadioButton();
@@ -46,7 +46,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.allRadioButton = new System.Windows.Forms.RadioButton();
             this.nonNetworkRadioButton = new System.Windows.Forms.RadioButton();
             this.networkRadioButton = new System.Windows.Forms.RadioButton();
-            this.clearLogLink = new System.Windows.Forms.LinkLabel();
+            this.clearLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.logPanel.SuspendLayout();
             this.SuspendLayout();
@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.logPanel.Controls.Add(this.allRadioButton);
             this.logPanel.Controls.Add(this.nonNetworkRadioButton);
             this.logPanel.Controls.Add(this.networkRadioButton);
-            this.logPanel.Controls.Add(this.clearLogLink);
+            this.logPanel.Controls.Add(this.clearLogLinkLabel);
             this.logPanel.Controls.Add(this.logTextBox);
             this.logPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logPanel.Location = new System.Drawing.Point(0, 0);
@@ -78,7 +78,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             this.copyLogLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.copyLogLinkLabel.AutoSize = true;
-            this.copyLogLinkLabel.Location = new System.Drawing.Point(848, 5);
+            this.copyLogLinkLabel.Location = new System.Drawing.Point(829, 5);
             this.copyLogLinkLabel.Name = "copyLogLinkLabel";
             this.copyLogLinkLabel.Size = new System.Drawing.Size(89, 15);
             this.copyLogLinkLabel.TabIndex = 11;
@@ -204,24 +204,24 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.networkRadioButton.UseVisualStyleBackColor = true;
             this.networkRadioButton.CheckedChanged += new System.EventHandler(this.NetworkRadioButton_CheckedChanged);
             // 
-            // clearLogLink
+            // clearLogLinkLabel
             // 
-            this.clearLogLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearLogLink.AutoSize = true;
-            this.clearLogLink.Location = new System.Drawing.Point(943, 5);
-            this.clearLogLink.Name = "clearLogLink";
-            this.clearLogLink.Size = new System.Drawing.Size(48, 15);
-            this.clearLogLink.TabIndex = 12;
-            this.clearLogLink.TabStop = true;
-            this.clearLogLink.Text = "Clear log";
-            this.clearLogLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ClearLog_LinkClicked);
+            this.clearLogLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearLogLinkLabel.AutoSize = true;
+            this.clearLogLinkLabel.Location = new System.Drawing.Point(937, 5);
+            this.clearLogLinkLabel.Name = "clearLogLinkLabel";
+            this.clearLogLinkLabel.Size = new System.Drawing.Size(48, 15);
+            this.clearLogLinkLabel.TabIndex = 12;
+            this.clearLogLinkLabel.TabStop = true;
+            this.clearLogLinkLabel.Text = "Clear log";
+            this.clearLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ClearLogLinkLabel_LinkClicked);
             // 
             // logTextBox
             // 
             this.logTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.logTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logTextBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.logTextBox.Location = new System.Drawing.Point(6, 26);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
@@ -233,7 +233,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             // LogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(996, 236);
             this.Controls.Add(this.logPanel);
@@ -265,7 +264,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private RadioButton allRadioButton;
         private RadioButton nonNetworkRadioButton;
         private RadioButton networkRadioButton;
-        private LinkLabel clearLogLink;
+        private LinkLabel clearLogLinkLabel;
         private TextBox logTextBox;
     }
 }
