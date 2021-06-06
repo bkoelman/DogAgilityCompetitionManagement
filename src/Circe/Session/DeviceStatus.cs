@@ -132,15 +132,15 @@ namespace DogAgilityCompetition.Circe.Session
 
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => DeviceAddress, () => DeviceAddress);
-                formatter.Append(() => IsInNetwork, () => IsInNetwork);
-                formatter.Append(() => Capabilities, () => Capabilities);
-                formatter.Append(() => Roles, () => Roles);
-                formatter.Append(() => SignalStrength, () => SignalStrength);
-                formatter.Append(() => BatteryStatus, () => BatteryStatus);
-                formatter.Append(() => IsAligned, () => IsAligned);
-                formatter.Append(() => ClockSynchronization, () => ClockSynchronization);
-                formatter.Append(() => HasVersionMismatch, () => HasVersionMismatch);
+                formatter.Append(DeviceAddress, nameof(DeviceAddress));
+                formatter.Append(IsInNetwork, nameof(IsInNetwork));
+                formatter.Append(Capabilities, nameof(Capabilities));
+                formatter.Append(Roles, nameof(Roles));
+                formatter.Append(SignalStrength, nameof(SignalStrength));
+                formatter.Append(BatteryStatus, nameof(BatteryStatus));
+                formatter.Append(IsAligned, nameof(IsAligned));
+                formatter.Append(ClockSynchronization, nameof(ClockSynchronization));
+                formatter.Append(HasVersionMismatch, nameof(HasVersionMismatch));
             }
 
             return textBuilder.ToString();

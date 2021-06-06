@@ -48,32 +48,15 @@ namespace DogAgilityCompetition.Circe.Controller
 
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                int? tempCurrentCompetitorNumber = CurrentCompetitorNumber;
-                formatter.Append(() => tempCurrentCompetitorNumber, () => tempCurrentCompetitorNumber);
-
-                int? tempNextCompetitorNumber = NextCompetitorNumber;
-                formatter.Append(() => tempNextCompetitorNumber, () => tempNextCompetitorNumber);
-
-                bool tempPrimaryTimerIsActive = StartPrimaryTimer;
-                formatter.Append(() => tempPrimaryTimerIsActive, () => tempPrimaryTimerIsActive);
-
-                TimeSpan? tempPrimaryTimerValue = PrimaryTimerValue;
-                formatter.Append(() => tempPrimaryTimerValue, () => tempPrimaryTimerValue);
-
-                TimeSpan? tempSecondaryTimerValue = SecondaryTimerValue;
-                formatter.Append(() => tempSecondaryTimerValue, () => tempSecondaryTimerValue);
-
-                int? tempCurrentFaultCount = CurrentFaultCount;
-                formatter.Append(() => tempCurrentFaultCount, () => tempCurrentFaultCount);
-
-                int? tempCurrentRefusalCount = CurrentRefusalCount;
-                formatter.Append(() => tempCurrentRefusalCount, () => tempCurrentRefusalCount);
-
-                bool? tempCurrentIsEliminated = CurrentIsEliminated;
-                formatter.Append(() => tempCurrentIsEliminated, () => tempCurrentIsEliminated);
-
-                int? tempPreviousPlacement = PreviousPlacement;
-                formatter.Append(() => tempPreviousPlacement, () => tempPreviousPlacement);
+                formatter.Append(CurrentCompetitorNumber, nameof(CurrentCompetitorNumber));
+                formatter.Append(NextCompetitorNumber, nameof(NextCompetitorNumber));
+                formatter.Append(StartPrimaryTimer, nameof(StartPrimaryTimer));
+                formatter.Append(PrimaryTimerValue, nameof(PrimaryTimerValue));
+                formatter.Append(SecondaryTimerValue, nameof(SecondaryTimerValue));
+                formatter.Append(CurrentFaultCount, nameof(CurrentFaultCount));
+                formatter.Append(CurrentRefusalCount, nameof(CurrentRefusalCount));
+                formatter.Append(CurrentIsEliminated, nameof(CurrentIsEliminated));
+                formatter.Append(PreviousPlacement, nameof(PreviousPlacement));
             }
 
             return textBuilder.ToString();

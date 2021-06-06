@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
+using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Mediator
 {
@@ -72,23 +72,22 @@ namespace DogAgilityCompetition.Circe.Mediator
                     formatter.AppendText(previous.IsInNetwork ? "left network" : "joined network");
                 }
 
-                formatter.AppendText(FormatFlagsEnumChanges(previous.Capabilities, current.Capabilities, () => current.Capabilities));
-                formatter.AppendText(FormatFlagsEnumChanges(previous.Roles, current.Roles, () => current.Roles));
+                formatter.AppendText(FormatFlagsEnumChanges(previous.Capabilities, current.Capabilities, nameof(current.Capabilities)));
+                formatter.AppendText(FormatFlagsEnumChanges(previous.Roles, current.Roles, nameof(current.Roles)));
+                formatter.AppendText(FormatSimplePropertyChange(previous.SignalStrength, current.SignalStrength, nameof(current.SignalStrength)));
+                formatter.AppendText(FormatSimplePropertyChange(previous.BatteryStatus, current.BatteryStatus, nameof(current.BatteryStatus)));
+                formatter.AppendText(FormatSimplePropertyChange(previous.IsAligned, current.IsAligned, nameof(current.IsAligned)));
 
-                formatter.AppendText(FormatSimplePropertyChange(previous.SignalStrength, current.SignalStrength, () => current.SignalStrength));
-                formatter.AppendText(FormatSimplePropertyChange(previous.BatteryStatus, current.BatteryStatus, () => current.BatteryStatus));
-                formatter.AppendText(FormatSimplePropertyChange(previous.IsAligned, current.IsAligned, () => current.IsAligned));
+                formatter.AppendText(FormatSimplePropertyChange(previous.ClockSynchronization, current.ClockSynchronization,
+                    nameof(current.ClockSynchronization)));
 
-                formatter.AppendText(
-                    FormatSimplePropertyChange(previous.ClockSynchronization, current.ClockSynchronization, () => current.ClockSynchronization));
-
-                formatter.AppendText(FormatSimplePropertyChange(previous.HasVersionMismatch, current.HasVersionMismatch, () => current.HasVersionMismatch));
+                formatter.AppendText(FormatSimplePropertyChange(previous.HasVersionMismatch, current.HasVersionMismatch, nameof(current.HasVersionMismatch)));
             }
 
             return textBuilder.ToString();
         }
 
-        private static string? FormatFlagsEnumChanges<TEnum>(TEnum previousEnum, TEnum currentEnum, Expression<Func<object>> getNameExpression)
+        private static string? FormatFlagsEnumChanges<TEnum>(TEnum previousEnum, TEnum currentEnum, [InvokerParameterName] string name)
             where TEnum : struct
         {
             if (!EqualityComparer<TEnum>.Default.Equals(previousEnum, currentEnum))
@@ -96,7 +95,6 @@ namespace DogAgilityCompetition.Circe.Mediator
                 var previous = (Enum)(object)previousEnum;
                 var current = (Enum)(object)currentEnum;
 
-                string? name = getNameExpression.GetExpressionName();
                 var textBuilder = new StringBuilder();
 
                 using (var formatter = new ObjectFormatter(textBuilder, name))
@@ -120,9 +118,8 @@ namespace DogAgilityCompetition.Circe.Mediator
             return null;
         }
 
-        private static string? FormatSimplePropertyChange<T>(T? previous, T? current, Expression<Func<object?>> getNameExpression)
+        private static string? FormatSimplePropertyChange<T>(T? previous, T? current, [InvokerParameterName] string name)
         {
-            string? name = getNameExpression.GetExpressionName();
             return !EqualityComparer<T>.Default.Equals(previous, current) ? $"{name} {ValueOrNullText(previous)} -> {ValueOrNullText(current)}" : null;
         }
 

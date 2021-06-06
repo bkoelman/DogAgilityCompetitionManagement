@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -29,43 +29,9 @@ namespace DogAgilityCompetition.Circe
             this.outerInstance = outerInstance;
         }
 
-        public void Append<T>(GetReferenceCallback<T> getValue, Expression<Func<object?>> getValueExpression)
-            where T : class
+        public void Append<T>(T? value, [InvokerParameterName] string name)
         {
-            Guard.NotNull(getValue, nameof(getValue));
-            Guard.NotNull(getValueExpression, nameof(getValueExpression));
-
-            // Note: Caller needs to pass same expression twice for better performance.
-
-            T? source = getValue();
-            string? name = getValueExpression.GetExpressionName();
-            AppendToBuilder(source, name);
-        }
-
-        public void Append<T>(GetValueCallback<T> getValue, Expression<Func<object>> getValueExpression)
-            where T : struct
-        {
-            Guard.NotNull(getValue, nameof(getValue));
-            Guard.NotNull(getValueExpression, nameof(getValueExpression));
-
-            // Note: Caller needs to pass same expression twice for better performance.
-
-            T source = getValue();
-            string? name = getValueExpression.GetExpressionName();
-            AppendToBuilder(source, name);
-        }
-
-        public void Append<T>(GetOptionalValueCallback<T> getValue, Expression<Func<object?>> getValueExpression)
-            where T : struct
-        {
-            Guard.NotNull(getValue, nameof(getValue));
-            Guard.NotNull(getValueExpression, nameof(getValueExpression));
-
-            // Note: Caller needs to pass same expression twice for better performance.
-
-            T? source = getValue();
-            string? name = getValueExpression.GetExpressionName();
-            AppendToBuilder(source, name);
+            AppendToBuilder(value, name);
         }
 
         public void AppendText(string? text)

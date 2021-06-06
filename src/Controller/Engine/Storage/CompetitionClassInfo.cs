@@ -102,22 +102,22 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
 
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => Grade, () => Grade);
-                formatter.Append(() => Type, () => Type);
-                formatter.Append(() => InspectorName, () => InspectorName);
-                formatter.Append(() => RingName, () => RingName);
+                formatter.Append(Grade, nameof(Grade));
+                formatter.Append(Type, nameof(Type));
+                formatter.Append(InspectorName, nameof(InspectorName));
+                formatter.Append(RingName, nameof(RingName));
 
                 if (StandardCourseTime != null)
                 {
-                    formatter.Append(() => StandardCourseTime.Value.TotalSeconds, () => StandardCourseTime);
+                    formatter.Append(StandardCourseTime.Value.TotalSeconds, nameof(StandardCourseTime));
                 }
 
                 if (MaximumCourseTime != null)
                 {
-                    formatter.Append(() => MaximumCourseTime.Value.TotalSeconds, () => MaximumCourseTime);
+                    formatter.Append(MaximumCourseTime.Value.TotalSeconds, nameof(MaximumCourseTime));
                 }
 
-                formatter.Append(() => TrackLengthInMeters, () => TrackLengthInMeters);
+                formatter.Append(TrackLengthInMeters, nameof(TrackLengthInMeters));
             }
 
             return textBuilder.ToString();

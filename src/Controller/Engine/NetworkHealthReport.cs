@@ -112,14 +112,14 @@ namespace DogAgilityCompetition.Controller.Engine
 
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => IsConnected, () => IsConnected);
-                formatter.Append(() => HasProtocolVersionMismatch, () => HasProtocolVersionMismatch);
-                formatter.Append(() => MediatorStatus, () => MediatorStatus);
-                formatter.Append(() => MisalignedSensors.Count, () => MisalignedSensors);
-                formatter.Append(() => UnsyncedSensors.Count, () => UnsyncedSensors);
-                formatter.Append(() => VersionMismatchingSensors.Count, () => VersionMismatchingSensors);
-                formatter.Append(() => RunComposition == null ? "null" : "...", () => RunComposition);
-                formatter.Append(GetClassComplianceString, () => ClassCompliance);
+                formatter.Append(IsConnected, nameof(IsConnected));
+                formatter.Append(HasProtocolVersionMismatch, nameof(HasProtocolVersionMismatch));
+                formatter.Append(MediatorStatus, nameof(MediatorStatus));
+                formatter.Append(MisalignedSensors.Count, nameof(MisalignedSensors));
+                formatter.Append(UnsyncedSensors.Count, nameof(UnsyncedSensors));
+                formatter.Append(VersionMismatchingSensors.Count, nameof(VersionMismatchingSensors));
+                formatter.Append(RunComposition == null ? "null" : "...", nameof(RunComposition));
+                formatter.Append(GetClassComplianceString(), nameof(ClassCompliance));
             }
 
             return textBuilder.ToString();

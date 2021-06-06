@@ -34,9 +34,9 @@ namespace DogAgilityCompetition.Circe.Session
 
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => DeviceAddress, () => DeviceAddress);
-                formatter.Append(() => InputKeys, () => InputKeys);
-                formatter.Append(() => SensorTime, () => SensorTime);
+                formatter.Append(DeviceAddress, nameof(DeviceAddress));
+                formatter.Append(InputKeys, nameof(InputKeys));
+                formatter.Append(SensorTime, nameof(SensorTime));
             }
 
             return textBuilder.ToString();
