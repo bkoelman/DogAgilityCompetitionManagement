@@ -275,7 +275,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.competitionStateOverview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.competitionStateOverview.Location = new System.Drawing.Point(6, 13);
+            this.competitionStateOverview.Location = new System.Drawing.Point(6, 15);
             this.competitionStateOverview.Name = "competitionStateOverview";
             this.competitionStateOverview.Size = new System.Drawing.Size(713, 188);
             this.competitionStateOverview.TabIndex = 0;

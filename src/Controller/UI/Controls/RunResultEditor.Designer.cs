@@ -85,7 +85,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.pendingChangeLabel.ForeColor = System.Drawing.Color.DarkRed;
             this.pendingChangeLabel.Location = new System.Drawing.Point(637, 42);
             this.pendingChangeLabel.Name = "pendingChangeLabel";
-            this.pendingChangeLabel.Size = new System.Drawing.Size(12, 13);
+            this.pendingChangeLabel.Size = new System.Drawing.Size(12, 15);
             this.pendingChangeLabel.TabIndex = 8;
             this.pendingChangeLabel.Text = "*";
             this.pendingChangeLabel.Visible = false;
@@ -96,7 +96,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.messageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.messageLabel.Location = new System.Drawing.Point(612, 16);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(199, 13);
+            this.messageLabel.Size = new System.Drawing.Size(199, 15);
             this.messageLabel.TabIndex = 7;
             this.messageLabel.Text = "(message)";
             this.messageLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -162,7 +162,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(476, 23);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.Size = new System.Drawing.Size(48, 15);
             this.label5.TabIndex = 4;
             this.label5.Text = "&Refusals";
             // 
@@ -172,7 +172,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(396, 23);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.Size = new System.Drawing.Size(35, 15);
             this.label4.TabIndex = 2;
             this.label4.Text = "&Faults";
             // 
@@ -193,7 +193,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(268, 23);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(34, 13);
+            this.label3.Size = new System.Drawing.Size(34, 15);
             this.label3.TabIndex = 0;
             this.label3.Text = "Finis&h";
             // 
@@ -212,7 +212,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
+            this.label2.Size = new System.Drawing.Size(57, 15);
             this.label2.TabIndex = 11;
             this.label2.Text = "Competitor";
             // 

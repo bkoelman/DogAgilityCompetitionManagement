@@ -111,7 +111,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(6, 73);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.Size = new System.Drawing.Size(49, 15);
             this.label3.TabIndex = 4;
             this.label3.Text = "Release:";
             // 
@@ -120,7 +120,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
+            this.label2.Size = new System.Drawing.Size(36, 15);
             this.label2.TabIndex = 2;
             this.label2.Text = "Minor:";
             // 
@@ -129,7 +129,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 21);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.Size = new System.Drawing.Size(36, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Major:";
             // 

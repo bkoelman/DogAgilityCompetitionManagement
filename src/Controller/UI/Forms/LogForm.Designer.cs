@@ -80,7 +80,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.copyLogLinkLabel.AutoSize = true;
             this.copyLogLinkLabel.Location = new System.Drawing.Point(848, 5);
             this.copyLogLinkLabel.Name = "copyLogLinkLabel";
-            this.copyLogLinkLabel.Size = new System.Drawing.Size(89, 13);
+            this.copyLogLinkLabel.Size = new System.Drawing.Size(89, 15);
             this.copyLogLinkLabel.TabIndex = 11;
             this.copyLogLinkLabel.TabStop = true;
             this.copyLogLinkLabel.Text = "Copy to clipboard";
@@ -113,7 +113,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(699, 5);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.Size = new System.Drawing.Size(30, 15);
             this.label5.TabIndex = 10;
             this.label5.Text = "OUT";
             // 
@@ -133,7 +133,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(635, 5);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(18, 13);
+            this.label4.Size = new System.Drawing.Size(18, 15);
             this.label4.TabIndex = 8;
             this.label4.Text = "IN";
             // 
@@ -165,7 +165,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 5);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(50, 13);
+            this.label3.Size = new System.Drawing.Size(50, 15);
             this.label3.TabIndex = 0;
             this.label3.Text = "Log filter:";
             // 
@@ -210,7 +210,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.clearLogLink.AutoSize = true;
             this.clearLogLink.Location = new System.Drawing.Point(943, 5);
             this.clearLogLink.Name = "clearLogLink";
-            this.clearLogLink.Size = new System.Drawing.Size(48, 13);
+            this.clearLogLink.Size = new System.Drawing.Size(48, 15);
             this.clearLogLink.TabIndex = 12;
             this.clearLogLink.TabStop = true;
             this.clearLogLink.Text = "Clear log";
