@@ -231,12 +231,18 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             private static string FormatPacket(byte[] packet)
             {
-                string text = new(Encoding.ASCII.GetChars(packet));
-                text = text.Replace(StartOfText, "<STX>").Replace(EndOfText, "<ETX>").Replace(Tab, "<TAB>");
+                // @formatter:keep_existing_linebreaks true
+
+                string text = new string(Encoding.ASCII.GetChars(packet))
+                    .Replace(StartOfText, "<STX>", StringComparison.Ordinal)
+                    .Replace(EndOfText, "<ETX>", StringComparison.Ordinal)
+                    .Replace(Tab, "<TAB>", StringComparison.Ordinal);
+
+                // @formatter:keep_existing_linebreaks restore
 
                 if (text.EndsWith("<ETX>", StringComparison.Ordinal) && !text.EndsWith("<CC><ETX>", StringComparison.Ordinal))
                 {
-                    text = text.Replace("<ETX>", "<CC><ETX>");
+                    text = text.Replace("<ETX>", "<CC><ETX>", StringComparison.Ordinal);
                 }
 
                 return text;

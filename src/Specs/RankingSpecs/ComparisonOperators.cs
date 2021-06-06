@@ -23,12 +23,10 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             (!(w1 >= w2)).Should().BeTrue();
             (!(w2 <= w1)).Should().BeTrue();
 
-            // ReSharper disable ExpressionIsAlwaysNull
             (w1 >= w0).Should().BeTrue();
             (w0 <= w1).Should().BeTrue();
             (!(w1 <= w0)).Should().BeTrue();
             (!(w0 >= w1)).Should().BeTrue();
-            // ReSharper restore ExpressionIsAlwaysNull
 
 #pragma warning disable CS1718 // Comparison made to same variable
             // ReSharper disable EqualExpressionComparison
@@ -37,12 +35,10 @@ namespace DogAgilityCompetition.Specs.RankingSpecs
             (!(w1 > w1)).Should().BeTrue();
             (!(w1 < w1)).Should().BeTrue();
 
-            // ReSharper disable ExpressionIsAlwaysNull
             (w0 <= w0).Should().BeTrue();
             (w0 >= w0).Should().BeTrue();
             (!(w0 > w0)).Should().BeTrue();
             (!(w0 < w0)).Should().BeTrue();
-            // ReSharper restore ExpressionIsAlwaysNull
             // ReSharper restore EqualExpressionComparison
 #pragma warning restore CS1718 // Comparison made to same variable
         }

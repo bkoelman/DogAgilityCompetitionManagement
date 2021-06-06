@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -113,17 +114,17 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                 throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be in format XXX.YYY.ZZZ.");
             }
 
-            int majorNumber = int.Parse(match.Groups["Major"].Value);
-            int minorNumber = int.Parse(match.Groups["Minor"].Value);
-            int releaseNumber = int.Parse(match.Groups["Release"].Value);
+            int majorNumber = int.Parse(match.Groups["Major"].Value, CultureInfo.InvariantCulture);
+            int minorNumber = int.Parse(match.Groups["Minor"].Value, CultureInfo.InvariantCulture);
+            int releaseNumber = int.Parse(match.Groups["Release"].Value, CultureInfo.InvariantCulture);
             Value = new Version(majorNumber, minorNumber, releaseNumber);
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
         public override string ToString()

@@ -35,7 +35,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         {
             get
             {
-                string? parameterValue = originatingAddressParameter.GetValueOrNull();
+                string? parameterValue = originatingAddressParameter.Value;
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
             set => originatingAddressParameter.Value = value?.Value;

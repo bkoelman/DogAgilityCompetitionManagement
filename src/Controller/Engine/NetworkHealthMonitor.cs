@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using DogAgilityCompetition.Circe;
@@ -122,6 +123,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
+        [SuppressMessage("Design", "CA1024:Use properties where appropriate")]
         public NetworkHealthReport GetLatest()
         {
             return previousReport.Value;

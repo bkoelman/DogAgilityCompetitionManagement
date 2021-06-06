@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 if (textBuilder.Length > 0)
                 {
-                    textBuilder.Append("-");
+                    textBuilder.Append('-');
                 }
 
                 textBuilder.Append(safeValue);

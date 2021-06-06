@@ -23,7 +23,12 @@ namespace DogAgilityCompetition.Circe.Mediator
         private readonly FreshEnum<MediatorConnectionState> connectionState = new(MediatorConnectionState.Disconnected);
         private readonly FreshObjectReference<string?> connectedComPort = new(null);
         private readonly MediatorIncomingOperationDispatcher operationDispatcher;
+
+#pragma warning disable CA2213 // Disposable fields should be disposed
+        // Justification: This member is disposed by SenderLoop() instead of Dispose().
         private readonly BlockingCollection<Operation> sendQueue = new();
+#pragma warning restore CA2213 // Disposable fields should be disposed
+
         private readonly ManualResetEventSlim powerOffRequestedWaitHandle = new(false);
         private readonly ManualResetEventSlim powerOffCompletedWaitHandle = new(false);
         private readonly FreshObjectReference<Version> protocolVersion = new(KeepAliveOperation.CurrentProtocolVersion);
@@ -229,6 +234,8 @@ namespace DogAgilityCompetition.Circe.Mediator
                         ChangeConnectionStateTo(MediatorConnectionState.Disconnected, connectedComPort.Value);
 
                         powerOffCompletedWaitHandle.Set();
+                        sendQueue.Dispose();
+
                         Log.Debug("Leaving SenderLoop.");
                         return;
                     }

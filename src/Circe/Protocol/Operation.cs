@@ -78,7 +78,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             textBuilder.Append(GetType().Name);
             textBuilder.Append(" (");
             textBuilder.Append(Code);
-            textBuilder.Append(")");
+            textBuilder.Append(')');
 
             if (Parameters.Count > 0)
             {
@@ -102,7 +102,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                     }
                 }
 
-                textBuilder.Append("]");
+                textBuilder.Append(']');
             }
 
             return textBuilder.ToString();

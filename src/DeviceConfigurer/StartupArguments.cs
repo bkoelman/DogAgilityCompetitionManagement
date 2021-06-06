@@ -109,7 +109,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 }
 
                 var capability = (DeviceCapabilities)value;
-                textBuilder.Append(" ");
+                textBuilder.Append(' ');
                 textBuilder.Append(capability);
             }
 

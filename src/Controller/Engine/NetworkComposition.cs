@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
@@ -48,6 +49,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return rolesPerDevice.ContainsKey(deviceAddress);
         }
 
+        [SuppressMessage("Design", "CA1024:Use properties where appropriate")]
         public IEnumerable<WirelessNetworkAddress> GetDeviceAddresses()
         {
             return rolesPerDevice.Keys;

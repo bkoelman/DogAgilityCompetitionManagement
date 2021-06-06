@@ -14,7 +14,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     public sealed class KeyScenarios
     {
         private static readonly WirelessNetworkAddress Source = new("ABCDEF");
-        private static readonly TimeSpan? NullTime = null;
+        private static readonly TimeSpan? NullTime = null!;
 
         // Note: For an explanation of these scenarios, see file: "\doc\Interpreting numeric input from remote control keys.md"
 

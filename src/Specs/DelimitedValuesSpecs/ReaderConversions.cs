@@ -18,7 +18,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_reading_cell_value_as_nullable_boolean_it_should_succeed()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("A", "B", "C")
                 .WithoutRows()
                 .WithRow(new[]
@@ -47,7 +47,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             var culture = new CultureInfo("nl-NL");
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithCulture(culture))
                 .WithSingleColumnHeader("A")
@@ -70,7 +70,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_reading_cell_value_with_custom_converter_it_should_succeed()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("A")
                 .WithoutRows()
                 .WithRow(new[]

@@ -32,7 +32,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             var formatBuilder = new StringBuilder();
             formatBuilder.Append("{0:");
             formatBuilder.Append(formatterZeroes);
-            formatBuilder.Append("}");
+            formatBuilder.Append('}');
 
             return string.Format(formatBuilder.ToString(), number);
         }

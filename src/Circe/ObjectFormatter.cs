@@ -88,7 +88,7 @@ namespace DogAgilityCompetition.Circe
                 if (!string.IsNullOrEmpty(name))
                 {
                     builder.Append(name);
-                    builder.Append("=");
+                    builder.Append('=');
                 }
 
                 builder.Append(value);
@@ -100,7 +100,7 @@ namespace DogAgilityCompetition.Circe
             if (outerInstance != null)
             {
                 builder.Insert(0, outerInstance.GetType().Name + " (");
-                builder.Append(")");
+                builder.Append(')');
             }
             else if (outerText != null)
             {

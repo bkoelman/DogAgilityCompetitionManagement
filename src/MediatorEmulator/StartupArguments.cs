@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 
@@ -57,7 +58,7 @@ namespace DogAgilityCompetition.MediatorEmulator
                 {
                     transparentOnTop = true;
                 }
-                else if (arg.IndexOf('=') == -1)
+                else if (!arg.Contains('=', StringComparison.Ordinal))
                 {
                     if (path != null)
                     {

@@ -43,13 +43,13 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 
             // @formatter:keep_existing_linebreaks true
 
-            return startTime == null
-                ? null
-                : new CompetitionRunTimings(startTime)
-                    .ChangeIntermediateTime1(RecordedTimeXml.FromXmlObject(source!.IntermediateTime1))
+            return startTime != null && source != null
+                ? new CompetitionRunTimings(startTime)
+                    .ChangeIntermediateTime1(RecordedTimeXml.FromXmlObject(source.IntermediateTime1))
                     .ChangeIntermediateTime2(RecordedTimeXml.FromXmlObject(source.IntermediateTime2))
                     .ChangeIntermediateTime3(RecordedTimeXml.FromXmlObject(source.IntermediateTime3))
-                    .ChangeFinishTime(RecordedTimeXml.FromXmlObject(source.FinishTime));
+                    .ChangeFinishTime(RecordedTimeXml.FromXmlObject(source.FinishTime))
+                : null;
 
             // @formatter:keep_existing_linebreaks restore
         }

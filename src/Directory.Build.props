@@ -4,6 +4,7 @@
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <Version>0.0.1</Version>
     <Nullable>enable</Nullable>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
  </PropertyGroup>
 
@@ -16,5 +17,9 @@
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <OutputPath>$(MSBuildThisFileDirectory)\..\bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 
 </Project>

@@ -58,12 +58,11 @@ namespace DogAgilityCompetition.Controller
         private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             public static extern ExecutionStates SetThreadExecutionState(ExecutionStates flags);
 
             [Flags]
-#pragma warning disable CA2217 // Do not mark Enum with FlagsAttribute
             public enum ExecutionStates : uint
-#pragma warning restore CA2217 // Do not mark Enum with FlagsAttribute
             {
                 SystemRequired = 0x00000001,
                 DisplayRequired = 0x00000002,

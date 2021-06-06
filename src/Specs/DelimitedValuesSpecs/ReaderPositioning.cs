@@ -24,7 +24,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             Func<DelimitedValuesReader> construction = () => new DelimitedValuesReaderBuilder().Build();
 
             // Act
-            DelimitedValuesReader reader = construction();
+            using DelimitedValuesReader reader = construction();
 
             // Assert
             reader.LineNumber.Should().Be(1);
@@ -34,11 +34,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_header_and_first_line_have_been_read_it_should_be_positioned_at_second_line()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder().Build();
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder().Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            reader.First();
+            _ = reader.First();
 
             // Assert
             reader.LineNumber.Should().Be(2);
@@ -52,7 +51,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
             string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(rowWithLineBreak)
@@ -60,8 +59,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            reader.Take(2).ToArray();
+            _ = reader.Take(2).ToArray();
 
             // Assert
             reader.LineNumber.Should().Be(4);
@@ -75,7 +73,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
             string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(rowWithLineBreak)
@@ -83,8 +81,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            reader.Take(2).ToArray();
+            _ = reader.Take(2).ToArray();
 
             // Assert
             reader.LineNumber.Should().Be(4);
@@ -98,7 +95,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
             string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(rowWithLineBreak)
@@ -106,8 +103,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            reader.Take(2).ToArray();
+            _ = reader.Take(2).ToArray();
 
             // Assert
             reader.LineNumber.Should().Be(4);
@@ -117,7 +113,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_source_contains_uneven_number_of_quotes_it_should_report_the_correct_starting_line_number()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(DefaultTextQualifier + "12345")
@@ -128,8 +124,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             try
             {
                 // Act
-                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                reader.SkipWhile(_ => true).ToArray();
+                _ = reader.SkipWhile(_ => true).ToArray();
             }
             catch (DelimitedValuesParseException)
             {

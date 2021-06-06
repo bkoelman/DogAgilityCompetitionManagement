@@ -158,7 +158,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             PropertyInfo? propertyInfo = DataGridView!.GetType().GetProperty("ShowFocusCues", BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo? getMethodInfo = propertyInfo!.GetGetMethod(true);
-            bool showFocusCues = (bool)getMethodInfo!.Invoke(DataGridView, new object[0])!;
+            bool showFocusCues = (bool)getMethodInfo!.Invoke(DataGridView, Array.Empty<object>())!;
             return showFocusCues;
         }
     }

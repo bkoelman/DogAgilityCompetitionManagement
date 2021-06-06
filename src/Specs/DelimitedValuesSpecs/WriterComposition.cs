@@ -104,7 +104,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_unspecified_column_names_are_assigned_a_cell_value_it_should_fail()
         {
             // Arrange
-            DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
+            using DelimitedValuesWriter writer = new DelimitedValuesWriterBuilder()
                 .WithSingleColumnHeader("A")
                 .Build();
 

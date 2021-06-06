@@ -54,7 +54,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         {
             if (SupportsBlink)
             {
-                return Task.Factory.StartNew(Blink, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                return Task.Run(Blink);
             }
 
             return Task.CompletedTask;

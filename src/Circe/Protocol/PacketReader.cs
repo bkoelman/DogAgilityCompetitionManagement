@@ -316,7 +316,7 @@ namespace DogAgilityCompetition.Circe.Protocol
 
                 char[] chars = Encoding.ASCII.GetChars(digits);
                 string numberString = new(chars);
-                return int.Parse(numberString);
+                return int.Parse(numberString, CultureInfo.InvariantCulture);
             }
 
             private byte ConsumeDigit()

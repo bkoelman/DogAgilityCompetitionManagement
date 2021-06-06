@@ -1,4 +1,5 @@
 ﻿using System;
+using DogAgilityCompetition.Circe;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -6,6 +7,8 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public static bool EqualsWithNulls<T>(T? first, T? second, Func<T, T, bool> comparison)
         {
+            Guard.NotNull(comparison, nameof(comparison));
+
             if (ReferenceEquals(first, second))
             {
                 // Both null or same instance.

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
 
@@ -27,6 +28,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <summary>
         /// Required. Gets or sets the data to log.
         /// </summary>
+        [SuppressMessage("Usage", "CA2227:Collection properties should be read only")]
         public IList<byte> LogData
         {
             get => logDataParameter.Value;

@@ -42,13 +42,12 @@ namespace DogAgilityCompetition.Controller
         private static class NativeMethods
         {
             [DllImport("winmm.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool PlaySound([MarshalAs(UnmanagedType.LPWStr)] string? pszSound, UIntPtr hmod, SoundFlags fdwSound);
 
             [Flags]
-#pragma warning disable CA2217 // Do not mark Enum with FlagsAttribute
             public enum SoundFlags
-#pragma warning restore CA2217 // Do not mark Enum with FlagsAttribute
             {
                 /// <summary>
                 /// Play asynchronously.

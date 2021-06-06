@@ -17,10 +17,10 @@ namespace DogAgilityCompetition.Circe
 
         void Debug(object? message, Exception? exception);
 
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
+        [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
         void Error(object? message);
 
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error")]
+        [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
         void Error(object? message, Exception? exception);
 
         void Info(object? message);

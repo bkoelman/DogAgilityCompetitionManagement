@@ -360,7 +360,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private static void AutoCancelTaskAfterTimeout(Task taskToWatch, CancellationTokenSource taskCancelTokenSource)
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -375,7 +375,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 {
                     // Do not handle task errors here, caller should in its continuation.
                 }
-            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            });
         }
 
         private DeviceRowState? GetRowStateForDeviceAddressOrNull(WirelessNetworkAddress deviceAddress)

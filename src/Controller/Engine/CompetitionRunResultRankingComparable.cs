@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using JetBrains.Annotations;
@@ -8,6 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// <summary>
     /// Implementation of sorting competitor run results.
     /// </summary>
+    [SuppressMessage("Design", "CA1036:Override methods on comparable types")]
     public sealed class CompetitionRunResultRankingComparable : IComparable<CompetitionRunResultRankingComparable>
     {
         private const int WinnerIsThis = -1;

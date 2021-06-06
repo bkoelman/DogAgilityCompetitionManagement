@@ -65,7 +65,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
                     {
                         Log.Warn($"Failed to send display update operation from controller: {fieldSet}.", t.Exception);
                     }
-                });
+                }, TaskScheduler.Default);
             }
         }
 

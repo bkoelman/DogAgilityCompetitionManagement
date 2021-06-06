@@ -20,11 +20,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            Action action = () =>
-            {
-                // ReSharper disable once UnusedVariable
-                int dummy = reader.LineNumber;
-            };
+            Action action = () => _ = reader.LineNumber;
 
             // Assert
             action.Should().ThrowExactly<ObjectDisposedException>();
@@ -38,11 +34,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            Action action = () =>
-            {
-                // ReSharper disable once UnusedVariable
-                string dummy = reader.Line;
-            };
+            Action action = () => _ = reader.Line;
 
             // Assert
             action.Should().ThrowExactly<ObjectDisposedException>();
@@ -56,12 +48,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable once ConvertToLambdaExpression
-            Action action = () =>
-            {
-                reader.GetEnumerator();
-            };
+            Action action = () => _ = reader.GetEnumerator();
 
             // Assert
             action.Should().ThrowExactly<ObjectDisposedException>();
@@ -75,12 +62,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable once ConvertToLambdaExpression
-            Action action = () =>
-            {
-                reader.TakeWhile(_ => true).ToArray();
-            };
+            Action action = () => _ = reader.TakeWhile(_ => true).ToArray();
 
             // Assert
             action.Should().ThrowExactly<ObjectDisposedException>();

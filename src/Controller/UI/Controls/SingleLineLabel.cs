@@ -115,7 +115,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             private readonly Label owner;
 
-            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0])!;
+            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, Array.Empty<object>())!;
 
             public bool ShowToolTip
             {
@@ -126,7 +126,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             static Reflected()
             {
-                AnimateMethod = Require(typeof(Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
+                AnimateMethod = Require(typeof(Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null));
 
                 Type layoutUtilsType = Require(typeof(Label).Assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
                 LayoutUtilsDeflateRectMethod = Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
@@ -156,7 +156,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
 
                 CreateTextFormatFlagsMethod =
-                    Require(typeof(Label).GetMethod("CreateTextFormatFlags", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
+                    Require(typeof(Label).GetMethod("CreateTextFormatFlags", BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null));
 
                 TextRendererDisabledTextColorMethod =
                     Require(typeof(TextRenderer).GetMethod("DisabledTextColor", BindingFlags.NonPublic | BindingFlags.Static));
@@ -182,7 +182,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             public void Animate()
             {
-                AnimateMethod.Invoke(owner, new object[0]);
+                AnimateMethod.Invoke(owner, Array.Empty<object>());
             }
 
             public Rectangle LayoutUtilsDeflateRect(Rectangle clientRectangle, Padding padding)
@@ -210,14 +210,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             public StringFormat CreateStringFormat()
             {
-                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, new object[0])!;
+                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, Array.Empty<object>())!;
                 result.FormatFlags |= StringFormatFlags.NoWrap;
                 return result;
             }
 
             public TextFormatFlags CreateTextFormatFlags()
             {
-                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, new object[0])!;
+                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, Array.Empty<object>())!;
                 result &= ~TextFormatFlags.WordBreak;
                 return result;
             }

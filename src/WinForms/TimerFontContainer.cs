@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
@@ -13,6 +14,8 @@ namespace DogAgilityCompetition.WinForms
     /// Loads a TrueType font file from an embedded resource and assigns it to a <see cref="Label" />. This circumvents the need to install the font in
     /// Windows first.
     /// </summary>
+    [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable",
+        Justification = "This registers a callback to the allocated object.")]
     public sealed class TimerFontContainer
     {
         private readonly DisposableComponent<PrivateFontCollection> fontCollectionWrapper;
@@ -52,6 +55,7 @@ namespace DogAgilityCompetition.WinForms
         private static class NativeMethods
         {
             [DllImport("gdi32.dll")]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             public static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
         }
     }

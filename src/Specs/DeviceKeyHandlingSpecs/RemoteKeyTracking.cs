@@ -13,7 +13,7 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
     public sealed class RemoteKeyTracking
     {
         private static readonly WirelessNetworkAddress Source = new("ABCDEF");
-        private static readonly TimeSpan? NullTime = null;
+        private static readonly TimeSpan? NullTime = null!;
 
         [Fact]
         public void When_no_raw_keys_are_included_it_must_raise_event_without_keys()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -13,6 +14,8 @@ namespace DogAgilityCompetition.Circe.Controller
     /// <summary>
     /// Performs collective clock synchronization on a set of wireless devices. Signals when last succeeded clock synchronization happened too long ago.
     /// </summary>
+    [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable",
+        Justification = "Reason for not disposing CancellationTokenSource, see http://blogs.msdn.com/b/pfxteam/archive/2012/03/25/10287435.aspx")]
     public sealed class ClockSynchronizationMonitor
     {
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
@@ -138,9 +141,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     if (!NetworkContainsSynchronizableDevices())
                     {
                         // Only devices without a clock. No need for sync or raise events for clock re-sync.
-                        Task.Factory.StartNew(() => HandleNetworkSynchronizationCompleted(ClockSynchronizationResult.Succeeded), CancellationToken.None,
-                            TaskCreationOptions.None, TaskScheduler.Default);
-
+                        Task.Run(() => HandleNetworkSynchronizationCompleted(ClockSynchronizationResult.Succeeded));
                         return;
                     }
 
@@ -237,7 +238,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     {
                         SyncRecommended?.Invoke(this, EventArgs.Empty);
                     }
-                });
+                }, TaskScheduler.Current);
 
                 Task.Delay(RequireSyncAfter, raiseEventsCancellationTokenSource.Token).ContinueWith(requireTask =>
                 {
@@ -245,7 +246,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     {
                         SyncRequired?.Invoke(this, EventArgs.Empty);
                     }
-                });
+                }, TaskScheduler.Current);
             }
         }
 
@@ -279,7 +280,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
         private static void AutoCancelTaskAfterTimeout(Task taskToWatch, CancellationTokenSource taskCancelTokenSource)
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 try
                 {
@@ -294,7 +295,7 @@ namespace DogAgilityCompetition.Circe.Controller
                 {
                     // Do not handle task errors here, caller should in its continuation.
                 }
-            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            });
         }
 
         private Task<ClockSynchronizationResult> WaitForRepliesAsync(CancellationToken cancellationToken)

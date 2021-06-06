@@ -87,7 +87,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         {
             // ReSharper disable once NonReadonlyMemberInGetHashCode
             // Justification: GetHashCode() is not expected to be called before deserialization has completed.
-            return Value.GetHashCode();
+            return string.GetHashCode(Value, StringComparison.Ordinal);
         }
 
         public static bool operator ==(WirelessNetworkAddress? left, WirelessNetworkAddress? right)

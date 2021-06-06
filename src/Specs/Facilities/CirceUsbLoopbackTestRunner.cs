@@ -92,7 +92,7 @@ namespace DogAgilityCompetition.Specs.Facilities
 
         public bool StartWithKeepAliveLoopInBackground()
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 bool done;
 

@@ -22,7 +22,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         static MediatorStatusSelectionForm()
         {
-            foreach (int code in KnownMediatorStatusCode.GetAll())
+            foreach (int code in KnownMediatorStatusCode.All)
             {
                 CodeToTextMap.Add(code, KnownMediatorStatusCode.GetNameFor(code));
             }

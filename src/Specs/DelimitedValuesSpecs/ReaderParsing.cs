@@ -26,8 +26,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             var source = new StringReader("");
 
             // Act
-            // ReSharper disable once ObjectCreationAsStatement
-            Action action = () => new DelimitedValuesReader(source);
+            Action action = () => _ = new DelimitedValuesReader(source);
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
@@ -40,8 +39,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             var source = new StringReader("\n");
 
             // Act
-            // ReSharper disable once ObjectCreationAsStatement
-            Action action = () => new DelimitedValuesReader(source);
+            Action action = () => _ = new DelimitedValuesReader(source);
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Missing column names on first line.");
@@ -54,8 +52,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             var source = new StringReader("\n\n");
 
             // Act
-            // ReSharper disable once ObjectCreationAsStatement
-            Action action = () => new DelimitedValuesReader(source);
+            Action action = () => _ = new DelimitedValuesReader(source);
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Source contains no columns.");
@@ -65,7 +62,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_source_contains_multiple_column_names_they_must_be_exposed()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("C1", "C2", "C3")
                 .Build();
 
@@ -95,7 +92,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_autodetect_tab_as_separator()
         {
             // Act
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A\tB\tC")
@@ -110,7 +107,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_autodetect_semicolon_as_separator()
         {
             // Act
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A;B;C")
@@ -125,7 +122,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_autodetect_comma_as_separator()
         {
             // Act
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A,B,C")
@@ -140,7 +137,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_autodetect_colon_as_separator()
         {
             // Act
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A:B:C")
@@ -155,7 +152,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_autodetect_pipe_as_separator()
         {
             // Act
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A|B|C")
@@ -170,7 +167,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_no_field_separator_is_specified_it_must_give_semicolon_precedence_over_comma_during_auto_detection()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(null))
                 .WithHeaderLine("A;B;C,D,E")
@@ -190,15 +187,15 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_cell_contains_unquoted_text_before_quoted_text_it_should_fail()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine("a" + DefaultTextQualifier + "b" + DefaultTextQualifier)
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.Take(1).ToArray();
+            // ReSharper disable once AccessToDisposedClosure
+            Action action = () => _ = reader.Take(1).ToArray();
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Text qualifier must be the first non-whitespace character of a cell.");
@@ -208,15 +205,15 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_cell_contains_unquoted_text_after_quoted_text_it_should_fail()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(DefaultTextQualifier + "a" + DefaultTextQualifier + "b")
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.Take(1).ToArray();
+            // ReSharper disable once AccessToDisposedClosure
+            Action action = () => _ = reader.Take(1).ToArray();
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>()
@@ -229,7 +226,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string cellValue = "a\rb\nc\r\nd";
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
                 .WithDataLine(DefaultTextQualifier + cellValue + DefaultTextQualifier)
@@ -250,7 +247,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             const char separator = ':';
             const string cellValue = "x:y:z";
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithFieldSeparator(separator))
                 .WithHeaderLine("A" + separator + "B")
@@ -272,9 +269,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string cellValue = "A \"nice\" day...";
 
-            string escaped = DefaultTextQualifier + cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) + DefaultTextQualifier;
+            string escaped = DefaultTextQualifier +
+                cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier, StringComparison.Ordinal) + DefaultTextQualifier;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
                 .WithDataLine(escaped)
@@ -294,9 +292,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string cellValue = "\"A nice day...\"";
 
-            string escaped = DefaultTextQualifier + cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier) + DefaultTextQualifier;
+            string escaped = DefaultTextQualifier +
+                cellValue.Replace(DefaultTextQualifier, DefaultTextQualifier + DefaultTextQualifier, StringComparison.Ordinal) + DefaultTextQualifier;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("C")
                 .WithoutRows()
                 .WithDataLine(escaped)
@@ -316,7 +315,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             string emptyCellValue = string.Empty;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("A", "B", "C")
                 .WithoutRows()
                 .WithRow(new[]
@@ -343,15 +342,15 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
         public void When_source_contains_uneven_number_of_quotes_it_should_fail()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader()
                 .WithoutRows()
                 .WithDataLine(DefaultTextQualifier)
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.SkipWhile(_ => true).ToArray();
+            // ReSharper disable once AccessToDisposedClosure
+            Action action = () => _ = reader.SkipWhile(_ => true).ToArray();
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>().WithMessage("Missing closing text qualifier.");
@@ -363,7 +362,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string columnHeaderName = "C";
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
                 .WithRow(new[]
@@ -385,7 +384,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string columnHeaderName = "C";
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
                 .WithRow(new[]
@@ -407,7 +406,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             // Arrange
             const string columnHeaderName = "C";
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader(columnHeaderName)
                 .WithoutRows()
                 .WithRow(new[]
@@ -431,7 +430,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             string cell = DefaultTextQualifier + "12345";
             int bufferSize = header.Length + Environment.NewLine.Length + cell.Length;
 
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithIntermediateReader(r => new ReaderThatFailsAfterReadingTooMuch(r, bufferSize))
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithMaximumLineLength(cell.Length))
@@ -443,8 +442,8 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
                 .Build();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Action action = () => reader.SkipWhile(_ => true).ToArray();
+            // ReSharper disable once AccessToDisposedClosure
+            Action action = () => _ = reader.SkipWhile(_ => true).ToArray();
 
             // Assert
             action.Should().ThrowExactly<DelimitedValuesParseException>();

@@ -158,7 +158,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 var formatBuilder = new StringBuilder();
                 formatBuilder.Append("{0,");
                 formatBuilder.Append(digitCount);
-                formatBuilder.Append("}");
+                formatBuilder.Append('}');
 
                 return string.Format(formatBuilder.ToString(), number);
             }

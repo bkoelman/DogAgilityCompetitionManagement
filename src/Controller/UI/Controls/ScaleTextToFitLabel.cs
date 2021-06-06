@@ -144,7 +144,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             public static StringFormat GetStringFormat(Control target)
             {
-                return (StringFormat)CreateStringFormatMethod.Invoke(target, new object[0])!;
+                return (StringFormat)CreateStringFormatMethod.Invoke(target, Array.Empty<object>())!;
             }
 
             private static T Require<T>(T? value)

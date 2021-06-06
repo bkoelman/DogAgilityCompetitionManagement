@@ -66,11 +66,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         {
         }
 
-        public string? GetValueOrNull()
-        {
-            return HasValue ? Value : null;
-        }
-
         /// <summary>
         /// Exports the value of this parameter to binary format.
         /// </summary>
@@ -105,10 +100,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
         public override string ToString()

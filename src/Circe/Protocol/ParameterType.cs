@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="IntegerParameter" /> types.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Integer")]
+        [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
         public enum Integer
         {
             MediatorStatus,
@@ -35,7 +35,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="BooleanParameter" /> types.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Boolean")]
+        [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
         public enum Boolean
         {
             GetMembership,
@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <summary>
         /// Lists the predefined <see cref="BinaryParameter" /> types.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces")]
+        [SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
         public enum Binary
         {
             LogData

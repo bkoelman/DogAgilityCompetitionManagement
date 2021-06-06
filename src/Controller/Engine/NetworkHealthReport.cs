@@ -17,8 +17,9 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class NetworkHealthReport : IEquatable<NetworkHealthReport>
     {
-        public static readonly NetworkHealthReport Default =
-            new(false, false, 0, new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], new WirelessNetworkAddress[0], null, null);
+        private static readonly IEnumerable<WirelessNetworkAddress> NoAddresses = Array.Empty<WirelessNetworkAddress>();
+
+        public static readonly NetworkHealthReport Default = new(false, false, 0, NoAddresses, NoAddresses, NoAddresses, null, null);
 
         public bool IsConnected { get; }
         public bool HasProtocolVersionMismatch { get; }
@@ -132,12 +133,12 @@ namespace DogAgilityCompetition.Controller.Engine
             }
 
             var textBuilder = new StringBuilder();
-            textBuilder.Append("[");
+            textBuilder.Append('[');
 
             IEnumerable<string> items = ClassCompliance.Select(m => m.ToString());
             textBuilder.Append(string.Join(", ", items));
 
-            textBuilder.Append("]");
+            textBuilder.Append(']');
             return textBuilder.ToString();
         }
 

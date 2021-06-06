@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,11 +19,16 @@ namespace DogAgilityCompetition.Circe.Session
     /// Consumption of actions in the queue can be paused and resumed. On disposal, any remaining actions are canceled.
     /// </para>
     /// </remarks>
+    [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
     public sealed class ActionQueue : IDisposable
     {
         private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
+#pragma warning disable CA2213 // Disposable fields should be disposed
+        // Justification: This member is disposed by ConsumerLoop() instead of Dispose().
         private readonly BlockingCollection<WorkItem> workQueue = new();
+#pragma warning restore CA2213 // Disposable fields should be disposed
+        
         private readonly object stateLock = new();
 
         private bool isConsumerRunning; // Protected by stateLock
@@ -135,7 +141,7 @@ namespace DogAgilityCompetition.Circe.Session
 
             // Uncomment the next block to simulate task failure.
             /*
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 Thread.Sleep(1000);
                 taskSource.SetException(new Exception("Task failed."));

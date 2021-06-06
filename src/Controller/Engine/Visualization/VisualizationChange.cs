@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
@@ -12,6 +13,8 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
 
         public void WriteTo(TextWriter writer)
         {
+            Guard.NotNull(writer, nameof(writer));
+
             writer.Write(ToString());
         }
 

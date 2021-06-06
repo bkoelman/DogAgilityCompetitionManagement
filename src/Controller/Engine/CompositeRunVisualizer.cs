@@ -23,6 +23,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
         public void Apply(IReadOnlyCollection<VisualizationChange> changes)
         {
+            Guard.NotNull(changes, nameof(changes));
+
             LogChanges(changes);
 
             foreach (ICompetitionRunVisualizer child in children)
@@ -33,7 +35,7 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private static void LogChanges(IEnumerable<VisualizationChange> changes)
         {
-            var writer = new StringWriter();
+            using var writer = new StringWriter();
 
             foreach (VisualizationChange change in changes)
             {

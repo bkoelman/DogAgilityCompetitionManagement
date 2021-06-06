@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using DogAgilityCompetition.Circe;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -16,6 +17,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     {
         public static void DrawRoundedRectangle(this Graphics graphics, Pen pen, RectangleF rectangle, float radius)
         {
+            Guard.NotNull(graphics, nameof(graphics));
+
             using (new SmoothingModeScope(graphics, SmoothingMode.AntiAlias))
             {
                 GraphicsPath path = GetRoundedRect(rectangle, radius);
@@ -25,6 +28,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public static void FillRoundedRectangle(this Graphics graphics, Brush brush, RectangleF rectangle, float radius)
         {
+            Guard.NotNull(graphics, nameof(graphics));
+
             using (new SmoothingModeScope(graphics, SmoothingMode.AntiAlias))
             {
                 GraphicsPath path = GetRoundedRect(rectangle, radius);

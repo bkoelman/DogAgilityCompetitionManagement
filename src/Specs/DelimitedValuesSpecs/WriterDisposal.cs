@@ -23,11 +23,7 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             writer.Dispose();
 
             // Act
-            Action action = () =>
-            {
-                // ReSharper disable once UnusedVariable
-                IDelimitedValuesWriterRow dummy = writer.CreateRow();
-            };
+            Action action = () => _ = writer.CreateRow();
 
             // Assert
             action.Should().ThrowExactly<ObjectDisposedException>();

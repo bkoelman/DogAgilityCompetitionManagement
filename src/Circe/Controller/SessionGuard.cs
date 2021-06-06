@@ -68,7 +68,7 @@ namespace DogAgilityCompetition.Circe.Controller
             Log.Debug("Creating task for reconnect loop.");
 
             Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)
-                .ContinueWith(_ => reconnectLoopTerminatedWaitHandle.Set());
+                .ContinueWith(_ => reconnectLoopTerminatedWaitHandle.Set(), TaskScheduler.Default);
         }
 
         public void Dispose()
@@ -287,7 +287,10 @@ namespace DogAgilityCompetition.Circe.Controller
 
                 seenProtocolVersionMismatch.Value = null;
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 newConnection = new CirceComConnection(comPortName);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
                 newConnection.PacketSending += NewConnectionOnPacketSending;
                 newConnection.PacketReceived += NewConnectionOnPacketReceived;
                 newConnection.OperationReceived += NewConnectionOnOperationReceived;

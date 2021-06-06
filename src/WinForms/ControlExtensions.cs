@@ -23,6 +23,8 @@ namespace DogAgilityCompetition.WinForms
 
         public static IEnumerable<Control> GetAllChildControlsRecursive(this Control control)
         {
+            Guard.NotNull(control, nameof(control));
+
             foreach (Control child in control.Controls)
             {
                 yield return child;
