@@ -391,15 +391,15 @@ namespace DogAgilityCompetition.Controller.Engine
                 }
                 else
                 {
-                    CompetitionClassRequirements requirementsNotNull = AssertClassRequirementsNotNull();
-                    CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                    Assertions.IsNotNull(classRequirements, nameof(classRequirements));
+                    Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
                     bool allowFinish = true;
 
                     if (classState == CompetitionClassState.StartPassed)
                     {
-                        TimeSpan elapsed = passageTime.ElapsedSince(timingsNotNull.StartTime).TimeValue;
-                        allowFinish = elapsed >= requirementsNotNull.StartFinishMinDelayForSingleSensor;
+                        TimeSpan elapsed = passageTime.ElapsedSince(runData.Timings.StartTime).TimeValue;
+                        allowFinish = elapsed >= classRequirements.StartFinishMinDelayForSingleSensor;
                     }
 
                     if (allowFinish)
@@ -412,18 +412,6 @@ namespace DogAgilityCompetition.Controller.Engine
                     }
                 }
             });
-        }
-
-        [AssertionMethod]
-        private CompetitionClassRequirements AssertClassRequirementsNotNull()
-        {
-            return Assertions.InternalValueIsNotNull(() => classRequirements, () => classRequirements);
-        }
-
-        [AssertionMethod]
-        private CompetitionRunTimings AssertRunDataTimingsNotNull()
-        {
-            return Assertions.InternalValueIsNotNull(() => runData.Timings, () => runData.Timings);
         }
 
         private void HandlePassStart(RecordedTime passageTime)
@@ -447,11 +435,11 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.StartPassed, () =>
             {
-                CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
                 if (modelSnapshot.IntermediateTimerCount >= 1)
                 {
-                    runData.Timings = timingsNotNull.ChangeIntermediateTime1(passageTime);
+                    runData.Timings = runData.Timings.ChangeIntermediateTime1(passageTime);
                     SetState(CompetitionClassState.Intermediate1Passed);
 
                     TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
@@ -465,11 +453,11 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.Intermediate1Passed, () =>
             {
-                CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
                 if (modelSnapshot.IntermediateTimerCount >= 2)
                 {
-                    runData.Timings = timingsNotNull.ChangeIntermediateTime2(passageTime);
+                    runData.Timings = runData.Timings.ChangeIntermediateTime2(passageTime);
                     SetState(CompetitionClassState.Intermediate2Passed);
 
                     TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
@@ -483,11 +471,11 @@ namespace DogAgilityCompetition.Controller.Engine
         {
             ExecuteExclusiveIfStateIn(CompetitionClassState.Intermediate2Passed, () =>
             {
-                CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
                 if (modelSnapshot.IntermediateTimerCount >= 3)
                 {
-                    runData.Timings = timingsNotNull.ChangeIntermediateTime3(passageTime);
+                    runData.Timings = runData.Timings.ChangeIntermediateTime3(passageTime);
                     SetState(CompetitionClassState.Intermediate3Passed);
 
                     TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
@@ -503,9 +491,9 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 using var collector = new VisualizationUpdateCollector(visualizer);
 
-                CompetitionRunTimings timingsNotNull = AssertRunDataTimingsNotNull();
+                Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
-                runData.Timings = timingsNotNull.ChangeFinishTime(passageTime);
+                runData.Timings = runData.Timings.ChangeFinishTime(passageTime);
                 SetState(CompetitionClassState.FinishPassed);
 
                 TimeSpanWithAccuracy elapsed = passageTime.ElapsedSince(runData.Timings.StartTime);
@@ -634,8 +622,8 @@ namespace DogAgilityCompetition.Controller.Engine
 
             PersistRunResultToCache();
 
-            int competitorNumber = AssertCurrentCompetitorNumberNotNull();
-            CompetitionRunResult previousRunResultOrNull = modelSnapshot.GetRunResultFor(competitorNumber);
+            Assertions.IsNotNull(currentCompetitorNumber, nameof(currentCompetitorNumber));
+            CompetitionRunResult previousRunResultOrNull = modelSnapshot.GetRunResultFor(currentCompetitorNumber.Value);
             collector.Include(new PreviousCompetitorRunUpdate(previousRunResultOrNull));
 
             IReadOnlyCollection<CompetitionRunResult> rankings = modelSnapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
@@ -655,11 +643,11 @@ namespace DogAgilityCompetition.Controller.Engine
                 return;
             }
 
-            CompetitionRunTimings timings = AssertRunDataTimingsNotNull();
+            Assertions.IsNotNull(runData.Timings, nameof(runData.Timings));
 
-            if (modelSnapshot.ClassInfo.StandardCourseTime != null && timings.FinishTime != null)
+            if (modelSnapshot.ClassInfo.StandardCourseTime != null && runData.Timings.FinishTime != null)
             {
-                TimeSpanWithAccuracy elapsed = timings.FinishTime.ElapsedSince(timings.StartTime);
+                TimeSpanWithAccuracy elapsed = runData.Timings.FinishTime.ElapsedSince(runData.Timings.StartTime);
 
                 if (elapsed.TimeValue > modelSnapshot.ClassInfo.StandardCourseTime.Value)
                 {
@@ -717,11 +705,6 @@ namespace DogAgilityCompetition.Controller.Engine
             return firstPlaces.Any(r => r.Competitor.Number == currentCompetitorNumber);
         }
 
-        private int AssertCurrentCompetitorNumberNotNull()
-        {
-            return Assertions.InternalValueIsNotNull(() => currentCompetitorNumber, () => currentCompetitorNumber);
-        }
-
         private void PersistRunResultToCache()
         {
             try
@@ -740,10 +723,10 @@ namespace DogAgilityCompetition.Controller.Engine
             }
             catch (Exception ex)
             {
-                int competitorNumber = AssertCurrentCompetitorNumberNotNull();
+                Assertions.IsNotNull(currentCompetitorNumber, nameof(currentCompetitorNumber));
 
                 string message = "Failed to save run results. Please write these down manually, " +
-                    $"or press Ctrl+C to copy to clipboard.\n\n{runData.GetMessageFor(competitorNumber)}\n";
+                    $"or press Ctrl+C to copy to clipboard.\n\n{runData.GetMessageFor(currentCompetitorNumber.Value)}\n";
 
                 Log.Error(message, ex);
                 var exception = new Exception(message, ex);
@@ -923,12 +906,12 @@ namespace DogAgilityCompetition.Controller.Engine
 
         private void ClearCurrentRunOrShowExistingRun(VisualizationUpdateCollector collector)
         {
-            int currentCompetitorNumberNotNull = AssertCurrentCompetitorNumberNotNull();
-            CompetitionRunResult existingRunResult = modelSnapshot.GetRunResultFor(currentCompetitorNumberNotNull);
+            Assertions.IsNotNull(currentCompetitorNumber, nameof(currentCompetitorNumber));
+            CompetitionRunResult existingRunResult = modelSnapshot.GetRunResultFor(currentCompetitorNumber.Value);
 
             if (existingRunResult.HasCompleted)
             {
-                RecordedTime? latestIntermediateTimeOrNull = modelSnapshot.GetLatestIntermediateTimeOrNull(currentCompetitorNumberNotNull);
+                RecordedTime? latestIntermediateTimeOrNull = modelSnapshot.GetLatestIntermediateTimeOrNull(currentCompetitorNumber.Value);
                 collector.Include(VisualizationChangeFactory.ForExistingRun(existingRunResult, latestIntermediateTimeOrNull));
 
                 runData.Reset(true);

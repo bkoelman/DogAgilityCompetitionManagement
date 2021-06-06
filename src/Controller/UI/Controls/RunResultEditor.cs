@@ -9,7 +9,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -115,8 +114,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 finishTime = finishTime.Value.ChangeAccuracy(TimeAccuracy.UserEdited);
             }
 
-            CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
-            return originalRunVersionNotNull.UpdateFinishTimeFrom(finishTime);
+            Assertions.IsNotNull(originalRunVersion, nameof(originalRunVersion));
+            return originalRunVersion.UpdateFinishTimeFrom(finishTime);
         }
 
         private int ConvertRefusalCountFromScreen()
@@ -285,11 +284,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 return;
             }
 
-            CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
+            Assertions.IsNotNull(originalRunVersion, nameof(originalRunVersion));
 
             // @formatter:keep_existing_linebreaks true
 
-            CompetitionRunResult newRunVersion = originalRunVersionNotNull
+            CompetitionRunResult newRunVersion = originalRunVersion
                 .ChangeTimings(ConvertFinishTimeFromScreen(true))
                 .ChangeFaultCount(ConvertFaultCountFromScreen())
                 .ChangeRefusalCount(ConvertRefusalCountFromScreen())
@@ -297,7 +296,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             // @formatter:keep_existing_linebreaks restore
 
-            var changingEventArgs = new RunResultChangingEventArgs(originalRunVersionNotNull, newRunVersion);
+            var changingEventArgs = new RunResultChangingEventArgs(originalRunVersion, newRunVersion);
             RunResultChanging?.Invoke(this, changingEventArgs);
 
             if (changingEventArgs.ErrorMessage == null)
@@ -311,12 +310,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 ShowAnimatedFailure(changingEventArgs.ErrorMessage);
             }
-        }
-
-        [AssertionMethod]
-        private CompetitionRunResult AssertOriginalRunVersionNotNull()
-        {
-            return Assertions.InternalValueIsNotNull(() => originalRunVersion, () => originalRunVersion);
         }
 
         private void ShowAnimatedSuccess(string message)
@@ -357,10 +350,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void RevertButton_Click(object? sender, EventArgs e)
         {
-            CompetitionRunResult originalRunVersionNotNull = AssertOriginalRunVersionNotNull();
+            Assertions.IsNotNull(originalRunVersion, nameof(originalRunVersion));
 
-            CompetitionRunResult? activeVersionOrNull =
-                CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersionNotNull.Competitor.Number);
+            CompetitionRunResult? activeVersionOrNull = CacheManager.DefaultInstance.ActiveModel.GetRunResultOrNull(originalRunVersion.Competitor.Number);
 
             OverwriteWith(activeVersionOrNull);
         }

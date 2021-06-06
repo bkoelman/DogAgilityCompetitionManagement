@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -71,18 +70,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
 
         private void AssertPreconditions(Action<CirceControllerSessionManager> action)
         {
-            CirceControllerSessionManager sessionManager = AssertSessionNotNull();
+            Assertions.IsNotNull(circeSessionManager, nameof(circeSessionManager));
 
             if (displaysInRunComposition.Any())
             {
-                action(sessionManager);
+                action(circeSessionManager);
             }
-        }
-
-        [AssertionMethod]
-        private CirceControllerSessionManager AssertSessionNotNull()
-        {
-            return Assertions.InternalValueIsNotNull(() => circeSessionManager, () => circeSessionManager);
         }
     }
 }

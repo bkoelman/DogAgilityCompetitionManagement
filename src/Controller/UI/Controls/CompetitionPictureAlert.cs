@@ -52,8 +52,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         private void PicturePreviewButton_Click(object? sender, EventArgs e)
         {
-            Form parentFormNotNull = Assertions.InternalValueIsNotNull(() => ParentForm, () => ParentForm);
-            PicturePreviewForm.ShowPreview(pathTextBox.Text, AlertName ?? string.Empty, parentFormNotNull);
+            Assertions.IsNotNull(ParentForm, nameof(ParentForm));
+            PicturePreviewForm.ShowPreview(pathTextBox.Text, AlertName ?? string.Empty, ParentForm);
         }
 
         private void PathTextBox_Validating(object? sender, CancelEventArgs e)

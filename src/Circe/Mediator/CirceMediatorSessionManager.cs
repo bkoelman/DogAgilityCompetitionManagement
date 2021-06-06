@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Mediator
 {
@@ -260,24 +259,24 @@ namespace DogAgilityCompetition.Circe.Mediator
                             break;
                         case MediatorConnectionState.LoginReceived:
                             Log.Debug("SenderLoop: Responding with KeepAlive after incoming Login.");
-                            CirceComConnection connectionNotNull1 = AssertConnectionNotNull(connection);
+                            Assertions.IsNotNull(connection, nameof(connection));
 
-                            SendOperation(connectionNotNull1, new KeepAliveOperation(protocolVersion.Value, mediatorStatus.Value));
+                            SendOperation(connection, new KeepAliveOperation(protocolVersion.Value, mediatorStatus.Value));
                             ClearSendQueue();
                             ChangeConnectionStateTo(MediatorConnectionState.Connected, connectedComPort.Value);
                             break;
                         case MediatorConnectionState.Connected:
                             Log.Debug("SenderLoop: Processing outgoing operations queue.");
-                            CirceComConnection connectionNotNull2 = AssertConnectionNotNull(connection);
+                            Assertions.IsNotNull(connection, nameof(connection));
 
                             while (sendQueue.TryTake(out Operation? nextOperation))
                             {
-                                SendOperation(connectionNotNull2, nextOperation);
+                                SendOperation(connection, nextOperation);
                             }
 
                             if (lastSendTime.Add(MaxIdleTime) < SystemContext.UtcNow())
                             {
-                                SendOperation(connectionNotNull2, new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion, mediatorStatus.Value));
+                                SendOperation(connection, new KeepAliveOperation(KeepAliveOperation.CurrentProtocolVersion, mediatorStatus.Value));
                             }
 
                             break;
@@ -306,12 +305,6 @@ namespace DogAgilityCompetition.Circe.Mediator
             connection.PacketSending -= PacketSending;
             connection.PacketReceived -= PacketReceived;
             connection.OperationReceived -= ConnectionOnOperationReceived;
-        }
-
-        [AssertionMethod]
-        private static CirceComConnection AssertConnectionNotNull(CirceComConnection? connection)
-        {
-            return Assertions.InternalValueIsNotNull(() => connection, () => connection);
         }
 
         private void ChangeConnectionStateTo(MediatorConnectionState state, string? comPortName)

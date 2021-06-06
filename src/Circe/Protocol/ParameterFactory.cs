@@ -72,10 +72,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public static IntegerParameter Create(ParameterType.Integer name, bool isRequired)
         {
             IntegerParameterDefinition definition = IntegerMap[name];
-            string? nameString = Enum.GetName(typeof(ParameterType.Integer), name);
-            string nameStringNotNull = Assertions.InternalValueIsNotNull(() => nameString, () => nameString);
 
-            return new IntegerParameter(nameStringNotNull, definition.Id, definition.MinValue, definition.MaxValue, isRequired);
+            string? nameString = Enum.GetName(typeof(ParameterType.Integer), name);
+            Assertions.IsNotNull(nameString, nameof(nameString));
+
+            return new IntegerParameter(nameString, definition.Id, definition.MinValue, definition.MaxValue, isRequired);
         }
 
         /// <summary>
@@ -94,10 +95,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public static BooleanParameter Create(ParameterType.Boolean name, bool isRequired)
         {
             ParameterDefinition definition = BooleanMap[name];
-            string? nameString = Enum.GetName(typeof(ParameterType.Boolean), name);
-            string nameStringNotNull = Assertions.InternalValueIsNotNull(() => nameString, () => nameString);
 
-            return new BooleanParameter(nameStringNotNull, definition.Id, isRequired);
+            string? nameString = Enum.GetName(typeof(ParameterType.Boolean), name);
+            Assertions.IsNotNull(nameString, nameof(nameString));
+
+            return new BooleanParameter(nameString, definition.Id, isRequired);
         }
 
         /// <summary>
@@ -116,10 +118,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public static NetworkAddressParameter Create(ParameterType.NetworkAddress name, bool isRequired)
         {
             ParameterDefinition definition = NetworkAddressMap[name];
-            string? nameString = Enum.GetName(typeof(ParameterType.NetworkAddress), name);
-            string nameStringNotNull = Assertions.InternalValueIsNotNull(() => nameString, () => nameString);
 
-            return new NetworkAddressParameter(nameStringNotNull, definition.Id, isRequired);
+            string? nameString = Enum.GetName(typeof(ParameterType.NetworkAddress), name);
+            Assertions.IsNotNull(nameString, nameof(nameString));
+
+            return new NetworkAddressParameter(nameString, definition.Id, isRequired);
         }
 
         /// <summary>
@@ -138,10 +141,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public static VersionParameter Create(ParameterType.Version name, bool isRequired)
         {
             ParameterDefinition definition = VersionMap[name];
-            string? nameString = Enum.GetName(typeof(ParameterType.Version), name);
-            string nameStringNotNull = Assertions.InternalValueIsNotNull(() => nameString, () => nameString);
 
-            return new VersionParameter(nameStringNotNull, definition.Id, isRequired);
+            string? nameString = Enum.GetName(typeof(ParameterType.Version), name);
+            Assertions.IsNotNull(nameString, nameof(nameString));
+
+            return new VersionParameter(nameString, definition.Id, isRequired);
         }
 
         /// <summary>
@@ -160,10 +164,11 @@ namespace DogAgilityCompetition.Circe.Protocol
         public static BinaryParameter Create(ParameterType.Binary name, bool isRequired)
         {
             ParameterDefinition definition = BinaryMap[name];
-            string? nameString = Enum.GetName(typeof(ParameterType.Binary), name);
-            string nameStringNotNull = Assertions.InternalValueIsNotNull(() => nameString, () => nameString);
 
-            return new BinaryParameter(nameStringNotNull, definition.Id, isRequired);
+            string? nameString = Enum.GetName(typeof(ParameterType.Binary), name);
+            Assertions.IsNotNull(nameString, nameof(nameString));
+
+            return new BinaryParameter(nameString, definition.Id, isRequired);
         }
 
         private class ParameterDefinition
