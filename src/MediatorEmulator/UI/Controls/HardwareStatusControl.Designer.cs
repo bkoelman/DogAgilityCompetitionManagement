@@ -188,7 +188,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // HardwareStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Enabled = false;
             this.Name = "HardwareStatusControl";
