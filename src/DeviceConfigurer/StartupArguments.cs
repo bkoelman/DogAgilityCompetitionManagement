@@ -41,8 +41,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 {
                     comPortName = arg.Substring("port=".Length).ToUpperInvariant();
                 }
-
-                if (arg.StartsWith("new=", StringComparison.OrdinalIgnoreCase))
+                else if (arg.StartsWith("new=", StringComparison.OrdinalIgnoreCase))
                 {
                     newAddress = ParseAddress(arg.Substring("new=".Length));
                 }
