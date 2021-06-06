@@ -24,7 +24,7 @@ namespace DogAgilityCompetition.Controller
         private static void Main()
         {
             ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("log4net.config"));
+            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.Controller.log4net.config"));
 
             Log.Info("Application started.");
 

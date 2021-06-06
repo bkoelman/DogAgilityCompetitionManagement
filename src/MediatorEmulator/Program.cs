@@ -23,7 +23,7 @@ namespace DogAgilityCompetition.MediatorEmulator
         private static void Main(string[] args)
         {
             ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("log4net.config"));
+            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.MediatorEmulator.log4net.config"));
 
             Log.Info("Application started.");
 
