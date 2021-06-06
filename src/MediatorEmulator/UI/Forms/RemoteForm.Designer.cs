@@ -75,7 +75,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.networkStatus.Enabled = false;
             this.networkStatus.Location = new System.Drawing.Point(274, 74);
             this.networkStatus.Name = "networkStatus";
-            this.networkStatus.Size = new System.Drawing.Size(261, 77);
+            this.networkStatus.Size = new System.Drawing.Size(271, 77);
             this.networkStatus.TabIndex = 2;
             this.networkStatus.StatusChanged += new System.EventHandler(this.NetworkStatus_StatusChanged);
             // 
@@ -85,7 +85,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.powerStatus.Location = new System.Drawing.Point(274, 12);
             this.powerStatus.Name = "powerStatus";
-            this.powerStatus.Size = new System.Drawing.Size(261, 56);
+            this.powerStatus.Size = new System.Drawing.Size(271, 56);
             this.powerStatus.SupportsBlink = true;
             this.powerStatus.TabIndex = 1;
             this.powerStatus.StatusChanged += new System.EventHandler(this.PowerStatus_StatusChanged);
@@ -97,7 +97,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.hardwareStatus.Enabled = false;
             this.hardwareStatus.Location = new System.Drawing.Point(274, 157);
             this.hardwareStatus.Name = "hardwareStatus";
-            this.hardwareStatus.Size = new System.Drawing.Size(261, 211);
+            this.hardwareStatus.Size = new System.Drawing.Size(271, 211);
             this.hardwareStatus.SupportsAlignment = false;
             this.hardwareStatus.SupportsBatteryStatus = true;
             this.hardwareStatus.SupportsClock = true;
@@ -106,9 +106,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             // 
             // RemoteForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(547, 538);
+            this.ClientSize = new System.Drawing.Size(557, 538);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.networkStatus);
             this.Controls.Add(this.powerStatus);
