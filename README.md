@@ -1,7 +1,7 @@
 # Dog Agility Competition Management
 Operating software for controlling the wireless sensors in a [Dog Agility Competition](https://en.wikipedia.org/wiki/Dog_agility).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ydxgqsn30m7n92wf?svg=true)](https://ci.appveyor.com/project/bkoelman/dogagilitycompetitionmanagement)
+[![Build status](https://ci.appveyor.com/api/projects/status/ydxgqsn30m7n92wf/branch/master?svg=true)](https://ci.appveyor.com/project/bkoelman/dogagilitycompetitionmanagement/branch/master)
 
 # CIRCE Protocol
 See [CIRCE Interface Specification](doc/CIRCE%20Interface%20Specification.md)
@@ -19,4 +19,4 @@ See [CIRCE Interface Specification](doc/CIRCE%20Interface%20Specification.md)
 	command> quit
 	```
 
-3. Make a Debug build of [DogAgilityCompetitionManagement.sln](src/DogAgilityCompetitionManagement.sln) and run it
+3. Make a Debug build of [DogAgilityCompetitionManagement.sln](src/DogAgilityCompetitionManagement.sln) and run it. Alternatively, download the latest binaries from https://ci.appveyor.com/project/bkoelman/dogagilitycompetitionmanagement/branch/master/artifacts.
