@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.DeviceConfigurer
 {
@@ -14,20 +13,12 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// </summary>
     public sealed class StartupArguments
     {
-        [NotNull]
-        public string ComPortName { get; private set; }
+        public string ComPortName { get; }
+        public WirelessNetworkAddress? OldAddress { get; }
+        public WirelessNetworkAddress NewAddress { get; }
+        public DeviceCapabilities? Capabilities { get; }
 
-        [CanBeNull]
-        public WirelessNetworkAddress OldAddress { get; private set; }
-
-        [NotNull]
-        public WirelessNetworkAddress NewAddress { get; private set; }
-
-        [CanBeNull]
-        public DeviceCapabilities? Capabilities { get; private set; }
-
-        private StartupArguments([NotNull] string comPortName, [CanBeNull] WirelessNetworkAddress oldAddress,
-            [NotNull] WirelessNetworkAddress newAddress, [CanBeNull] DeviceCapabilities? capabilities)
+        private StartupArguments(string comPortName, WirelessNetworkAddress? oldAddress, WirelessNetworkAddress newAddress, DeviceCapabilities? capabilities)
         {
             ComPortName = comPortName;
             OldAddress = oldAddress;
@@ -35,14 +26,13 @@ namespace DogAgilityCompetition.DeviceConfigurer
             Capabilities = capabilities;
         }
 
-        [CanBeNull]
-        public static StartupArguments Parse([NotNull] [ItemNotNull] IEnumerable<string> args)
+        public static StartupArguments? Parse(IEnumerable<string> args)
         {
             Guard.NotNull(args, nameof(args));
 
-            string comPortName = null;
-            WirelessNetworkAddress oldAddress = null;
-            WirelessNetworkAddress newAddress = null;
+            string? comPortName = null;
+            WirelessNetworkAddress? oldAddress = null;
+            WirelessNetworkAddress? newAddress = null;
             DeviceCapabilities? capabilities = null;
 
             foreach (string arg in args)
@@ -51,7 +41,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
                 {
                     comPortName = arg.Substring("port=".Length).ToUpperInvariant();
                 }
-                if (arg.StartsWith("new=", StringComparison.OrdinalIgnoreCase))
+                else if (arg.StartsWith("new=", StringComparison.OrdinalIgnoreCase))
                 {
                     newAddress = ParseAddress(arg.Substring("new=".Length));
                 }
@@ -71,9 +61,8 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
             if (comPortName == null || newAddress == null)
             {
-                string title = "Dog Agility Competition Management - Device Configurer" +
-                    AssemblyReader.GetInformationalVersion();
-                string exeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+                string title = "Dog Agility Competition Management - Device Configurer" + AssemblyReader.GetInformationalVersion();
+                string exeName = GetExeName();
 
                 Console.WriteLine(title);
                 Console.WriteLine();
@@ -97,33 +86,38 @@ namespace DogAgilityCompetition.DeviceConfigurer
             return new StartupArguments(comPortName, oldAddress, newAddress, capabilities);
         }
 
-        [NotNull]
-        private static WirelessNetworkAddress ParseAddress([NotNull] string value)
+        private static WirelessNetworkAddress ParseAddress(string value)
         {
-            return new WirelessNetworkAddress(value.ToUpperInvariant());
+            return new(value.ToUpperInvariant());
         }
 
-        [CanBeNull]
-        private static DeviceCapabilities? ParseCapabilities([NotNull] string value)
+        private static DeviceCapabilities? ParseCapabilities(string value)
         {
-            return (DeviceCapabilities) Enum.Parse(typeof (DeviceCapabilities), value, true);
+            return (DeviceCapabilities)Enum.Parse(typeof(DeviceCapabilities), value, true);
         }
 
-        [NotNull]
+        private static string GetExeName()
+        {
+            using var process = Process.GetCurrentProcess();
+            return Path.GetFileName(process.MainModule!.FileName!);
+        }
+
         private static string GetAllowedCapabilities()
         {
             var textBuilder = new StringBuilder();
-            for (int value = 1; value < (int) DeviceCapabilities.All; value *= 2)
+
+            for (int value = 1; value < (int)DeviceCapabilities.All; value *= 2)
             {
                 if (textBuilder.Length > 0)
                 {
                     textBuilder.AppendLine();
                 }
 
-                var capability = (DeviceCapabilities) value;
-                textBuilder.Append(" ");
+                var capability = (DeviceCapabilities)value;
+                textBuilder.Append(' ');
                 textBuilder.Append(capability);
             }
+
             return textBuilder.ToString();
         }
     }

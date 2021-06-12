@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -14,26 +13,19 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class PowerStatusControl : UserControl
     {
+        private readonly FreshBoolean threadSafeIsPoweredOn = new(false);
+
         public bool SupportsBlink
         {
-            get
-            {
-                return statusLed.Visible;
-            }
-            set
-            {
-                statusLed.Visible = value;
-            }
+            get => statusLed.Visible;
+            set => statusLed.Visible = value;
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsPoweredOn
         {
-            get
-            {
-                return !onButton.Enabled;
-            }
+            get => !onButton.Enabled;
             set
             {
                 if (value != IsPoweredOn)
@@ -47,29 +39,25 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        [NotNull]
-        private readonly FreshBoolean threadSafeIsPoweredOn = new FreshBoolean(false);
-
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ThreadSafeIsPoweredOn => threadSafeIsPoweredOn.Value;
 
-        public event EventHandler StatusChanged;
+        public event EventHandler? StatusChanged;
 
         public PowerStatusControl()
         {
             InitializeComponent();
         }
 
-        [NotNull]
         public Task BlinkAsync()
         {
             if (SupportsBlink)
             {
-                return Task.Factory.StartNew(Blink, CancellationToken.None, TaskCreationOptions.None,
-                    TaskScheduler.Default);
+                return Task.Run(Blink);
             }
-            return Task.FromResult((object) null);
+
+            return Task.CompletedTask;
         }
 
         private void Blink()
@@ -89,7 +77,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             statusLed.Blink(0);
         }
 
-        private void PowerButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PowerButton_Click(object? sender, EventArgs e)
         {
             Toggle();
         }

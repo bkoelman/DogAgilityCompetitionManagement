@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using DogAgilityCompetition.Controller.Engine;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -10,39 +9,35 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public static class TextFormatting
     {
-        [NotNull]
-        public static string FormatCompetitorNumber([CanBeNull] int? number)
+        public static string FormatCompetitorNumber(int? number)
         {
             return FormatNumber(number, NumberEntryFilter.MaxCompetitorNumberLength);
         }
 
-        [NotNull]
         public static string FormatPlacement(int placement)
         {
-            int? value = placement > 0 ? placement : (int?) null;
+            int? value = placement > 0 ? placement : null;
             return FormatNumber(value, 3);
         }
 
-        [NotNull]
-        public static string FormatNumber([CanBeNull] int? number, int digitCount)
+        public static string FormatNumber(int? number, int digitCount)
         {
             if (number == null)
             {
                 return string.Empty;
             }
 
-            string formatterZeroes = new string('0', digitCount);
+            string formatterZeroes = new('0', digitCount);
 
             var formatBuilder = new StringBuilder();
             formatBuilder.Append("{0:");
             formatBuilder.Append(formatterZeroes);
-            formatBuilder.Append("}");
+            formatBuilder.Append('}');
 
             return string.Format(formatBuilder.ToString(), number);
         }
 
-        [NotNull]
-        public static string FormatTime([CanBeNull] TimeSpan? time)
+        public static string FormatTime(TimeSpan? time)
         {
             if (time == null)
             {

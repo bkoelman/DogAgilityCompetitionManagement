@@ -1,21 +1,17 @@
 ﻿using System;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
     /// <summary />
     // ReSharper disable once UnusedTypeParameter
-    // Reason: Generic argument is used to enable creation of test-specific extensions methods.
+    // Justification: Generic argument is used to enable creation of test-specific extensions methods.
     public sealed class EventArgsWithName<TTestScope>
     {
-        [NotNull]
         public string Name { get; }
-
-        [NotNull]
         public EventArgs EventArgs { get; }
 
-        public EventArgsWithName([NotNull] string name, [NotNull] EventArgs eventArgs)
+        public EventArgsWithName(string name, EventArgs eventArgs)
         {
             Guard.NotNullNorEmpty(name, nameof(name));
             Guard.NotNull(eventArgs, nameof(eventArgs));
@@ -24,6 +20,9 @@ namespace DogAgilityCompetition.Specs.Facilities
             EventArgs = eventArgs;
         }
 
-        public override string ToString() => $"{Name}: {EventArgs}";
+        public override string ToString()
+        {
+            return $"{Name}: {EventArgs}";
+        }
     }
 }

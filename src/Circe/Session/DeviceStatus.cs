@@ -14,39 +14,25 @@ namespace DogAgilityCompetition.Circe.Session
     /// </remarks>
     public sealed class DeviceStatus : IEquatable<DeviceStatus>
     {
-        private const DeviceRoles IntermediateTimers =
-            DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
+        private const DeviceRoles IntermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
 
-        [NotNull]
         public WirelessNetworkAddress DeviceAddress { get; }
-
         public bool IsInNetwork { get; }
         public DeviceCapabilities Capabilities { get; }
         public DeviceRoles Roles { get; }
         public int SignalStrength { get; }
-
-        [CanBeNull]
         public int? BatteryStatus { get; }
-
-        [CanBeNull]
         public bool? IsAligned { get; }
-
-        [CanBeNull]
         public ClockSynchronizationStatus? ClockSynchronization { get; }
-
-        [CanBeNull]
         public bool? HasVersionMismatch { get; }
 
-        [NotNull]
         public string DeviceType
         {
             get
             {
                 if ((Capabilities & DeviceCapabilities.ControlKeypad) != 0)
                 {
-                    return (Capabilities & DeviceCapabilities.NumericKeypad) != 0
-                        ? "Competition remote"
-                        : "Training remote";
+                    return (Capabilities & DeviceCapabilities.NumericKeypad) != 0 ? "Competition remote" : "Training remote";
                 }
 
                 switch (Capabilities)
@@ -61,10 +47,8 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        public DeviceStatus([NotNull] WirelessNetworkAddress deviceAddress, bool isInNetwork,
-            DeviceCapabilities capabilities, DeviceRoles roles, int signalStrength, [CanBeNull] int? batteryStatus,
-            [CanBeNull] bool? isAligned, [CanBeNull] ClockSynchronizationStatus? clockSynchronization,
-            [CanBeNull] bool? hasVersionMismatch)
+        public DeviceStatus(WirelessNetworkAddress deviceAddress, bool isInNetwork, DeviceCapabilities capabilities, DeviceRoles roles, int signalStrength,
+            int? batteryStatus, bool? isAligned, ClockSynchronizationStatus? clockSynchronization, bool? hasVersionMismatch)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -87,21 +71,22 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 allowed |= DeviceRoles.Keypad;
             }
-            if ((capabilities & DeviceCapabilities.StartSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.StartSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= DeviceRoles.StartTimer;
             }
-            if ((capabilities & DeviceCapabilities.IntermediateSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.IntermediateSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= IntermediateTimers;
             }
-            if ((capabilities & DeviceCapabilities.FinishSensor) != 0 ||
-                (capabilities & DeviceCapabilities.TimeSensor) != 0)
+
+            if ((capabilities & DeviceCapabilities.FinishSensor) != 0 || (capabilities & DeviceCapabilities.TimeSensor) != 0)
             {
                 allowed |= DeviceRoles.FinishTimer;
             }
+
             if ((capabilities & DeviceCapabilities.Display) != 0)
             {
                 allowed |= DeviceRoles.Display;
@@ -110,25 +95,18 @@ namespace DogAgilityCompetition.Circe.Session
             return roles & allowed;
         }
 
-        [NotNull]
-        public static DeviceStatus FromOperation([NotNull] NotifyStatusOperation operation)
+        public static DeviceStatus FromOperation(NotifyStatusOperation operation)
         {
             Guard.NotNull(operation, nameof(operation));
 
-            // ReSharper disable PossibleInvalidOperationException
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: Operation has been validated for required parameters when this code is reached.
-            return new DeviceStatus(operation.OriginatingAddress, operation.GetMembership.Value,
-                operation.Capabilities.Value, operation.Roles.Value, operation.SignalStrength.Value,
-                operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization,
-                operation.HasVersionMismatch);
-            // ReSharper restore PossibleInvalidOperationException
+            // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+            return new DeviceStatus(operation.OriginatingAddress!, operation.GetMembership!.Value, operation.Capabilities!.Value, operation.Roles!.Value,
+                operation.SignalStrength!.Value, operation.BatteryStatus, operation.IsAligned, operation.ClockSynchronization, operation.HasVersionMismatch);
         }
 
-        [NotNull]
         public NotifyStatusOperation ToOperation()
         {
-            return new NotifyStatusOperation(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength)
+            return new(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength)
             {
                 BatteryStatus = BatteryStatus,
                 IsAligned = IsAligned,
@@ -137,74 +115,71 @@ namespace DogAgilityCompetition.Circe.Session
             };
         }
 
-        [NotNull]
         public DeviceStatus ChangeIsInNetwork(bool isInNetwork)
         {
-            return new DeviceStatus(DeviceAddress, isInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus,
-                IsAligned, ClockSynchronization, HasVersionMismatch);
+            return new(DeviceAddress, isInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
-        [NotNull]
         public DeviceStatus ChangeRoles(DeviceRoles roles)
         {
-            return new DeviceStatus(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus,
-                IsAligned, ClockSynchronization, HasVersionMismatch);
+            return new(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
         [Pure]
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => DeviceAddress, () => DeviceAddress);
-                formatter.Append(() => IsInNetwork, () => IsInNetwork);
-                formatter.Append(() => Capabilities, () => Capabilities);
-                formatter.Append(() => Roles, () => Roles);
-                formatter.Append(() => SignalStrength, () => SignalStrength);
-                formatter.Append(() => BatteryStatus, () => BatteryStatus);
-                formatter.Append(() => IsAligned, () => IsAligned);
-                formatter.Append(() => ClockSynchronization, () => ClockSynchronization);
-                formatter.Append(() => HasVersionMismatch, () => HasVersionMismatch);
+                formatter.Append(DeviceAddress, nameof(DeviceAddress));
+                formatter.Append(IsInNetwork, nameof(IsInNetwork));
+                formatter.Append(Capabilities, nameof(Capabilities));
+                formatter.Append(Roles, nameof(Roles));
+                formatter.Append(SignalStrength, nameof(SignalStrength));
+                formatter.Append(BatteryStatus, nameof(BatteryStatus));
+                formatter.Append(IsAligned, nameof(IsAligned));
+                formatter.Append(ClockSynchronization, nameof(ClockSynchronization));
+                formatter.Append(HasVersionMismatch, nameof(HasVersionMismatch));
             }
+
             return textBuilder.ToString();
         }
 
-        public bool Equals([CanBeNull] DeviceStatus other)
+        public bool Equals(DeviceStatus? other)
         {
-            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress &&
-                other.IsInNetwork == IsInNetwork && other.Capabilities == Capabilities && other.Roles == Roles &&
-                other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
-                other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization &&
-                other.HasVersionMismatch == HasVersionMismatch;
+            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.IsInNetwork == IsInNetwork &&
+                other.Capabilities == Capabilities && other.Roles == Roles && other.SignalStrength == SignalStrength && other.BatteryStatus == BatteryStatus &&
+                other.IsAligned == IsAligned && other.ClockSynchronization == ClockSynchronization && other.HasVersionMismatch == HasVersionMismatch;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as DeviceStatus);
         }
 
         public override int GetHashCode()
         {
-            return DeviceAddress.GetHashCode() ^ IsInNetwork.GetHashCode() ^ Capabilities.GetHashCode() ^
-                Roles.GetHashCode() ^ SignalStrength.GetHashCode() ^ BatteryStatus.GetHashCode() ^
-                IsAligned.GetHashCode() ^ ClockSynchronization.GetHashCode() ^ HasVersionMismatch.GetHashCode();
+            return DeviceAddress.GetHashCode() ^ IsInNetwork.GetHashCode() ^ Capabilities.GetHashCode() ^ Roles.GetHashCode() ^ SignalStrength.GetHashCode() ^
+                BatteryStatus.GetHashCode() ^ IsAligned.GetHashCode() ^ ClockSynchronization.GetHashCode() ^ HasVersionMismatch.GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] DeviceStatus left, [CanBeNull] DeviceStatus right)
+        public static bool operator ==(DeviceStatus? left, DeviceStatus? right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] DeviceStatus left, [CanBeNull] DeviceStatus right)
+        public static bool operator !=(DeviceStatus? left, DeviceStatus? right)
         {
             return !(left == right);
         }

@@ -42,7 +42,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             this.rolesLabel.AutoSize = true;
             this.rolesLabel.Location = new System.Drawing.Point(6, 48);
             this.rolesLabel.Name = "rolesLabel";
-            this.rolesLabel.Size = new System.Drawing.Size(66, 13);
+            this.rolesLabel.Size = new System.Drawing.Size(66, 15);
             this.rolesLabel.TabIndex = 1;
             this.rolesLabel.Text = "Roles: None";
             // 
@@ -74,7 +74,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // NetworkStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Enabled = false;
             this.Name = "NetworkStatusControl";

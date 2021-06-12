@@ -98,7 +98,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             this.clockLabel.AutoSize = true;
             this.clockLabel.Location = new System.Drawing.Point(36, 183);
             this.clockLabel.Name = "clockLabel";
-            this.clockLabel.Size = new System.Drawing.Size(111, 13);
+            this.clockLabel.Size = new System.Drawing.Size(111, 15);
             this.clockLabel.TabIndex = 8;
             this.clockLabel.Text = "Clock (sec): 000.0000";
             // 
@@ -107,7 +107,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             this.batteryStatusLabel.AutoSize = true;
             this.batteryStatusLabel.Location = new System.Drawing.Point(6, 119);
             this.batteryStatusLabel.Name = "batteryStatusLabel";
-            this.batteryStatusLabel.Size = new System.Drawing.Size(74, 13);
+            this.batteryStatusLabel.Size = new System.Drawing.Size(74, 15);
             this.batteryStatusLabel.TabIndex = 5;
             this.batteryStatusLabel.Text = "Battery status:";
             // 
@@ -166,7 +166,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 13);
+            this.label2.Size = new System.Drawing.Size(80, 15);
             this.label2.TabIndex = 3;
             this.label2.Text = "Signal strength:";
             // 
@@ -176,7 +176,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.syncStateLabel.Location = new System.Drawing.Point(153, 183);
             this.syncStateLabel.Name = "syncStateLabel";
-            this.syncStateLabel.Size = new System.Drawing.Size(96, 13);
+            this.syncStateLabel.Size = new System.Drawing.Size(96, 15);
             this.syncStateLabel.TabIndex = 9;
             this.syncStateLabel.Text = "Sync state";
             this.syncStateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -188,7 +188,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // HardwareStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Enabled = false;
             this.Name = "HardwareStatusControl";

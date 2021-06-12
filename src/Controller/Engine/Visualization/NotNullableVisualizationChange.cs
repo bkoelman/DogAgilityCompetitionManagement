@@ -8,16 +8,18 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class NotNullableVisualizationChange<T> : VisualizationChange
     {
-        [NotNull]
         protected T Value { get; }
 
-        protected NotNullableVisualizationChange([NotNull] T value)
+        protected NotNullableVisualizationChange(T value)
         {
             Guard.NotNull(value, nameof(value));
             Value = value;
         }
 
         [Pure]
-        public override string ToString() => $"{GetType().Name} Value: {Value}";
+        public override string ToString()
+        {
+            return $"{GetType().Name} Value: {Value}";
+        }
     }
 }

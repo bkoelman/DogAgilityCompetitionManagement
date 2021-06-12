@@ -5,21 +5,20 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
-using NUnit.Framework;
+using Xunit;
+
+// @formatter:keep_existing_linebreaks true
 
 namespace DogAgilityCompetition.Specs.NetworkSpecs
 {
     /// <summary>
     /// Tests for composing logical networks.
     /// </summary>
-    [TestFixture]
     public sealed class NetworkCompositions
     {
-        [NotNull]
-        private static readonly WirelessNetworkAddress DeviceAddress = new WirelessNetworkAddress("ABCDEF");
+        private static readonly WirelessNetworkAddress DeviceAddress = new("ABCDEF");
 
-        [Test]
+        [Fact]
         public void When_setting_a_negative_delay_it_must_fail()
         {
             // Arrange
@@ -31,21 +30,21 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             Action action = () => requirements.ChangeStartFinishMinDelayForSingleSensor(negativeTime);
 
             // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>();
         }
 
-        [Test]
+        [Fact]
         public void When_delay_is_specified_and_start_and_finish_is_same_sensor_it_must_succeed()
         {
             // Arrange
             TimeSpan minDelay = 1.Minutes();
+
             NetworkComposition composition = new NetworkCompositionBuilder()
                 .WithStartFinishMinDelayForSingleSensor(minDelay)
                 .Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.TimeSensor,
-                DeviceRoles.StartTimer | DeviceRoles.FinishTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.TimeSensor, DeviceRoles.StartTimer | DeviceRoles.FinishTimer);
 
             // Assert
             composition.IsInRoleStartTimer(DeviceAddress).Should().BeTrue();
@@ -54,7 +53,7 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsStartFinishGate(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_no_delay_is_specified_and_start_and_finish_is_same_sensor_it_must_fail()
         {
             // Arrange
@@ -72,21 +71,20 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             mismatches[0].Name.Should().Be("MissingDelayForStartFinishTimer");
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_start_timer_it_must_be_stored()
         {
             // Arrange
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.StartSensor,
-                DeviceRoles.StartTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.StartSensor, DeviceRoles.StartTimer);
 
             // Assert
             composition.IsInRoleStartTimer(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_devices_in_role_intermediate_timer_they_must_be_stored()
         {
             // Arrange
@@ -96,12 +94,10 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(timer1, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer1);
-            composition = composition.ChangeRolesFor(timer2, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer2);
-            composition = composition.ChangeRolesFor(timer3, DeviceCapabilities.IntermediateSensor,
-                DeviceRoles.IntermediateTimer3);
+            composition = composition
+                .ChangeRolesFor(timer1, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer1)
+                .ChangeRolesFor(timer2, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer2)
+                .ChangeRolesFor(timer3, DeviceCapabilities.IntermediateSensor, DeviceRoles.IntermediateTimer3);
 
             // Assert
             composition.IsInRoleIntermediateTimer1(timer1).Should().BeTrue();
@@ -109,52 +105,48 @@ namespace DogAgilityCompetition.Specs.NetworkSpecs
             composition.IsInRoleIntermediateTimer3(timer3).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_finish_timer_it_must_be_stored()
         {
             // Arrange
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.FinishSensor,
-                DeviceRoles.FinishTimer);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
             composition.IsInRoleFinishTimer(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_in_role_display_it_must_be_stored()
         {
             // Arrange
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.Display,
-                DeviceRoles.Display);
+            composition = composition.ChangeRolesFor(DeviceAddress, DeviceCapabilities.Display, DeviceRoles.Display);
 
             // Assert
             composition.IsInRoleDisplay(DeviceAddress).Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_an_empty_device_it_must_fail()
         {
             // Arrange
-            const WirelessNetworkAddress missingDevice = null;
+            const WirelessNetworkAddress? missingDevice = null;
             NetworkComposition composition = new NetworkCompositionBuilder().Build();
 
             // Act
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: The goal of this test is to cause failure when no device is specified.
-            Action action = () => composition = composition.ChangeRolesFor(missingDevice,
-                DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
+            // Justification for nullable suppression: The goal of this test is to cause failure when no device is specified.
+            Action action = () => composition = composition.ChangeRolesFor(missingDevice!, DeviceCapabilities.FinishSensor, DeviceRoles.FinishTimer);
 
             // Assert
-            action.Should().Throw<ArgumentNullException>();
+            action.Should().ThrowExactly<ArgumentNullException>();
         }
 
-        [Test]
+        [Fact]
         public void When_adding_a_device_with_an_empty_role_it_must_not_be_in_any_known_roles()
         {
             // Arrange

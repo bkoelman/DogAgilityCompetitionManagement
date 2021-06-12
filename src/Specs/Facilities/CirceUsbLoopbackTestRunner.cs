@@ -5,7 +5,6 @@ using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
@@ -14,44 +13,25 @@ namespace DogAgilityCompetition.Specs.Facilities
     /// </summary>
     public class CirceUsbLoopbackTestRunner : IDisposable
     {
-        [NotNull]
-        public CirceControllerSessionManager RemoteSessionManager { get; }
-
-        [NotNull]
-        public CirceComConnection Connection { get; }
-
-        [NotNull]
-        private readonly ManualResetEvent manualResetEvent;
-
-        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
-
         private static readonly TimeSpan DefaultRunTimeout = TimeSpan.FromMilliseconds(1000);
 
-        [CanBeNull]
+        private readonly ManualResetEvent manualResetEvent;
+
         private TimeSpan? timeout;
+        private Version? protocolVersion;
+
+        public CirceControllerSessionManager RemoteSessionManager { get; }
+        public CirceComConnection Connection { get; }
 
         public TimeSpan RunTimeout
         {
-            get
-            {
-                return timeout ?? DefaultRunTimeout;
-            }
-            set
-            {
-                timeout = value;
-            }
+            get => timeout ?? DefaultRunTimeout;
+            set => timeout = value;
         }
 
-        [CanBeNull]
-        private Version protocolVersion;
-
-        [NotNull]
         public Version ProtocolVersion
         {
-            get
-            {
-                return protocolVersion ?? KeepAliveOperation.CurrentProtocolVersion;
-            }
+            get => protocolVersion ?? KeepAliveOperation.CurrentProtocolVersion;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -60,6 +40,8 @@ namespace DogAgilityCompetition.Specs.Facilities
         }
 
         public int MediatorStatusCode { get; set; }
+
+        public event EventHandler<IncomingOperationEventArgs>? OperationReceived;
 
         public CirceUsbLoopbackTestRunner()
         {
@@ -81,20 +63,19 @@ namespace DogAgilityCompetition.Specs.Facilities
             }
         }
 
-        private void AttachConnectionHandlers([NotNull] CirceComConnection connection)
+        private void AttachConnectionHandlers(CirceComConnection connection)
         {
             connection.OperationReceived += ConnectionOnOperationReceived;
         }
 
-        private void DetachConnectionHandlers([NotNull] CirceComConnection connection)
+        private void DetachConnectionHandlers(CirceComConnection connection)
         {
             connection.OperationReceived -= ConnectionOnOperationReceived;
         }
 
-        private void ConnectionOnOperationReceived([CanBeNull] object sender, [NotNull] IncomingOperationEventArgs e)
+        private void ConnectionOnOperationReceived(object? sender, IncomingOperationEventArgs e)
         {
-            var loginOperation = e.Operation as LoginOperation;
-            if (loginOperation != null)
+            if (e.Operation is LoginOperation)
             {
                 Connection.Send(new KeepAliveOperation(ProtocolVersion, MediatorStatusCode));
             }
@@ -111,9 +92,10 @@ namespace DogAgilityCompetition.Specs.Facilities
 
         public bool StartWithKeepAliveLoopInBackground()
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 bool done;
+
                 do
                 {
                     done = manualResetEvent.WaitOne(500);

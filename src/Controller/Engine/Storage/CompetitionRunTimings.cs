@@ -1,5 +1,4 @@
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage
 {
@@ -11,31 +10,21 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class CompetitionRunTimings
     {
-        [NotNull]
         public RecordedTime StartTime { get; }
+        public RecordedTime? IntermediateTime1 { get; }
+        public RecordedTime? IntermediateTime2 { get; }
+        public RecordedTime? IntermediateTime3 { get; }
+        public RecordedTime? FinishTime { get; }
 
-        [CanBeNull]
-        public RecordedTime IntermediateTime1 { get; }
-
-        [CanBeNull]
-        public RecordedTime IntermediateTime2 { get; }
-
-        [CanBeNull]
-        public RecordedTime IntermediateTime3 { get; }
-
-        [CanBeNull]
-        public RecordedTime FinishTime { get; }
-
-        public CompetitionRunTimings([NotNull] RecordedTime startTime)
+        public CompetitionRunTimings(RecordedTime startTime)
         {
             Guard.NotNull(startTime, nameof(startTime));
 
             StartTime = startTime;
         }
 
-        private CompetitionRunTimings([NotNull] RecordedTime startTime, [CanBeNull] RecordedTime intermediateTime1,
-            [CanBeNull] RecordedTime intermediateTime2, [CanBeNull] RecordedTime intermediateTime3,
-            [CanBeNull] RecordedTime finishTime)
+        private CompetitionRunTimings(RecordedTime startTime, RecordedTime? intermediateTime1, RecordedTime? intermediateTime2, RecordedTime? intermediateTime3,
+            RecordedTime? finishTime)
             : this(startTime)
         {
             IntermediateTime1 = intermediateTime1;
@@ -44,32 +33,24 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             FinishTime = finishTime;
         }
 
-        [NotNull]
-        public CompetitionRunTimings ChangeIntermediateTime1([CanBeNull] RecordedTime intermediateTime1)
+        public CompetitionRunTimings ChangeIntermediateTime1(RecordedTime? intermediateTime1)
         {
-            return new CompetitionRunTimings(StartTime, intermediateTime1, IntermediateTime2, IntermediateTime3,
-                FinishTime);
+            return new(StartTime, intermediateTime1, IntermediateTime2, IntermediateTime3, FinishTime);
         }
 
-        [NotNull]
-        public CompetitionRunTimings ChangeIntermediateTime2([CanBeNull] RecordedTime intermediateTime2)
+        public CompetitionRunTimings ChangeIntermediateTime2(RecordedTime? intermediateTime2)
         {
-            return new CompetitionRunTimings(StartTime, IntermediateTime1, intermediateTime2, IntermediateTime3,
-                FinishTime);
+            return new(StartTime, IntermediateTime1, intermediateTime2, IntermediateTime3, FinishTime);
         }
 
-        [NotNull]
-        public CompetitionRunTimings ChangeIntermediateTime3([CanBeNull] RecordedTime intermediateTime3)
+        public CompetitionRunTimings ChangeIntermediateTime3(RecordedTime? intermediateTime3)
         {
-            return new CompetitionRunTimings(StartTime, IntermediateTime1, IntermediateTime2, intermediateTime3,
-                FinishTime);
+            return new(StartTime, IntermediateTime1, IntermediateTime2, intermediateTime3, FinishTime);
         }
 
-        [NotNull]
-        public CompetitionRunTimings ChangeFinishTime([CanBeNull] RecordedTime finishTime)
+        public CompetitionRunTimings ChangeFinishTime(RecordedTime? finishTime)
         {
-            return new CompetitionRunTimings(StartTime, IntermediateTime1, IntermediateTime2, IntermediateTime3,
-                finishTime);
+            return new(StartTime, IntermediateTime1, IntermediateTime2, IntermediateTime3, finishTime);
         }
     }
 }

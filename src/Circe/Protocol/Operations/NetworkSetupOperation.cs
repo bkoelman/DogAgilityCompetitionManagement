@@ -1,6 +1,4 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol.Parameters;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Operations
 {
@@ -9,49 +7,37 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A controller sends this operation to instruct a wireless device to join or leave the current logical network
-    /// configuration, and/or to change assigned roles.
+    /// A controller sends this operation to instruct a wireless device to join or leave the current logical network configuration, and/or to change assigned
+    /// roles.
     /// </para>
     /// <para>
-    /// Although a controller should validate its logical network configuration before it allows starting a competition run,
-    /// nothing prevents another mediator to "take over" a device in the middle of a run.
+    /// Although a controller should validate its logical network configuration before it allows starting a competition run, nothing prevents another
+    /// mediator to "take over" a device in the middle of a run.
     /// </para>
     /// <para>
-    /// A mediator must discard any changes in assigned roles when the Set Membership parameter indicates to leave the network,
-    /// to prevent altering another logical network configuration.
+    /// A mediator must discard any changes in assigned roles when the Set Membership parameter indicates to leave the network, to prevent altering another
+    /// logical network configuration.
     /// </para>
     /// </remarks>
-    [Serializable]
     public sealed class NetworkSetupOperation : Operation
     {
         internal const int TypeCode = 4;
 
-        [NotNull]
-        private readonly NetworkAddressParameter destinationAddressParameter =
-            ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
-
-        [NotNull]
-        private readonly BooleanParameter setMembershipParameter =
-            ParameterFactory.Create(ParameterType.Boolean.SetMembership, true);
-
-        [NotNull]
+        private readonly NetworkAddressParameter destinationAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.DestinationAddress, true);
+        private readonly BooleanParameter setMembershipParameter = ParameterFactory.Create(ParameterType.Boolean.SetMembership, true);
         private readonly IntegerParameter rolesParameter = ParameterFactory.Create(ParameterType.Integer.Roles, true);
 
         /// <summary>
         /// Required. Gets or sets the destination address of the device in the wireless network.
         /// </summary>
-        [CanBeNull]
-        public WirelessNetworkAddress DestinationAddress
+        public WirelessNetworkAddress? DestinationAddress
         {
             get
             {
-                string parameterValue = destinationAddressParameter.GetValueOrNull();
+                string? parameterValue = destinationAddressParameter.Value;
                 return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
             }
-            set
-            {
-                destinationAddressParameter.Value = value?.Value;
-            }
+            set => destinationAddressParameter.Value = value?.Value;
         }
 
         /// <summary>
@@ -60,33 +46,42 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
         /// <value>
         /// <c>true</c> to join network; <c>false</c> to leave network.
         /// </value>
-        [CanBeNull]
         public bool? SetMembership
         {
-            get
-            {
-                return setMembershipParameter.Value;
-            }
-            set
-            {
-                setMembershipParameter.Value = value;
-            }
+            get => setMembershipParameter.Value;
+            set => setMembershipParameter.Value = value;
         }
 
         /// <summary>
         /// Required. Gets or sets the roles that the device is going to perform in the logical network.
         /// </summary>
-        [CanBeNull]
         public DeviceRoles? Roles
         {
-            get
-            {
-                return (DeviceRoles?) rolesParameter.Value;
-            }
-            set
-            {
-                rolesParameter.Value = (int?) value;
-            }
+            get => (DeviceRoles?)rolesParameter.Value;
+            set => rolesParameter.Value = (int?)value;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkSetupOperation" /> class with required parameters.
+        /// </summary>
+        /// <param name="destinationAddress">
+        /// The destination address of the device in the wireless network.
+        /// </param>
+        /// <param name="setMembership">
+        /// Instructs whether the destination device must be part of the logical network configuration or not. Set to <c>true</c> to join network or <c>false</c>
+        /// to leave network.
+        /// </param>
+        /// <param name="roles">
+        /// The subset of capabilities that a device performs or is going to perform in the logical network.
+        /// </param>
+        public NetworkSetupOperation(WirelessNetworkAddress destinationAddress, bool setMembership, DeviceRoles roles)
+            : this()
+        {
+            Guard.NotNull(destinationAddress, nameof(destinationAddress));
+
+            DestinationAddress = destinationAddress;
+            SetMembership = setMembership;
+            Roles = roles;
         }
 
         /// <summary>
@@ -98,30 +93,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Operations
             Parameters.Add(destinationAddressParameter);
             Parameters.Add(setMembershipParameter);
             Parameters.Add(rolesParameter);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkSetupOperation" /> class with required parameters.
-        /// </summary>
-        /// <param name="destinationAddress">
-        /// The destination address of the device in the wireless network.
-        /// </param>
-        /// <param name="setMembership">
-        /// Instructs whether the destination device must be part of the logical network configuration or not. Set to <c>true</c>
-        /// to join network or <c>false</c> to leave network.
-        /// </param>
-        /// <param name="roles">
-        /// The subset of capabilities that a device performs or is going to perform in the logical network.
-        /// </param>
-        public NetworkSetupOperation([NotNull] WirelessNetworkAddress destinationAddress, bool setMembership,
-            DeviceRoles roles)
-            : this()
-        {
-            Guard.NotNull(destinationAddress, nameof(destinationAddress));
-
-            DestinationAddress = destinationAddress;
-            SetMembership = setMembership;
-            Roles = roles;
         }
 
         /// <summary>

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Controller.Engine.Visualization.Changes;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -11,8 +10,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public static class VisualizationChangeFactory
     {
-        [NotNull]
-        [ItemNotNull]
         public static IEnumerable<VisualizationChange> ClearAll()
         {
             return new VisualizationChange[]
@@ -30,8 +27,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             };
         }
 
-        [NotNull]
-        [ItemNotNull]
         public static IEnumerable<VisualizationChange> ClearCurrentRun()
         {
             return new VisualizationChange[]
@@ -44,8 +39,6 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             };
         }
 
-        [NotNull]
-        [ItemNotNull]
         public static IEnumerable<VisualizationChange> ResetCurrentRun()
         {
             return new VisualizationChange[]
@@ -58,10 +51,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             };
         }
 
-        [NotNull]
-        [ItemNotNull]
-        public static IEnumerable<VisualizationChange> ForExistingRun([NotNull] CompetitionRunResult existingRunResult,
-            [CanBeNull] RecordedTime latestIntermediateTimeOrNull)
+        public static IEnumerable<VisualizationChange> ForExistingRun(CompetitionRunResult existingRunResult, RecordedTime? latestIntermediateTimeOrNull)
         {
             Guard.NotNull(existingRunResult, nameof(existingRunResult));
 
@@ -72,14 +62,12 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             {
                 if (existingRunResult.Timings.FinishTime != null)
                 {
-                    finishTimeElapsed =
-                        existingRunResult.Timings.FinishTime.ElapsedSince(existingRunResult.Timings.StartTime);
+                    finishTimeElapsed = existingRunResult.Timings.FinishTime.ElapsedSince(existingRunResult.Timings.StartTime);
                 }
 
                 if (latestIntermediateTimeOrNull != null)
                 {
-                    intermediateTimeElapsed =
-                        latestIntermediateTimeOrNull.ElapsedSince(existingRunResult.Timings.StartTime);
+                    intermediateTimeElapsed = latestIntermediateTimeOrNull.ElapsedSince(existingRunResult.Timings.StartTime);
                 }
             }
 
@@ -93,28 +81,19 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             };
         }
 
-        [NotNull]
         public static VisualizationChange CompetitorNumberBlinkOn(bool isCurrentCompetitor)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) CurrentCompetitorNumberBlink.On
-                : NextCompetitorNumberBlink.On;
+            return isCurrentCompetitor ? CurrentCompetitorNumberBlink.On : NextCompetitorNumberBlink.On;
         }
 
-        [NotNull]
         public static VisualizationChange CompetitorNumberBlinkOff(bool isCurrentCompetitor)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) CurrentCompetitorNumberBlink.Off
-                : NextCompetitorNumberBlink.Off;
+            return isCurrentCompetitor ? CurrentCompetitorNumberBlink.Off : NextCompetitorNumberBlink.Off;
         }
 
-        [NotNull]
         public static VisualizationChange CompetitorNumberUpdate(bool isCurrentCompetitor, int competitorNumber)
         {
-            return isCurrentCompetitor
-                ? (VisualizationChange) new CurrentCompetitorNumberUpdate(competitorNumber)
-                : new NextCompetitorNumberUpdate(competitorNumber);
+            return isCurrentCompetitor ? new CurrentCompetitorNumberUpdate(competitorNumber) : new NextCompetitorNumberUpdate(competitorNumber);
         }
     }
 }

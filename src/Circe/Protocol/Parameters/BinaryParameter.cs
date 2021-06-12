@@ -12,17 +12,22 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// </summary>
     public sealed class BinaryParameter : Parameter
     {
-        [NotNull]
-        private static readonly Regex HexFormatRegex = new Regex("^([0-9A-F][0-9A-F])+$", RegexOptions.Compiled);
+        private static readonly Regex HexFormatRegex = new("^([0-9A-F][0-9A-F])+$", RegexOptions.Compiled);
 
-        [NotNull]
-        private readonly List<byte> innerValue = new List<byte>();
+        private readonly List<byte> innerValue = new();
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [NotNull]
         public IList<byte> Value => innerValue;
+
+        /// <summary>
+        /// Indicates whether the value of this parameter has been set.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this parameter has a value; otherwise, <c>false</c>.
+        /// </value>
+        public override bool HasValue => innerValue.Count > 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BinaryParameter" /> class.
@@ -36,18 +41,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public BinaryParameter([NotNull] string name, int id, bool isRequired)
+        public BinaryParameter(string name, int id, bool isRequired)
             : base(name, id, null, isRequired)
         {
         }
-
-        /// <summary>
-        /// Indicates whether the value of this parameter has been set.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if this parameter has a value; otherwise, <c>false</c>.
-        /// </value>
-        public override bool HasValue => innerValue.Count > 0;
 
         /// <summary>
         /// Exports the value of this parameter to binary format.
@@ -66,14 +63,15 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             return Encoding.ASCII.GetBytes(hexString);
         }
 
-        [NotNull]
-        private static string BytesToHexEncodedText([NotNull] ICollection<byte> source)
+        private static string BytesToHexEncodedText(ICollection<byte> source)
         {
             var textBuilder = new StringBuilder(source.Count * 2);
+
             foreach (byte bt in source)
             {
                 textBuilder.Append($"{bt:X2}");
             }
+
             return textBuilder.ToString();
         }
 
@@ -91,14 +89,13 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
-            string hexText = new string(chars);
+            string hexText = new(chars);
             IEnumerable<byte> hexEncoded = HexEncodedTextToBytes(hexText);
 
             ReplaceValueWith(hexEncoded);
         }
 
-        [NotNull]
-        private IEnumerable<byte> HexEncodedTextToBytes([NotNull] string hexText)
+        private IEnumerable<byte> HexEncodedTextToBytes(string hexText)
         {
             if (HexFormatRegex.IsMatch(hexText))
             {
@@ -118,7 +115,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                 $"Value of {GetType().Name} {Name} must consist of even number of characters in range 0-9 or A-F.");
         }
 
-        public void ReplaceValueWith([NotNull] IEnumerable<byte> value)
+        public void ReplaceValueWith(IEnumerable<byte> value)
         {
             Guard.NotNull(value, nameof(value));
 
@@ -127,10 +124,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
         public override string ToString()

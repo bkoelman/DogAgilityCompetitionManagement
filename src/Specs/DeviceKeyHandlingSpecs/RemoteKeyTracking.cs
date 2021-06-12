@@ -5,22 +5,17 @@ using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using JetBrains.Annotations;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
 {
     /// <summary />
-    [TestFixture]
     public sealed class RemoteKeyTracking
     {
-        [NotNull]
-        private static readonly WirelessNetworkAddress Source = new WirelessNetworkAddress("ABCDEF");
+        private static readonly WirelessNetworkAddress Source = new("ABCDEF");
+        private static readonly TimeSpan? NullTime = null!;
 
-        [CanBeNull]
-        private static readonly TimeSpan? NullTime = null;
-
-        [Test]
+        [Fact]
         public void When_no_raw_keys_are_included_it_must_raise_event_without_keys()
         {
             // Arrange
@@ -29,17 +24,15 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var tracker = new RemoteKeyTracker();
 
             // Act
-            using (var listener = new TrackerEventListener(tracker))
-            {
-                tracker.ProcessDeviceAction(deviceAction);
+            using var listener = new TrackerEventListener(tracker);
+            tracker.ProcessDeviceAction(deviceAction);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, sensorTime);
-            }
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, sensorTime);
         }
 
-        [Test]
+        [Fact]
         public void When_no_raw_keys_and_no_time_are_included_it_must_raise_event_without_keys_and_time()
         {
             // Arrange
@@ -47,14 +40,12 @@ namespace DogAgilityCompetition.Specs.DeviceKeyHandlingSpecs
             var tracker = new RemoteKeyTracker();
 
             // Act
-            using (var listener = new TrackerEventListener(tracker))
-            {
-                tracker.ProcessDeviceAction(deviceAction);
+            using var listener = new TrackerEventListener(tracker);
+            tracker.ProcessDeviceAction(deviceAction);
 
-                // Assert
-                listener.EventsCollected.Should().HaveCount(1);
-                listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, NullTime);
-            }
+            // Assert
+            listener.EventsCollected.Should().HaveCount(1);
+            listener.EventsCollected[0].ShouldBeMissingKeyFor(Source, NullTime);
         }
     }
 }

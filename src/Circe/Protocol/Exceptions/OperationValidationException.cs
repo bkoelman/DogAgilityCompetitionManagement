@@ -1,18 +1,12 @@
 using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
-    /// Represents the error that is thrown when the logical contents of a CIRCE packet is not compliant with the protocol
-    /// specification.
+    /// Represents the error that is thrown when the logical contents of a CIRCE packet is not compliant with the protocol specification.
     /// </summary>
-    [Serializable]
     public sealed class OperationValidationException : Exception
     {
-        [NotNull]
         public Operation Operation { get; }
 
         /// <summary>
@@ -24,7 +18,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="message">
         /// The message that describes the error.
         /// </param>
-        public OperationValidationException([NotNull] Operation operation, [NotNull] string message)
+        public OperationValidationException(Operation operation, string message)
             : base(FormatMessage(operation, message))
         {
             Guard.NotNull(operation, nameof(operation));
@@ -32,27 +26,9 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
             Operation = operation;
         }
 
-        [NotNull]
-        private static string FormatMessage([NotNull] Operation operation, [NotNull] string message)
+        private static string FormatMessage(Operation operation, string message)
         {
             return $"{operation.GetType().Name} ({operation.Code}): {message}";
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        private OperationValidationException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-            Operation = (Operation) info.GetValue("Operation", typeof (Operation));
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            Guard.NotNull(info, nameof(info));
-
-            info.AddValue("Operation", Operation);
-
-            base.GetObjectData(info, context);
         }
     }
 }

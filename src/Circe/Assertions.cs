@@ -1,6 +1,6 @@
 using System;
-using System.Linq.Expressions;
 using JetBrains.Annotations;
+using IsNotNullOnReturn = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
 namespace DogAgilityCompetition.Circe
 {
@@ -8,38 +8,12 @@ namespace DogAgilityCompetition.Circe
     public static class Assertions
     {
         [AssertionMethod]
-        [NotNull]
-        public static T InternalValueIsNotNull<T>([NotNull] GetReferenceCallback<T> memberAsFunc,
-            [NotNull] Expression<GetReferenceCallback<T>> memberAsExpression) where T : class
+        public static void IsNotNull<T>([IsNotNullOnReturn] [NoEnumeration] T? value, [InvokerParameterName] string name)
         {
-            Guard.NotNull(memberAsFunc, nameof(memberAsFunc));
-            Guard.NotNull(memberAsExpression, nameof(memberAsExpression));
-
-            T value = memberAsFunc();
-            if (value == null)
+            if (value is null)
             {
-                // Note: Caller needs to pass same expression twice for better performance.
-                throw new InvalidOperationException(
-                    $"Unexpected internal error: {memberAsExpression.GetExpressionFullName()} is null.");
+                throw new InvalidOperationException($"Unexpected internal error: {name} is null.");
             }
-            return value;
-        }
-
-        [AssertionMethod]
-        public static T InternalValueIsNotNull<T>([NotNull] GetOptionalValueCallback<T> memberAsFunc,
-            [NotNull] Expression<GetOptionalValueCallback<T>> memberAsExpression) where T : struct
-        {
-            Guard.NotNull(memberAsFunc, nameof(memberAsFunc));
-            Guard.NotNull(memberAsExpression, nameof(memberAsExpression));
-
-            T? value = memberAsFunc();
-            if (value == null)
-            {
-                // Note: Caller needs to pass same expression twice for better performance.
-                throw new InvalidOperationException(
-                    $"Unexpected internal error: {memberAsExpression.GetExpressionFullName()} is null.");
-            }
-            return value.Value;
         }
     }
 }

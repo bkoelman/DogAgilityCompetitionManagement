@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -12,18 +11,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed partial class RunHistoryLine : UserControl
     {
-        public static readonly Color EliminationColor = Color.FromArgb(255, 192, 0, 0);
-
         private const string DefaultColorInHex = "0xFFE0C2";
 
+        public static readonly Color EliminationColor = Color.FromArgb(255, 192, 0, 0);
+
         [Category("Appearance")]
-        [DefaultValue(typeof (Color), DefaultColorInHex)]
+        [DefaultValue(typeof(Color), DefaultColorInHex)]
         public Color FillColor
         {
-            get
-            {
-                return competitorNumberPanel.BackColor;
-            }
+            get => competitorNumberPanel.BackColor;
             set
             {
                 competitorNumberPanel.BackColor = value;
@@ -55,7 +51,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             placementLabel.Text = string.Empty;
         }
 
-        public void SetCompetitionRunResult([NotNull] CompetitionRunResult runResult)
+        public void SetCompetitionRunResult(CompetitionRunResult runResult)
         {
             Guard.NotNull(runResult, nameof(runResult));
 
@@ -63,9 +59,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             countryCodeLabel.Text = runResult.Competitor.CountryCode;
             dogNameLabel.Text = runResult.Competitor.DogName;
             handlerNameLabel.Text = runResult.Competitor.HandlerName;
-            finishTimeLabel.Text =
-                TextFormatting.FormatTime(
-                    runResult.Timings?.FinishTime?.ElapsedSince(runResult.Timings.StartTime).TimeValue);
+            finishTimeLabel.Text = TextFormatting.FormatTime(runResult.Timings?.FinishTime?.ElapsedSince(runResult.Timings.StartTime).TimeValue);
             faultsLabel.Text = TextFormatting.FormatNumber(runResult.FaultCount, 2);
             refusalsLabel.Text = TextFormatting.FormatNumber(runResult.RefusalCount, 2);
 
@@ -73,7 +67,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 finishTimeLabel.ForeColor = EliminationColor;
 
-                placementLabel.Text = @"X";
+                placementLabel.Text = "X";
                 placementLabel.ForeColor = EliminationColor;
             }
             else

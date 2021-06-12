@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DogAgilityCompetition.Circe.Protocol.Exceptions;
@@ -8,23 +7,19 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Protocol
 {
     /// <summary>
-    /// Represents the base class for all CIRCE operations that can be exchanged between an application controller and a
-    /// mediator device.
+    /// Represents the base class for all CIRCE operations that can be exchanged between an application controller and a mediator device.
     /// </summary>
-    [Serializable]
     public abstract class Operation
     {
+        /// <summary>
+        /// Gets the operation parameters.
+        /// </summary>
+        protected internal IList<Parameter> Parameters { get; }
+
         /// <summary>
         /// Gets the code that identifies this type of operation.
         /// </summary>
         public int Code { get; }
-
-        /// <summary>
-        /// Gets the operation parameters.
-        /// </summary>
-        [NotNull]
-        [ItemNotNull]
-        protected internal IList<Parameter> Parameters { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Operation" /> class.
@@ -58,15 +53,14 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// <param name="acceptor">
         /// The object accepting this operation.
         /// </param>
-        public abstract void Visit([NotNull] IOperationAcceptor acceptor);
+        public abstract void Visit(IOperationAcceptor acceptor);
 
         protected internal virtual bool AllowMultiple(int parameterId)
         {
             return false;
         }
 
-        [CanBeNull]
-        protected internal virtual Parameter GetParameterOrNull(int parameterId)
+        protected internal virtual Parameter? GetParameterOrNull(int parameterId)
         {
             return Parameters.FirstOrDefault(p => p.Id == parameterId);
         }
@@ -84,7 +78,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             textBuilder.Append(GetType().Name);
             textBuilder.Append(" (");
             textBuilder.Append(Code);
-            textBuilder.Append(")");
+            textBuilder.Append(')');
 
             if (Parameters.Count > 0)
             {
@@ -103,10 +97,12 @@ namespace DogAgilityCompetition.Circe.Protocol
                         {
                             textBuilder.Append(", ");
                         }
+
                         textBuilder.Append(parameter);
                     }
                 }
-                textBuilder.Append("]");
+
+                textBuilder.Append(']');
             }
 
             return textBuilder.ToString();

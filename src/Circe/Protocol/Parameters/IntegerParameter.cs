@@ -8,10 +8,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a whole number.
     /// </summary>
-    [Serializable]
     public sealed class IntegerParameter : Parameter
     {
-        [CanBeNull]
         private int? innerValue;
 
         /// <summary>
@@ -27,19 +25,14 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
         public int? Value
         {
-            get
-            {
-                return innerValue;
-            }
+            get => innerValue;
             set
             {
                 if (value != null && (value < MinValue || value > MaxValue))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value,
-                        $"Value of {GetType().Name} {Name} must be in range [{MinValue}-{MaxValue}].");
+                    throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be in range [{MinValue}-{MaxValue}].");
                 }
 
                 innerValue = value;
@@ -72,7 +65,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public IntegerParameter([NotNull] string name, int id, int minValue, int maxValue, bool isRequired)
+        public IntegerParameter(string name, int id, int minValue, int maxValue, bool isRequired)
             : base(name, id, CalculateMaxDigitCount(minValue, maxValue), isRequired)
         {
             if (minValue > maxValue)
@@ -104,7 +97,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                 throw new InvalidOperationException($"{GetType().Name} {Name} has no value.");
             }
 
-            string valueString = Value.ToString();
+            string valueString = Value.ToString() ?? string.Empty;
             return Encoding.ASCII.GetBytes(valueString);
         }
 
@@ -122,9 +115,10 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
+
             try
             {
-                Value = int.Parse(new string(chars));
+                Value = int.Parse(new string(chars), CultureInfo.InvariantCulture);
             }
             catch (FormatException ex)
             {
@@ -133,12 +127,15 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        }
     }
 }

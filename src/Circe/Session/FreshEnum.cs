@@ -1,17 +1,18 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 
 namespace DogAgilityCompetition.Circe.Session
 {
     /// <summary>
-    /// Wraps a <see cref="System.Enum" />, where reading and writing the wrapped value always atomically returns the latest
-    /// value.
+    /// Wraps a <see cref="System.Enum" />, where reading and writing the wrapped value always atomically returns the latest value.
     /// </summary>
     /// <remarks>
-    /// It is strongly recommended to mark <see cref="FreshEnum{T}" /> members in your class as <c>readonly</c>, because
-    /// accidentally replacing a FreshEnum object with another FreshEnum object defeats the whole purpose of this class.
+    /// It is strongly recommended to mark <see cref="FreshEnum{T}" /> members in your class as <c>readonly</c>, because accidentally replacing a FreshEnum
+    /// object with another FreshEnum object defeats the whole purpose of this class.
     /// </remarks>
+    [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
     public sealed class FreshEnum<T>
         where T : struct
     {
@@ -38,12 +39,12 @@ namespace DogAgilityCompetition.Circe.Session
 
         private static T FromInt64(long value)
         {
-            return (T) Enum.Parse(typeof (T), value.ToString(CultureInfo.InvariantCulture));
+            return (T)Enum.Parse(typeof(T), value.ToString(CultureInfo.InvariantCulture));
         }
 
         private static long ToInt64(T value)
         {
-            return Convert.ToInt64(value);
+            return Convert.ToInt64(value, CultureInfo.InvariantCulture);
         }
     }
 }

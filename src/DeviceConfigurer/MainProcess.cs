@@ -13,18 +13,14 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// </summary>
     public sealed class MainProcess
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
         private readonly StartupArguments startupArguments;
-
-        [NotNull]
         private readonly IncomingOperationDispatcher dispatcher;
 
         private bool IsConfiguringMediator => startupArguments.Capabilities == null;
 
-        public MainProcess([NotNull] StartupArguments startupArguments)
+        public MainProcess(StartupArguments startupArguments)
         {
             Guard.NotNull(startupArguments, nameof(startupArguments));
 
@@ -35,14 +31,14 @@ namespace DogAgilityCompetition.DeviceConfigurer
         public void Run()
         {
             var stateMachine = new AssignmentStateMachine(new PhaseWaitingForConnection());
-            CirceComConnection connection = null;
+            CirceComConnection connection = null!;
 
             Log.Info($"Connecting to mediator on {startupArguments.ComPortName}...");
-            stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(phase =>
+
+            stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(_ =>
             {
                 connection = new CirceComConnection(startupArguments.ComPortName);
-                connection.OperationReceived +=
-                    (sender, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
+                connection.OperationReceived += (_, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
                 connection.Open();
                 connection.Send(new LoginOperation());
 
@@ -53,15 +49,15 @@ namespace DogAgilityCompetition.DeviceConfigurer
             var readyForDeviceSetup = stateMachine.WaitForPhase<PhaseReadyForDeviceSetup>();
             Log.Info($"Mediator status in login response: {readyForDeviceSetup.MediatorStatus}.");
 
-            if (!IsConfiguringMediator &&
-                readyForDeviceSetup.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured)
+            if (!IsConfiguringMediator && readyForDeviceSetup.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured)
             {
                 Log.Info("ERROR: Connected to unconfigured mediator. Please configure mediator first.");
                 return;
             }
 
             Log.Info("Sending address assignment...");
-            stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(phase1 =>
+
+            stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(_ =>
             {
                 connection.Send(new DeviceSetupOperation(startupArguments.NewAddress)
                 {
@@ -83,8 +79,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
             connection.Send(new LogoutOperation());
         }
 
-        private void ConnectionOperationReceived([NotNull] IncomingOperationEventArgs e,
-            [NotNull] AssignmentStateMachine stateMachine)
+        private void ConnectionOperationReceived(IncomingOperationEventArgs e, AssignmentStateMachine stateMachine)
         {
             dispatcher.SetStateMachine(stateMachine);
             e.Operation.Visit(dispatcher);
@@ -92,19 +87,17 @@ namespace DogAgilityCompetition.DeviceConfigurer
 
         private sealed class IncomingOperationDispatcher : IOperationAcceptor
         {
-            [NotNull]
             private readonly MainProcess owner;
 
-            [CanBeNull]
-            private AssignmentStateMachine assignmentStateMachine;
+            private AssignmentStateMachine? assignmentStateMachine;
 
-            public IncomingOperationDispatcher([NotNull] MainProcess owner)
+            public IncomingOperationDispatcher(MainProcess owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 this.owner = owner;
             }
 
-            public void SetStateMachine([NotNull] AssignmentStateMachine stateMachine)
+            public void SetStateMachine(AssignmentStateMachine stateMachine)
             {
                 Guard.NotNull(stateMachine, nameof(stateMachine));
                 assignmentStateMachine = stateMachine;
@@ -142,17 +135,12 @@ namespace DogAgilityCompetition.DeviceConfigurer
             {
                 AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
 
-                bool transitioned =
-                    stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(
-                        phase => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
+                bool transitioned = stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(_ => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
 
                 if (!transitioned)
                 {
-                    stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(
-                        phase =>
-                            owner.IsConfiguringMediator
-                                ? (AssignmentPhase) new PhaseAssignmentCompleted(operation.MediatorStatus)
-                                : null);
+                    stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(_ =>
+                        owner.IsConfiguringMediator ? (AssignmentPhase)new PhaseAssignmentCompleted(operation.MediatorStatus) : null);
                 }
             }
 
@@ -160,9 +148,8 @@ namespace DogAgilityCompetition.DeviceConfigurer
             {
                 AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
 
-                stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(
-                    phase =>
-                        phase.NewAddress == operation.OriginatingAddress ? new PhaseAssignmentCompleted(null) : null);
+                stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(phase =>
+                    phase.NewAddress == operation.OriginatingAddress ? new PhaseAssignmentCompleted(null) : null);
             }
 
             public void Accept(NotifyActionOperation operation)
@@ -170,9 +157,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
             }
 
             [AssertionMethod]
-            [NotNull]
-            private static AssignmentStateMachine AssertStateMachineIsAssigned(
-                [CanBeNull] AssignmentStateMachine stateMachine)
+            private static AssignmentStateMachine AssertStateMachineIsAssigned(AssignmentStateMachine? stateMachine)
             {
                 Guard.NotNull(stateMachine, nameof(stateMachine));
                 return stateMachine;

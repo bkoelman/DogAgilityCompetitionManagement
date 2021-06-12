@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -11,27 +10,21 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     public sealed class CompetitionAlertsXml
     {
         [DataMember]
-        [CanBeNull]
-        public AlertSourceXml Eliminated { get; set; }
+        public AlertSourceXml? Eliminated { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public AlertSourceXml FirstPlace { get; set; }
+        public AlertSourceXml? FirstPlace { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public AlertSourceXml CleanRunInStandardCourseTime { get; set; }
+        public AlertSourceXml? CleanRunInStandardCourseTime { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public AlertSourceXml ReadyToStart { get; set; }
+        public AlertSourceXml? ReadyToStart { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public AlertSourceXml CustomItemA { get; set; }
+        public AlertSourceXml? CustomItemA { get; set; }
 
-        [NotNull]
-        public static CompetitionAlertsXml ToXmlObject([NotNull] CompetitionAlerts source)
+        public static CompetitionAlertsXml ToXmlObject(CompetitionAlerts source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -45,15 +38,19 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static CompetitionAlerts FromXmlObject([CanBeNull] CompetitionAlertsXml source)
+        public static CompetitionAlerts FromXmlObject(CompetitionAlertsXml? source)
         {
+            // @formatter:keep_existing_linebreaks true
+
             return source == null
                 ? CompetitionAlerts.Empty
                 : new CompetitionAlerts(AlertSourceXml.FromXmlObject(source.Eliminated),
                     AlertSourceXml.FromXmlObject(source.FirstPlace),
                     AlertSourceXml.FromXmlObject(source.CleanRunInStandardCourseTime),
-                    AlertSourceXml.FromXmlObject(source.ReadyToStart), AlertSourceXml.FromXmlObject(source.CustomItemA));
+                    AlertSourceXml.FromXmlObject(source.ReadyToStart),
+                    AlertSourceXml.FromXmlObject(source.CustomItemA));
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

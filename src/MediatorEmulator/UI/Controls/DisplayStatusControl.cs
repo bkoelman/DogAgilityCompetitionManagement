@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.MediatorEmulator.Engine;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -16,16 +15,10 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     {
         private const string MillisecDashes = "---";
         private const string EliminationText = "-E-";
-
         private static readonly TimeSpan FreezeSecondaryTimeDuration = TimeSpan.FromSeconds(2);
 
-        [CanBeNull]
-        private string primaryTimeMillisecondsMeasured;
-
-        [CanBeNull]
+        private string? primaryTimeMillisecondsMeasured;
         private DateTime? primaryTimeStartedAt;
-
-        [CanBeNull]
         private SecondaryTime? secondaryTime;
 
         private bool IsEliminated => primaryTimeMillisecondsLabel.Text == EliminationText;
@@ -35,22 +28,22 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             InitializeComponent();
 
             var timerFontContainer = new TimerFontContainer(ref components);
-            timerFontContainer.ApplyTo(primaryTimeSecondsLabel, primaryTimeMillisecondsLabel, currentFaultsValueLabel,
-                currentRefusalsValueLabel, currentCompetitorNumberLabel, previousCompetitorPlacementLabel,
-                nextCompetitorNumberLabel);
+
+            timerFontContainer.ApplyTo(primaryTimeSecondsLabel, primaryTimeMillisecondsLabel, currentFaultsValueLabel, currentRefusalsValueLabel,
+                currentCompetitorNumberLabel, previousCompetitorPlacementLabel, nextCompetitorNumberLabel);
         }
 
-        private void DisplayStatusControl_Resize([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayStatusControl_Resize(object? sender, EventArgs e)
         {
             int centerX = displayGroupBox.ClientSize.Width / 2;
             int labelWidth = previousCompetitorPlacementLabel.Width;
-            previousCompetitorPlacementLabel.Location = new Point(centerX - labelWidth / 2,
-                previousCompetitorPlacementLabel.Location.Y);
+            previousCompetitorPlacementLabel.Location = new Point(centerX - labelWidth / 2, previousCompetitorPlacementLabel.Location.Y);
         }
 
-        private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayRefreshTimer_Tick(object? sender, EventArgs e)
         {
-            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+            bool isSecondaryTimeVisible = secondaryTime is { IsVisible: true };
+
             if (primaryTimeStartedAt != null && !isSecondaryTimeVisible)
             {
                 TimeSpan timePassed = SystemContext.UtcNow() - primaryTimeStartedAt.Value;
@@ -58,7 +51,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private void UpdatePrimaryTime([CanBeNull] TimeSpan? primaryTime, bool showMilliseconds)
+        private void UpdatePrimaryTime(TimeSpan? primaryTime, bool showMilliseconds)
         {
             primaryTimeSecondsLabel.Text = TextFormatting.FormatSeconds(primaryTime);
 
@@ -122,13 +115,20 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         void ISimpleVisualizationActor.SetElimination(bool isEliminated)
         {
-            bool isSecondaryTimeVisible = secondaryTime != null && secondaryTime.Value.IsVisible;
+            bool isSecondaryTimeVisible = secondaryTime is { IsVisible: true };
 
-            primaryTimeMillisecondsLabel.Text = isEliminated
-                ? EliminationText
-                : (isSecondaryTimeVisible
-                    ? TextFormatting.FormatMilliseconds(secondaryTime.Value.TimeValue)
-                    : (primaryTimeStartedAt != null ? MillisecDashes : primaryTimeMillisecondsMeasured));
+            // @formatter:keep_existing_linebreaks true
+
+            primaryTimeMillisecondsLabel.Text =
+                isEliminated
+                    ? EliminationText
+                    : isSecondaryTimeVisible
+                        ? TextFormatting.FormatMilliseconds(secondaryTime!.Value.TimeValue)
+                        : primaryTimeStartedAt != null
+                            ? MillisecDashes
+                            : primaryTimeMillisecondsMeasured;
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         void ISimpleVisualizationActor.SetOrClearCurrentCompetitorNumber(int? number)
@@ -148,8 +148,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private static class TextFormatting
         {
-            [NotNull]
-            public static string FormatNumber([CanBeNull] int? number, int digitCount)
+            public static string FormatNumber(int? number, int digitCount)
             {
                 if (number == null)
                 {
@@ -159,13 +158,12 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 var formatBuilder = new StringBuilder();
                 formatBuilder.Append("{0,");
                 formatBuilder.Append(digitCount);
-                formatBuilder.Append("}");
+                formatBuilder.Append('}');
 
                 return string.Format(formatBuilder.ToString(), number);
             }
 
-            [NotNull]
-            public static string FormatSeconds([CanBeNull] TimeSpan? time)
+            public static string FormatSeconds(TimeSpan? time)
             {
                 if (time == null)
                 {
@@ -176,14 +174,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 return $"{seconds,3}";
             }
 
-            [NotNull]
-            public static string FormatMilliseconds([CanBeNull] TimeSpan? time)
+            public static string FormatMilliseconds(TimeSpan? time)
             {
                 return time == null ? string.Empty : $"{time.Value.Milliseconds:000}";
             }
         }
 
-        private struct SecondaryTime
+        private readonly struct SecondaryTime
         {
             private readonly DateTime startedAt;
 

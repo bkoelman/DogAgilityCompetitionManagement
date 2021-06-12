@@ -9,7 +9,6 @@ using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Controller.Engine.Visualization;
 using DogAgilityCompetition.Controller.UI.Controls;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -21,9 +20,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         private const int HistoryLineCount = 5;
         private const int WsExComposited = 0x02000000;
 
-        [NotNull]
-        [ItemNotNull]
         private readonly RunHistoryLine[] historyLines;
+
+        private DateTime? startTime;
+        private int secondaryTimeHighlightCount;
+        private Panel? rankingsOverlayPanel;
+        private NotifyPictureForm? lastPlayedAnimationForm;
 
         protected override CreateParams CreateParams
         {
@@ -40,7 +42,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             InitializeComponent();
 
             // ReSharper disable once RedundantExplicitArraySize
-            // Reason: Extra compiler check when number of lines changes.
+            // Justification: Extra compiler check when number of lines changes.
             historyLines = new RunHistoryLine[HistoryLineCount]
             {
                 runHistoryLine1,
@@ -54,7 +56,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             timerFontContainer.ApplyTo(primaryTimeLabel, secondaryTimeLabel);
         }
 
-        private void TimerDisplayForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TimerDisplayForm_Load(object? sender, EventArgs e)
         {
             foreach (VisualizationChange change in VisualizationChangeFactory.ClearAll())
             {
@@ -62,7 +64,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void TimerDisplayForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void TimerDisplayForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
@@ -70,17 +72,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        void IVisualizationActor.SetClass(CompetitionClassInfo classInfo)
+        void IVisualizationActor.SetClass(CompetitionClassInfo? classInfo)
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
-                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
-                : string.Empty;
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}" : string.Empty;
         }
-
-        [CanBeNull]
-        private DateTime? startTime;
 
         void IVisualizationActor.StartPrimaryTimer()
         {
@@ -88,7 +85,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             displayRefreshTimer.Enabled = true;
         }
 
-        private void DisplayRefreshTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayRefreshTimer_Tick(object? sender, EventArgs e)
         {
             if (startTime != null)
             {
@@ -109,8 +106,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             startTime = null;
         }
 
-        private int secondaryTimeHighlightCount;
-
         void IVisualizationActor.SetOrClearSecondaryTime(TimeSpan? time, bool doBlink)
         {
             secondaryTimeLabel.Text = time != null ? TextFormatting.FormatTime(time) : string.Empty;
@@ -122,7 +117,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void SecondaryTimeHighlighter_HighlightCycleFinished([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void SecondaryTimeHighlighter_HighlightCycleFinished(object? sender, EventArgs e)
         {
             secondaryTimeHighlightCount++;
 
@@ -148,11 +143,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             primaryTimeLabel.ForeColor = isEliminated ? RunHistoryLine.EliminationColor : SystemColors.ControlText;
         }
 
-        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor? competitor)
         {
-            currentCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            currentCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
             currentHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             currentDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
@@ -167,11 +160,9 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             currentCompetitorNumberHighlighter.IsHighlightEnabled = isEnabled;
         }
 
-        void IVisualizationActor.SetOrClearNextCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearNextCompetitor(Competitor? competitor)
         {
-            nextCompetitorNumberLabel.Text = competitor != null
-                ? TextFormatting.FormatCompetitorNumber(competitor.Number)
-                : string.Empty;
+            nextCompetitorNumberLabel.Text = competitor != null ? TextFormatting.FormatCompetitorNumber(competitor.Number) : string.Empty;
             nextHandlerNameLabel.Text = competitor?.HandlerName ?? string.Empty;
             nextDogNameLabel.Text = competitor?.DogName ?? string.Empty;
         }
@@ -186,29 +177,24 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             nextCompetitorNumberHighlighter.IsHighlightEnabled = isEnabled;
         }
 
-        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult competitorRunResult)
+        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult? competitorRunResult)
         {
             if (competitorRunResult != null)
             {
-                prevCompetitorNumberLabel.Text =
-                    TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
+                prevCompetitorNumberLabel.Text = TextFormatting.FormatCompetitorNumber(competitorRunResult.Competitor.Number);
                 prevHandlerNameLabel.Text = competitorRunResult.Competitor.HandlerName;
                 prevDogNameLabel.Text = competitorRunResult.Competitor.DogName;
+
                 prevTimeLabel.Text =
-                    TextFormatting.FormatTime(
-                        competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime)
-                            .TimeValue);
+                    TextFormatting.FormatTime(competitorRunResult.Timings?.FinishTime?.ElapsedSince(competitorRunResult.Timings.StartTime).TimeValue);
+
                 prevFaultsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.FaultCount, 2);
                 prevRefusalsValueLabel.Text = TextFormatting.FormatNumber(competitorRunResult.RefusalCount, 2);
 
-                Color foreColor = competitorRunResult.IsEliminated
-                    ? RunHistoryLine.EliminationColor
-                    : SystemColors.ControlText;
+                Color foreColor = competitorRunResult.IsEliminated ? RunHistoryLine.EliminationColor : SystemColors.ControlText;
                 prevTimeLabel.ForeColor = foreColor;
                 prevPlacementLabel.ForeColor = foreColor;
-                prevPlacementLabel.Text = competitorRunResult.IsEliminated
-                    ? @"X"
-                    : TextFormatting.FormatPlacement(competitorRunResult.Placement);
+                prevPlacementLabel.Text = competitorRunResult.IsEliminated ? "X" : TextFormatting.FormatPlacement(competitorRunResult.Placement);
             }
             else
             {
@@ -225,6 +211,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         void IVisualizationActor.SetOrClearRankings(IEnumerable<CompetitionRunResult> rankings)
         {
             int index = 0;
+
             foreach (CompetitionRunResult runResult in rankings.Take(historyLines.Length))
             {
                 historyLines[index].SetCompetitionRunResult(runResult);
@@ -237,12 +224,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        [CanBeNull]
-        private Panel rankingsOverlayPanel;
-
         void IVisualizationActor.SetClockSynchronizationMode(ClockSynchronizationMode mode)
         {
-            string message;
+            string? message;
+
             switch (mode)
             {
                 case ClockSynchronizationMode.RecommendSynchronization:
@@ -257,6 +242,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
 
             RemoveRankingsOverlay();
+
             if (message != null)
             {
                 rankingsOverlayPanel = CreateRankingsOverlay(message);
@@ -273,8 +259,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        [NotNull]
-        private Panel CreateRankingsOverlay([NotNull] string text)
+        private Panel CreateRankingsOverlay(string text)
         {
             RunHistoryLine lastHistoryLine = historyLines[HistoryLineCount - 1];
 
@@ -301,9 +286,6 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             };
         }
 
-        [CanBeNull]
-        private NotifyPictureForm lastPlayedAnimationForm;
-
         void IVisualizationActor.StartAnimation(Bitmap bitmap)
         {
             lastPlayedAnimationForm?.Cancel();
@@ -313,17 +295,15 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             lastPlayedAnimationForm.ShowAnimated(this, bitmap);
         }
 
-        private void LastPlayedAnimationFormOnAnimationCompleted([CanBeNull] object sender,
-            [NotNull] EventArgs eventArgs)
+        private void LastPlayedAnimationFormOnAnimationCompleted(object? sender, EventArgs eventArgs)
         {
-            var source = sender as NotifyPictureForm;
-            if (source != null)
+            if (sender is NotifyPictureForm source)
             {
                 source.AnimationCompleted -= LastPlayedAnimationFormOnAnimationCompleted;
             }
         }
 
-        void IVisualizationActor.PlaySound(string path)
+        void IVisualizationActor.PlaySound(string? path)
         {
             SystemSound.PlayWaveFile(path);
         }

@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
@@ -13,56 +12,51 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
     public static class RegistrySettingsProvider
     {
         private const string RegistryPath = @"Software\DogAgilityCompetitionManagement\MediatorEmulator";
-        private const string MruRegistryPath = @"MruList";
+        private const string MruRegistryPath = "MruList";
         private const int MruMaxLength = 6;
-        private const string LastUsedAddressPath = @"LastAddressUsed";
+        private const string LastUsedAddressPath = "LastAddressUsed";
 
-        [NotNull]
         public static MostRecentlyUsedContainer GetMruList()
         {
             return IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath))
+                using RegistryKey? appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
+                var container = new MostRecentlyUsedContainer();
+
+                if (appSettingsKey != null)
                 {
-                    var container = new MostRecentlyUsedContainer();
-                    if (appSettingsKey != null)
-                    {
-                        ImportContainerFromKey(appSettingsKey, container);
-                    }
-                    return container;
+                    ImportContainerFromKey(appSettingsKey, container);
                 }
+
+                return container;
             }, new MostRecentlyUsedContainer());
         }
 
-        private static void ImportContainerFromKey([NotNull] RegistryKey appSettingsKey,
-            [NotNull] MostRecentlyUsedContainer container)
+        private static void ImportContainerFromKey(RegistryKey appSettingsKey, MostRecentlyUsedContainer container)
         {
-            string valueList = appSettingsKey.GetValue(MruRegistryPath) as string;
-            if (valueList != null)
+            if (appSettingsKey.GetValue(MruRegistryPath) is string valueList)
             {
-                string[] values = valueList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = valueList.Split(new[]
+                {
+                    ';'
+                }, StringSplitOptions.RemoveEmptyEntries);
+
                 container.Import(values.Take(MruMaxLength));
             }
         }
 
-        public static void SaveMruList([NotNull] MostRecentlyUsedContainer container)
+        public static void SaveMruList(MostRecentlyUsedContainer container)
         {
             Guard.NotNull(container, nameof(container));
 
             IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath))
-                {
-                    if (appSettingsKey != null)
-                    {
-                        ExportContainerToKey(container, appSettingsKey);
-                    }
-                }
+                using RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
+                ExportContainerToKey(container, appSettingsKey);
             });
         }
 
-        private static void ExportContainerToKey([NotNull] MostRecentlyUsedContainer container,
-            [NotNull] RegistryKey appSettingsKey)
+        private static void ExportContainerToKey(MostRecentlyUsedContainer container, RegistryKey appSettingsKey)
         {
             string valueList = string.Join(";", container.Items.Take(MruMaxLength));
             appSettingsKey.SetValue(MruRegistryPath, valueList);
@@ -72,42 +66,35 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
         {
             return IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath))
-                {
-                    return appSettingsKey != null ? ParseAddressFromKey(appSettingsKey) : 0;
-                }
+                using RegistryKey? appSettingsKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
+                return appSettingsKey != null ? ParseAddressFromKey(appSettingsKey) : 0;
             }, 0);
         }
 
-        private static int ParseAddressFromKey([NotNull] RegistryKey appSettingsKey)
+        private static int ParseAddressFromKey(RegistryKey appSettingsKey)
         {
-            object value = appSettingsKey.GetValue(LastUsedAddressPath);
-            return (int?) value ?? 0;
+            object? value = appSettingsKey.GetValue(LastUsedAddressPath);
+            return (int?)value ?? 0;
         }
 
         public static void SaveLastUsedAddress(int address)
         {
             IgnoreErrors(() =>
             {
-                using (RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath))
-                {
-                    if (appSettingsKey != null)
-                    {
-                        StoreAddressInKey(address, appSettingsKey);
-                    }
-                }
+                using RegistryKey appSettingsKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
+                StoreAddressInKey(address, appSettingsKey);
             });
         }
 
-        private static void StoreAddressInKey(int address, [NotNull] RegistryKey appSettingsKey)
+        private static void StoreAddressInKey(int address, RegistryKey appSettingsKey)
         {
             string value = address.ToString(CultureInfo.InvariantCulture);
             appSettingsKey.SetValue(LastUsedAddressPath, value, RegistryValueKind.DWord);
         }
 
-        private static void IgnoreErrors([NotNull] Action action)
+        private static void IgnoreErrors(Action action)
         {
-            var tempInstance = new object();
+            object tempInstance = new();
 
             Func<object> callback = () =>
             {
@@ -118,15 +105,14 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine.Storage
             IgnoreErrors(callback, tempInstance);
         }
 
-        [NotNull]
-        private static T IgnoreErrors<T>([NotNull] Func<T> callback, [NotNull] T defaultValue)
+        private static T IgnoreErrors<T>(Func<T> callback, T defaultValue)
         {
             try
             {
                 return callback();
             }
-                // ReSharper disable once EmptyGeneralCatchClause
-                // Reason: This is for convenience only; failure must not require user attention.
+            // ReSharper disable once EmptyGeneralCatchClause
+            // Justification: This is for convenience only; failure must not require user attention.
             catch (Exception)
             {
                 return defaultValue;

@@ -13,27 +13,19 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class Competitor : IEquatable<Competitor>
     {
-        private static readonly int CompetitorNumberMaximumValue =
-            int.Parse(new string('9', NumberEntryFilter.MaxCompetitorNumberLength));
+        private static readonly int CompetitorNumberMaximumValue = int.Parse(new string('9', NumberEntryFilter.MaxCompetitorNumberLength));
 
         public int Number { get; }
-
-        [NotNull]
         public string HandlerName { get; }
-
-        [NotNull]
         public string DogName { get; }
+        public string? CountryCode { get; }
 
-        [CanBeNull]
-        public string CountryCode { get; }
-
-        public Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName)
+        public Competitor(int number, string handlerName, string dogName)
             : this(number, handlerName, dogName, null)
         {
         }
 
-        private Competitor(int number, [NotNull] string handlerName, [NotNull] string dogName,
-            [CanBeNull] string countryCode)
+        private Competitor(int number, string handlerName, string dogName, string? countryCode)
         {
             Guard.InRangeInclusive(number, nameof(number), 1, CompetitorNumberMaximumValue);
             Guard.NotNullNorWhiteSpace(handlerName, nameof(handlerName));
@@ -45,10 +37,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             CountryCode = string.IsNullOrWhiteSpace(countryCode) ? null : countryCode;
         }
 
-        [NotNull]
-        public Competitor ChangeCountryCode([CanBeNull] string countryCode)
+        public Competitor ChangeCountryCode(string? countryCode)
         {
-            return new Competitor(Number, HandlerName, DogName, countryCode);
+            return new(Number, HandlerName, DogName, countryCode);
         }
 
         [Pure]
@@ -71,37 +62,38 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             return textBuilder.ToString();
         }
 
-        public bool Equals([CanBeNull] Competitor other)
+        public bool Equals(Competitor? other)
         {
-            return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName &&
-                other.DogName == DogName && other.CountryCode == CountryCode;
+            return !ReferenceEquals(other, null) && other.Number == Number && other.HandlerName == HandlerName && other.DogName == DogName &&
+                other.CountryCode == CountryCode;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Competitor);
         }
 
         public override int GetHashCode()
         {
-            return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^
-                (CountryCode ?? string.Empty).GetHashCode();
+            return Number.GetHashCode() ^ HandlerName.GetHashCode() ^ DogName.GetHashCode() ^ (CountryCode ?? string.Empty).GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] Competitor left, [CanBeNull] Competitor right)
+        public static bool operator ==(Competitor? left, Competitor? right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] Competitor left, [CanBeNull] Competitor right)
+        public static bool operator !=(Competitor? left, Competitor? right)
         {
             return !(left == right);
         }

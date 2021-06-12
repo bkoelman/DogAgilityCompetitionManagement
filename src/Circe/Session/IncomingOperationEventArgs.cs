@@ -1,19 +1,15 @@
 using System;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
     /// <summary />
     public sealed class IncomingOperationEventArgs : EventArgs
     {
-        [NotNull]
-        public Operation Operation { get; private set; }
+        public Operation Operation { get; }
+        public CirceComConnection Connection { get; }
 
-        [NotNull]
-        public CirceComConnection Connection { get; private set; }
-
-        public IncomingOperationEventArgs([NotNull] Operation operation, [NotNull] CirceComConnection connection)
+        public IncomingOperationEventArgs(Operation operation, CirceComConnection connection)
         {
             Guard.NotNull(operation, nameof(operation));
             Guard.NotNull(connection, nameof(connection));

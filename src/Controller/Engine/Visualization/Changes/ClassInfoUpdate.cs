@@ -1,6 +1,5 @@
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -9,10 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class ClassInfoUpdate : NullableVisualizationChange<CompetitionClassInfo>
     {
-        [NotNull]
-        public static ClassInfoUpdate Hidden => new ClassInfoUpdate(null);
+        public static ClassInfoUpdate Hidden => new(null);
 
-        public ClassInfoUpdate([CanBeNull] CompetitionClassInfo value)
+        public ClassInfoUpdate(CompetitionClassInfo? value)
             : base(value)
         {
         }

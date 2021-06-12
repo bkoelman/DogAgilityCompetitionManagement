@@ -12,105 +12,83 @@ using JetBrains.Annotations;
 namespace DogAgilityCompetition.Circe.Controller
 {
     /// <summary>
-    /// Performs collective clock synchronization on a set of wireless devices. Signals when last succeeded clock
-    /// synchronization happened too long ago.
+    /// Performs collective clock synchronization on a set of wireless devices. Signals when last succeeded clock synchronization happened too long ago.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
-        Justification =
-            "Reason for not disposing CancellationTokenSource, see http://blogs.msdn.com/b/pfxteam/archive/2012/03/25/10287435.aspx"
-        )]
+    [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable",
+        Justification = "Reason for not disposing CancellationTokenSource, see http://blogs.msdn.com/b/pfxteam/archive/2012/03/25/10287435.aspx")]
     public sealed class ClockSynchronizationMonitor
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
         private static readonly TimeSpan SyncReplyTimeout = TimeSpan.FromSeconds(3);
         private static readonly TimeSpan RecommendSyncAfter = TimeSpan.FromMinutes(10);
         private static readonly TimeSpan RequireSyncAfter = TimeSpan.FromMinutes(15);
 
-        [NotNull]
-        private readonly FreshReference<CirceControllerSessionManager> circeSessionManager =
-            new FreshReference<CirceControllerSessionManager>(null);
+        private readonly FreshObjectReference<CirceControllerSessionManager?> circeSessionManager = new(null);
+        private readonly FreshObjectReference<TaskCompletionSource<ClockSynchronizationResult>?> syncTaskSource = new(null);
+        private readonly FreshObjectReference<CancellationTokenSource?> syncCancellationSource = new(null);
 
-        [NotNull]
-        private readonly FreshReference<TaskCompletionSource<ClockSynchronizationResult>> syncTaskSource =
-            new FreshReference<TaskCompletionSource<ClockSynchronizationResult>>(null);
+        private readonly object stateLock = new();
 
-        [NotNull]
-        private readonly FreshReference<CancellationTokenSource> syncCancellationSource =
-            new FreshReference<CancellationTokenSource>(null);
-
-        [NotNull]
-        private readonly object stateLock = new object();
-
-        [NotNull]
-        private readonly Dictionary<WirelessNetworkAddress, DeviceSyncStatus> deviceMap =
-            new Dictionary<WirelessNetworkAddress, DeviceSyncStatus>(); // Protected by stateLock
-
-        [CanBeNull]
-        [ItemNotNull]
-        private HashSet<WirelessNetworkAddress> networkBeingSynced; // Protected by stateLock
-
-        [CanBeNull]
-        private CancellationTokenSource raiseEventsCancellationTokenSource; // Protected by stateLock
+        private readonly Dictionary<WirelessNetworkAddress, DeviceSyncStatus> deviceMap = new(); // Protected by stateLock
+        private HashSet<WirelessNetworkAddress>? networkBeingSynced; // Protected by stateLock
+        private CancellationTokenSource? raiseEventsCancellationTokenSource; // Protected by stateLock
 
         private bool IsSyncInProgress => networkBeingSynced != null;
 
-        public event EventHandler SyncRecommended;
-        public event EventHandler SyncRequired;
-        public event EventHandler<ClockSynchronizationCompletedEventArgs> SyncCompleted;
+        public event EventHandler? SyncRecommended;
+        public event EventHandler? SyncRequired;
+        public event EventHandler<ClockSynchronizationCompletedEventArgs>? SyncCompleted;
 
-        public void Initialize([NotNull] CirceControllerSessionManager sessionManager)
+        public void Initialize(CirceControllerSessionManager sessionManager)
         {
             Guard.NotNull(sessionManager, nameof(sessionManager));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (circeSessionManager.Value != null)
                 {
-                    lockTracker.Acquired();
-
-                    if (circeSessionManager.Value != null)
-                    {
-                        throw new InvalidOperationException("Already initialized.");
-                    }
-
-                    sessionManager.DeviceTracker.DeviceAdded += DeviceTrackerOnDeviceAddedOrChanged;
-                    sessionManager.DeviceTracker.DeviceChanged += DeviceTrackerOnDeviceAddedOrChanged;
-
-                    circeSessionManager.Value = sessionManager;
+                    throw new InvalidOperationException("Already initialized.");
                 }
+
+                sessionManager.DeviceTracker.DeviceAdded += DeviceTrackerOnDeviceAddedOrChanged;
+                sessionManager.DeviceTracker.DeviceChanged += DeviceTrackerOnDeviceAddedOrChanged;
+
+                circeSessionManager.Value = sessionManager;
             }
         }
 
-        private void DeviceTrackerOnDeviceAddedOrChanged([CanBeNull] object sender,
-            [NotNull] EventArgs<DeviceStatus> eventArgs)
+        private void DeviceTrackerOnDeviceAddedOrChanged(object? sender, EventArgs<DeviceStatus> eventArgs)
         {
             Guard.NotNull(eventArgs, nameof(eventArgs));
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!deviceMap.ContainsKey(eventArgs.Argument.DeviceAddress))
                 {
-                    lockTracker.Acquired();
+                    deviceMap[eventArgs.Argument.DeviceAddress] = new DeviceSyncStatus();
+                }
 
-                    if (!deviceMap.ContainsKey(eventArgs.Argument.DeviceAddress))
-                    {
-                        deviceMap[eventArgs.Argument.DeviceAddress] = new DeviceSyncStatus();
-                    }
-                    deviceMap[eventArgs.Argument.DeviceAddress].Update(eventArgs.Argument.ClockSynchronization);
+                deviceMap[eventArgs.Argument.DeviceAddress].Update(eventArgs.Argument.ClockSynchronization);
 
-                    if (deviceMap[eventArgs.Argument.DeviceAddress].IsSynchronized && IsSyncInProgress)
-                    {
-                        VerifySynchronizationComplete();
-                    }
+                if (deviceMap[eventArgs.Argument.DeviceAddress].IsSynchronized && IsSyncInProgress)
+                {
+                    VerifySynchronizationComplete();
                 }
             }
         }
 
         private void VerifySynchronizationComplete()
         {
-            bool allSucceeded = networkBeingSynced.All(SeenAndSynchronized);
+            bool allSucceeded = networkBeingSynced != null && networkBeingSynced.All(SeenAndSynchronized);
 
             if (allSucceeded)
             {
@@ -118,7 +96,7 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        private bool SeenAndSynchronized([NotNull] WirelessNetworkAddress deviceAddress)
+        private bool SeenAndSynchronized(WirelessNetworkAddress deviceAddress)
         {
             return deviceMap.ContainsKey(deviceAddress) && deviceMap[deviceAddress].IsSynchronized;
         }
@@ -127,30 +105,28 @@ namespace DogAgilityCompetition.Circe.Controller
         {
             AssertInitialized();
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (raiseEventsCancellationTokenSource != null)
                 {
-                    lockTracker.Acquired();
-
-                    if (raiseEventsCancellationTokenSource != null)
-                    {
-                        raiseEventsCancellationTokenSource.Cancel();
-                        raiseEventsCancellationTokenSource = null;
-                    }
-
-                    syncCancellationSource.Value?.Cancel();
+                    raiseEventsCancellationTokenSource.Cancel();
+                    raiseEventsCancellationTokenSource = null;
                 }
+
+                syncCancellationSource.Value?.Cancel();
             }
         }
 
-        public void StartNetworkSynchronization(
-            [NotNull] [ItemNotNull] IEnumerable<WirelessNetworkAddress> devicesInNetwork)
+        public void StartNetworkSynchronization(IEnumerable<WirelessNetworkAddress> devicesInNetwork)
         {
             Guard.NotNull(devicesInNetwork, nameof(devicesInNetwork));
             CirceControllerSessionManager sessionManager = AssertInitialized();
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!))
             {
                 lock (stateLock)
                 {
@@ -165,9 +141,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     if (!NetworkContainsSynchronizableDevices())
                     {
                         // Only devices without a clock. No need for sync or raise events for clock re-sync.
-                        Task.Factory.StartNew(
-                            () => HandleNetworkSynchronizationCompleted(ClockSynchronizationResult.Succeeded),
-                            CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                        Task.Run(() => HandleNetworkSynchronizationCompleted(ClockSynchronizationResult.Succeeded));
                         return;
                     }
 
@@ -192,8 +166,7 @@ namespace DogAgilityCompetition.Circe.Controller
                 }
                 else
                 {
-                    Task<ClockSynchronizationResult> waitForRepliesTask =
-                        WaitForRepliesAsync(syncCancellationSource.Value.Token);
+                    Task<ClockSynchronizationResult> waitForRepliesTask = WaitForRepliesAsync(syncCancellationSource.Value.Token);
 
                     waitForRepliesTask.ContinueWith(repliesTask =>
                     {
@@ -204,9 +177,7 @@ namespace DogAgilityCompetition.Circe.Controller
                         }
                         else if (repliesTask.IsCanceled)
                         {
-                            string succeeded = deviceMap.Any()
-                                ? string.Join(", ", deviceMap.Keys.Where(IsDeviceSynchronized))
-                                : "(none)";
+                            string succeeded = deviceMap.Any() ? string.Join(", ", deviceMap.Keys.Where(IsDeviceSynchronized)) : "(none)";
                             Log.Warn($"Timeout on waiting for Sync Succeeded replies. Devices succeeded: {succeeded}");
                             HandleNetworkSynchronizationCompleted(ClockSynchronizationResult.CanceledOrTimedOut);
                         }
@@ -225,7 +196,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
         private void HandleNetworkSynchronizationCompleted(ClockSynchronizationResult synchronizationResult)
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!))
             {
                 lock (stateLock)
                 {
@@ -267,7 +238,7 @@ namespace DogAgilityCompetition.Circe.Controller
                     {
                         SyncRecommended?.Invoke(this, EventArgs.Empty);
                     }
-                });
+                }, TaskScheduler.Current);
 
                 Task.Delay(RequireSyncAfter, raiseEventsCancellationTokenSource.Token).ContinueWith(requireTask =>
                 {
@@ -275,18 +246,18 @@ namespace DogAgilityCompetition.Circe.Controller
                     {
                         SyncRequired?.Invoke(this, EventArgs.Empty);
                     }
-                });
+                }, TaskScheduler.Current);
             }
         }
 
         [AssertionMethod]
-        [NotNull]
         private CirceControllerSessionManager AssertInitialized()
         {
             if (circeSessionManager.Value == null)
             {
                 throw new InvalidOperationException("Call Initialize first.");
             }
+
             return circeSessionManager.Value;
         }
 
@@ -307,14 +278,14 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        private static void AutoCancelTaskAfterTimeout([NotNull] Task taskToWatch,
-            [NotNull] CancellationTokenSource taskCancelTokenSource)
+        private static void AutoCancelTaskAfterTimeout(Task taskToWatch, CancellationTokenSource taskCancelTokenSource)
         {
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 try
                 {
                     bool completed = taskToWatch.Wait(SyncReplyTimeout);
+
                     if (!completed)
                     {
                         taskCancelTokenSource.Cancel();
@@ -324,10 +295,9 @@ namespace DogAgilityCompetition.Circe.Controller
                 {
                     // Do not handle task errors here, caller should in its continuation.
                 }
-            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            });
         }
 
-        [NotNull]
         private Task<ClockSynchronizationResult> WaitForRepliesAsync(CancellationToken cancellationToken)
         {
             syncTaskSource.Value = new TaskCompletionSource<ClockSynchronizationResult>();
@@ -337,23 +307,22 @@ namespace DogAgilityCompetition.Circe.Controller
             return syncTaskSource.Value.Task;
         }
 
-        public bool IsDeviceSynchronized([NotNull] WirelessNetworkAddress deviceAddress)
+        public bool IsDeviceSynchronized(WirelessNetworkAddress deviceAddress)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
             AssertInitialized();
 
             bool result = false;
 
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
-            {
-                lock (stateLock)
-                {
-                    lockTracker.Acquired();
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
 
-                    if (deviceMap.ContainsKey(deviceAddress))
-                    {
-                        result = deviceMap[deviceAddress].IsSynchronized;
-                    }
+            lock (stateLock)
+            {
+                lockTracker.Acquired();
+
+                if (deviceMap.ContainsKey(deviceAddress))
+                {
+                    result = deviceMap[deviceAddress].IsSynchronized;
                 }
             }
 
@@ -369,20 +338,17 @@ namespace DogAgilityCompetition.Circe.Controller
             // belongs to the current or previous synchronization.
             private bool seenOtherStatusAfterSyncSucceeded;
 
-            [CanBeNull]
             private DateTime? syncSucceededAt;
 
-            public bool IsSynchronized
-                =>
-                    !deviceIsRequestingSync && syncSucceededAt != null &&
-                        syncSucceededAt.Value.Add(RequireSyncAfter) > SystemContext.UtcNow();
+            public bool IsSynchronized =>
+                !deviceIsRequestingSync && syncSucceededAt != null && syncSucceededAt.Value.Add(RequireSyncAfter) > SystemContext.UtcNow();
 
             public DeviceSyncStatus()
             {
                 Reset();
             }
 
-            public void Update([CanBeNull] ClockSynchronizationStatus? status)
+            public void Update(ClockSynchronizationStatus? status)
             {
                 deviceIsRequestingSync = false;
 
@@ -396,6 +362,7 @@ namespace DogAgilityCompetition.Circe.Controller
                         {
                             syncSucceededAt = SystemContext.UtcNow();
                         }
+
                         break;
                 }
 

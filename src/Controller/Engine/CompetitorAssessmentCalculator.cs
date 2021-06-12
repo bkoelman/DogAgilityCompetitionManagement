@@ -1,7 +1,6 @@
 ﻿using System;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -10,10 +9,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class CompetitorAssessmentCalculator
     {
-        [NotNull]
         private readonly CompetitionRunResult competitor;
-
-        [NotNull]
         private readonly CompetitionClassModel modelSnapshot;
 
         /// <summary>
@@ -28,10 +24,10 @@ namespace DogAgilityCompetition.Controller.Engine
             {
                 if (competitor.Timings?.FinishTime != null)
                 {
-                    TimeSpanWithAccuracy elapsed =
-                        competitor.Timings.FinishTime.ElapsedSince(competitor.Timings.StartTime);
+                    TimeSpanWithAccuracy elapsed = competitor.Timings.FinishTime.ElapsedSince(competitor.Timings.StartTime);
                     return elapsed.TimeValue;
                 }
+
                 return TimeSpan.Zero;
             }
         }
@@ -40,8 +36,7 @@ namespace DogAgilityCompetition.Controller.Engine
         /// Gets the amount of time that FinishTime is above Standard Course Time.
         /// </summary>
         /// <value>
-        /// The amount of time, or <see cref="TimeSpan.Zero" /> when competitor finished within Standard Course Time -or- did not
-        /// pass the finish gate.
+        /// The amount of time, or <see cref="TimeSpan.Zero" /> when competitor finished within Standard Course Time -or- did not pass the finish gate.
         /// </value>
         public TimeSpan OverrunTime
         {
@@ -57,14 +52,9 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private static TimeSpan ZeroWhenNegative(TimeSpan time)
-        {
-            return time < TimeSpan.Zero ? TimeSpan.Zero : time;
-        }
-
         /// <summary>
-        /// Gets the total amount of non-measured additional time, consisting of the time for faults, refusals and Standard Course
-        /// Time overrun. This does not include the measured time at which competitor passed the finish gate.
+        /// Gets the total amount of non-measured additional time, consisting of the time for faults, refusals and Standard Course Time overrun. This does not
+        /// include the measured time at which competitor passed the finish gate.
         /// </summary>
         /// <value>
         /// The total amount of non-measured additional time.
@@ -79,13 +69,17 @@ namespace DogAgilityCompetition.Controller.Engine
         /// </value>
         public TimeSpan FaultRefusalTime => TimeSpan.FromSeconds(competitor.FaultCount + competitor.RefusalCount);
 
-        public CompetitorAssessmentCalculator([NotNull] CompetitionRunResult competitor,
-            [NotNull] CompetitionClassModel modelSnapshot)
+        public CompetitorAssessmentCalculator(CompetitionRunResult competitor, CompetitionClassModel modelSnapshot)
         {
             Guard.NotNull(competitor, nameof(competitor));
             Guard.NotNull(modelSnapshot, nameof(modelSnapshot));
             this.competitor = competitor;
             this.modelSnapshot = modelSnapshot;
+        }
+
+        private static TimeSpan ZeroWhenNegative(TimeSpan time)
+        {
+            return time < TimeSpan.Zero ? TimeSpan.Zero : time;
         }
     }
 }

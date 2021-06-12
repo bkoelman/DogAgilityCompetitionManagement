@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol.Operations;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol
 {
@@ -19,7 +18,6 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// The created operation.
         /// </returns>
         /// <exception cref="NotSupportedException" />
-        [NotNull]
         public static Operation Create(int operationCode)
         {
             switch (operationCode)

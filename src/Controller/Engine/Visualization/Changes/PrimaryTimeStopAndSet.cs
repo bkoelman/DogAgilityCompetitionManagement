@@ -1,6 +1,5 @@
 using System;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -9,13 +8,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class PrimaryTimeStopAndSet : NullableVisualizationChange<TimeSpan?>
     {
-        [NotNull]
-        public static PrimaryTimeStopAndSet Hidden => new PrimaryTimeStopAndSet(null);
+        public static PrimaryTimeStopAndSet Hidden => new(null);
+        public static PrimaryTimeStopAndSet Zero => new(TimeSpan.Zero);
 
-        [NotNull]
-        public static PrimaryTimeStopAndSet Zero => new PrimaryTimeStopAndSet(TimeSpan.Zero);
-
-        public PrimaryTimeStopAndSet([CanBeNull] TimeSpan? value)
+        public PrimaryTimeStopAndSet(TimeSpan? value)
             : base(value)
         {
         }
@@ -26,10 +22,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
             actor.StopAndSetOrClearPrimaryTime(Value);
         }
 
-        [NotNull]
-        public static PrimaryTimeStopAndSet FromTimeSpanWithAccuracy([CanBeNull] TimeSpanWithAccuracy? value)
+        public static PrimaryTimeStopAndSet FromTimeSpanWithAccuracy(TimeSpanWithAccuracy? value)
         {
-            return new PrimaryTimeStopAndSet(value?.TimeValue);
+            return new(value?.TimeValue);
         }
     }
 }

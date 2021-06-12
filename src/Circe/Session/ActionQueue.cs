@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
@@ -13,32 +12,32 @@ namespace DogAgilityCompetition.Circe.Session
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Enqueued actions can be monitored through their returned <see cref="Task" />s, which enable waiting upon completion,
-    /// inspecting if the task was canceled or whether an exception was thrown, and running a continuation upon completion.
+    /// Enqueued actions can be monitored through their returned <see cref="Task" />s, which enable waiting upon completion, inspecting if the task was
+    /// canceled or whether an exception was thrown, and running a continuation upon completion.
     /// </para>
     /// <para>
     /// Consumption of actions in the queue can be paused and resumed. On disposal, any remaining actions are canceled.
     /// </para>
     /// </remarks>
+    [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
     public sealed class ActionQueue : IDisposable
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
-        private readonly BlockingCollection<WorkItem> workQueue = new BlockingCollection<WorkItem>();
+#pragma warning disable CA2213 // Disposable fields should be disposed
+        // Justification: This member is disposed by ConsumerLoop() instead of Dispose().
+        private readonly BlockingCollection<WorkItem> workQueue = new();
+#pragma warning restore CA2213 // Disposable fields should be disposed
+        
+        private readonly object stateLock = new();
 
-        [NotNull]
-        private readonly object stateLock = new object();
-
-        private bool isConsumerRunning;
-        private bool disposeRequested;
+        private bool isConsumerRunning; // Protected by stateLock
+        private bool disposeRequested; // Protected by stateLock
 
         public ActionQueue()
         {
             Log.Debug("Creating task for consumer loop.");
-            Task.Factory.StartNew(ConsumerLoop, CancellationToken.None, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default);
+            Task.Factory.StartNew(ConsumerLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         /// <summary>
@@ -46,23 +45,22 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Start()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested && !isConsumerRunning)
                 {
-                    lockTracker.Acquired();
+                    isConsumerRunning = true;
 
-                    if (!disposeRequested && !isConsumerRunning)
-                    {
-                        isConsumerRunning = true;
-
-                        Log.Debug("Signaling state change after start.");
-                        Monitor.Pulse(stateLock);
-                    }
-                    else
-                    {
-                        Log.Debug("Already started or disposed.");
-                    }
+                    Log.Debug("Signaling state change after start.");
+                    Monitor.Pulse(stateLock);
+                }
+                else
+                {
+                    Log.Debug("Already started or disposed.");
                 }
             }
         }
@@ -72,23 +70,22 @@ namespace DogAgilityCompetition.Circe.Session
         /// </summary>
         public void Pause()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested && isConsumerRunning)
                 {
-                    lockTracker.Acquired();
+                    isConsumerRunning = false;
 
-                    if (!disposeRequested && isConsumerRunning)
-                    {
-                        isConsumerRunning = false;
-
-                        Log.Debug("Signaling state change after pause.");
-                        Monitor.Pulse(stateLock);
-                    }
-                    else
-                    {
-                        Log.Debug("Already paused or disposed.");
-                    }
+                    Log.Debug("Signaling state change after pause.");
+                    Monitor.Pulse(stateLock);
+                }
+                else
+                {
+                    Log.Debug("Already paused or disposed.");
                 }
             }
         }
@@ -96,31 +93,26 @@ namespace DogAgilityCompetition.Circe.Session
         /// <summary>
         /// Blocks until an already running action has completed, then cancels all remaining actions in the queue.
         /// </summary>
-        [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "workQueue",
-            Justification =
-                "BlockingCollection<T> cannot be disposed as long as consumers exist. Therefore, Dispose is called from ConsumerLoop()."
-            )]
         public void Dispose()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+            lock (stateLock)
             {
-                lock (stateLock)
+                lockTracker.Acquired();
+
+                if (!disposeRequested)
                 {
-                    lockTracker.Acquired();
+                    disposeRequested = true;
 
-                    if (!disposeRequested)
-                    {
-                        disposeRequested = true;
+                    Log.Debug("Dispose: Signaling state change after dispose.");
+                    Monitor.Pulse(stateLock);
 
-                        Log.Debug("Dispose: Signaling state change after dispose.");
-                        Monitor.Pulse(stateLock);
-
-                        workQueue.CompleteAdding();
-                    }
-                    else
-                    {
-                        Log.Debug("Already disposed.");
-                    }
+                    workQueue.CompleteAdding();
+                }
+                else
+                {
+                    Log.Debug("Already disposed.");
                 }
             }
         }
@@ -137,20 +129,19 @@ namespace DogAgilityCompetition.Circe.Session
         /// <returns>
         /// The <see cref="Task" /> that represents the enqueued action.
         /// </returns>
-        [NotNull]
-        public Task Enqueue([NotNull] Action action, CancellationToken cancelToken)
+        public Task Enqueue(Action action, CancellationToken cancelToken)
         {
             Guard.NotNull(action, nameof(action));
 
             Log.Debug("Adding queue entry.");
-            var taskSource = new TaskCompletionSource<object>();
+            var taskSource = new TaskCompletionSource<object?>();
             workQueue.Add(new WorkItem(taskSource, action, cancelToken), cancelToken);
 
             Log.Debug($"Created task {taskSource.Task.Id}.");
 
             // Uncomment the next block to simulate task failure.
             /*
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 Thread.Sleep(1000);
                 taskSource.SetException(new Exception("Task failed."));
@@ -163,6 +154,7 @@ namespace DogAgilityCompetition.Circe.Session
         private void ConsumerLoop()
         {
             Log.Debug("Entering ConsumerLoop.");
+
             foreach (WorkItem workItem in workQueue.GetConsumingEnumerable())
             {
                 try
@@ -174,55 +166,56 @@ namespace DogAgilityCompetition.Circe.Session
                         continue;
                     }
 
-                    using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+                    using var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!);
+
+                    lock (stateLock)
                     {
-                        lock (stateLock)
+                        lockTracker.Acquired();
+
+                        if (!isConsumerRunning && !disposeRequested)
                         {
-                            lockTracker.Acquired();
+                            Log.Debug("Entering wait loop until running or disposing.");
 
-                            if (!isConsumerRunning && !disposeRequested)
+                            while (!isConsumerRunning && !disposeRequested)
                             {
-                                Log.Debug("Entering wait loop until running or disposing.");
-                                while (!isConsumerRunning && !disposeRequested)
-                                {
-                                    // Consumer is paused, so block this thread until state changes.
-                                    Monitor.Wait(stateLock);
-                                }
-                                Log.Debug("Exited wait loop.");
+                                // Consumer is paused, so block this thread until state changes.
+                                Monitor.Wait(stateLock);
                             }
 
-                            if (disposeRequested)
-                            {
-                                // Dispose has been called by producer, so cancel whatever is left in the queue.
+                            Log.Debug("Exited wait loop.");
+                        }
 
-                                Log.Debug("Disposal has been requested, canceling queue entry.");
-                                workItem.TaskSource.TrySetCanceled();
-                                continue;
-                            }
+                        if (disposeRequested)
+                        {
+                            // Dispose has been called by producer, so cancel whatever is left in the queue.
 
-                            int taskId = workItem.TaskSource.Task.Id;
+                            Log.Debug("Disposal has been requested, canceling queue entry.");
+                            workItem.TaskSource.TrySetCanceled();
+                            continue;
+                        }
 
-                            // Perform action inside lock, so that state transitions will block 
-                            // until the current action has completed.
-                            try
-                            {
-                                workItem.CancelToken.ThrowIfCancellationRequested();
+                        int taskId = workItem.TaskSource.Task.Id;
 
-                                Log.Debug($"Executing action for task {taskId}.");
-                                workItem.Action();
-                                workItem.TaskSource.TrySetResult(null);
-                                Log.Debug("Task completed.");
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                Log.Debug($"Propagating cancellation request to task {taskId}.");
-                                workItem.TaskSource.TrySetCanceled();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Debug($"Setting task {taskId} to error state.");
-                                workItem.TaskSource.TrySetException(ex);
-                            }
+                        // Perform action inside lock, so that state transitions will block 
+                        // until the current action has completed.
+                        try
+                        {
+                            workItem.CancelToken.ThrowIfCancellationRequested();
+
+                            Log.Debug($"Executing action for task {taskId}.");
+                            workItem.Action();
+                            workItem.TaskSource.TrySetResult(null);
+                            Log.Debug("Task completed.");
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Log.Debug($"Propagating cancellation request to task {taskId}.");
+                            workItem.TaskSource.TrySetCanceled();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Debug($"Setting task {taskId} to error state.");
+                            workItem.TaskSource.TrySetException(ex);
                         }
                     }
                 }
@@ -231,6 +224,7 @@ namespace DogAgilityCompetition.Circe.Session
                     Log.Error("Unexpected error in ConsumerLoop.", ex);
                 }
             }
+
             workQueue.Dispose();
 
             Log.Debug("Leaving ConsumerLoop.");
@@ -239,18 +233,13 @@ namespace DogAgilityCompetition.Circe.Session
         /// <summary>
         /// Represents an entry in the producer/consumer queue.
         /// </summary>
-        private struct WorkItem
+        private readonly struct WorkItem
         {
-            [NotNull]
-            public TaskCompletionSource<object> TaskSource { get; }
-
-            [NotNull]
+            public TaskCompletionSource<object?> TaskSource { get; }
             public Action Action { get; }
-
             public CancellationToken CancelToken { get; }
 
-            public WorkItem([NotNull] TaskCompletionSource<object> taskSource, [NotNull] Action action,
-                CancellationToken cancelToken)
+            public WorkItem(TaskCompletionSource<object?> taskSource, Action action, CancellationToken cancelToken)
                 : this()
             {
                 Guard.NotNull(taskSource, nameof(taskSource));

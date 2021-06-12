@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator
 {
@@ -12,24 +12,15 @@ namespace DogAgilityCompetition.MediatorEmulator
     /// </summary>
     public sealed class StartupArguments
     {
-        [CanBeNull]
-        public string Path { get; private set; }
-
-        [CanBeNull]
+        public string? Path { get; }
         public Point? Location { get; }
-
-        [CanBeNull]
         public Size? Size { get; }
-
         public FormWindowState State { get; }
-
         public bool TransparentOnTop { get; }
 
-        public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop
-            ;
+        public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop;
 
-        private StartupArguments([CanBeNull] string path, [CanBeNull] Point? location, [CanBeNull] Size? size,
-            FormWindowState state, bool transparentOnTop)
+        private StartupArguments(string? path, Point? location, Size? size, FormWindowState state, bool transparentOnTop)
         {
             Path = path;
             Location = location;
@@ -38,12 +29,11 @@ namespace DogAgilityCompetition.MediatorEmulator
             TransparentOnTop = transparentOnTop;
         }
 
-        [NotNull]
-        public static StartupArguments Parse([NotNull] [ItemNotNull] IEnumerable<string> args)
+        public static StartupArguments Parse(IEnumerable<string> args)
         {
             Guard.NotNull(args, nameof(args));
 
-            string path = null;
+            string? path = null;
             Point? location = null;
             Size? size = null;
             FormWindowState? state = null;
@@ -55,6 +45,7 @@ namespace DogAgilityCompetition.MediatorEmulator
                 {
                     location = ParseLocation(arg.Substring("pos=".Length));
                 }
+
                 if (arg.StartsWith("size=", StringComparison.OrdinalIgnoreCase))
                 {
                     size = ParseSize(arg.Substring("size=".Length));
@@ -67,12 +58,13 @@ namespace DogAgilityCompetition.MediatorEmulator
                 {
                     transparentOnTop = true;
                 }
-                else if (arg.IndexOf('=') == -1)
+                else if (!arg.Contains('=', StringComparison.Ordinal))
                 {
                     if (path != null)
                     {
                         throw new InvalidOperationException("Multiple paths are not supported.");
                     }
+
                     path = arg;
                 }
             }
@@ -80,9 +72,10 @@ namespace DogAgilityCompetition.MediatorEmulator
             return new StartupArguments(path, location, size, state ?? FormWindowState.Normal, transparentOnTop == true);
         }
 
-        private static Point ParseLocation([NotNull] string value)
+        private static Point ParseLocation(string value)
         {
-            int[] parts = TrySplitIntoTwoCoordinates(value);
+            int[]? parts = TrySplitIntoTwoCoordinates(value);
+
             if (parts != null)
             {
                 return new Point(parts[1], parts[0]);
@@ -91,9 +84,10 @@ namespace DogAgilityCompetition.MediatorEmulator
             throw new Exception("Specify position as top x left, for example: 10x15");
         }
 
-        private static Size ParseSize([NotNull] string value)
+        private static Size ParseSize(string value)
         {
-            int[] parts = TrySplitIntoTwoCoordinates(value);
+            int[]? parts = TrySplitIntoTwoCoordinates(value);
+
             if (parts != null)
             {
                 return new Size(parts[1], parts[0]);
@@ -102,25 +96,28 @@ namespace DogAgilityCompetition.MediatorEmulator
             throw new Exception("Specify size as height x width, for example: 250x300");
         }
 
-        [CanBeNull]
-        private static int[] TrySplitIntoTwoCoordinates([NotNull] string value)
+        private static int[]? TrySplitIntoTwoCoordinates(string value)
         {
             string[] args = value.Split('x');
+
             if (args.Length == 2)
             {
-                int value0;
-                int value1;
-                if (int.TryParse(args[0], out value0) && int.TryParse(args[1], out value1))
+                if (int.TryParse(args[0], out int value0) && int.TryParse(args[1], out int value1))
                 {
-                    return new[] { value0, value1 };
+                    return new[]
+                    {
+                        value0,
+                        value1
+                    };
                 }
             }
+
             return null;
         }
 
-        private static FormWindowState ParseWindowState([NotNull] string value)
+        private static FormWindowState ParseWindowState(string value)
         {
-            return (FormWindowState) Enum.Parse(typeof (FormWindowState), value, true);
+            return (FormWindowState)Enum.Parse(typeof(FormWindowState), value, true);
         }
     }
 }

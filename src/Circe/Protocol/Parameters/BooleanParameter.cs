@@ -7,13 +7,11 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates either <c>true</c> or <c>false</c>.
     /// </summary>
-    [Serializable]
     public sealed class BooleanParameter : Parameter
     {
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
         public bool? Value { get; set; }
 
         /// <summary>
@@ -36,7 +34,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public BooleanParameter([NotNull] string name, int id, bool isRequired)
+        public BooleanParameter(string name, int id, bool isRequired)
             : base(name, id, 1, isRequired)
         {
         }
@@ -72,24 +70,26 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
-            string text = new string(chars);
+            string text = new(chars);
 
             if (text != "0" && text != "1")
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value,
-                    $"Value of {GetType().Name} {Name} must be 0 or 1.");
+                throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be 0 or 1.");
             }
 
             Value = text != "0";
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + Value : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + Value : base.ToString();
+        }
     }
 }

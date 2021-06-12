@@ -1,5 +1,4 @@
 ﻿using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -12,14 +11,11 @@ namespace DogAgilityCompetition.Controller.Engine
     public abstract class AlertSourceItem
     {
         public bool IsEnabled { get; }
+        public string? Path { get; }
 
-        [CanBeNull]
-        public string Path { get; }
+        public string? EffectivePath => !IsEnabled ? null : Path;
 
-        [CanBeNull]
-        public string EffectivePath => !IsEnabled ? null : Path;
-
-        protected AlertSourceItem(bool isEnabled, [CanBeNull] string path)
+        protected AlertSourceItem(bool isEnabled, string? path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {

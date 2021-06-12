@@ -4,7 +4,6 @@ using System.Reflection;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -13,38 +12,26 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </summary>
     public sealed class DeviceActionAdapter
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
-        private readonly FreshNotNullableReference<NetworkComposition> runComposition =
-            new FreshNotNullableReference<NetworkComposition>(NetworkComposition.Empty);
+        private static readonly Dictionary<RemoteKey, DeviceCommand> KeyToCommandLookupTable = new()
+        {
+            { RemoteKey.Key1OrPlaySoundA, DeviceCommand.PlaySoundA },
+            { RemoteKey.Key3OrToggleElimination, DeviceCommand.ToggleElimination },
+            { RemoteKey.Key5OrDecreaseRefusals, DeviceCommand.DecreaseRefusals },
+            { RemoteKey.Key6OrIncreaseRefusals, DeviceCommand.IncreaseRefusals },
+            { RemoteKey.Key8OrDecreaseFaults, DeviceCommand.DecreaseFaults },
+            { RemoteKey.Key9OrIncreaseFaults, DeviceCommand.IncreaseFaults },
+            { RemoteKey.Key0OrMuteSound, DeviceCommand.MuteSound },
+            { RemoteKey.ResetRun, DeviceCommand.ResetRun },
+            { RemoteKey.Ready, DeviceCommand.Ready }
+        };
 
-        [NotNull]
-        private static readonly Dictionary<RemoteKey, DeviceCommand> KeyToCommandLookupTable =
-            new Dictionary<RemoteKey, DeviceCommand>
-            {
-                { RemoteKey.Key1OrPlaySoundA, DeviceCommand.PlaySoundA },
-                { RemoteKey.Key3OrToggleElimination, DeviceCommand.ToggleElimination },
-                { RemoteKey.Key5OrDecreaseRefusals, DeviceCommand.DecreaseRefusals },
-                { RemoteKey.Key6OrIncreaseRefusals, DeviceCommand.IncreaseRefusals },
-                { RemoteKey.Key8OrDecreaseFaults, DeviceCommand.DecreaseFaults },
-                { RemoteKey.Key9OrIncreaseFaults, DeviceCommand.IncreaseFaults },
-                { RemoteKey.Key0OrMuteSound, DeviceCommand.MuteSound },
-                { RemoteKey.ResetRun, DeviceCommand.ResetRun },
-                { RemoteKey.Ready, DeviceCommand.Ready }
-            };
+        private readonly FreshObjectReference<NetworkComposition> runComposition = new(NetworkComposition.Empty);
 
-        public event EventHandler<DeviceCommandEventArgs> CommandReceived;
-        public event EventHandler<GatePassageEventArgs> GatePassed;
-
-        [NotNull]
         public NetworkComposition RunComposition
         {
-            get
-            {
-                return runComposition.Value;
-            }
+            get => runComposition.Value;
             set
             {
                 Guard.NotNull(value, nameof(value));
@@ -52,8 +39,10 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        public void Adapt([NotNull] WirelessNetworkAddress source, [CanBeNull] RemoteKey? key,
-            [CanBeNull] TimeSpan? sensorTime)
+        public event EventHandler<DeviceCommandEventArgs>? CommandReceived;
+        public event EventHandler<GatePassageEventArgs>? GatePassed;
+
+        public void Adapt(WirelessNetworkAddress source, RemoteKey? key, TimeSpan? sensorTime)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -67,17 +56,16 @@ namespace DogAgilityCompetition.Controller.Engine
             }
             else
             {
-                Log.Warn(
-                    $"Discarding {typeof (DeviceAction).Name} from {source} because keys and time are both missing.");
+                Log.Warn($"Discarding {nameof(DeviceAction)} from {source} because keys and time are both missing.");
             }
         }
 
-        private void AdaptForKeyWithOptionalSensorTime([NotNull] WirelessNetworkAddress source, RemoteKey key,
-            [CanBeNull] TimeSpan? sensorTime)
+        private void AdaptForKeyWithOptionalSensorTime(WirelessNetworkAddress source, RemoteKey key, TimeSpan? sensorTime)
         {
             if (KeyToCommandLookupTable.ContainsKey(key))
             {
                 DeviceCommand command = KeyToCommandLookupTable[key];
+
                 if (RunComposition.IsInRoleKeypad(source))
                 {
                     CommandReceived?.Invoke(this, new DeviceCommandEventArgs(source, command));
@@ -95,18 +83,15 @@ namespace DogAgilityCompetition.Controller.Engine
                     {
                         if (RunComposition.IsInRoleIntermediateTimer1(source))
                         {
-                            GatePassed?.Invoke(this,
-                                new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate1));
+                            GatePassed?.Invoke(this, new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate1));
                         }
                         else if (RunComposition.IsInRoleIntermediateTimer2(source))
                         {
-                            GatePassed?.Invoke(this,
-                                new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate2));
+                            GatePassed?.Invoke(this, new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate2));
                         }
                         else if (RunComposition.IsInRoleIntermediateTimer3(source))
                         {
-                            GatePassed?.Invoke(this,
-                                new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate3));
+                            GatePassed?.Invoke(this, new GatePassageEventArgs(source, sensorTime, GatePassage.PassIntermediate3));
                         }
                     }
                     else if (key == RemoteKey.PassFinish && RunComposition.IsInRoleFinishTimer(source))
@@ -117,7 +102,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        private void AdaptForSensorTimeWithoutKey([NotNull] WirelessNetworkAddress source, TimeSpan sensorTime)
+        private void AdaptForSensorTimeWithoutKey(WirelessNetworkAddress source, TimeSpan sensorTime)
         {
             if (RunComposition.IsStartFinishGate(source))
             {

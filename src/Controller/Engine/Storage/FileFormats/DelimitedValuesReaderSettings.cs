@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
@@ -22,7 +21,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <value>
         /// The field separator character. Set to <c>null</c> to use auto-detection.
         /// </value>
-        [CanBeNull]
         public char? FieldSeparator { get; set; }
 
         /// <summary>
@@ -39,17 +37,15 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <value>
         /// The culture. Set to <c>null</c> to use the invariant culture.
         /// </value>
-        [CanBeNull]
-        public CultureInfo Culture { get; set; }
+        public CultureInfo? Culture { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum length of the line. Setting this prevents that the entire source is read in memory when an
-        /// uneven number of text qualifiers occurs.
+        /// Gets or sets the maximum length of the line. Setting this prevents that the entire source is read in memory when an uneven number of text qualifiers
+        /// occurs.
         /// </summary>
         /// <value>
         /// The maximum length of a single line of text in source.
         /// </value>
-        [CanBeNull]
         public int? MaximumLineLength { get; set; }
 
         /// <summary>
@@ -64,10 +60,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <summary>
         /// Creates a copy of this instance.
         /// </summary>
-        [NotNull]
         public DelimitedValuesReaderSettings Clone()
         {
-            return new DelimitedValuesReaderSettings
+            return new()
             {
                 AutoCloseReader = AutoCloseReader,
                 FieldSeparator = FieldSeparator,

@@ -12,12 +12,10 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     public sealed class CompetitionRunResultXml
     {
         [DataMember]
-        [CanBeNull]
-        public CompetitorXml Competitor { get; set; }
+        public CompetitorXml? Competitor { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public CompetitionRunTimingsXml Timings { get; set; }
+        public CompetitionRunTimingsXml? Timings { get; set; }
 
         [DataMember]
         public int FaultCount { get; set; }
@@ -28,8 +26,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         [DataMember]
         public bool IsEliminated { get; set; }
 
-        [NotNull]
-        public static CompetitionRunResultXml ToXmlObject([NotNull] CompetitionRunResult source)
+        public static CompetitionRunResultXml ToXmlObject(CompetitionRunResult source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -43,28 +40,30 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static CompetitionRunResult FromXmlObject([NotNull] CompetitionRunResultXml source)
+        public static CompetitionRunResult FromXmlObject(CompetitionRunResultXml source)
         {
             Guard.NotNull(source, nameof(source));
             CompetitorXml competitor = AssertCompetitorNotNull(source);
 
-            return
-                new CompetitionRunResult(CompetitorXml.FromXmlObject(competitor)).ChangeTimings(
-                    CompetitionRunTimingsXml.FromXmlObject(source.Timings))
-                    .ChangeFaultCount(source.FaultCount)
-                    .ChangeRefusalCount(source.RefusalCount)
-                    .ChangeIsEliminated(source.IsEliminated);
+            // @formatter:keep_existing_linebreaks true
+
+            return new CompetitionRunResult(CompetitorXml.FromXmlObject(competitor))
+                .ChangeTimings(CompetitionRunTimingsXml.FromXmlObject(source.Timings))
+                .ChangeFaultCount(source.FaultCount)
+                .ChangeRefusalCount(source.RefusalCount)
+                .ChangeIsEliminated(source.IsEliminated);
+
+            // @formatter:keep_existing_linebreaks restore
         }
 
         [AssertionMethod]
-        [NotNull]
-        private static CompetitorXml AssertCompetitorNotNull([NotNull] CompetitionRunResultXml source)
+        private static CompetitorXml AssertCompetitorNotNull(CompetitionRunResultXml source)
         {
             if (source.Competitor == null)
             {
                 throw new InvalidDataException("Competitor is missing in XML file.");
             }
+
             return source.Competitor;
         }
     }

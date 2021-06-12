@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using DogAgilityCompetition.Controller.UI.Controls;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -17,11 +16,20 @@ namespace DogAgilityCompetition.Controller.UI.Forms
     {
         private const int ControlHeightIncrement = 52;
 
-        [CanBeNull]
-        [ItemNotNull]
-        private IReadOnlyCollection<CompetitionRunResult> pendingRefreshOfRankings;
+        private IReadOnlyCollection<CompetitionRunResult>? pendingRefreshOfRankings;
 
-        protected override void OnVisibleChanged([NotNull] EventArgs e)
+        public ClassResultsDisplayForm()
+        {
+            InitializeComponent();
+
+            CompetitionClassModel snapshot = CacheManager.DefaultInstance.ActiveModel;
+
+            IReadOnlyCollection<CompetitionRunResult> runResults = snapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
+            UpdateRankings(runResults);
+            SetClass(snapshot.ClassInfo);
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
 
@@ -32,25 +40,18 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        public ClassResultsDisplayForm()
-        {
-            InitializeComponent();
-
-            CompetitionClassModel snapshot = CacheManager.DefaultInstance.ActiveModel;
-
-            IReadOnlyCollection<CompetitionRunResult> runResults =
-                snapshot.FilterCompletedAndSortedAscendingByPlacement().Results;
-            UpdateRankings(runResults);
-            SetClass(snapshot.ClassInfo);
-        }
-
-        public void UpdateRankings([ItemNotNull] [NotNull] IReadOnlyCollection<CompetitionRunResult> rankings)
+        public void UpdateRankings(IReadOnlyCollection<CompetitionRunResult> rankings)
         {
             Guard.NotNull(rankings, nameof(rankings));
 
             if (Visible)
             {
-                var firstThreeControls = new[] { runHistoryLine0001, runHistoryLine0002, runHistoryLine0003 };
+                RunHistoryLine[] firstThreeControls =
+                {
+                    runHistoryLine0001,
+                    runHistoryLine0002,
+                    runHistoryLine0003
+                };
 
                 for (int index = 0; index < firstThreeControls.Length; index++)
                 {
@@ -67,7 +68,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
                 IEnumerable<CompetitionRunResult> remainingRunResults = rankings.Skip(3);
 
-                // Performance optimization: prevents seconds delay and 
+                // Performance optimization: prevents seconds delay and
                 // Win32 crash caused by creating too many child controls.
                 remainingRunResults = remainingRunResults.Take(100);
 
@@ -79,24 +80,21 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        public void SetClass([CanBeNull] CompetitionClassInfo classInfo)
+        public void SetClass(CompetitionClassInfo? classInfo)
         {
             gradeLabel.Text = classInfo != null ? classInfo.Grade : string.Empty;
             classTypeLabel.Text = classInfo != null ? classInfo.Type : string.Empty;
-            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null
-                ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}"
-                : string.Empty;
+            standardCourseTimeValueLabel.Text = classInfo?.StandardCourseTime != null ? $"{classInfo.StandardCourseTime.Value.TotalSeconds:0}" : string.Empty;
         }
 
-        private void RecreateScrollableRunHistoryLines(
-            [NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> runResults)
+        private void RecreateScrollableRunHistoryLines(IReadOnlyCollection<CompetitionRunResult> runResults)
         {
             UpdateScrollingPanel(() =>
             {
                 scrollingPanel.ClearInnerControls();
 
                 int heightOffset = 0;
-                int minControlCount = (int) Math.Truncate((decimal) scrollingPanel.Height / ControlHeightIncrement);
+                int minControlCount = (int)Math.Truncate((decimal)scrollingPanel.Height / ControlHeightIncrement);
 
                 for (int index = 0; index < Math.Max(minControlCount, runResults.Count); index++)
                 {
@@ -108,7 +106,8 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                         Size = new Size(ClientSize.Width - 4, 51)
                     };
 
-                    CompetitionRunResult runResult = runResults.ElementAtOrDefault(index);
+                    CompetitionRunResult? runResult = runResults.ElementAtOrDefault(index);
+
                     if (runResult != null)
                     {
                         runHistoryLine.SetCompetitionRunResult(runResult);
@@ -124,7 +123,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             });
         }
 
-        private void UpdateScrollingPanel([NotNull] Action action)
+        private void UpdateScrollingPanel(Action action)
         {
             try
             {
@@ -137,7 +136,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void ClassResultsDisplayForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void ClassResultsDisplayForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {

@@ -13,7 +13,6 @@ namespace DogAgilityCompetition.Controller
         /// <summary>
         /// Creates an execution scope in which the system does not enter any of the sleep states on idle.
         /// </summary>
-        [NotNull]
         public static IDisposable InStateDisabled
         {
             get
@@ -31,9 +30,9 @@ namespace DogAgilityCompetition.Controller
         /// </remarks>
         public static void Disable()
         {
-            const NativeMethods.ExecutionStates flags =
-                NativeMethods.ExecutionStates.Continuous | NativeMethods.ExecutionStates.SystemRequired |
-                    NativeMethods.ExecutionStates.DisplayRequired;
+            const NativeMethods.ExecutionStates flags = NativeMethods.ExecutionStates.Continuous | NativeMethods.ExecutionStates.SystemRequired |
+                NativeMethods.ExecutionStates.DisplayRequired;
+
             NativeMethods.ExecutionStates previousState = NativeMethods.SetThreadExecutionState(flags);
             ThrowWhenFailed(previousState);
         }
@@ -43,8 +42,7 @@ namespace DogAgilityCompetition.Controller
         /// </summary>
         public static void Restore()
         {
-            NativeMethods.ExecutionStates previousState =
-                NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionStates.Continuous);
+            NativeMethods.ExecutionStates previousState = NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionStates.Continuous);
             ThrowWhenFailed(previousState);
         }
 
@@ -60,12 +58,11 @@ namespace DogAgilityCompetition.Controller
         private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             public static extern ExecutionStates SetThreadExecutionState(ExecutionStates flags);
 
             [Flags]
-#pragma warning disable CA2217 // Do not mark Enum with FlagsAttribute
             public enum ExecutionStates : uint
-#pragma warning restore CA2217 // Do not mark Enum with FlagsAttribute
             {
                 SystemRequired = 0x00000001,
                 DisplayRequired = 0x00000002,

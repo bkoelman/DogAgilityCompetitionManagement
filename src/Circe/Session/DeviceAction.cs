@@ -14,17 +14,11 @@ namespace DogAgilityCompetition.Circe.Session
     /// </remarks>
     public sealed class DeviceAction : IEquatable<DeviceAction>
     {
-        [NotNull]
         public WirelessNetworkAddress DeviceAddress { get; }
-
-        [CanBeNull]
         public RawDeviceKeys? InputKeys { get; }
-
-        [CanBeNull]
         public TimeSpan? SensorTime { get; }
 
-        public DeviceAction([NotNull] WirelessNetworkAddress deviceAddress, [CanBeNull] RawDeviceKeys? inputKeys,
-            [CanBeNull] TimeSpan? sensorTime)
+        public DeviceAction(WirelessNetworkAddress deviceAddress, RawDeviceKeys? inputKeys, TimeSpan? sensorTime)
         {
             Guard.NotNull(deviceAddress, nameof(deviceAddress));
 
@@ -37,38 +31,40 @@ namespace DogAgilityCompetition.Circe.Session
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => DeviceAddress, () => DeviceAddress);
-                formatter.Append(() => InputKeys, () => InputKeys);
-                formatter.Append(() => SensorTime, () => SensorTime);
+                formatter.Append(DeviceAddress, nameof(DeviceAddress));
+                formatter.Append(InputKeys, nameof(InputKeys));
+                formatter.Append(SensorTime, nameof(SensorTime));
             }
+
             return textBuilder.ToString();
         }
 
-        [NotNull]
-        public static DeviceAction FromOperation([NotNull] NotifyActionOperation operation)
+        public static DeviceAction FromOperation(NotifyActionOperation operation)
         {
             Guard.NotNull(operation, nameof(operation));
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: Operation has been validated for required parameters when this code is reached.
-            return new DeviceAction(operation.OriginatingAddress, operation.InputKeys, operation.SensorTime);
+            // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+            return new DeviceAction(operation.OriginatingAddress!, operation.InputKeys, operation.SensorTime);
         }
 
-        [NotNull]
         public Operation ToOperation()
         {
-            return new NotifyActionOperation(DeviceAddress) { InputKeys = InputKeys, SensorTime = SensorTime };
+            return new NotifyActionOperation(DeviceAddress)
+            {
+                InputKeys = InputKeys,
+                SensorTime = SensorTime
+            };
         }
 
-        public bool Equals([CanBeNull] DeviceAction other)
+        public bool Equals(DeviceAction? other)
         {
-            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.InputKeys == InputKeys &&
-                other.SensorTime == SensorTime;
+            return !ReferenceEquals(other, null) && other.DeviceAddress == DeviceAddress && other.InputKeys == InputKeys && other.SensorTime == SensorTime;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as DeviceAction);
         }
@@ -78,20 +74,22 @@ namespace DogAgilityCompetition.Circe.Session
             return DeviceAddress.GetHashCode() ^ InputKeys.GetHashCode() ^ SensorTime.GetHashCode();
         }
 
-        public static bool operator ==([CanBeNull] DeviceAction left, [CanBeNull] DeviceAction right)
+        public static bool operator ==(DeviceAction? left, DeviceAction? right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] DeviceAction left, [CanBeNull] DeviceAction right)
+        public static bool operator !=(DeviceAction? left, DeviceAction? right)
         {
             return !(left == right);
         }

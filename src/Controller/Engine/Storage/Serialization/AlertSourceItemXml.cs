@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -14,27 +13,33 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         public bool IsEnabled { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
-        [NotNull]
-        public static AlertSourceItemXml ToXmlObject([NotNull] AlertSourceItem source)
+        public static AlertSourceItemXml ToXmlObject(AlertSourceItem source)
         {
             Guard.NotNull(source, nameof(source));
 
-            return new AlertSourceItemXml { IsEnabled = source.IsEnabled, Path = source.Path };
+            return new AlertSourceItemXml
+            {
+                IsEnabled = source.IsEnabled,
+                Path = source.Path
+            };
         }
 
-        [NotNull]
-        public static T FromXmlObject<T>([CanBeNull] AlertSourceItemXml source) where T : AlertSourceItem
+        public static T FromXmlObject<T>(AlertSourceItemXml? source)
+            where T : AlertSourceItem
         {
+            // @formatter:keep_existing_linebreaks true
+
             return source == null
-                ? (typeof (T) == typeof (AlertPictureSourceItem)
-                    ? (T) (AlertSourceItem) AlertPictureSourceItem.None
-                    : (T) (AlertSourceItem) AlertSoundSourceItem.None)
-                : (typeof (T) == typeof (AlertPictureSourceItem)
-                    ? (T) (AlertSourceItem) new AlertPictureSourceItem(source.IsEnabled, source.Path)
-                    : (T) (AlertSourceItem) new AlertSoundSourceItem(source.IsEnabled, source.Path));
+                ? typeof(T) == typeof(AlertPictureSourceItem)
+                    ? (T)(AlertSourceItem)AlertPictureSourceItem.None
+                    : (T)(AlertSourceItem)AlertSoundSourceItem.None
+                : typeof(T) == typeof(AlertPictureSourceItem)
+                    ? (T)(AlertSourceItem)new AlertPictureSourceItem(source.IsEnabled, source.Path)
+                    : (T)(AlertSourceItem)new AlertSoundSourceItem(source.IsEnabled, source.Path);
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

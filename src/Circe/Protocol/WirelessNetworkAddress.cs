@@ -10,30 +10,27 @@ namespace DogAgilityCompetition.Circe.Protocol
     /// <summary>
     /// Represents the address of a hardware device in the CIRCE wireless network.
     /// </summary>
-    [Serializable]
-    public sealed class WirelessNetworkAddress
-        : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
+    public sealed class WirelessNetworkAddress : IComparable<WirelessNetworkAddress>, IEquatable<WirelessNetworkAddress>, IXmlSerializable
     {
-        [NotNull]
+        public static readonly WirelessNetworkAddress Default = new("000000");
+
         public string Value { get; private set; }
 
-        [NotNull]
-        public static readonly WirelessNetworkAddress Default = new WirelessNetworkAddress("000000");
+        public WirelessNetworkAddress(string value)
+        {
+            AssertValidAddress(value);
+            Value = value;
+        }
 
+        [UsedImplicitly]
         private WirelessNetworkAddress()
         {
             // Private constructor is required for XML serialization.
             Value = Default.Value;
         }
 
-        public WirelessNetworkAddress([NotNull] string value)
-        {
-            AssertValidAddress(value);
-            Value = value;
-        }
-
         [AssertionMethod]
-        private static void AssertValidAddress([NotNull] string value)
+        private static void AssertValidAddress(string value)
         {
             Guard.NotNullNorEmpty(value, nameof(value));
 
@@ -66,19 +63,22 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        public override string ToString() => Value;
+        public override string ToString()
+        {
+            return Value;
+        }
 
-        public int CompareTo([CanBeNull] WirelessNetworkAddress other)
+        public int CompareTo(WirelessNetworkAddress? other)
         {
             return ReferenceEquals(other, null) ? 1 : string.CompareOrdinal(Value, other.Value);
         }
 
-        public bool Equals([CanBeNull] WirelessNetworkAddress other)
+        public bool Equals(WirelessNetworkAddress? other)
         {
             return !ReferenceEquals(other, null) && other.Value == Value;
         }
 
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as WirelessNetworkAddress);
         }
@@ -86,48 +86,46 @@ namespace DogAgilityCompetition.Circe.Protocol
         public override int GetHashCode()
         {
             // ReSharper disable once NonReadonlyMemberInGetHashCode
-            // Reason: GetHashCode() is not expected to be called before deserialization has completed.
-            return Value.GetHashCode();
+            // Justification: GetHashCode() is not expected to be called before deserialization has completed.
+            return string.GetHashCode(Value, StringComparison.Ordinal);
         }
 
-        public static bool operator ==([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator ==(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             if (ReferenceEquals(left, right))
             {
                 return true;
             }
+
             if (ReferenceEquals(left, null))
             {
                 return false;
             }
+
             return left.Equals(right);
         }
 
-        public static bool operator !=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator !=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return !(left == right);
         }
 
-        public static bool operator <([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator <(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null ? right != null : left.CompareTo(right) == -1;
         }
 
-        public static bool operator <=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator <=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null || left.CompareTo(right) <= 0;
         }
 
-        public static bool operator >([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right)
+        public static bool operator >(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left?.CompareTo(right) == 1;
         }
 
-        public static bool operator >=([CanBeNull] WirelessNetworkAddress left, [CanBeNull] WirelessNetworkAddress right
-            )
+        public static bool operator >=(WirelessNetworkAddress? left, WirelessNetworkAddress? right)
         {
             return left == null ? right == null : left.CompareTo(right) >= 0;
         }

@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.MediatorEmulator.Properties;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 {
@@ -15,36 +14,22 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
     /// </summary>
     public sealed partial class HardwareStatusControl : UserControl
     {
-        [NotNull]
-        private readonly Random randomizer = new Random();
+        private readonly Random randomizer = new();
 
         private DateTime lastVariationUpdate;
         private DateTime clockStartedAt;
-
-        [CanBeNull]
         private DateTime? clockPausedAt;
-
-        [CanBeNull]
         private DateTime? syncRequestReceivedAt;
 
         public bool SupportsAlignment
         {
-            get
-            {
-                return alignedCheckBox.Visible;
-            }
-            set
-            {
-                alignedCheckBox.Visible = value;
-            }
+            get => alignedCheckBox.Visible;
+            set => alignedCheckBox.Visible = value;
         }
 
         public bool SupportsClock
         {
-            get
-            {
-                return clockLabel.Visible;
-            }
+            get => clockLabel.Visible;
             set
             {
                 pausePlayClockButton.Visible = value;
@@ -55,10 +40,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         public bool SupportsBatteryStatus
         {
-            get
-            {
-                return batteryStatusTrackBar.Visible;
-            }
+            get => batteryStatusTrackBar.Visible;
             set
             {
                 if (value != SupportsBatteryStatus)
@@ -76,13 +58,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [CanBeNull]
         public bool? IsAligned
         {
-            get
-            {
-                return SupportsAlignment ? alignedCheckBox.Checked : (bool?) null;
-            }
+            get => SupportsAlignment ? alignedCheckBox.Checked : null;
             set
             {
                 if (value != IsAligned)
@@ -98,10 +76,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HasVersionMismatch
         {
-            get
-            {
-                return hasVersionMismatchCheckBox.Checked;
-            }
+            get => hasVersionMismatchCheckBox.Checked;
             set
             {
                 if (value != HasVersionMismatch)
@@ -117,10 +92,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SignalStrength
         {
-            get
-            {
-                return signalStrengthTrackBar.Value;
-            }
+            get => signalStrengthTrackBar.Value;
             set
             {
                 if (value != SignalStrength)
@@ -134,13 +106,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [CanBeNull]
         public int? BatteryStatus
         {
-            get
-            {
-                return !SupportsBatteryStatus ? (int?) null : batteryStatusTrackBar.Value;
-            }
+            get => !SupportsBatteryStatus ? null : batteryStatusTrackBar.Value;
             set
             {
                 if (value != BatteryStatus)
@@ -168,7 +136,6 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [CanBeNull]
         public ClockSynchronizationStatus? SynchronizationStatus
         {
             get
@@ -179,16 +146,18 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                     {
                         return ClockSynchronizationStatus.RequiresSync;
                     }
+
                     if (syncRequestReceivedAt.Value.AddSeconds(4) > SystemContext.UtcNow())
                     {
                         return ClockSynchronizationStatus.SyncSucceeded;
                     }
                 }
+
                 return null;
             }
         }
 
-        public event EventHandler StatusChanged;
+        public event EventHandler? StatusChanged;
 
         public HardwareStatusControl()
         {
@@ -206,7 +175,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             });
         }
 
-        private void RaiseChangeOnValueChange<T>([NotNull] Func<T> getValue, [NotNull] Action action)
+        private void RaiseChangeOnValueChange<T>(Func<T> getValue, Action action)
         {
             T previousValue = getValue();
             action();
@@ -218,29 +187,29 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             }
         }
 
-        private void AutomaticCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void AutomaticCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             batteryStatusTrackBar.Enabled = !automaticCheckBox.Checked;
             signalStrengthTrackBar.Enabled = !automaticCheckBox.Checked;
             UpdateTimerEnabled();
         }
 
-        private void HasVersionMismatchCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void HasVersionMismatchCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void AlignedCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void AlignedCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void TrackBar_Scroll([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TrackBar_Scroll(object? sender, EventArgs e)
         {
             StatusChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void PausePlayClockButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PausePlayClockButton_Click(object? sender, EventArgs e)
         {
             if (clockPausedAt == null)
             {
@@ -258,7 +227,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             UpdateTimerEnabled();
         }
 
-        private void UpdateTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void UpdateTimer_Tick(object? sender, EventArgs e)
         {
             if (automaticCheckBox.Checked && lastVariationUpdate.AddMilliseconds(750) < SystemContext.UtcNow())
             {
@@ -266,6 +235,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                 {
                     BatteryStatus = GetNextRandomValue(batteryStatusTrackBar.Value);
                 }
+
                 SignalStrength = GetNextRandomValue(signalStrengthTrackBar.Value);
                 lastVariationUpdate = SystemContext.UtcNow();
             }
@@ -274,8 +244,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             {
                 SetClockTo(ClockValue);
 
-                RaiseChangeOnValueChange(() => syncStateLabel.Text,
-                    () => { syncStateLabel.Text = SynchronizationStatus.ToString(); });
+                RaiseChangeOnValueChange(() => syncStateLabel.Text, () => syncStateLabel.Text = SynchronizationStatus.ToString());
             }
         }
 
@@ -294,7 +263,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             return Math.Max(0, Math.Min(255, value));
         }
 
-        protected override void OnEnabledChanged([CanBeNull] EventArgs e)
+        protected override void OnEnabledChanged(EventArgs? e)
         {
             if (SupportsClock && Enabled)
             {
@@ -312,8 +281,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         private void UpdateTimerEnabled()
         {
-            updateTimer.Enabled = Enabled && !DesignMode &&
-                (automaticCheckBox.Checked || (SupportsClock && clockPausedAt == null));
+            updateTimer.Enabled = Enabled && !DesignMode && (automaticCheckBox.Checked || (SupportsClock && clockPausedAt == null));
         }
     }
 }

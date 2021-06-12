@@ -27,31 +27,29 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// The color in ARGB format that is equivalent to the specified values.
         /// </returns>
         /// <remarks>
-        /// Uses the CSS Color Module Level 3 algorithm, which is described at
-        /// <see href="http://www.w3.org/TR/css3-color/#hsl-color" />.
+        /// Uses the CSS Color Module Level 3 algorithm, which is described at <see href="http://www.w3.org/TR/css3-color/#hsl-color" />.
         /// </remarks>
         public static Color FromAhsl(byte alpha, double hue, double saturation, double lightness)
         {
             if (hue < 0.0 || hue > 360.0)
             {
-                throw new ArgumentOutOfRangeException(nameof(hue), hue, @"hue must be in range [0-360].");
+                throw new ArgumentOutOfRangeException(nameof(hue), hue, "hue must be in range [0-360].");
             }
+
             if (saturation < 0.0 || saturation > 1.0)
             {
-                throw new ArgumentOutOfRangeException(nameof(saturation), saturation,
-                    @"saturation must be in range [0-1].");
+                throw new ArgumentOutOfRangeException(nameof(saturation), saturation, "saturation must be in range [0-1].");
             }
+
             if (lightness < 0.0 || lightness > 1.0)
             {
-                throw new ArgumentOutOfRangeException(nameof(lightness), lightness, @"lightness must be in range [0-1].");
+                throw new ArgumentOutOfRangeException(nameof(lightness), lightness, "lightness must be in range [0-1].");
             }
 
             // System.Drawing.Color returns hue in degrees (0 - 360) rather than a number between 0 and 1.
             double hueCorrected = hue / 360.0;
 
-            double mid2 = lightness <= .5
-                ? lightness * (saturation + 1.0)
-                : lightness + saturation - lightness * saturation;
+            double mid2 = lightness <= .5 ? lightness * (saturation + 1.0) : lightness + saturation - lightness * saturation;
             double mid1 = lightness * 2.0 - mid2;
 
             double red = HueToRgb(mid1, mid2, hueCorrected + 1.0 / 3.0);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
@@ -10,10 +11,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class RankingsUpdate : NotNullableVisualizationChange<IReadOnlyCollection<CompetitionRunResult>>
     {
-        [NotNull]
-        public static RankingsUpdate Hidden => new RankingsUpdate(new CompetitionRunResult[0]);
+        public static RankingsUpdate Hidden => new(Array.Empty<CompetitionRunResult>());
 
-        public RankingsUpdate([NotNull] [ItemNotNull] IReadOnlyCollection<CompetitionRunResult> value)
+        public RankingsUpdate(IReadOnlyCollection<CompetitionRunResult> value)
             : base(value)
         {
         }
@@ -25,6 +25,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
         }
 
         [Pure]
-        public override string ToString() => $"{GetType().Name} Value: [{Value.Count}]";
+        public override string ToString()
+        {
+            return $"{GetType().Name} Value: [{Value.Count}]";
+        }
     }
 }

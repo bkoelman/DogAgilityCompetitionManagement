@@ -149,7 +149,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // DisplayStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.displayGroupBox);
             this.Name = "DisplayStatusControl";
             this.Size = new System.Drawing.Size(264, 145);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -9,14 +8,13 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class ProtocolVersionSelectionForm : Form
     {
-        [CanBeNull]
-        public Version Version
+        public Version? Version
         {
             get
             {
-                int majorNumber = (int) majorUpDown.Value;
-                int minorNumber = (int) minorUpDown.Value;
-                int releaseNumber = (int) releaseUpDown.Value;
+                int majorNumber = (int)majorUpDown.Value;
+                int minorNumber = (int)minorUpDown.Value;
+                int releaseNumber = (int)releaseUpDown.Value;
 
                 return IsInRange(majorNumber) && IsInRange(minorNumber) && IsInRange(releaseNumber)
                     ? new Version(majorNumber, minorNumber, releaseNumber)
@@ -30,22 +28,21 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private static bool IsInRange(int value)
-        {
-            return value >= 0 && value <= 999;
-        }
-
         public ProtocolVersionSelectionForm()
         {
             InitializeComponent();
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private static bool IsInRange(int value)
+        {
+            return value is >= 0 and <= 999;
+        }
+
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (Version == null)
             {
-                MessageBox.Show("All values must be in range [0-999].", "Error", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show("All values must be in range [0-999].", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

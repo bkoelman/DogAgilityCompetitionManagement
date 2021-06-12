@@ -1,6 +1,5 @@
 using System.Drawing;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -9,7 +8,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class StartAnimation : NotNullableVisualizationChange<Bitmap>
     {
-        public StartAnimation([NotNull] Bitmap value)
+        public StartAnimation(Bitmap value)
             : base(value)
         {
         }

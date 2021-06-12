@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace DogAgilityCompetition.DeviceConfigurer.Phases
 {
     /// <summary>
@@ -7,10 +5,9 @@ namespace DogAgilityCompetition.DeviceConfigurer.Phases
     /// </summary>
     public sealed class PhaseAssignmentCompleted : AssignmentPhase
     {
-        [CanBeNull]
-        public int? MediatorStatus { get; private set; }
+        public int? MediatorStatus { get; }
 
-        public PhaseAssignmentCompleted([CanBeNull] int? mediatorStatus)
+        public PhaseAssignmentCompleted(int? mediatorStatus)
         {
             MediatorStatus = mediatorStatus;
         }

@@ -214,7 +214,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             // CompetitionRunResultsGrid
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.runResultsGrid);
             this.Name = "CompetitionRunResultsGrid";
             this.Size = new System.Drawing.Size(919, 176);

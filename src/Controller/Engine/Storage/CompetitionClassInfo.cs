@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
@@ -14,35 +13,20 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </remarks>
     public sealed class CompetitionClassInfo
     {
-        [CanBeNull]
-        public string Grade { get; }
-
-        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
-        [CanBeNull]
-        public string Type { get; }
-
-        [CanBeNull]
-        public string InspectorName { get; }
-
-        [CanBeNull]
-        public string RingName { get; }
-
-        [CanBeNull]
+        public string? Grade { get; }
+        public string? Type { get; }
+        public string? InspectorName { get; }
+        public string? RingName { get; }
         public TimeSpan? StandardCourseTime { get; }
-
-        [CanBeNull]
         public TimeSpan? MaximumCourseTime { get; }
-
-        [CanBeNull]
         public int? TrackLengthInMeters { get; }
 
         public CompetitionClassInfo()
         {
         }
 
-        private CompetitionClassInfo([CanBeNull] string grade, [CanBeNull] string type, [CanBeNull] string inspectorName,
-            [CanBeNull] string ringName, [CanBeNull] TimeSpan? standardCourseTime,
-            [CanBeNull] TimeSpan? maximumCourseTime, [CanBeNull] int? trackLengthInMeters)
+        private CompetitionClassInfo(string? grade, string? type, string? inspectorName, string? ringName, TimeSpan? standardCourseTime,
+            TimeSpan? maximumCourseTime, int? trackLengthInMeters)
         {
             Grade = grade;
             Type = type;
@@ -53,100 +37,89 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
             TrackLengthInMeters = trackLengthInMeters;
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeGrade([CanBeNull] string grade)
+        public CompetitionClassInfo ChangeGrade(string? grade)
         {
             grade = string.IsNullOrWhiteSpace(grade) ? null : grade;
 
-            return new CompetitionClassInfo(grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeType([CanBeNull] string type)
+        public CompetitionClassInfo ChangeType(string? type)
         {
             type = string.IsNullOrWhiteSpace(type) ? null : type;
 
-            return new CompetitionClassInfo(Grade, type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeInspectorName([CanBeNull] string inspectorName)
+        public CompetitionClassInfo ChangeInspectorName(string? inspectorName)
         {
             inspectorName = string.IsNullOrWhiteSpace(inspectorName) ? null : inspectorName;
 
-            return new CompetitionClassInfo(Grade, Type, inspectorName, RingName, StandardCourseTime, MaximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, inspectorName, RingName, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeRingName([CanBeNull] string ringName)
+        public CompetitionClassInfo ChangeRingName(string? ringName)
         {
-            string value = string.IsNullOrWhiteSpace(ringName) ? null : ringName;
+            string? value = string.IsNullOrWhiteSpace(ringName) ? null : ringName;
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, value, StandardCourseTime, MaximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, value, StandardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeStandardCourseTime([CanBeNull] TimeSpan? standardCourseTime)
+        public CompetitionClassInfo ChangeStandardCourseTime(TimeSpan? standardCourseTime)
         {
             if (standardCourseTime != null)
             {
                 Guard.GreaterOrEqual(standardCourseTime.Value, nameof(standardCourseTime), TimeSpan.FromSeconds(1));
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, standardCourseTime, MaximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, standardCourseTime, MaximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeMaximumCourseTime([CanBeNull] TimeSpan? maximumCourseTime)
+        public CompetitionClassInfo ChangeMaximumCourseTime(TimeSpan? maximumCourseTime)
         {
             if (maximumCourseTime != null)
             {
                 Guard.GreaterOrEqual(maximumCourseTime.Value, nameof(maximumCourseTime), TimeSpan.FromSeconds(1));
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, maximumCourseTime,
-                TrackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, maximumCourseTime, TrackLengthInMeters);
         }
 
-        [NotNull]
-        public CompetitionClassInfo ChangeTrackLengthInMeters([CanBeNull] int? trackLengthInMeters)
+        public CompetitionClassInfo ChangeTrackLengthInMeters(int? trackLengthInMeters)
         {
             if (trackLengthInMeters != null)
             {
                 Guard.GreaterOrEqual(trackLengthInMeters.Value, nameof(trackLengthInMeters), 1);
             }
 
-            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime,
-                trackLengthInMeters);
+            return new CompetitionClassInfo(Grade, Type, InspectorName, RingName, StandardCourseTime, MaximumCourseTime, trackLengthInMeters);
         }
 
         [Pure]
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                formatter.Append(() => Grade, () => Grade);
-                formatter.Append(() => Type, () => Type);
-                formatter.Append(() => InspectorName, () => InspectorName);
-                formatter.Append(() => RingName, () => RingName);
+                formatter.Append(Grade, nameof(Grade));
+                formatter.Append(Type, nameof(Type));
+                formatter.Append(InspectorName, nameof(InspectorName));
+                formatter.Append(RingName, nameof(RingName));
 
                 if (StandardCourseTime != null)
                 {
-                    formatter.Append(() => StandardCourseTime.Value.TotalSeconds, () => StandardCourseTime);
-                }
-                if (MaximumCourseTime != null)
-                {
-                    formatter.Append(() => MaximumCourseTime.Value.TotalSeconds, () => MaximumCourseTime);
+                    formatter.Append(StandardCourseTime.Value.TotalSeconds, nameof(StandardCourseTime));
                 }
 
-                formatter.Append(() => TrackLengthInMeters, () => TrackLengthInMeters);
+                if (MaximumCourseTime != null)
+                {
+                    formatter.Append(MaximumCourseTime.Value.TotalSeconds, nameof(MaximumCourseTime));
+                }
+
+                formatter.Append(TrackLengthInMeters, nameof(TrackLengthInMeters));
             }
+
             return textBuilder.ToString();
         }
     }

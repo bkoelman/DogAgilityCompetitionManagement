@@ -2,7 +2,6 @@
 using System.Linq;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Visualization.Changes;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -11,7 +10,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public static class VisualizationConflictResolver
     {
-        public static void InspectChangeSet([NotNull] [ItemNotNull] IList<VisualizationChange> changeSet)
+        public static void InspectChangeSet(IList<VisualizationChange> changeSet)
         {
             Guard.NotNull(changeSet, nameof(changeSet));
 
@@ -19,11 +18,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             ResolveEliminationPrecedence(changeSet);
         }
 
-        private static void ResolvePrimaryTimePrecedence(
-            [NotNull] [ItemNotNull] ICollection<VisualizationChange> changeSet)
+        private static void ResolvePrimaryTimePrecedence(ICollection<VisualizationChange> changeSet)
         {
-            StartPrimaryTimer startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
-            PrimaryTimeStopAndSet setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();
+            StartPrimaryTimer? startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
+            PrimaryTimeStopAndSet? setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();
 
             if (startPrimaryTimer != null && setPrimaryValue != null)
             {
@@ -31,9 +29,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             }
         }
 
-        private static void ResolveEliminationPrecedence([NotNull] [ItemNotNull] IList<VisualizationChange> changeSet)
+        private static void ResolveEliminationPrecedence(IList<VisualizationChange> changeSet)
         {
-            EliminationUpdate eliminationUpdate = changeSet.OfType<EliminationUpdate>().FirstOrDefault();
+            EliminationUpdate? eliminationUpdate = changeSet.OfType<EliminationUpdate>().FirstOrDefault();
+
             if (eliminationUpdate != null)
             {
                 changeSet.Remove(eliminationUpdate);

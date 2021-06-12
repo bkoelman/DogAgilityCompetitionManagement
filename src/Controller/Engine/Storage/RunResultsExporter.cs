@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Controller.Properties;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage
 {
@@ -14,86 +12,76 @@ namespace DogAgilityCompetition.Controller.Engine.Storage
     /// </summary>
     public static class RunResultsExporter
     {
-        [NotNull]
-        [ItemNotNull]
-        private static readonly ReadOnlyCollection<string> ExportColumnNames =
-            new List<string>
-            {
-                ImportExportColumns.CompetitorNumber,
-                ImportExportColumns.HandlerName,
-                ImportExportColumns.DogName,
-                ImportExportColumns.CountryCode,
-                ImportExportColumns.IntermediateTime1,
-                ImportExportColumns.IntermediateTime2,
-                ImportExportColumns.IntermediateTime3,
-                ImportExportColumns.FinishTime,
-                ImportExportColumns.FaultCount,
-                ImportExportColumns.RefusalCount,
-                ImportExportColumns.IsEliminated,
-                ImportExportColumns.Placement
-            }.AsReadOnly();
+        private static readonly ReadOnlyCollection<string> ExportColumnNames = new List<string>
+        {
+            ImportExportColumns.CompetitorNumber,
+            ImportExportColumns.HandlerName,
+            ImportExportColumns.DogName,
+            ImportExportColumns.CountryCode,
+            ImportExportColumns.IntermediateTime1,
+            ImportExportColumns.IntermediateTime2,
+            ImportExportColumns.IntermediateTime3,
+            ImportExportColumns.FinishTime,
+            ImportExportColumns.FaultCount,
+            ImportExportColumns.RefusalCount,
+            ImportExportColumns.IsEliminated,
+            ImportExportColumns.Placement
+        }.AsReadOnly();
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-        public static void ExportTo([NotNull] string path,
-            [NotNull] [ItemNotNull] IEnumerable<CompetitionRunResult> runResults)
+        public static void ExportTo(string path, IEnumerable<CompetitionRunResult> runResults)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
             Guard.NotNull(runResults, nameof(runResults));
 
-            using (var textWriter = new StreamWriter(path))
+            using var textWriter = new StreamWriter(path);
+
+            var settings = new DelimitedValuesWriterSettings
             {
-                var settings = new DelimitedValuesWriterSettings { Culture = Settings.Default.ImportExportCulture };
-                using (var valuesWriter = new DelimitedValuesWriter(textWriter, ExportColumnNames, settings))
+                Culture = Settings.Default.ImportExportCulture
+            };
+
+            using var valuesWriter = new DelimitedValuesWriter(textWriter, ExportColumnNames, settings);
+
+            foreach (CompetitionRunResult runResult in runResults)
+            {
+                using IDelimitedValuesWriterRow row = valuesWriter.CreateRow();
+
+                row.SetCell(ImportExportColumns.CompetitorNumber, runResult.Competitor.Number);
+                row.SetCell(ImportExportColumns.HandlerName, runResult.Competitor.HandlerName);
+                row.SetCell(ImportExportColumns.DogName, runResult.Competitor.DogName);
+                row.SetCell(ImportExportColumns.CountryCode, runResult.Competitor.CountryCode);
+
+                if (runResult.Timings != null)
                 {
-                    foreach (CompetitionRunResult runResult in runResults)
-                    {
-                        using (IDelimitedValuesWriterRow row = valuesWriter.CreateRow())
-                        {
-                            row.SetCell(ImportExportColumns.CompetitorNumber, runResult.Competitor.Number);
-                            row.SetCell(ImportExportColumns.HandlerName, runResult.Competitor.HandlerName);
-                            row.SetCell(ImportExportColumns.DogName, runResult.Competitor.DogName);
-                            row.SetCell(ImportExportColumns.CountryCode, runResult.Competitor.CountryCode);
+                    SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, runResult, runResult.Timings.IntermediateTime1);
+                    SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, runResult, runResult.Timings.IntermediateTime2);
+                    SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, runResult, runResult.Timings.IntermediateTime3);
+                    SetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, runResult, runResult.Timings.FinishTime);
+                }
 
-                            if (runResult.Timings != null)
-                            {
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime1, runResult,
-                                    runResult.Timings.IntermediateTime1);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime2, runResult,
-                                    runResult.Timings.IntermediateTime2);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.IntermediateTime3, runResult,
-                                    runResult.Timings.IntermediateTime3);
-                                SetTimeElapsedSinceStart(row, ImportExportColumns.FinishTime, runResult,
-                                    runResult.Timings.FinishTime);
-                            }
-
-                            if (runResult.HasCompleted)
-                            {
-                                row.SetCell(ImportExportColumns.FaultCount, runResult.FaultCount);
-                                row.SetCell(ImportExportColumns.RefusalCount, runResult.RefusalCount);
-                                row.SetCell(ImportExportColumns.IsEliminated, runResult.IsEliminated);
-                                row.SetCell(ImportExportColumns.Placement, runResult.PlacementText);
-                            }
-                        }
-                    }
+                if (runResult.HasCompleted)
+                {
+                    row.SetCell(ImportExportColumns.FaultCount, runResult.FaultCount);
+                    row.SetCell(ImportExportColumns.RefusalCount, runResult.RefusalCount);
+                    row.SetCell(ImportExportColumns.IsEliminated, runResult.IsEliminated);
+                    row.SetCell(ImportExportColumns.Placement, runResult.PlacementText);
                 }
             }
         }
 
-        private static void SetTimeElapsedSinceStart([NotNull] IDelimitedValuesWriterRow row,
-            [NotNull] string columnName, [NotNull] CompetitionRunResult runResult, [CanBeNull] RecordedTime time)
+        private static void SetTimeElapsedSinceStart(IDelimitedValuesWriterRow row, string columnName, CompetitionRunResult runResult, RecordedTime? time)
         {
             TimeSpanWithAccuracy? elapsed = GetElapsedSinceStart(runResult.Timings, time);
+
             if (elapsed != null)
             {
                 row.SetCell(columnName, elapsed.Value);
             }
         }
 
-        [CanBeNull]
-        private static TimeSpanWithAccuracy? GetElapsedSinceStart([CanBeNull] CompetitionRunTimings timings,
-            [CanBeNull] RecordedTime time)
+        private static TimeSpanWithAccuracy? GetElapsedSinceStart(CompetitionRunTimings? timings, RecordedTime? time)
         {
-            return timings != null && time != null ? time.ElapsedSince(timings.StartTime) : (TimeSpanWithAccuracy?) null;
+            return timings != null && time != null ? time.ElapsedSince(timings.StartTime) : null;
         }
     }
 }

@@ -3,31 +3,37 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
+
+// @formatter:keep_existing_linebreaks true
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for type conversions in <see cref="DelimitedValuesReader" />.
     /// </summary>
-    [TestFixture]
     public sealed class ReaderConversions
     {
-        [Test]
+        [Fact]
         public void When_reading_cell_value_as_nullable_boolean_it_should_succeed()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithColumnHeaders("A", "B", "C")
                 .WithoutRows()
-                .WithRow(new[] { "True", "False", "" })
+                .WithRow(new[]
+                {
+                    "True",
+                    "False",
+                    ""
+                })
                 .Build();
 
             // Act
             IDelimitedValuesReaderRow row = reader.First();
-            var cell1 = row.GetCell<bool?>("A");
-            var cell2 = row.GetCell<bool?>("B");
-            var cell3 = row.GetCell<bool?>("C");
+            bool? cell1 = row.GetCell<bool?>("A");
+            bool? cell2 = row.GetCell<bool?>("B");
+            bool? cell3 = row.GetCell<bool?>("C");
 
             // Assert
             cell1.Should().BeTrue();
@@ -35,17 +41,21 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell3.Should().Be(null);
         }
 
-        [Test]
+        [Fact]
         public void When_reading_cell_value_it_should_respect_culture()
         {
             // Arrange
             var culture = new CultureInfo("nl-NL");
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                     .WithCulture(culture))
                 .WithSingleColumnHeader("A")
                 .WithoutRows()
-                .WithRow(new[] { "3,5" })
+                .WithRow(new[]
+                {
+                    "3,5"
+                })
                 .Build();
 
             // Act
@@ -56,19 +66,22 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             cell.Should().Be(3.5m);
         }
 
-        [Test]
+        [Fact]
         public void When_reading_cell_value_with_custom_converter_it_should_succeed()
         {
             // Arrange
-            DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
+            using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
                 .WithSingleColumnHeader("A")
                 .WithoutRows()
-                .WithRow(new[] { "X" })
+                .WithRow(new[]
+                {
+                    "X"
+                })
                 .Build();
 
             // Act
             IDelimitedValuesReaderRow row = reader.First();
-            string cell = row.GetCell("A", c => "Y");
+            string? cell = row.GetCell("A", _ => "Y");
 
             // Assert
             cell.Should().Be("Y");

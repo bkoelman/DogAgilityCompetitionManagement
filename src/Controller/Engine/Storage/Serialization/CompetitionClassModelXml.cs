@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -14,40 +13,30 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     public sealed class CompetitionClassModelXml
     {
         [DataMember]
-        [CanBeNull]
-        [ItemNotNull]
-        public Collection<CompetitionRunResultXml> RunResults { get; set; }
+        public Collection<CompetitionRunResultXml>? RunResults { get; set; }
 
         [DataMember]
-        [CanBeNull]
         public int? LastCompletedCompetitorNumber { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string Grade { get; set; }
+        public string? Grade { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string ClassType { get; set; }
+        public string? ClassType { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string InspectorName { get; set; }
+        public string? InspectorName { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string RingName { get; set; }
+        public string? RingName { get; set; }
 
         [DataMember]
-        [CanBeNull]
         public TimeSpan? StandardCourseTime { get; set; }
 
         [DataMember]
-        [CanBeNull]
         public TimeSpan? MaximumCourseTime { get; set; }
 
         [DataMember]
-        [CanBeNull]
         public int? TrackLengthInMeters { get; set; }
 
         [DataMember]
@@ -57,11 +46,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         public TimeSpan StartFinishMinDelayForSingleSensor { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public CompetitionAlertsXml Alerts { get; set; }
+        public CompetitionAlertsXml? Alerts { get; set; }
 
-        [NotNull]
-        public static CompetitionClassModelXml ToXmlObject([NotNull] CompetitionClassModel source)
+        public static CompetitionClassModelXml ToXmlObject(CompetitionClassModel source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -82,26 +69,28 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static CompetitionClassModel FromXmlObject([NotNull] CompetitionClassModelXml source)
+        public static CompetitionClassModel FromXmlObject(CompetitionClassModelXml source)
         {
             Guard.NotNull(source, nameof(source));
 
-            return
-                new CompetitionClassModel().ChangeRunResults(
-                    source.RunResults.EmptyIfNull().Select(CompetitionRunResultXml.FromXmlObject))
-                    .SafeChangeLastCompletedCompetitorNumber(source.LastCompletedCompetitorNumber)
-                    .ChangeClassInfo(
-                        new CompetitionClassInfo().ChangeGrade(source.Grade)
-                            .ChangeType(source.ClassType)
-                            .ChangeInspectorName(source.InspectorName)
-                            .ChangeRingName(source.RingName)
-                            .ChangeStandardCourseTime(source.StandardCourseTime)
-                            .ChangeMaximumCourseTime(source.MaximumCourseTime)
-                            .ChangeTrackLengthInMeters(source.TrackLengthInMeters))
-                    .ChangeIntermediateTimerCount(source.IntermediateTimerCount)
-                    .ChangeStartFinishMinDelayForSingleSensor(source.StartFinishMinDelayForSingleSensor)
-                    .ChangeAlerts(CompetitionAlertsXml.FromXmlObject(source.Alerts));
+            // @formatter:keep_existing_linebreaks true
+
+            return new CompetitionClassModel()
+                .ChangeRunResults(source.RunResults.EmptyIfNull().Select(CompetitionRunResultXml.FromXmlObject))
+                .SafeChangeLastCompletedCompetitorNumber(source.LastCompletedCompetitorNumber)
+                .ChangeClassInfo(new CompetitionClassInfo()
+                    .ChangeGrade(source.Grade)
+                    .ChangeType(source.ClassType)
+                    .ChangeInspectorName(source.InspectorName)
+                    .ChangeRingName(source.RingName)
+                    .ChangeStandardCourseTime(source.StandardCourseTime)
+                    .ChangeMaximumCourseTime(source.MaximumCourseTime)
+                    .ChangeTrackLengthInMeters(source.TrackLengthInMeters))
+                .ChangeIntermediateTimerCount(source.IntermediateTimerCount)
+                .ChangeStartFinishMinDelayForSingleSensor(source.StartFinishMinDelayForSingleSensor)
+                .ChangeAlerts(CompetitionAlertsXml.FromXmlObject(source.Alerts));
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

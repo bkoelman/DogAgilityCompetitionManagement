@@ -1,6 +1,5 @@
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -9,10 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class PreviousCompetitorRunUpdate : NullableVisualizationChange<CompetitionRunResult>
     {
-        [NotNull]
-        public static PreviousCompetitorRunUpdate Hidden => new PreviousCompetitorRunUpdate(null);
+        public static PreviousCompetitorRunUpdate Hidden => new(null);
 
-        public PreviousCompetitorRunUpdate([CanBeNull] CompetitionRunResult value)
+        public PreviousCompetitorRunUpdate(CompetitionRunResult? value)
             : base(value)
         {
         }

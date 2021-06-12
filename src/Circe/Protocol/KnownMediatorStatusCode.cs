@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using DogAgilityCompetition.Circe.Protocol.Operations;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol
 {
@@ -14,7 +13,13 @@ namespace DogAgilityCompetition.Circe.Protocol
         public const int MediatorUnconfigured = 1;
         public const int FailedToSendNetworkPacket = 2;
 
-        [NotNull]
+        public static readonly IEnumerable<int> All = new[]
+        {
+            Normal,
+            MediatorUnconfigured,
+            FailedToSendNetworkPacket
+        };
+
         public static string GetNameFor(int mediatorStatusCode)
         {
             switch (mediatorStatusCode)
@@ -28,12 +33,6 @@ namespace DogAgilityCompetition.Circe.Protocol
                 default:
                     return mediatorStatusCode.ToString(CultureInfo.InvariantCulture);
             }
-        }
-
-        [NotNull]
-        public static IEnumerable<int> GetAll()
-        {
-            return new[] { Normal, MediatorUnconfigured, FailedToSendNetworkPacket };
         }
     }
 }

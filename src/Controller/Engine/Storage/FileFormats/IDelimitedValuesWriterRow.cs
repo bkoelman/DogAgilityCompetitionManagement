@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
 {
@@ -12,8 +11,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <summary>
         /// Gets the column names.
         /// </summary>
-        [NotNull]
-        [ItemNotNull]
         IReadOnlyCollection<string> ColumnNames { get; }
 
         /// <summary>
@@ -25,7 +22,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="value">
         /// The cell value to assign.
         /// </param>
-        void SetCell([NotNull] string columnName, [CanBeNull] string value);
+        void SetCell(string columnName, string? value);
 
         /// <summary>
         /// Converts a value and puts it in the cell at the specified column.
@@ -42,7 +39,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
         /// <param name="converter">
         /// Optional. Used to convert from <typeparamref name="T" /> to string.
         /// </param>
-        void SetCell<T>([NotNull] string columnName, [CanBeNull] T value,
-            [CanBeNull] Converter<T, string> converter = null);
+        void SetCell<T>(string columnName, T? value, Converter<T?, string>? converter = null);
     }
 }

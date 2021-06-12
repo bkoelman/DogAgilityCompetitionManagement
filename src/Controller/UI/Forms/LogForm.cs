@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using DogAgilityCompetition.Controller.Properties;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -20,15 +19,14 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             TextBoxAppender.Subscribe(logTextBox);
         }
 
-        private void LogForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void LogForm_Load(object? sender, EventArgs e)
         {
             LoadSettingsForDebug();
         }
 
         private void LoadSettingsForDebug()
         {
-            TextBoxAppenderMode mode;
-            if (Enum.TryParse(Settings.Default.DebugTextBoxMode, false, out mode))
+            if (Enum.TryParse(Settings.Default.DebugTextBoxMode, false, out TextBoxAppenderMode mode))
             {
                 switch (mode)
                 {
@@ -47,14 +45,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
                 }
             }
 
-            TextBoxAppenderSwitches switches;
-            if (Enum.TryParse(Settings.Default.DebugTextBoxSwitches, false, out switches))
+            if (Enum.TryParse(Settings.Default.DebugTextBoxSwitches, false, out TextBoxAppenderSwitches switches))
             {
                 hideLockSleepCheckBox.Checked = (switches & TextBoxAppenderSwitches.HideLockSleep) != 0;
             }
 
-            bool isFrozen;
-            if (bool.TryParse(Settings.Default.DebugTextBoxIsFrozen, out isFrozen))
+            if (bool.TryParse(Settings.Default.DebugTextBoxIsFrozen, out bool isFrozen))
             {
                 freezeLogTextBox.Checked = isFrozen;
             }
@@ -70,29 +66,30 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             packetOutputPulsingLed.On = !packetOutputPulsingLed.On;
         }
 
-        private void PacketsRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PacketsRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppender.Mode = TextBoxAppenderMode.Packets;
         }
 
-        private void NetworkRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NetworkRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppender.Mode = TextBoxAppenderMode.Network;
         }
 
-        private void NonNetworkRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NonNetworkRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppender.Mode = TextBoxAppenderMode.NonNetwork;
         }
 
-        private void AllRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void AllRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppender.Mode = TextBoxAppenderMode.All;
         }
 
-        private void HideLockSleepCheckBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void HideLockSleepCheckBox_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppenderSwitches switches = TextBoxAppender.Switches;
+
             if (hideLockSleepCheckBox.Checked)
             {
                 switches |= TextBoxAppenderSwitches.HideLockSleep;
@@ -101,25 +98,26 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             {
                 switches &= ~TextBoxAppenderSwitches.HideLockSleep;
             }
+
             TextBoxAppender.Switches = switches;
         }
 
-        private void FreezeLogTextBox_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void FreezeLogTextBox_CheckedChanged(object? sender, EventArgs e)
         {
             TextBoxAppender.IsFrozen = freezeLogTextBox.Checked;
         }
 
-        private void CopyLogLinkLabel_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
+        private void CopyLogLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
             Clipboard.SetText(logTextBox.Text);
         }
 
-        private void ClearLog_LinkClicked([CanBeNull] object sender, [NotNull] LinkLabelLinkClickedEventArgs e)
+        private void ClearLogLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
             logTextBox.Text = string.Empty;
         }
 
-        private void LogForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void LogForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
             Visible = false;
             e.Cancel = true;

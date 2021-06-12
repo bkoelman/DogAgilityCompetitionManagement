@@ -2,21 +2,16 @@ using System;
 using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
     internal sealed class TrackerEventListener : IDisposable
     {
-        [NotNull]
-        [ItemNotNull]
-        public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } =
-            new List<EventArgsWithName<RemoteKeyTracker>>();
+        private RemoteKeyTracker? source;
 
-        [CanBeNull]
-        private RemoteKeyTracker source;
+        public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } = new();
 
-        public TrackerEventListener([NotNull] RemoteKeyTracker source)
+        public TrackerEventListener(RemoteKeyTracker source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -25,27 +20,27 @@ namespace DogAgilityCompetition.Specs.Facilities
             AttachTrackerHandlers();
         }
 
-        private void SourceOnModifierKeyDown([CanBeNull] object sender, [NotNull] RemoteKeyModifierEventArgs e)
+        private void SourceOnModifierKeyDown(object? sender, RemoteKeyModifierEventArgs e)
         {
             EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyDown", e));
         }
 
-        private void SourceOnKeyDown([CanBeNull] object sender, [NotNull] RemoteKeyEventArgs e)
+        private void SourceOnKeyDown(object? sender, RemoteKeyEventArgs e)
         {
             EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyDown", e));
         }
 
-        private void SourceOnKeyUp([CanBeNull] object sender, [NotNull] RemoteKeyEventArgs e)
+        private void SourceOnKeyUp(object? sender, RemoteKeyEventArgs e)
         {
             EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyUp", e));
         }
 
-        private void SourceOnModifierKeyUp([CanBeNull] object sender, [NotNull] RemoteKeyModifierEventArgs e)
+        private void SourceOnModifierKeyUp(object? sender, RemoteKeyModifierEventArgs e)
         {
             EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyUp", e));
         }
 
-        private void SourceOnMissingKey([CanBeNull] object sender, [NotNull] DeviceTimeEventArgs e)
+        private void SourceOnMissingKey(object? sender, DeviceTimeEventArgs e)
         {
             EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("MissingKey", e));
         }

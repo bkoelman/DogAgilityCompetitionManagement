@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -11,7 +10,6 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     public sealed class RecordedTimeXml
     {
         [DataMember]
-        [CanBeNull]
         public TimeSpan? HardwareSynchronizedTime { get; set; }
 
         [DataMember]
@@ -20,8 +18,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         [DataMember]
         public TimeAccuracy Accuracy { get; set; }
 
-        [CanBeNull]
-        public static RecordedTimeXml ToXmlObject([CanBeNull] RecordedTime source)
+        public static RecordedTimeXml? ToXmlObject(RecordedTime? source)
         {
             return source == null
                 ? null
@@ -33,12 +30,9 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
                 };
         }
 
-        [CanBeNull]
-        public static RecordedTime FromXmlObject([CanBeNull] RecordedTimeXml source)
+        public static RecordedTime? FromXmlObject(RecordedTimeXml? source)
         {
-            return source == null
-                ? null
-                : new RecordedTime(source.HardwareSynchronizedTime, source.SoftwareTimeInUtc, source.Accuracy);
+            return source == null ? null : new RecordedTime(source.HardwareSynchronizedTime, source.SoftwareTimeInUtc, source.Accuracy);
         }
     }
 }

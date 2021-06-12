@@ -7,11 +7,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class NonFlickeringDataGridView : DataGridView
     {
+        public bool PublicShowFocusCues => ShowFocusCues;
+
         public NonFlickeringDataGridView()
         {
             DoubleBuffered = true;
         }
-
-        public bool PublicShowFocusCues => ShowFocusCues;
     }
 }

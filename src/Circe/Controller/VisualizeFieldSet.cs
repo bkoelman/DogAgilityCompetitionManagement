@@ -11,44 +11,24 @@ namespace DogAgilityCompetition.Circe.Controller
     /// <remarks>
     /// Deeply immutable by design to allow for safe cross-thread member access.
     /// </remarks>
-    public struct VisualizeFieldSet : IEquatable<VisualizeFieldSet>
+    public readonly struct VisualizeFieldSet : IEquatable<VisualizeFieldSet>
     {
-        [CanBeNull]
         public int? CurrentCompetitorNumber { get; }
-
-        [CanBeNull]
         public int? NextCompetitorNumber { get; }
-
         public bool StartPrimaryTimer { get; }
-
-        [CanBeNull]
         public TimeSpan? PrimaryTimerValue { get; }
-
-        [CanBeNull]
         public TimeSpan? SecondaryTimerValue { get; }
-
-        [CanBeNull]
         public int? CurrentFaultCount { get; }
-
-        [CanBeNull]
         public int? CurrentRefusalCount { get; }
-
-        [CanBeNull]
         public bool? CurrentIsEliminated { get; }
-
-        [CanBeNull]
         public int? PreviousPlacement { get; }
 
-        public bool IsEmpty
-            =>
-                CurrentCompetitorNumber == null && NextCompetitorNumber == null && !StartPrimaryTimer &&
-                    PrimaryTimerValue == null && SecondaryTimerValue == null && CurrentFaultCount == null &&
-                    CurrentRefusalCount == null && CurrentIsEliminated == null && PreviousPlacement == null;
+        public bool IsEmpty =>
+            CurrentCompetitorNumber == null && NextCompetitorNumber == null && !StartPrimaryTimer && PrimaryTimerValue == null && SecondaryTimerValue == null &&
+            CurrentFaultCount == null && CurrentRefusalCount == null && CurrentIsEliminated == null && PreviousPlacement == null;
 
-        public VisualizeFieldSet([CanBeNull] int? currentCompetitorNumber, [CanBeNull] int? nextCompetitorNumber,
-            bool startPrimaryTimer, [CanBeNull] TimeSpan? primaryTimerValue, [CanBeNull] TimeSpan? secondaryTimerValue,
-            [CanBeNull] int? currentFaultCount, [CanBeNull] int? currentRefusalCount,
-            [CanBeNull] bool? currentIsEliminated, [CanBeNull] int? previousPlacement)
+        public VisualizeFieldSet(int? currentCompetitorNumber, int? nextCompetitorNumber, bool startPrimaryTimer, TimeSpan? primaryTimerValue,
+            TimeSpan? secondaryTimerValue, int? currentFaultCount, int? currentRefusalCount, bool? currentIsEliminated, int? previousPlacement)
         {
             CurrentCompetitorNumber = currentCompetitorNumber;
             NextCompetitorNumber = nextCompetitorNumber;
@@ -65,65 +45,49 @@ namespace DogAgilityCompetition.Circe.Controller
         public override string ToString()
         {
             var textBuilder = new StringBuilder();
+
             using (var formatter = new ObjectFormatter(textBuilder, this))
             {
-                int? tempCurrentCompetitorNumber = CurrentCompetitorNumber;
-                formatter.Append(() => tempCurrentCompetitorNumber, () => tempCurrentCompetitorNumber);
-
-                int? tempNextCompetitorNumber = NextCompetitorNumber;
-                formatter.Append(() => tempNextCompetitorNumber, () => tempNextCompetitorNumber);
-
-                bool tempPrimaryTimerIsActive = StartPrimaryTimer;
-                formatter.Append(() => tempPrimaryTimerIsActive, () => tempPrimaryTimerIsActive);
-
-                TimeSpan? tempPrimaryTimerValue = PrimaryTimerValue;
-                formatter.Append(() => tempPrimaryTimerValue, () => tempPrimaryTimerValue);
-
-                TimeSpan? tempSecondaryTimerValue = SecondaryTimerValue;
-                formatter.Append(() => tempSecondaryTimerValue, () => tempSecondaryTimerValue);
-
-                int? tempCurrentFaultCount = CurrentFaultCount;
-                formatter.Append(() => tempCurrentFaultCount, () => tempCurrentFaultCount);
-
-                int? tempCurrentRefusalCount = CurrentRefusalCount;
-                formatter.Append(() => tempCurrentRefusalCount, () => tempCurrentRefusalCount);
-
-                bool? tempCurrentIsEliminated = CurrentIsEliminated;
-                formatter.Append(() => tempCurrentIsEliminated, () => tempCurrentIsEliminated);
-
-                int? tempPreviousPlacement = PreviousPlacement;
-                formatter.Append(() => tempPreviousPlacement, () => tempPreviousPlacement);
+                formatter.Append(CurrentCompetitorNumber, nameof(CurrentCompetitorNumber));
+                formatter.Append(NextCompetitorNumber, nameof(NextCompetitorNumber));
+                formatter.Append(StartPrimaryTimer, nameof(StartPrimaryTimer));
+                formatter.Append(PrimaryTimerValue, nameof(PrimaryTimerValue));
+                formatter.Append(SecondaryTimerValue, nameof(SecondaryTimerValue));
+                formatter.Append(CurrentFaultCount, nameof(CurrentFaultCount));
+                formatter.Append(CurrentRefusalCount, nameof(CurrentRefusalCount));
+                formatter.Append(CurrentIsEliminated, nameof(CurrentIsEliminated));
+                formatter.Append(PreviousPlacement, nameof(PreviousPlacement));
             }
+
             return textBuilder.ToString();
         }
 
         [Pure]
         public bool Equals(VisualizeFieldSet other)
         {
-            return other.CurrentCompetitorNumber == CurrentCompetitorNumber &&
-                other.NextCompetitorNumber == NextCompetitorNumber && other.StartPrimaryTimer == StartPrimaryTimer &&
-                other.PrimaryTimerValue == PrimaryTimerValue && other.SecondaryTimerValue == SecondaryTimerValue &&
-                other.CurrentFaultCount == CurrentFaultCount && other.CurrentRefusalCount == CurrentRefusalCount &&
-                other.CurrentIsEliminated == CurrentIsEliminated && other.PreviousPlacement == PreviousPlacement;
+            return other.CurrentCompetitorNumber == CurrentCompetitorNumber && other.NextCompetitorNumber == NextCompetitorNumber &&
+                other.StartPrimaryTimer == StartPrimaryTimer && other.PrimaryTimerValue == PrimaryTimerValue &&
+                other.SecondaryTimerValue == SecondaryTimerValue && other.CurrentFaultCount == CurrentFaultCount &&
+                other.CurrentRefusalCount == CurrentRefusalCount && other.CurrentIsEliminated == CurrentIsEliminated &&
+                other.PreviousPlacement == PreviousPlacement;
         }
 
         [Pure]
-        public override bool Equals([CanBeNull] object obj)
+        public override bool Equals(object? obj)
         {
-            return !ReferenceEquals(obj, null) && obj is VisualizeFieldSet && Equals((VisualizeFieldSet) obj);
+            return obj is VisualizeFieldSet visualizeFieldSet && Equals(visualizeFieldSet);
         }
 
         [Pure]
         public override int GetHashCode()
         {
-            return GetHashCodeForNullable(CurrentCompetitorNumber) ^ GetHashCodeForNullable(NextCompetitorNumber) ^
-                StartPrimaryTimer.GetHashCode() ^ GetHashCodeForNullable(PrimaryTimerValue) ^
-                GetHashCodeForNullable(SecondaryTimerValue) ^ GetHashCodeForNullable(CurrentFaultCount) ^
-                GetHashCodeForNullable(CurrentRefusalCount) ^ GetHashCodeForNullable(CurrentIsEliminated) ^
-                GetHashCodeForNullable(PreviousPlacement);
+            return GetHashCodeForNullable(CurrentCompetitorNumber) ^ GetHashCodeForNullable(NextCompetitorNumber) ^ StartPrimaryTimer.GetHashCode() ^
+                GetHashCodeForNullable(PrimaryTimerValue) ^ GetHashCodeForNullable(SecondaryTimerValue) ^ GetHashCodeForNullable(CurrentFaultCount) ^
+                GetHashCodeForNullable(CurrentRefusalCount) ^ GetHashCodeForNullable(CurrentIsEliminated) ^ GetHashCodeForNullable(PreviousPlacement);
         }
 
-        private static int GetHashCodeForNullable<T>([CanBeNull] T? value) where T : struct
+        private static int GetHashCodeForNullable<T>(T? value)
+            where T : struct
         {
             return value?.GetHashCode() ?? 0;
         }

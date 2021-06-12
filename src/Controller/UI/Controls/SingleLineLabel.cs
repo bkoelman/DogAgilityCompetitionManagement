@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -17,7 +16,6 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         // - Remove TextFormatFlags.WordBreak when not using CompatibleTextRendering
         // But to accomplish this, a lot of code duplication from System.Windows.Forms.Label is needed.
 
-        [NotNull]
         private readonly Reflected reflected;
 
         public SingleLineLabel()
@@ -33,30 +31,36 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             reflected.Animate();
             ImageAnimator.UpdateFrames(Image);
             Rectangle r = reflected.LayoutUtilsDeflateRect(ClientRectangle, Padding);
-            Image image = Image;
+            Image? image = Image;
+
             if (image != null)
             {
                 DrawImage(e.Graphics, image, r, RtlTranslateAlignment(ImageAlign));
             }
+
             IntPtr hdc = e.Graphics.GetHdc();
+
             try
             {
-                using (IDisposable graphics = reflected.WindowsGraphicsFromHdc(hdc))
-                {
-                    nearestColor = reflected.WindowsGraphicsGetNearestColor(graphics,
-                        Enabled ? ForeColor : reflected.ControlDisabledColor);
-                }
+                // The original code uses internal type DeviceContextHdcScope, which is a 'ref struct'.
+                // Because ref structs cannot be boxed, they can't be instantiated through reflection.
+                // https://github.com/dotnet/runtime/issues/1955
+
+                Color inColor = Enabled ? ForeColor : reflected.ControlDisabledColor;
+                Color outColor = ColorTranslator.FromWin32(reflected.InteropGetNearestColor(hdc, ColorTranslator.ToWin32(inColor)));
+
+                nearestColor = outColor.ToArgb() != inColor.ToArgb() ? outColor : inColor;
             }
             finally
             {
                 e.Graphics.ReleaseHdc();
             }
+
             if (AutoEllipsis)
             {
                 Rectangle clientRectangle = ClientRectangle;
                 Size preferredSize = GetPreferredSize(new Size(clientRectangle.Width, clientRectangle.Height));
-                reflected.ShowToolTip = (clientRectangle.Width < preferredSize.Width) ||
-                    (clientRectangle.Height < preferredSize.Height);
+                reflected.ShowToolTip = clientRectangle.Width < preferredSize.Width || clientRectangle.Height < preferredSize.Height;
             }
             else
             {
@@ -65,24 +69,22 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
             if (UseCompatibleTextRendering)
             {
-                using (StringFormat format = reflected.CreateStringFormat())
+                using StringFormat format = reflected.CreateStringFormat();
+
+                if (Enabled)
                 {
-                    if (Enabled)
-                    {
-                        using (Brush brush = new SolidBrush(nearestColor))
-                        {
-                            e.Graphics.DrawString(Text, Font, brush, r, format);
-                        }
-                    }
-                    else
-                    {
-                        ControlPaint.DrawStringDisabled(e.Graphics, Text, Font, nearestColor, r, format);
-                    }
+                    using Brush brush = new SolidBrush(nearestColor);
+                    e.Graphics.DrawString(Text, Font, brush, r, format);
+                }
+                else
+                {
+                    ControlPaint.DrawStringDisabled(e.Graphics, Text, Font, nearestColor, r, format);
                 }
             }
             else
             {
                 TextFormatFlags flags = reflected.CreateTextFormatFlags();
+
                 if (Enabled)
                 {
                     TextRenderer.DrawText(e.Graphics, Text, Font, r, nearestColor, flags);
@@ -94,155 +96,138 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                 }
             }
 
-            var handler = (PaintEventHandler) Events[reflected.ControlEventPaint];
+            var handler = Events[reflected.ControlEventPaint] as PaintEventHandler;
             handler?.Invoke(this, e);
         }
 
         private sealed class Reflected
         {
-            [NotNull]
             private static readonly MethodInfo AnimateMethod;
-
-            [NotNull]
             private static readonly MethodInfo LayoutUtilsDeflateRectMethod;
-
-            [NotNull]
-            private static readonly MethodInfo WindowsGraphicsFromHdcMethod;
-
-            [NotNull]
-            private static readonly MethodInfo WindowsGraphicsGetNearestColorMethod;
-
-            [NotNull]
+            private static readonly ConstructorInfo InteropHdcConstructor;
+            private static readonly MethodInfo InteropGetNearestColorMethod;
             private static readonly MethodInfo ControlDisabledColorPropertyGetMethod;
-
-            [NotNull]
             private static readonly FieldInfo ShowToolTipField;
-
-            [NotNull]
             private static readonly MethodInfo CreateStringFormatMethod;
-
-            [NotNull]
             private static readonly MethodInfo CreateTextFormatFlagsMethod;
-
-            [NotNull]
             private static readonly MethodInfo TextRendererDisabledTextColorMethod;
-
-            [NotNull]
             private static readonly FieldInfo ControlEventPaintField;
 
-            [NotNull]
             private readonly Label owner;
+
+            public Color ControlDisabledColor => (Color)ControlDisabledColorPropertyGetMethod.Invoke(owner, Array.Empty<object>())!;
+
+            public bool ShowToolTip
+            {
+                set => ShowToolTipField.SetValue(owner, value);
+            }
+
+            public object ControlEventPaint => ControlEventPaintField.GetValue(null)!;
 
             static Reflected()
             {
-                AnimateMethod =
-                    Require(typeof (Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null,
-                        new Type[0], null));
+                AnimateMethod = Require(typeof(Label).GetMethod("Animate", BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null));
 
-                Type layoutUtilsType =
-                    Require(typeof (Label).Assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
-                LayoutUtilsDeflateRectMethod =
-                    Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
+                Type layoutUtilsType = Require(typeof(Label).Assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
+                LayoutUtilsDeflateRectMethod = Require(layoutUtilsType.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
 
-                Type windowsGraphicsType =
-                    Require(typeof (Label).Assembly.GetType("System.Windows.Forms.Internal.WindowsGraphics", true));
-                WindowsGraphicsFromHdcMethod =
-                    Require(windowsGraphicsType.GetMethod("FromHdc", BindingFlags.Public | BindingFlags.Static));
-                WindowsGraphicsGetNearestColorMethod =
-                    Require(windowsGraphicsType.GetMethod("GetNearestColor", BindingFlags.Public | BindingFlags.Instance));
+                Type hdcType = Require(typeof(Message).Assembly.GetType("Interop+Gdi32+HDC", true));
+
+                InteropHdcConstructor = Require(hdcType.GetConstructor(new[]
+                {
+                    typeof(IntPtr)
+                }));
+
+                Type gdi32Type = Require(typeof(Message).Assembly.GetType("Interop+Gdi32", true));
+
+                InteropGetNearestColorMethod = Require(gdi32Type.GetMethod("GetNearestColor", BindingFlags.Public | BindingFlags.Static, null, new[]
+                {
+                    hdcType,
+                    typeof(int)
+                }, null));
 
                 PropertyInfo controlDisabledColorProperty =
-                    Require(typeof (Control).GetProperty("DisabledColor", BindingFlags.NonPublic | BindingFlags.Instance));
+                    Require(typeof(Control).GetProperty("DisabledColor", BindingFlags.NonPublic | BindingFlags.Instance));
+
                 ControlDisabledColorPropertyGetMethod = Require(controlDisabledColorProperty.GetGetMethod(true));
 
-                ShowToolTipField =
-                    Require(typeof (Label).GetField("showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
+                ShowToolTipField = Require(typeof(Label).GetField("_showToolTip", BindingFlags.NonPublic | BindingFlags.Instance));
 
-                CreateStringFormatMethod =
-                    Require(typeof (Label).GetMethod("CreateStringFormat",
-                        BindingFlags.NonPublic | BindingFlags.Instance));
+                CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
 
                 CreateTextFormatFlagsMethod =
-                    Require(typeof (Label).GetMethod("CreateTextFormatFlags",
-                        BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null));
+                    Require(typeof(Label).GetMethod("CreateTextFormatFlags", BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null));
 
                 TextRendererDisabledTextColorMethod =
-                    Require(typeof (TextRenderer).GetMethod("DisabledTextColor",
-                        BindingFlags.NonPublic | BindingFlags.Static));
+                    Require(typeof(TextRenderer).GetMethod("DisabledTextColor", BindingFlags.NonPublic | BindingFlags.Static));
 
-                ControlEventPaintField =
-                    Require(typeof (Control).GetField("EventPaint", BindingFlags.NonPublic | BindingFlags.Static));
+                ControlEventPaintField = Require(typeof(Control).GetField("s_paintEvent", BindingFlags.NonPublic | BindingFlags.Static));
             }
 
-            [NotNull]
-            private static T Require<T>([CanBeNull] T value)
-            {
-                if (ReferenceEquals(value, null))
-                {
-                    throw new Exception("Reflection failure.");
-                }
-                return value;
-            }
-
-            public Reflected([NotNull] Label owner)
+            public Reflected(Label owner)
             {
                 Guard.NotNull(owner, nameof(owner));
                 this.owner = owner;
             }
 
-            public Color ControlDisabledColor
-                => (Color) ControlDisabledColorPropertyGetMethod.Invoke(owner, new object[0]);
-
-            public bool ShowToolTip
+            private static T Require<T>(T? value)
             {
-                set
+                if (ReferenceEquals(value, null))
                 {
-                    ShowToolTipField.SetValue(owner, value);
+                    throw new Exception("Reflection failure.");
                 }
-            }
 
-            [CanBeNull]
-            public object ControlEventPaint => ControlEventPaintField.GetValue(null);
+                return value;
+            }
 
             public void Animate()
             {
-                AnimateMethod.Invoke(owner, new object[0]);
+                AnimateMethod.Invoke(owner, Array.Empty<object>());
             }
 
             public Rectangle LayoutUtilsDeflateRect(Rectangle clientRectangle, Padding padding)
             {
-                return (Rectangle) LayoutUtilsDeflateRectMethod.Invoke(null, new object[] { clientRectangle, padding });
+                return (Rectangle)LayoutUtilsDeflateRectMethod.Invoke(null, new object[]
+                {
+                    clientRectangle,
+                    padding
+                })!;
             }
 
-            [NotNull]
-            public IDisposable WindowsGraphicsFromHdc(IntPtr hdc)
+            public int InteropGetNearestColor(IntPtr handle, int color)
             {
-                return (IDisposable) WindowsGraphicsFromHdcMethod.Invoke(null, new object[] { hdc });
+                object hdc = InteropHdcConstructor.Invoke(new object[]
+                {
+                    handle
+                });
+
+                return (int)InteropGetNearestColorMethod.Invoke(null, new[]
+                {
+                    hdc,
+                    color
+                })!;
             }
 
-            public Color WindowsGraphicsGetNearestColor([NotNull] IDisposable graphics, Color color)
-            {
-                return (Color) WindowsGraphicsGetNearestColorMethod.Invoke(graphics, new object[] { color });
-            }
-
-            [NotNull]
             public StringFormat CreateStringFormat()
             {
-                var result = (StringFormat) CreateStringFormatMethod.Invoke(owner, new object[0]);
+                var result = (StringFormat)CreateStringFormatMethod.Invoke(owner, Array.Empty<object>())!;
                 result.FormatFlags |= StringFormatFlags.NoWrap;
                 return result;
             }
 
             public TextFormatFlags CreateTextFormatFlags()
             {
-                var result = (TextFormatFlags) CreateTextFormatFlagsMethod.Invoke(owner, new object[0]);
+                var result = (TextFormatFlags)CreateTextFormatFlagsMethod.Invoke(owner, Array.Empty<object>())!;
                 result &= ~TextFormatFlags.WordBreak;
                 return result;
             }
 
             public Color TextRendererDisabledTextColor(Color backColor)
             {
-                return (Color) TextRendererDisabledTextColorMethod.Invoke(null, new object[] { backColor });
+                return (Color)TextRendererDisabledTextColorMethod.Invoke(null, new object[]
+                {
+                    backColor
+                })!;
             }
         }
     }

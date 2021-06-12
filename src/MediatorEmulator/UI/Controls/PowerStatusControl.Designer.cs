@@ -89,7 +89,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
             // PowerStatusControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Name = "PowerStatusControl";
             this.Size = new System.Drawing.Size(203, 56);

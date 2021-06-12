@@ -1,14 +1,10 @@
 using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Protocol.Exceptions
 {
     /// <summary>
     /// Represents the error that is thrown when the bytes of a parameter value inside a CIRCE packet could not be parsed.
     /// </summary>
-    [Serializable]
     public sealed class ParameterValueFormatException : PacketFormatException
     {
         /// <summary>
@@ -26,15 +22,8 @@ namespace DogAgilityCompetition.Circe.Protocol.Exceptions
         /// <param name="innerException">
         /// Optional. The exception that caused the current exception.
         /// </param>
-        public ParameterValueFormatException([NotNull] byte[] packet, int errorOffset, [NotNull] string message,
-            [CanBeNull] Exception innerException)
+        public ParameterValueFormatException(byte[] packet, int errorOffset, string message, Exception? innerException)
             : base(packet, errorOffset, message, innerException)
-        {
-        }
-
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        private ParameterValueFormatException([NotNull] SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }

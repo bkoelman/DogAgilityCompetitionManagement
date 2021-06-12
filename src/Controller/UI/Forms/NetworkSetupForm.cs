@@ -5,7 +5,6 @@ using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Controller.UI.Controls;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -14,19 +13,13 @@ namespace DogAgilityCompetition.Controller.UI.Forms
     /// </summary>
     public sealed partial class NetworkSetupForm : FormWithHandleManagement
     {
-        [NotNull]
         private readonly Form owner;
 
-        [CanBeNull]
-        private CirceControllerSessionManager sessionManager;
+        private CirceControllerSessionManager? sessionManager;
 
-        [CanBeNull]
-        public CirceControllerSessionManager SessionManager
+        public CirceControllerSessionManager? SessionManager
         {
-            get
-            {
-                return sessionManager;
-            }
+            get => sessionManager;
             set
             {
                 if (value != sessionManager)
@@ -38,7 +31,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        public NetworkSetupForm([NotNull] Form owner)
+        public NetworkSetupForm(Form owner)
         {
             Guard.NotNull(owner, nameof(owner));
             this.owner = owner;
@@ -49,7 +42,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             devicesGrid.NetworkSetupRequested += DevicesGridOnNetworkSetupRequested;
         }
 
-        private void DevicesGridOnAlertRequested([CanBeNull] object sender, [NotNull] AlertEventArgs e)
+        private void DevicesGridOnAlertRequested(object? sender, AlertEventArgs e)
         {
             if (sessionManager != null)
             {
@@ -57,7 +50,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void DevicesGridOnNetworkSetupRequested([CanBeNull] object sender, [NotNull] NetworkSetupEventArgs e)
+        private void DevicesGridOnNetworkSetupRequested(object? sender, NetworkSetupEventArgs e)
         {
             if (sessionManager != null)
             {
@@ -87,12 +80,11 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             }
         }
 
-        private void SessionManagerOnConnectionStateChanged([CanBeNull] object sender,
-            [NotNull] ControllerConnectionStateEventArgs e)
+        private void SessionManagerOnConnectionStateChanged(object? sender, ControllerConnectionStateEventArgs e)
         {
             // Chicken and egg problem: We need to marshal from a background thread to the UI thread,
             // but may need to create a Window handle before marshaling is possible. But we can only create
-            // a window handle when running on the UI thread. 
+            // a window handle when running on the UI thread.
             // To overcome this, we use MainForm for marshaling to the UI thread, then create our Window handle.
 
             owner.EnsureOnMainThread(() =>
@@ -102,7 +94,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             });
         }
 
-        private void DeviceTrackerOnDeviceAdded([CanBeNull] object sender, [NotNull] EventArgs<DeviceStatus> e)
+        private void DeviceTrackerOnDeviceAdded(object? sender, EventArgs<DeviceStatus> e)
         {
             if (Visible)
             {
@@ -112,12 +104,12 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             HandleDeviceAddedOrChanged(e);
         }
 
-        private void DeviceTrackerOnDeviceChanged([CanBeNull] object sender, [NotNull] EventArgs<DeviceStatus> e)
+        private void DeviceTrackerOnDeviceChanged(object? sender, EventArgs<DeviceStatus> e)
         {
             HandleDeviceAddedOrChanged(e);
         }
 
-        private void HandleDeviceAddedOrChanged([NotNull] EventArgs<DeviceStatus> e)
+        private void HandleDeviceAddedOrChanged(EventArgs<DeviceStatus> e)
         {
             owner.EnsureOnMainThread(() =>
             {
@@ -126,8 +118,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             });
         }
 
-        private void DeviceTrackerOnDeviceRemoved([CanBeNull] object sender,
-            [NotNull] EventArgs<WirelessNetworkAddress> e)
+        private void DeviceTrackerOnDeviceRemoved(object? sender, EventArgs<WirelessNetworkAddress> e)
         {
             if (Visible)
             {

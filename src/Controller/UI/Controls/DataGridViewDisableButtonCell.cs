@@ -2,7 +2,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -17,15 +16,14 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public override object Clone()
         {
-            var cell = (DataGridViewDisableButtonCell) base.Clone();
+            var cell = (DataGridViewDisableButtonCell)base.Clone();
             cell.Enabled = Enabled;
             return cell;
         }
 
-        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex,
-            DataGridViewElementStates elementState, [CanBeNull] object value, [CanBeNull] object formattedValue,
-            [CanBeNull] string errorText, DataGridViewCellStyle cellStyle,
-            DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
+        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates elementState,
+            object? value, object? formattedValue, string? errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle,
+            DataGridViewPaintParts paintParts)
         {
             Guard.NotNull(graphics, nameof(graphics));
             Guard.NotNull(cellStyle, nameof(cellStyle));
@@ -35,10 +33,8 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             {
                 if ((paintParts & DataGridViewPaintParts.Background) == DataGridViewPaintParts.Background)
                 {
-                    using (var cellBackground = new SolidBrush(cellStyle.BackColor))
-                    {
-                        graphics.FillRectangle(cellBackground, cellBounds);
-                    }
+                    using var cellBackground = new SolidBrush(cellStyle.BackColor);
+                    graphics.FillRectangle(cellBackground, cellBounds);
                 }
 
                 if ((paintParts & DataGridViewPaintParts.Border) == DataGridViewPaintParts.Border)
@@ -63,16 +59,15 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
                 ButtonRenderer.DrawButton(graphics, buttonArea, PushButtonState.Disabled);
 
-                string buttonText = FormattedValue as string;
-                if (buttonText != null)
+                if (FormattedValue is string buttonText)
                 {
-                    TextRenderer.DrawText(graphics, buttonText, DataGridView.Font, buttonArea, SystemColors.GrayText);
+                    TextRenderer.DrawText(graphics, buttonText, DataGridView!.Font, buttonArea, SystemColors.GrayText);
                 }
             }
             else
             {
-                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value, formattedValue, errorText,
-                    cellStyle, advancedBorderStyle, paintParts);
+                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value, formattedValue, errorText, cellStyle, advancedBorderStyle,
+                    paintParts);
             }
         }
     }

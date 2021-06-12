@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
@@ -8,34 +9,27 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a version number.
     /// </summary>
-    [Serializable]
     public sealed class VersionParameter : Parameter
     {
         private const int MaxCharCount = 11;
 
-        [NotNull]
-        private static readonly Regex ValueFormatRegex =
-            new Regex(@"^(?<Major>[0-9]{1,3})\.(?<Minor>[0-9]{1,3})\.(?<Release>[0-9]{1,3})$", RegexOptions.Compiled);
+        private static readonly Regex ValueFormatRegex = new(@"^(?<Major>[0-9]{1,3})\.(?<Minor>[0-9]{1,3})\.(?<Release>[0-9]{1,3})$", RegexOptions.Compiled);
 
-        [CanBeNull]
-        private Version innerValue;
+        private Version? innerValue;
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
-        public Version Value
+        public Version? Value
         {
-            get
-            {
-                return innerValue;
-            }
+            get => innerValue;
             set
             {
                 if (value != null)
                 {
                     AssertVersionFormatIsValid(value);
                 }
+
                 innerValue = value;
             }
         }
@@ -47,21 +41,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <c>true</c> if this parameter has a value; otherwise, <c>false</c>.
         /// </value>
         public override bool HasValue => innerValue != null;
-
-        [AssertionMethod]
-        private void AssertVersionFormatIsValid([NotNull] Version value)
-        {
-            int majorNumber = value.Major;
-            int minorNumber = value.Minor;
-            int releaseNumber = value.Build;
-
-            string valueString = $"{majorNumber}.{minorNumber}.{releaseNumber}";
-            if (!ValueFormatRegex.IsMatch(valueString))
-            {
-                throw new ArgumentOutOfRangeException(nameof(value), value,
-                    $"Value of {GetType().Name} {Name} must be in format XXX.YYY.ZZZ.");
-            }
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VersionParameter" /> class.
@@ -75,9 +54,24 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public VersionParameter([NotNull] string name, int id, bool isRequired)
+        public VersionParameter(string name, int id, bool isRequired)
             : base(name, id, MaxCharCount, isRequired)
         {
+        }
+
+        [AssertionMethod]
+        private void AssertVersionFormatIsValid(Version value)
+        {
+            int majorNumber = value.Major;
+            int minorNumber = value.Minor;
+            int releaseNumber = value.Build;
+
+            string valueString = $"{majorNumber}.{minorNumber}.{releaseNumber}";
+
+            if (!ValueFormatRegex.IsMatch(valueString))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be in format XXX.YYY.ZZZ.");
+            }
         }
 
         /// <summary>
@@ -111,29 +105,31 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
             base.ImportValue(value);
 
             char[] chars = Encoding.ASCII.GetChars(value);
-            string valueString = new string(chars);
+            string valueString = new(chars);
 
             Match match = ValueFormatRegex.Match(valueString);
+
             if (!match.Success)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value,
-                    $"Value of {GetType().Name} {Name} must be in format XXX.YYY.ZZZ.");
+                throw new ArgumentOutOfRangeException(nameof(value), value, $"Value of {GetType().Name} {Name} must be in format XXX.YYY.ZZZ.");
             }
 
-            int majorNumber = int.Parse(match.Groups["Major"].Value);
-            int minorNumber = int.Parse(match.Groups["Minor"].Value);
-            int releaseNumber = int.Parse(match.Groups["Release"].Value);
+            int majorNumber = int.Parse(match.Groups["Major"].Value, CultureInfo.InvariantCulture);
+            int minorNumber = int.Parse(match.Groups["Minor"].Value, CultureInfo.InvariantCulture);
+            int releaseNumber = int.Parse(match.Groups["Release"].Value, CultureInfo.InvariantCulture);
             Value = new Version(majorNumber, minorNumber, releaseNumber);
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
         public override string ToString()
-            => innerValue != null ? base.ToString() + ": " + innerValue.ToString(3) : base.ToString();
+        {
+            return innerValue != null ? base.ToString() + ": " + innerValue.ToString(3) : base.ToString();
+        }
     }
 }

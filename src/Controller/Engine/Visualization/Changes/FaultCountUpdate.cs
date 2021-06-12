@@ -1,5 +1,4 @@
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
 {
@@ -8,13 +7,10 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization.Changes
     /// </summary>
     public sealed class FaultCountUpdate : NullableVisualizationChange<int?>
     {
-        [NotNull]
-        public static FaultCountUpdate Hidden => new FaultCountUpdate(null);
+        public static FaultCountUpdate Hidden => new(null);
+        public static FaultCountUpdate Zero => new(0);
 
-        [NotNull]
-        public static FaultCountUpdate Zero => new FaultCountUpdate(0);
-
-        public FaultCountUpdate([CanBeNull] int? value)
+        public FaultCountUpdate(int? value)
             : base(value)
         {
         }

@@ -15,19 +15,15 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         public int Number { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string HandlerName { get; set; }
+        public string? HandlerName { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string DogName { get; set; }
+        public string? DogName { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public string CountryCode { get; set; }
+        public string? CountryCode { get; set; }
 
-        [NotNull]
-        public static CompetitorXml ToXmlObject([NotNull] Competitor source)
+        public static CompetitorXml ToXmlObject(Competitor source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -40,8 +36,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static Competitor FromXmlObject([NotNull] CompetitorXml source)
+        public static Competitor FromXmlObject(CompetitorXml source)
         {
             Guard.NotNull(source, nameof(source));
             string name = AssertHandlerNameNotEmpty(source);
@@ -51,24 +46,24 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
         }
 
         [AssertionMethod]
-        [NotNull]
-        private static string AssertHandlerNameNotEmpty([NotNull] CompetitorXml source)
+        private static string AssertHandlerNameNotEmpty(CompetitorXml source)
         {
             if (string.IsNullOrWhiteSpace(source.HandlerName))
             {
                 throw new InvalidDataException("Competitor handler name is missing or empty in XML file.");
             }
+
             return source.HandlerName;
         }
 
         [AssertionMethod]
-        [NotNull]
-        private static string AssertDogNameNotEmpty([NotNull] CompetitorXml source)
+        private static string AssertDogNameNotEmpty(CompetitorXml source)
         {
             if (string.IsNullOrWhiteSpace(source.DogName))
             {
                 throw new InvalidDataException("Competitor dog name is missing or empty in XML file.");
             }
+
             return source.DogName;
         }
     }

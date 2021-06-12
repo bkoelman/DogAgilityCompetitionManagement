@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
 {
@@ -11,15 +10,12 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
     public sealed class AlertSourceXml
     {
         [DataMember]
-        [CanBeNull]
-        public AlertSourceItemXml Picture { get; set; }
+        public AlertSourceItemXml? Picture { get; set; }
 
         [DataMember]
-        [CanBeNull]
-        public AlertSourceItemXml Sound { get; set; }
+        public AlertSourceItemXml? Sound { get; set; }
 
-        [NotNull]
-        public static AlertSourceXml ToXmlObject([NotNull] AlertSource source)
+        public static AlertSourceXml ToXmlObject(AlertSource source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -30,8 +26,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
             };
         }
 
-        [NotNull]
-        public static AlertSource FromXmlObject([CanBeNull] AlertSourceXml source)
+        public static AlertSource FromXmlObject(AlertSourceXml? source)
         {
             return source == null
                 ? AlertSource.None

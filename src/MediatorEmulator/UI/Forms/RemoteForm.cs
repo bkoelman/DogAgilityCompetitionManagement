@@ -8,7 +8,6 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.MediatorEmulator.Engine;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -17,31 +16,28 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class RemoteForm : FormWithWindowStateChangeEvent, IWirelessDevice
     {
-        [NotNull]
         private readonly RemoteSettingsXml settings;
-
         private readonly bool initiallyMaximized;
-
-        [NotNull]
-        private readonly FreshNotNullableReference<CirceMediatorSessionManager> sessionManager;
-
-        [NotNull]
-        private readonly FreshReference<DeviceStatus> lastStatus = new FreshReference<DeviceStatus>(null);
+        private readonly FreshObjectReference<CirceMediatorSessionManager> sessionManager;
+        private readonly FreshObjectReference<DeviceStatus?> lastStatus = new(null);
 
         // Prevents endless recursion when updating controls that raise change events.
         private bool isUpdatingControlsFromSettings;
 
-        public event EventHandler<EventArgs<WirelessNetworkAddress>> DeviceRemoved;
+        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
 
-        public RemoteForm([NotNull] RemoteSettingsXml remoteSettings, bool initiallyMaximized,
-            [NotNull] CirceMediatorSessionManager mediatorSessionManager)
+        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
+
+        public event EventHandler<EventArgs<WirelessNetworkAddress>>? DeviceRemoved;
+
+        public RemoteForm(RemoteSettingsXml remoteSettings, bool initiallyMaximized, CirceMediatorSessionManager mediatorSessionManager)
         {
             Guard.NotNull(remoteSettings, nameof(remoteSettings));
             Guard.NotNull(mediatorSessionManager, nameof(mediatorSessionManager));
 
             settings = remoteSettings;
             this.initiallyMaximized = initiallyMaximized;
-            sessionManager = new FreshNotNullableReference<CirceMediatorSessionManager>(mediatorSessionManager);
+            sessionManager = new FreshObjectReference<CirceMediatorSessionManager>(mediatorSessionManager);
             sessionManager.Value.Devices[settings.DeviceAddressNotNull] = this;
 
             InitializeComponent();
@@ -50,7 +46,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             keypad.KeysDownChanged += KeypadOnKeysDownChanged;
         }
 
-        private void RemoteForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void RemoteForm_Load(object? sender, EventArgs e)
         {
             MdiChildWindow.Register(this, settings, initiallyMaximized, ref components);
 
@@ -64,7 +60,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             {
                 isUpdatingControlsFromSettings = true;
 
-                Text = @"Remote " + settings.DeviceAddressNotNull;
+                Text = "Remote " + settings.DeviceAddressNotNull;
 
                 powerStatus.IsPoweredOn = settings.IsPoweredOn;
                 statusUpdateTimer.Enabled = settings.IsPoweredOn;
@@ -95,14 +91,12 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
 
             lastStatus.Value = settings.IsPoweredOn
-                ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork,
-                    settings.Features.ToCapabilities(), settings.RolesAssigned, settings.SignalStrength,
-                    settings.BatteryStatus, null, hardwareStatus.SynchronizationStatus,
-                    settings.HasVersionMismatch.TrueOrNull())
+                ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork, settings.Features.ToCapabilities(), settings.RolesAssigned,
+                    settings.SignalStrength, settings.BatteryStatus, null, hardwareStatus.SynchronizationStatus, settings.HasVersionMismatch.TrueOrNull())
                 : null;
         }
 
-        private void PowerStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PowerStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -112,7 +106,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void NetworkStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NetworkStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -122,7 +116,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void HardwareStatus_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void HardwareStatus_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -133,7 +127,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void Keypad_StatusChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void Keypad_StatusChanged(object? sender, EventArgs e)
         {
             if (!isUpdatingControlsFromSettings)
             {
@@ -145,14 +139,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void KeypadOnKeysDownChanged([CanBeNull] object sender, [NotNull] EventArgs<RawDeviceKeys> e)
+        private void KeypadOnKeysDownChanged(object? sender, EventArgs<RawDeviceKeys> e)
         {
-            TimeSpan? clockValueOrNull = hardwareStatus.SupportsClock ? hardwareStatus.ClockValue : (TimeSpan?) null;
+            TimeSpan? clockValueOrNull = hardwareStatus.SupportsClock ? hardwareStatus.ClockValue : null;
             var deviceAction = new DeviceAction(settings.DeviceAddressNotNull, e.Argument, clockValueOrNull);
             sessionManager.Value.NotifyAction(deviceAction);
         }
 
-        private void StatusUpdateTimer_Tick([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void StatusUpdateTimer_Tick(object? sender, EventArgs e)
         {
             if (lastStatus.Value != null)
             {
@@ -160,17 +154,12 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void RemoteForm_FormClosing([CanBeNull] object sender, [NotNull] FormClosingEventArgs e)
+        private void RemoteForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
-            IWirelessDevice unused;
-            sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out unused);
+            sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out _);
 
             DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(settings.DeviceAddressNotNull));
         }
-
-        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
-
-        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
 
         void IWirelessDevice.ChangeAddress(WirelessNetworkAddress newAddress)
         {
@@ -191,11 +180,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             this.EnsureOnMainThread(() =>
             {
-                // ReSharper disable PossibleInvalidOperationException
-                // Reason: Operation has been validated for required parameters when this code is reached.
-                settings.IsInNetwork = operation.SetMembership.Value;
-                settings.RolesAssigned = operation.Roles.Value;
-                // ReSharper restore PossibleInvalidOperationException
+                // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+                settings.IsInNetwork = operation.SetMembership!.Value;
+                settings.RolesAssigned = operation.Roles!.Value;
 
                 UpdateControlsFromSettings();
                 UpdateLastStatusFromSettings();

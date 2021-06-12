@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using DogAgilityCompetition.Controller.Properties;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Forms
 {
@@ -15,40 +14,39 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             InitializeComponent();
         }
 
-        private void CustomDisplaySetupForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CustomDisplaySetupForm_Load(object? sender, EventArgs e)
         {
             LoadSettings();
         }
 
-        private void PictureRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void PictureRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             picturePathTextBox.Enabled = pictureRadioButton.Checked;
             browseButton.Enabled = pictureRadioButton.Checked;
             textGroupBox.Enabled = textRadioButton.Checked;
         }
 
-        private void BrowseButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void BrowseButton_Click(object? sender, EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.FileName = picturePathTextBox.Text.Trim();
-                dialog.Title = @"Select picture file";
-                dialog.Filter =
-                    @"Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*";
+                FileName = picturePathTextBox.Text.Trim(),
+                Title = "Select picture file",
+                Filter = "Image files (*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png)|*.gif;*.jpg;*.jpeg;*.bmp;*.wmf;*.png|All files|*.*"
+            };
 
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    picturePathTextBox.Text = dialog.FileName;
-                }
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                picturePathTextBox.Text = dialog.FileName;
             }
         }
 
-        private void TopLineRadioButton_CheckedChanged([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TopLineRadioButton_CheckedChanged(object? sender, EventArgs e)
         {
             firstLineTextBox.Enabled = firstLineRadioButton.Checked;
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             SaveSettings();
             DialogResult = DialogResult.OK;
@@ -58,9 +56,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
         {
             (Settings.Default.CustomDisplayModeIsText ? textRadioButton : pictureRadioButton).Checked = true;
             picturePathTextBox.Text = Settings.Default.CustomDisplayPicturePath;
-            RadioButton radioButton = Settings.Default.CustomDisplayModeFirstLineIsSystemTime
-                ? systemTimeRadioButton
-                : firstLineRadioButton;
+            RadioButton? radioButton = Settings.Default.CustomDisplayModeFirstLineIsSystemTime ? systemTimeRadioButton : firstLineRadioButton;
             radioButton.Checked = true;
             firstLineTextBox.Text = Settings.Default.CustomDisplayFirstLine;
             secondLineTextBox.Text = Settings.Default.CustomDisplaySecondLine;

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Facilities
 {
@@ -11,10 +10,8 @@ namespace DogAgilityCompetition.Specs.Facilities
     internal sealed class OrderingScenario
     {
         public ulong Value { get; }
-
         public int BitCount { get; }
-
-        public OrderExpect Result { get; private set; }
+        public OrderExpect Result { get; }
 
         public bool this[int offset]
         {
@@ -23,7 +20,7 @@ namespace DogAgilityCompetition.Specs.Facilities
                 Guard.InRangeInclusive(offset, nameof(offset), 0, BitCount - 1);
 
                 int shift = BitCount - offset - 1;
-                return (Value & ((ulong) 1 << shift)) != 0;
+                return (Value & ((ulong)1 << shift)) != 0;
             }
         }
 
@@ -39,12 +36,12 @@ namespace DogAgilityCompetition.Specs.Facilities
             Value = value;
         }
 
-        public static ulong FromBits([NotNull] params int[] bits)
+        public static ulong FromBits(params int[] bits)
         {
             Guard.NotNull(bits, nameof(bits));
             Guard.InRangeInclusive(bits.Length, nameof(bits), 1, 64);
 
-            return bits.Aggregate<int, ulong>(0, (current, bit) => (current << 1) | (bit != 0 ? (ulong) 1 : 0));
+            return bits.Aggregate<int, ulong>(0, (current, bit) => (current << 1) | (bit != 0 ? (ulong)1 : 0));
         }
 
         public override string ToString()
@@ -54,7 +51,7 @@ namespace DogAgilityCompetition.Specs.Facilities
             for (int offset = 0; offset < BitCount; offset++)
             {
                 int shift = BitCount - offset - 1;
-                bool bitIsSet = (Value & ((ulong) 1 << shift)) != 0;
+                bool bitIsSet = (Value & ((ulong)1 << shift)) != 0;
                 textBuilder.Append(bitIsSet ? '1' : '0');
             }
 

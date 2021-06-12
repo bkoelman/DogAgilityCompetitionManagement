@@ -26,8 +26,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         /// The binary contents of the created packet.
         /// </returns>
         /// <exception cref="OperationValidationException" />
-        [NotNull]
-        public static byte[] Write([NotNull] Operation operation, bool includeChecksum)
+        public static byte[] Write(Operation operation, bool includeChecksum)
         {
             Guard.NotNull(operation, nameof(operation));
 
@@ -37,24 +36,29 @@ namespace DogAgilityCompetition.Circe.Protocol
 
             byte[] payloadBytes = GetPacketPayloadBytes(operation.Parameters);
 
-            int? checksum = includeChecksum ? 0 : (int?) null;
+            int? checksum = includeChecksum ? 0 : null;
             UpdateChecksum(headerBytes, ref checksum);
             UpdateChecksum(payloadBytes, ref checksum);
 
             byte[] trailerBytes = GetPacketTrailerBytes(checksum);
 
-            byte[] packetBytes = CombineBuffers(new[] { headerBytes, payloadBytes, trailerBytes });
+            byte[] packetBytes = CombineBuffers(new[]
+            {
+                headerBytes,
+                payloadBytes,
+                trailerBytes
+            });
+
             return packetBytes;
         }
 
-        [NotNull]
         private static byte[] GetPacketHeaderBytes(int operationCode)
         {
             string operationCodeString = $"{operationCode:00}";
             byte[] operationCodeBytes = Encoding.ASCII.GetBytes(operationCodeString);
 
             // ReSharper disable once RedundantExplicitArraySize
-            // Reason: Extra compiler check when packet format changes.
+            // Justification: Extra compiler check when packet format changes.
             return new byte[PacketFormat.PacketHeaderLength]
             {
                 PacketFormatDelimiters.StartOfText,
@@ -64,8 +68,7 @@ namespace DogAgilityCompetition.Circe.Protocol
             };
         }
 
-        [NotNull]
-        private static byte[] GetPacketPayloadBytes([NotNull] [ItemNotNull] IEnumerable<Parameter> parameters)
+        private static byte[] GetPacketPayloadBytes(IEnumerable<Parameter> parameters)
         {
             byte[] buffer = StreamToBuffer(stream =>
             {
@@ -74,24 +77,22 @@ namespace DogAgilityCompetition.Circe.Protocol
                     WriteParameterBytesTo(parameter, stream);
                 }
             });
+
             return buffer;
         }
 
-        [NotNull]
-        private static byte[] StreamToBuffer([NotNull] Action<Stream> writeCallback)
+        private static byte[] StreamToBuffer(Action<Stream> writeCallback)
         {
-            using (var stream = new MemoryStream())
-            {
-                writeCallback(stream);
+            using var stream = new MemoryStream();
+            writeCallback(stream);
 
-                var buffer = new byte[stream.Length];
-                stream.Seek(0, SeekOrigin.Begin);
-                stream.Read(buffer, 0, buffer.Length);
-                return buffer;
-            }
+            byte[] buffer = new byte[stream.Length];
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(buffer, 0, buffer.Length);
+            return buffer;
         }
 
-        private static void WriteParameterBytesTo([NotNull] Parameter parameter, [NotNull] Stream output)
+        private static void WriteParameterBytesTo(Parameter parameter, Stream output)
         {
             string parameterIdString = $"{parameter.Id:000}";
             byte[] parameterIdBytes = Encoding.ASCII.GetBytes(parameterIdString);
@@ -104,8 +105,7 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        [NotNull]
-        private static byte[] GetPacketTrailerBytes([CanBeNull] int? checksum)
+        private static byte[] GetPacketTrailerBytes(int? checksum)
         {
             if (checksum != null)
             {
@@ -113,7 +113,7 @@ namespace DogAgilityCompetition.Circe.Protocol
                 byte[] checksumBytes = Encoding.ASCII.GetBytes(checksumString);
 
                 // ReSharper disable once RedundantExplicitArraySize
-                // Reason: Extra compiler check when packet format changes.
+                // Justification: Extra compiler check when packet format changes.
                 return new byte[PacketFormat.PacketTrailerMinLength + PacketFormat.OptionalChecksumLength]
                 {
                     checksumBytes[0],
@@ -123,11 +123,14 @@ namespace DogAgilityCompetition.Circe.Protocol
             }
 
             // ReSharper disable once RedundantExplicitArraySize
-            // Reason: Extra compiler check when packet format changes.
-            return new byte[PacketFormat.PacketTrailerMinLength] { PacketFormatDelimiters.EndOfText };
+            // Justification: Extra compiler check when packet format changes.
+            return new byte[PacketFormat.PacketTrailerMinLength]
+            {
+                PacketFormatDelimiters.EndOfText
+            };
         }
 
-        private static void UpdateChecksum([NotNull] IEnumerable<byte> buffer, [CanBeNull] ref int? checksum)
+        private static void UpdateChecksum(IEnumerable<byte> buffer, ref int? checksum)
         {
             if (checksum != null)
             {
@@ -140,18 +143,19 @@ namespace DogAgilityCompetition.Circe.Protocol
         }
 
         [Pure]
-        [NotNull]
-        private static byte[] CombineBuffers([NotNull] [ItemNotNull] IList<byte[]> buffers)
+        private static byte[] CombineBuffers(IList<byte[]> buffers)
         {
             int size = buffers.Sum(sourceBuffer => sourceBuffer.Length);
 
-            var destinationBuffer = new byte[size];
+            byte[] destinationBuffer = new byte[size];
             int destinationOffset = 0;
+
             foreach (byte[] sourceBuffer in buffers)
             {
                 Buffer.BlockCopy(sourceBuffer, 0, destinationBuffer, destinationOffset, sourceBuffer.Length);
                 destinationOffset += sourceBuffer.Length;
             }
+
             return destinationBuffer;
         }
     }

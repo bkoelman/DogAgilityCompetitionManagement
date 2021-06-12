@@ -1,16 +1,13 @@
 using System.Threading;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Session
 {
     /// <summary>
-    /// Wraps a nullable <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns
-    /// the latest value.
+    /// Wraps a nullable <see cref="System.Boolean" />, where reading and writing the wrapped value always atomically returns the latest value.
     /// </summary>
     /// <remarks>
-    /// It is strongly recommended to mark <see cref="FreshNullableBoolean" /> members in your class as <c>readonly</c>,
-    /// because accidentally replacing a FreshNullableBoolean object with another FreshNullableBoolean object defeats the whole
-    /// purpose of this class.
+    /// It is strongly recommended to mark <see cref="FreshNullableBoolean" /> members in your class as <c>readonly</c>, because accidentally replacing a
+    /// FreshNullableBoolean object with another FreshNullableBoolean object defeats the whole purpose of this class.
     /// </remarks>
     public sealed class FreshNullableBoolean
     {
@@ -20,7 +17,6 @@ namespace DogAgilityCompetition.Circe.Session
 
         private int innerValue;
 
-        [CanBeNull]
         public bool? Value
         {
             get
@@ -35,13 +31,12 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        public FreshNullableBoolean([CanBeNull] bool? value)
+        public FreshNullableBoolean(bool? value)
         {
             Value = value;
         }
 
-        [CanBeNull]
-        public bool? CompareExchange([CanBeNull] bool? newValue, [CanBeNull] bool? comparand)
+        public bool? CompareExchange(bool? newValue, bool? comparand)
         {
             int newIntValue = ToInt32(newValue);
             int comparandInt = ToInt32(comparand);
@@ -49,13 +44,12 @@ namespace DogAgilityCompetition.Circe.Session
             return FromInt32(previousIntValue);
         }
 
-        [CanBeNull]
         private static bool? FromInt32(int value)
         {
-            return value == TrueValue ? true : value == FalseValue ? false : (bool?) null;
+            return value == TrueValue ? true : value == FalseValue ? false : null;
         }
 
-        private static int ToInt32([CanBeNull] bool? value)
+        private static int ToInt32(bool? value)
         {
             return value == true ? TrueValue : value == false ? FalseValue : NullValue;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -9,14 +8,15 @@ namespace DogAgilityCompetition.Controller.Engine
     {
         public GatePassage GatePassage { get; }
 
-        public GatePassageEventArgs([NotNull] WirelessNetworkAddress source, [CanBeNull] TimeSpan? sensorTime,
-            GatePassage gatePassage)
+        public GatePassageEventArgs(WirelessNetworkAddress source, TimeSpan? sensorTime, GatePassage gatePassage)
             : base(source, sensorTime)
         {
             GatePassage = gatePassage;
         }
 
         public override string ToString()
-            => $"{GetType().Name}: GatePassage={GatePassage}, SensorTime={SensorTime}, Source={Source}";
+        {
+            return $"{GetType().Name}: GatePassage={GatePassage}, SensorTime={SensorTime}, Source={Source}";
+        }
     }
 }

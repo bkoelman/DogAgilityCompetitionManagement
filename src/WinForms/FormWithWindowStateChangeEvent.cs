@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.WinForms
 {
@@ -12,11 +11,11 @@ namespace DogAgilityCompetition.WinForms
     {
         [Category("Property Changed")]
         [Description("Event raised before the value of WindowState property is changed on Form.")]
-        public event EventHandler<WindowStateChangingEventArgs> WindowStateChanging;
+        public event EventHandler<WindowStateChangingEventArgs>? WindowStateChanging;
 
         [Category("Property Changed")]
         [Description("Event raised after the value of WindowState property is changed on Form.")]
-        public event EventHandler WindowStateChanged;
+        public event EventHandler? WindowStateChanged;
 
         protected override void WndProc(ref Message m)
         {
@@ -25,8 +24,8 @@ namespace DogAgilityCompetition.WinForms
             if (m.Msg == WinUserConstants.WmSysCommand)
             {
                 int wParam = m.WParam.ToInt32() & 0xFFF0;
-                if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize ||
-                    wParam == WinUserConstants.ScRestore)
+
+                if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize || wParam == WinUserConstants.ScRestore)
                 {
                     newWindowState = TranslateWindowState(wParam);
                 }
@@ -34,7 +33,8 @@ namespace DogAgilityCompetition.WinForms
 
             if (newWindowState != null)
             {
-                EventHandler<WindowStateChangingEventArgs> eventHandler = WindowStateChanging;
+                EventHandler<WindowStateChangingEventArgs>? eventHandler = WindowStateChanging;
+
                 if (eventHandler != null)
                 {
                     var args = new WindowStateChangingEventArgs(newWindowState.Value);
@@ -55,7 +55,6 @@ namespace DogAgilityCompetition.WinForms
             }
         }
 
-        [CanBeNull]
         private static FormWindowState? TranslateWindowState(int wParam)
         {
             switch (wParam)

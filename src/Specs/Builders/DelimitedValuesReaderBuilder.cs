@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders
 {
@@ -13,26 +12,24 @@ namespace DogAgilityCompetition.Specs.Builders
     /// </summary>
     public sealed class DelimitedValuesReaderBuilder : ITestDataBuilder<DelimitedValuesReader>
     {
-        [NotNull]
-        [ItemNotNull]
-        private static readonly string[] DefaultHeaders = { "ColumnHeader1", "ColumnHeader2" };
+        private static readonly string[] DefaultHeaders =
+        {
+            "ColumnHeader1",
+            "ColumnHeader2"
+        };
 
         private bool useDefaultHeaders = true;
+        private string? headerLine;
+        private Func<TextReader, TextReader>? createReader;
 
-        [CanBeNull]
-        private string headerLine;
+        private List<string> dataLines = new()
+        {
+            "RowCell_1x1,RowCell_1x2",
+            "RowCell_2x1,RowCell_2x2"
+        };
 
-        [CanBeNull]
-        private Func<TextReader, TextReader> createReader;
+        private DelimitedValuesReaderSettings? settings = new DelimitedValuesReaderSettingsBuilder().Build();
 
-        [NotNull]
-        [ItemNotNull]
-        private List<string> dataLines = new List<string> { "RowCell_1x1,RowCell_1x2", "RowCell_2x1,RowCell_2x2" };
-
-        [CanBeNull]
-        private DelimitedValuesReaderSettings settings = new DelimitedValuesReaderSettingsBuilder().Build();
-
-        [ItemNotNull]
         public DelimitedValuesReader Build()
         {
             Stream stream = new MemoryStream();
@@ -40,7 +37,8 @@ namespace DogAgilityCompetition.Specs.Builders
 
             string fieldSeparator = GetFieldSeparatorFromSettings();
 
-            string columnHeaderLine = null;
+            string? columnHeaderLine = null;
+
             if (headerLine == null && useDefaultHeaders)
             {
                 columnHeaderLine = string.Join(fieldSeparator, DefaultHeaders);
@@ -63,6 +61,7 @@ namespace DogAgilityCompetition.Specs.Builders
             writer.Flush();
             stream.Seek(0, SeekOrigin.Begin);
             TextReader reader = new StreamReader(stream);
+
             if (createReader != null)
             {
                 reader = createReader(reader);
@@ -71,14 +70,12 @@ namespace DogAgilityCompetition.Specs.Builders
             return new DelimitedValuesReader(reader, settings);
         }
 
-        [NotNull]
         private string GetFieldSeparatorFromSettings()
         {
             return settings?.FieldSeparator?.ToString(CultureInfo.InvariantCulture) ?? ",";
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithSettings([NotNull] DelimitedValuesReaderSettingsBuilder settingsBuilder)
+        public DelimitedValuesReaderBuilder WithSettings(DelimitedValuesReaderSettingsBuilder settingsBuilder)
         {
             Guard.NotNull(settingsBuilder, nameof(settingsBuilder));
 
@@ -86,14 +83,12 @@ namespace DogAgilityCompetition.Specs.Builders
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithSingleColumnHeader([NotNull] string name = "ColumnHeader1")
+        public DelimitedValuesReaderBuilder WithSingleColumnHeader(string name = "ColumnHeader1")
         {
             return WithColumnHeaders(name);
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithColumnHeaders([NotNull] [ItemNotNull] params string[] headers)
+        public DelimitedValuesReaderBuilder WithColumnHeaders(params string[] headers)
         {
             string fieldSeparator = GetFieldSeparatorFromSettings();
             headerLine = string.Join(fieldSeparator, headers);
@@ -101,39 +96,33 @@ namespace DogAgilityCompetition.Specs.Builders
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithHeaderLine([NotNull] string line)
+        public DelimitedValuesReaderBuilder WithHeaderLine(string line)
         {
             headerLine = line;
             useDefaultHeaders = false;
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithRow([NotNull] [ItemNotNull] IEnumerable<string> cells)
+        public DelimitedValuesReaderBuilder WithRow(IEnumerable<string> cells)
         {
             string fieldSeparator = GetFieldSeparatorFromSettings();
             dataLines.Add(string.Join(fieldSeparator, cells));
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithDataLine([NotNull] string dataLine)
+        public DelimitedValuesReaderBuilder WithDataLine(string dataLine)
         {
             dataLines.Add(dataLine);
             return this;
         }
 
-        [NotNull]
         public DelimitedValuesReaderBuilder WithoutRows()
         {
             dataLines = new List<string>();
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesReaderBuilder WithIntermediateReader(
-            [NotNull] Func<TextReader, TextReader> createReaderCallback)
+        public DelimitedValuesReaderBuilder WithIntermediateReader(Func<TextReader, TextReader> createReaderCallback)
         {
             createReader = createReaderCallback;
             return this;

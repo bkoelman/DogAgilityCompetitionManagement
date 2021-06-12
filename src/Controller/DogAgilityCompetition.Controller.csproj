@@ -1,461 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8279D0D9-849A-40C2-BDF3-20AFE0D39EA8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DogAgilityCompetition.Controller</RootNamespace>
-    <AssemblyName>DogAgilityCompetitionController</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\Release\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>..\AgilityRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Resources\Icons\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=2020.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.2020.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Content Include="..\SampleData\EmulatorNetworks\RemoteForDebug.xml" Link="RemoteForDebug.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\AssemblyVersion.cs">
-      <Link>Properties\AssemblyVersion.cs</Link>
-    </Compile>
-    <Compile Include="Engine\AlertPictureSourceItem.cs" />
-    <Compile Include="Engine\AlertSoundSourceItem.cs" />
-    <Compile Include="Engine\AlertSourceItem.cs" />
-    <Compile Include="Engine\ClassPlacementCalculator.cs" />
-    <Compile Include="Engine\ClockSynchronizationMode.cs" />
-    <Compile Include="Engine\CompetitionClassController.cs" />
-    <Compile Include="Engine\CompetitionClassRequirements.cs" />
-    <Compile Include="Engine\CompetitionClassState.cs" />
-    <Compile Include="Engine\CompetitionRunResultRankingComparable.cs" />
-    <Compile Include="Engine\CompetitionRunResultRankingComparer.cs" />
-    <Compile Include="Engine\CompetitorNumberSelectionEventArgs.cs" />
-    <Compile Include="Engine\CompetitorSelectionEventArgs.cs" />
-    <Compile Include="Engine\DeviceActionAdapter.cs" />
-    <Compile Include="Engine\DeviceCommand.cs" />
-    <Compile Include="Engine\DeviceCommandEventArgs.cs" />
-    <Compile Include="Engine\DeviceEventArgs.cs" />
-    <Compile Include="Engine\DeviceTimeEventArgs.cs" />
-    <Compile Include="Engine\GatePassage.cs" />
-    <Compile Include="Engine\EliminationEventArgs.cs" />
-    <Compile Include="Engine\EliminationTracker.cs" />
-    <Compile Include="Engine\EqualitySupport.cs" />
-    <Compile Include="Engine\RankingComparisonMode.cs" />
-    <Compile Include="Engine\ExceptionFactory.cs" />
-    <Compile Include="Engine\GatePassageEventArgs.cs" />
-    <Compile Include="Engine\NetworkComplianceMismatch.cs" />
-    <Compile Include="Engine\NetworkComposition.cs" />
-    <Compile Include="Engine\NetworkHealthMonitor.cs" />
-    <Compile Include="Engine\NetworkHealthReport.cs" />
-    <Compile Include="Engine\AlertSource.cs" />
-    <Compile Include="Engine\CompetitorAssessmentCalculator.cs" />
-    <Compile Include="Engine\Storage\CompetitionClassInfo.cs" />
-    <Compile Include="Engine\Storage\Serialization\AlertSourceItemXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\AlertSourceXml.cs" />
-    <Compile Include="Engine\Visualization\Changes\ClassInfoUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\ClockSynchronizationUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\CurrentCompetitorNumberBlink.cs" />
-    <Compile Include="Engine\Visualization\Changes\CurrentCompetitorNumberUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\CurrentCompetitorUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\EliminationUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\FaultCountUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\NextCompetitorNumberBlink.cs" />
-    <Compile Include="Engine\Visualization\Changes\NextCompetitorNumberUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\NextCompetitorUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\PlaySound.cs" />
-    <Compile Include="Engine\Visualization\Changes\PreviousCompetitorRunUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\PrimaryTimeStopAndSet.cs" />
-    <Compile Include="Engine\Visualization\Changes\RankingsUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\RefusalCountUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\SecondaryTimeUpdate.cs" />
-    <Compile Include="Engine\Visualization\Changes\StartAnimation.cs" />
-    <Compile Include="Engine\Visualization\Changes\StartPrimaryTimer.cs" />
-    <Compile Include="Engine\Visualization\NotNullableVisualizationChange.cs" />
-    <Compile Include="Engine\Visualization\NullableVisualizationChange.cs" />
-    <Compile Include="Engine\Visualization\VisualizationChangeFactory.cs" />
-    <Compile Include="Engine\Visualization\VisualizationConflictResolver.cs" />
-    <Compile Include="Engine\Visualization\VisualizationUpdateCollector.cs" />
-    <Compile Include="Engine\Visualization\WirelessDisplayRunVisualizer.cs" />
-    <Compile Include="Engine\NumberEntryFilter.cs" />
-    <Compile Include="Engine\RankingChangeEventArgs.cs" />
-    <Compile Include="Engine\RecordedTime.cs" />
-    <Compile Include="Engine\Visualization\IVisualizationActor.cs" />
-    <Compile Include="Engine\Visualization\VisualizationChange.cs" />
-    <Compile Include="Engine\Visualization\WirelessDisplayUpdateCollector.cs" />
-    <Compile Include="Engine\RemoteKey.cs" />
-    <Compile Include="Engine\RemoteKeyEventArgs.cs" />
-    <Compile Include="Engine\RemoteKeyModifier.cs" />
-    <Compile Include="Engine\RemoteKeyModifierEventArgs.cs" />
-    <Compile Include="Engine\RemoteKeyTracker.cs" />
-    <Compile Include="Engine\Storage\CacheManager.cs" />
-    <Compile Include="Engine\Storage\CompetitionClassModel.cs" />
-    <Compile Include="Engine\Storage\CompetitionAlerts.cs" />
-    <Compile Include="Engine\Storage\CompetitionRunResult.cs" />
-    <Compile Include="Engine\Storage\CompetitionRunTimings.cs" />
-    <Compile Include="Engine\Storage\Competitor.cs" />
-    <Compile Include="Engine\Storage\FileFormats\DelimitedValuesParseException.cs" />
-    <Compile Include="Engine\Storage\FileFormats\DelimitedValuesReader.cs" />
-    <Compile Include="Engine\Storage\FileFormats\DelimitedValuesReaderSettings.cs" />
-    <Compile Include="Engine\Storage\FileFormats\DelimitedValuesWriter.cs" />
-    <Compile Include="Engine\Storage\FileFormats\DelimitedValuesWriterSettings.cs" />
-    <Compile Include="Engine\Storage\FileFormats\IDelimitedValuesReaderRow.cs" />
-    <Compile Include="Engine\Storage\FileFormats\IDelimitedValuesWriterRow.cs" />
-    <Compile Include="Engine\Storage\ImportExportColumns.cs" />
-    <Compile Include="Engine\Storage\RunResultsExporter.cs" />
-    <Compile Include="Engine\Storage\RunResultsImporter.cs" />
-    <Compile Include="Engine\Storage\Serialization\CompetitionClassModelXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\CompetitionAlertsXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\CompetitionRunResultXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\CompetitionRunTimingsXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\CompetitorXml.cs" />
-    <Compile Include="Engine\Storage\Serialization\ModelSerializer.cs" />
-    <Compile Include="Engine\Storage\Serialization\RecordedTimeXml.cs" />
-    <Compile Include="Engine\TimeAccuracy.cs" />
-    <Compile Include="Engine\TimeSpanWithAccuracy.cs" />
-    <Compile Include="Engine\UnknownDeviceActionEventArgs.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SystemPowerManagementProvider.cs" />
-    <Compile Include="SystemSound.cs" />
-    <Compile Include="UI\Controls\CompetitionPictureAlert.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionPictureAlert.Designer.cs">
-      <DependentUpon>CompetitionPictureAlert.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionSoundAlert.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionSoundAlert.Designer.cs">
-      <DependentUpon>CompetitionSoundAlert.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\DataGridViewDisableButtonCell.cs" />
-    <Compile Include="UI\Controls\DataGridViewProgressBarCell.cs" />
-    <Compile Include="UI\Controls\RunResultChangingEventArgs.cs" />
-    <Compile Include="UI\Controls\Shapes\ArrowShape.cs" />
-    <Compile Include="UI\Forms\ClassResultsDisplayForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\ClassResultsDisplayForm.Designer.cs">
-      <DependentUpon>ClassResultsDisplayForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\ClassResultsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\ClassResultsForm.Designer.cs">
-      <DependentUpon>ClassResultsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\ClassSetupForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\ClassSetupForm.Designer.cs">
-      <DependentUpon>ClassSetupForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionStateOverview.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionStateOverview.Designer.cs">
-      <DependentUpon>CompetitionStateOverview.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Engine\CompositeRunVisualizer.cs" />
-    <Compile Include="UI\Controls\AlertEventArgs.cs" />
-    <Compile Include="UI\Controls\AutoScalingLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\AutoScrollingPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\ColorConverter.cs" />
-    <Compile Include="UI\Controls\CompetitionRunResultRowInGrid.cs" />
-    <Compile Include="UI\Controls\CompetitionRunResultsGrid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\CompetitionRunResultsGrid.Designer.cs">
-      <DependentUpon>CompetitionRunResultsGrid.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\DataGridViewDisableButtonColumn.cs" />
-    <Compile Include="UI\Controls\DataGridViewProgressBarColumn.cs" />
-    <Compile Include="UI\Controls\EvenlySplitContainer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\GraphicsExtensions.cs" />
-    <Compile Include="UI\Controls\Highlighter.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\Shapes\MultiLineArrow.cs" />
-    <Compile Include="UI\Controls\NetworkGrid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\NetworkGrid.Designer.cs">
-      <DependentUpon>NetworkGrid.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\NetworkSetupEventArgs.cs" />
-    <Compile Include="UI\Controls\NonFlickeringDataGridView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\RunHistoryLine.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\RunHistoryLine.Designer.cs">
-      <DependentUpon>RunHistoryLine.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\RunResultEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\RunResultEditor.Designer.cs">
-      <DependentUpon>RunResultEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Controls\ScaleTextToFitLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\Shapes\Shape.cs" />
-    <Compile Include="UI\Controls\Shapes\ShapeState.cs" />
-    <Compile Include="UI\Controls\Shapes\SingleLineArrow.cs" />
-    <Compile Include="UI\Controls\SingleLineLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\StateVisualizer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\Shapes\TextBlock.cs" />
-    <Compile Include="UI\Controls\TextFormatting.cs" />
-    <Compile Include="UI\Forms\CustomDisplayForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\CustomDisplayForm.Designer.cs">
-      <DependentUpon>CustomDisplayForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\CustomDisplaySetupForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\CustomDisplaySetupForm.Designer.cs">
-      <DependentUpon>CustomDisplaySetupForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\GoToCompetitorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\GoToCompetitorForm.Designer.cs">
-      <DependentUpon>GoToCompetitorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Engine\Visualization\ICompetitionRunVisualizer.cs" />
-    <Compile Include="UI\Forms\LogForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\LogForm.Designer.cs">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\NetworkSetupForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\NetworkSetupForm.Designer.cs">
-      <DependentUpon>NetworkSetupForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\NotifyPictureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\NotifyPictureForm.Designer.cs">
-      <DependentUpon>NotifyPictureForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Forms\PicturePreviewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\PicturePreviewForm.Designer.cs">
-      <DependentUpon>PicturePreviewForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\TextBoxAppender.cs" />
-    <Compile Include="UI\Forms\TimerDisplayForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Forms\TimerDisplayForm.Designer.cs">
-      <DependentUpon>TimerDisplayForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\TextBoxAppenderMode.cs" />
-    <Compile Include="UI\TextBoxAppenderSwitches.cs" />
-    <Compile Include="UI\WinFormsVisualizer.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <ProjectReference Include="..\WinForms\DogAgilityCompetition.WinForms.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UI\Controls\CompetitionPictureAlert.resx">
-      <DependentUpon>CompetitionPictureAlert.cs</DependentUpon>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\CompetitionSoundAlert.resx">
-      <DependentUpon>CompetitionSoundAlert.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\ClassResultsDisplayForm.resx">
-      <DependentUpon>ClassResultsDisplayForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\ClassResultsForm.resx">
-      <DependentUpon>ClassResultsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\ClassSetupForm.resx">
-      <DependentUpon>ClassSetupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\CompetitionStateOverview.resx">
-      <DependentUpon>CompetitionStateOverview.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\CompetitionRunResultsGrid.resx">
-      <DependentUpon>CompetitionRunResultsGrid.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\NetworkGrid.resx">
-      <DependentUpon>NetworkGrid.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\RunHistoryLine.resx">
-      <DependentUpon>RunHistoryLine.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Controls\RunResultEditor.resx">
-      <DependentUpon>RunResultEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\CustomDisplayForm.resx">
-      <DependentUpon>CustomDisplayForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\CustomDisplaySetupForm.resx">
-      <DependentUpon>CustomDisplaySetupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\GoToCompetitorForm.resx">
-      <DependentUpon>GoToCompetitorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\LogForm.resx">
-      <DependentUpon>LogForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\NetworkSetupForm.resx">
-      <DependentUpon>NetworkSetupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\NotifyPictureForm.resx">
-      <DependentUpon>NotifyPictureForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\PicturePreviewForm.resx">
-      <DependentUpon>PicturePreviewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Forms\TimerDisplayForm.resx">
-      <DependentUpon>TimerDisplayForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DogAgilityCompetition.Controller.log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Circe\DogAgilityCompetition.Circe.csproj">
-      <Project>{3b7bd73d-a741-41d1-8316-0877aed6958f}</Project>
-      <Name>DogAgilityCompetition.Circe</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WinForms\DogAgilityCompetition.WinForms.csproj">
-      <Project>{e4ed1740-5efc-46c9-a952-cc3712295756}</Project>
-      <Name>DogAgilityCompetition.WinForms</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\SampleData\EmulatorNetworks\RemoteForDebug.xml">
-      <Link>RemoteForDebug.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Icons\AppIcon.ico" />
-    <Content Include="Resources\Icons\ClassResultsDisplayIcon.ico" />
-    <Content Include="Resources\Icons\ClassResultsIcon.ico" />
-    <Content Include="Resources\Icons\ClassSetupIcon.ico" />
-    <Content Include="Resources\Icons\EmptyDisplayIcon.ico" />
-    <Content Include="Resources\Icons\EmptyIcon.ico" />
-    <Content Include="Resources\Icons\NetworkSetupIcon.ico" />
-    <Content Include="Resources\Icons\PhotoCameraIcon.ico" />
-    <Content Include="Resources\Icons\RemoteIcon.ico" />
-    <Content Include="Resources\Icons\SpeakerIcon.ico" />
-    <Content Include="Resources\Icons\TimerDisplayIcon.ico" />
-    <Content Include="Resources\timer-logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\ResharperCodeContractNullability.2.0.0\analyzers\dotnet\cs\CodeContractNullability.dll" />
-    <Analyzer Include="..\packages\ResharperCodeContractNullability.2.0.0\analyzers\dotnet\cs\MsgPack.dll" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.5.0.3\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

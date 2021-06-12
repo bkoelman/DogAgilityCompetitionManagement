@@ -1,15 +1,13 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe
 {
     /// <summary />
     public sealed class EventArgs<T> : EventArgs
     {
-        [NotNull]
-        public T Argument { get; private set; }
+        public T Argument { get; }
 
-        public EventArgs([NotNull] T argument)
+        public EventArgs(T argument)
         {
             Guard.NotNull(argument, nameof(argument));
 

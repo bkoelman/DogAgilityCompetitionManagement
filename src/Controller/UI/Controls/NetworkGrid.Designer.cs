@@ -36,13 +36,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cleanupTimer = new System.Windows.Forms.Timer(this.components);
-            this.dataGridView = new NonFlickeringDataGridView();
+            this.dataGridView = new DogAgilityCompetition.Controller.UI.Controls.NonFlickeringDataGridView();
             this.UseColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.DeviceColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BlinkColumn = new DataGridViewDisableButtonColumn();
+            this.BlinkColumn = new DogAgilityCompetition.Controller.UI.Controls.DataGridViewDisableButtonColumn();
             this.RolesColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SignalColumn = new DataGridViewProgressBarColumn();
-            this.BatteryColumn = new DataGridViewProgressBarColumn();
+            this.SignalColumn = new DogAgilityCompetition.Controller.UI.Controls.DataGridViewProgressBarColumn();
+            this.BatteryColumn = new DogAgilityCompetition.Controller.UI.Controls.DataGridViewProgressBarColumn();
             this.AlignedColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.SyncColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -81,7 +81,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.dataGridView.ShowCellToolTips = false;
             this.dataGridView.ShowEditingIcon = false;
             this.dataGridView.ShowRowErrors = false;
-            this.dataGridView.Size = new System.Drawing.Size(868, 269);
+            this.dataGridView.Size = new System.Drawing.Size(918, 269);
             this.dataGridView.StandardTab = true;
             this.dataGridView.TabIndex = 0;
             this.dataGridView.TabStop = false;
@@ -105,7 +105,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.DeviceColumn.ReadOnly = true;
             this.DeviceColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.DeviceColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.DeviceColumn.Width = 150;
+            this.DeviceColumn.Width = 170;
             // 
             // BlinkColumn
             // 
@@ -127,7 +127,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             this.RolesColumn.ReadOnly = true;
             this.RolesColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.RolesColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.RolesColumn.Width = 320;
+            this.RolesColumn.Width = 350;
             // 
             // SignalColumn
             // 
@@ -173,11 +173,10 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             // 
             // NetworkGrid
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.dataGridView);
             this.Name = "NetworkGrid";
-            this.Size = new System.Drawing.Size(868, 269);
+            this.Size = new System.Drawing.Size(918, 269);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 

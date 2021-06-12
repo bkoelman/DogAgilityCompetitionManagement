@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
 {
@@ -12,20 +11,20 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public sealed class WirelessDisplayUpdateCollector : IVisualizationActor
     {
-        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
         private const int CirceHiddenCompetitorNumber = 0;
         private const int CirceHiddenPlacement = 0;
         private const int CirceHiddenFaultsRefusals = 99;
 
-        [NotNull]
-        private readonly VisualizeFieldSetBuilder builder = new VisualizeFieldSetBuilder();
+        private static readonly TimeSpan CirceHiddenTime = TimeSpan.FromMilliseconds(999999);
+
+        private readonly VisualizeFieldSetBuilder builder = new();
 
         public VisualizeFieldSet GetResult()
         {
             return builder.Build();
         }
 
-        void IVisualizationActor.SetClass(CompetitionClassInfo classInfo)
+        void IVisualizationActor.SetClass(CompetitionClassInfo? classInfo)
         {
         }
 
@@ -60,7 +59,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
             builder.WithElimination(isEliminated);
         }
 
-        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearCurrentCompetitor(Competitor? competitor)
         {
             builder.WithCurrentCompetitorNumber(competitor?.Number ?? CirceHiddenCompetitorNumber);
         }
@@ -74,7 +73,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
         }
 
-        void IVisualizationActor.SetOrClearNextCompetitor(Competitor competitor)
+        void IVisualizationActor.SetOrClearNextCompetitor(Competitor? competitor)
         {
             builder.WithNextCompetitorNumber(competitor?.Number ?? CirceHiddenCompetitorNumber);
         }
@@ -88,7 +87,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
         }
 
-        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult competitorRunResult)
+        void IVisualizationActor.SetOrClearPreviousCompetitorRun(CompetitionRunResult? competitorRunResult)
         {
             builder.WithPreviousPlacement(competitorRunResult?.Placement ?? CirceHiddenPlacement);
         }
@@ -105,7 +104,7 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
         {
         }
 
-        void IVisualizationActor.PlaySound(string path)
+        void IVisualizationActor.PlaySound(string? path)
         {
         }
     }

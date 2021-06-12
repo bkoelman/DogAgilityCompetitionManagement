@@ -60,7 +60,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 13);
+            this.label1.Size = new System.Drawing.Size(67, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Status code:";
             // 
@@ -81,7 +81,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(89, 21);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(30, 13);
+            this.label5.Size = new System.Drawing.Size(30, 15);
             this.label5.TabIndex = 3;
             this.label5.Text = "OUT";
             // 
@@ -102,7 +102,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(28, 21);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(18, 13);
+            this.label4.Size = new System.Drawing.Size(18, 15);
             this.label4.TabIndex = 1;
             this.label4.Text = "IN";
             // 
@@ -127,7 +127,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.stateLabel.AutoSize = true;
             this.stateLabel.Location = new System.Drawing.Point(6, 53);
             this.stateLabel.Name = "stateLabel";
-            this.stateLabel.Size = new System.Drawing.Size(112, 13);
+            this.stateLabel.Size = new System.Drawing.Size(112, 15);
             this.stateLabel.TabIndex = 4;
             this.stateLabel.Text = "Status: Disconnected.";
             // 
@@ -136,7 +136,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 47);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 13);
+            this.label2.Size = new System.Drawing.Size(86, 15);
             this.label2.TabIndex = 2;
             this.label2.Text = "Protocol version:";
             // 
@@ -160,7 +160,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.versionLinkLabel.AutoSize = true;
             this.versionLinkLabel.Location = new System.Drawing.Point(98, 47);
             this.versionLinkLabel.Name = "versionLinkLabel";
-            this.versionLinkLabel.Size = new System.Drawing.Size(46, 13);
+            this.versionLinkLabel.Size = new System.Drawing.Size(46, 15);
             this.versionLinkLabel.TabIndex = 3;
             this.versionLinkLabel.TabStop = true;
             this.versionLinkLabel.Text = "v0.0.0.0";
@@ -171,7 +171,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.statusCodeLinkLabel.AutoSize = true;
             this.statusCodeLinkLabel.Location = new System.Drawing.Point(79, 25);
             this.statusCodeLinkLabel.Name = "statusCodeLinkLabel";
-            this.statusCodeLinkLabel.Size = new System.Drawing.Size(55, 13);
+            this.statusCodeLinkLabel.Size = new System.Drawing.Size(55, 15);
             this.statusCodeLinkLabel.TabIndex = 1;
             this.statusCodeLinkLabel.TabStop = true;
             this.statusCodeLinkLabel.Text = "0 (Normal)";
@@ -193,7 +193,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             this.portLabel.AutoSize = true;
             this.portLabel.Location = new System.Drawing.Point(6, 21);
             this.portLabel.Name = "portLabel";
-            this.portLabel.Size = new System.Drawing.Size(36, 13);
+            this.portLabel.Size = new System.Drawing.Size(36, 15);
             this.portLabel.TabIndex = 0;
             this.portLabel.Text = "COMx";
             // 
@@ -233,7 +233,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             // MediatorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(296, 232);
             this.Controls.Add(this.logButton);
             this.Controls.Add(this.portGroupBox);

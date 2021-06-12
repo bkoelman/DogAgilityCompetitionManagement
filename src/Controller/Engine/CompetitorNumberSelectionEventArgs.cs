@@ -5,7 +5,7 @@ namespace DogAgilityCompetition.Controller.Engine
     /// <summary />
     public sealed class CompetitorNumberSelectionEventArgs : CompetitorSelectionEventArgs
     {
-        public int CompetitorNumber { get; private set; }
+        public int CompetitorNumber { get; }
 
         public CompetitorNumberSelectionEventArgs(int competitorNumber, bool isCurrentCompetitor)
             : base(isCurrentCompetitor)

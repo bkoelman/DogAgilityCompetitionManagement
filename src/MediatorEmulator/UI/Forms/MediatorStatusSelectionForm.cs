@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -13,37 +12,17 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class MediatorStatusSelectionForm : Form
     {
-        [NotNull]
-        private static readonly Dictionary<int, string> CodeToTextMap = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> CodeToTextMap = new();
 
         public int StatusCode
         {
-            get
-            {
-                return GetNumericValue();
-            }
-            set
-            {
-                statusComboBox.Text = GetTextFor(value);
-            }
-        }
-
-        private int GetNumericValue()
-        {
-            foreach (KeyValuePair<int, string> pair in CodeToTextMap.Where(pair => statusComboBox.Text == pair.Value))
-            {
-                return pair.Key;
-            }
-
-            int parsedValue;
-            return int.TryParse(statusComboBox.Text, out parsedValue) && parsedValue >= 0 && parsedValue <= 999
-                ? parsedValue
-                : -1;
+            get => GetNumericValue();
+            set => statusComboBox.Text = GetTextFor(value);
         }
 
         static MediatorStatusSelectionForm()
         {
-            foreach (int code in KnownMediatorStatusCode.GetAll())
+            foreach (int code in KnownMediatorStatusCode.All)
             {
                 CodeToTextMap.Add(code, KnownMediatorStatusCode.GetNameFor(code));
             }
@@ -56,7 +35,17 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             statusComboBox.Items.AddRange(CodeToTextMap.Values.Cast<object>().ToArray());
         }
 
-        private void OkButton_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private int GetNumericValue()
+        {
+            foreach (KeyValuePair<int, string> pair in CodeToTextMap.Where(pair => statusComboBox.Text == pair.Value))
+            {
+                return pair.Key;
+            }
+
+            return int.TryParse(statusComboBox.Text, out int parsedValue) && parsedValue is >= 0 and <= 999 ? parsedValue : -1;
+        }
+
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             if (StatusCode == -1)
             {
@@ -68,12 +57,9 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        [NotNull]
         public static string GetTextFor(int statusCode)
         {
-            return CodeToTextMap.ContainsKey(statusCode)
-                ? CodeToTextMap[statusCode]
-                : statusCode.ToString(CultureInfo.InvariantCulture);
+            return CodeToTextMap.ContainsKey(statusCode) ? CodeToTextMap[statusCode] : statusCode.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

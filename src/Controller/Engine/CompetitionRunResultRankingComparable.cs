@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
 using JetBrains.Annotations;
@@ -8,22 +9,18 @@ namespace DogAgilityCompetition.Controller.Engine
     /// <summary>
     /// Implementation of sorting competitor run results.
     /// </summary>
+    [SuppressMessage("Design", "CA1036:Override methods on comparable types")]
     public sealed class CompetitionRunResultRankingComparable : IComparable<CompetitionRunResultRankingComparable>
     {
         private const int WinnerIsThis = -1;
         private const int WinnerIsOther = 1;
         private const int NoDifference = 0;
 
-        [NotNull]
         private readonly CompetitionRunResult runResult;
-
         private readonly RankingComparisonMode comparisonMode;
-
-        [NotNull]
         private readonly CompetitorAssessmentCalculator calculator;
 
-        public CompetitionRunResultRankingComparable([NotNull] CompetitionRunResult runResult,
-            [NotNull] CompetitionClassModel model, RankingComparisonMode comparisonMode)
+        public CompetitionRunResultRankingComparable(CompetitionRunResult runResult, CompetitionClassModel model, RankingComparisonMode comparisonMode)
         {
             Guard.NotNull(runResult, nameof(runResult));
             Guard.NotNull(model, nameof(model));
@@ -33,7 +30,7 @@ namespace DogAgilityCompetition.Controller.Engine
             calculator = new CompetitorAssessmentCalculator(runResult, model);
         }
 
-        public int CompareWithoutNumberTo([CanBeNull] CompetitionRunResultRankingComparable other)
+        public int CompareWithoutNumberTo(CompetitionRunResultRankingComparable? other)
         {
             if (other != null && CompetitionRunResult.AreEquivalentRun(runResult, other.runResult))
             {
@@ -43,7 +40,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return CompareTo(other);
         }
 
-        public int CompareTo([CanBeNull] CompetitionRunResultRankingComparable other)
+        public int CompareTo(CompetitionRunResultRankingComparable? other)
         {
             if (other == null)
             {
@@ -51,6 +48,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
 
             int result;
+
             switch (comparisonMode)
             {
                 case RankingComparisonMode.OnlyPhaseCompletion:
@@ -64,21 +62,24 @@ namespace DogAgilityCompetition.Controller.Engine
                     break;
                 default:
                     result = ComparePhaseCompletion(other);
+
                     if (result == 0)
                     {
                         result = ComparePhasePenaltyOverrun(other);
+
                         if (result == 0)
                         {
                             result = ComparePhaseFinishNumber(other);
                         }
                     }
+
                     break;
             }
 
             return result;
         }
 
-        private int ComparePhaseCompletion([NotNull] CompetitionRunResultRankingComparable other)
+        private int ComparePhaseCompletion(CompetitionRunResultRankingComparable other)
         {
             bool bit0 = runResult.HasFinished;
             bool bit1 = runResult.IsEliminated;
@@ -91,6 +92,7 @@ namespace DogAgilityCompetition.Controller.Engine
             bool isEvenTerm4 = bit0 && !bit1 && bit2 && !bit3;
 
             bool matchesIsEven = isEvenTerm1 || isEvenTerm2 || isEvenTerm3 || isEvenTerm4;
+
             if (matchesIsEven)
             {
                 return NoDifference;
@@ -105,7 +107,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return matchesWinnerIsY ? WinnerIsOther : WinnerIsThis;
         }
 
-        private int ComparePhasePenaltyOverrun([NotNull] CompetitionRunResultRankingComparable other)
+        private int ComparePhasePenaltyOverrun(CompetitionRunResultRankingComparable other)
         {
             bool bit0 = calculator.PenaltyTime > other.calculator.PenaltyTime;
             bool bit1 = calculator.OverrunTime > other.calculator.OverrunTime;
@@ -113,6 +115,7 @@ namespace DogAgilityCompetition.Controller.Engine
             bool bit3 = other.calculator.OverrunTime > calculator.OverrunTime;
 
             bool matchesIsEven = !bit0 && !bit1 && !bit2 && !bit3;
+
             if (matchesIsEven)
             {
                 return NoDifference;
@@ -126,7 +129,7 @@ namespace DogAgilityCompetition.Controller.Engine
             return matchesWinnerIsY ? WinnerIsOther : WinnerIsThis;
         }
 
-        private int ComparePhaseFinishNumber([NotNull] CompetitionRunResultRankingComparable other)
+        private int ComparePhaseFinishNumber(CompetitionRunResultRankingComparable other)
         {
             bool bit0 = calculator.FinishTime > other.calculator.FinishTime;
             //bool bit1 = runResult.Competitor.Number > other.runResult.Competitor.Number;
@@ -143,36 +146,28 @@ namespace DogAgilityCompetition.Controller.Engine
 
         [Pure]
         public override string ToString()
-            =>
-                $"{GetType().Name}: HasFinished={runResult.HasFinished}, Eliminated={runResult.IsEliminated}, " +
-                    $"PenaltyTime={calculator.PenaltyTime}, FaultRefusalTime={calculator.FaultRefusalTime}, " +
-                    $"OverrunTime={calculator.OverrunTime}, FinishTime={calculator.FinishTime}, " +
-                    $"Number={runResult.Competitor.Number}";
+        {
+            return $"{GetType().Name}: HasFinished={runResult.HasFinished}, Eliminated={runResult.IsEliminated}, " +
+                $"PenaltyTime={calculator.PenaltyTime}, FaultRefusalTime={calculator.FaultRefusalTime}, " +
+                $"OverrunTime={calculator.OverrunTime}, FinishTime={calculator.FinishTime}, Number={runResult.Competitor.Number}";
+        }
 
-        public static bool operator <(
-            [CanBeNull] CompetitionRunResultRankingComparable left,
-            [CanBeNull] CompetitionRunResultRankingComparable right)
+        public static bool operator <(CompetitionRunResultRankingComparable? left, CompetitionRunResultRankingComparable? right)
         {
             return left == null ? right != null : left.CompareTo(right) == -1;
         }
 
-        public static bool operator <=(
-            [CanBeNull] CompetitionRunResultRankingComparable left,
-            [CanBeNull] CompetitionRunResultRankingComparable right)
+        public static bool operator <=(CompetitionRunResultRankingComparable? left, CompetitionRunResultRankingComparable? right)
         {
             return left == null || left.CompareTo(right) <= 0;
         }
 
-        public static bool operator >(
-            [CanBeNull] CompetitionRunResultRankingComparable left,
-            [CanBeNull] CompetitionRunResultRankingComparable right)
+        public static bool operator >(CompetitionRunResultRankingComparable? left, CompetitionRunResultRankingComparable? right)
         {
             return left?.CompareTo(right) == 1;
         }
 
-        public static bool operator >=(
-            [CanBeNull] CompetitionRunResultRankingComparable left,
-            [CanBeNull] CompetitionRunResultRankingComparable right)
+        public static bool operator >=(CompetitionRunResultRankingComparable? left, CompetitionRunResultRankingComparable? right)
         {
             return left == null ? right == null : left.CompareTo(right) >= 0;
         }

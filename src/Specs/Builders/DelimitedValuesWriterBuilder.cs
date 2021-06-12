@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Specs.Builders
 {
@@ -11,55 +10,45 @@ namespace DogAgilityCompetition.Specs.Builders
     /// </summary>
     public sealed class DelimitedValuesWriterBuilder : ITestDataBuilder<DelimitedValuesWriter>
     {
-        [NotNull]
-        [ItemNotNull]
-        private static readonly List<string> DefaultHeaders = new List<string> { "ColumnHeader1", "ColumnHeader2" };
+        private static readonly List<string> DefaultHeaders = new()
+        {
+            "ColumnHeader1",
+            "ColumnHeader2"
+        };
 
         private bool useDefaultHeaders = true;
-
-        [CanBeNull]
-        [ItemNotNull]
-        private List<string> columnHeaders;
-
-        [NotNull]
-        private DelimitedValuesWriterSettingsBuilder settingsBuilder = new DelimitedValuesWriterSettingsBuilder();
-
-        [CanBeNull]
-        private TextWriter writer;
+        private List<string>? columnHeaders;
+        private DelimitedValuesWriterSettingsBuilder settingsBuilder = new();
+        private TextWriter? writer;
 
         public DelimitedValuesWriter Build()
         {
             DelimitedValuesWriterSettings settings = settingsBuilder.Build();
             TextWriter targetWriter = writer ?? new StreamWriter(Stream.Null);
-            List<string> headers = useDefaultHeaders ? DefaultHeaders : columnHeaders;
+            List<string>? headers = useDefaultHeaders ? DefaultHeaders : columnHeaders;
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // Reason: It must be testable to fail when headers are omitted.
-            return new DelimitedValuesWriter(targetWriter, headers, settings);
+            // Justification for nullable suppression: It must be testable to fail when headers are omitted.
+            return new DelimitedValuesWriter(targetWriter, headers!, settings);
         }
 
-        [NotNull]
-        public DelimitedValuesWriterBuilder WithSettings([NotNull] DelimitedValuesWriterSettingsBuilder settings)
+        public DelimitedValuesWriterBuilder WithSettings(DelimitedValuesWriterSettingsBuilder settings)
         {
             settingsBuilder = settings;
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesWriterBuilder WritingTo([NotNull] TextWriter targetWriter)
+        public DelimitedValuesWriterBuilder WritingTo(TextWriter targetWriter)
         {
             writer = targetWriter;
             return this;
         }
 
-        [NotNull]
-        public DelimitedValuesWriterBuilder WithSingleColumnHeader([NotNull] string name = "ColumnHeader1")
+        public DelimitedValuesWriterBuilder WithSingleColumnHeader(string name = "ColumnHeader1")
         {
             return WithColumnHeaders(name);
         }
 
-        [NotNull]
-        public DelimitedValuesWriterBuilder WithColumnHeaders([CanBeNull] [ItemNotNull] params string[] headers)
+        public DelimitedValuesWriterBuilder WithColumnHeaders(params string[]? headers)
         {
             columnHeaders = headers?.ToList();
             useDefaultHeaders = false;

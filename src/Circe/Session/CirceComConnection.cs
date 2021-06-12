@@ -20,26 +20,19 @@ namespace DogAgilityCompetition.Circe.Session
         // http://blogs.msdn.com/b/bclteam/archive/2006/10/10/top-5-serialport-tips-_5b00_kim-hamilton_5d00_.aspx
         // http://zachsaw.blogspot.nl/2010/07/net-serialport-woes.html
 
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
         private readonly SerialPort comPort;
+        private readonly PacketAssembler assembler = new();
+        private readonly PacketReader reader = new();
 
-        [NotNull]
-        private readonly PacketAssembler assembler = new PacketAssembler();
-
-        [NotNull]
-        private readonly PacketReader reader = new PacketReader();
-
-        [NotNull]
         public string PortName => comPort.PortName;
 
-        public event EventHandler PacketSending;
-        public event EventHandler PacketReceived;
-        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
+        public event EventHandler? PacketSending;
+        public event EventHandler? PacketReceived;
+        public event EventHandler<IncomingOperationEventArgs>? OperationReceived;
 
-        public CirceComConnection([NotNull] string comPortName)
+        public CirceComConnection(string comPortName)
         {
             Guard.NotNullNorEmpty(comPortName, nameof(comPortName));
 
@@ -70,7 +63,7 @@ namespace DogAgilityCompetition.Circe.Session
             comPort.Open();
         }
 
-        public void Send([NotNull] Operation operation)
+        public void Send(Operation operation)
         {
             Guard.NotNull(operation, nameof(operation));
 
@@ -88,6 +81,7 @@ namespace DogAgilityCompetition.Circe.Session
             Log.Debug($"Closing port {PortName}.");
 
             bool hasClosed = false;
+
             try
             {
                 comPort.Close();
@@ -112,20 +106,23 @@ namespace DogAgilityCompetition.Circe.Session
         }
 
         [Pure]
-        public override string ToString() => PortName;
+        public override string ToString()
+        {
+            return PortName;
+        }
 
-        private void ComPortOnDataReceived([CanBeNull] object sender, [NotNull] SerialDataReceivedEventArgs e)
+        private void ComPortOnDataReceived(object? sender, SerialDataReceivedEventArgs e)
         {
             try
             {
                 bool done;
+
                 do
                 {
                     done = true;
-                    byte[] buffer;
 
                     int bytesToRead = SafeGetBytesToRead();
-                    int bytesRead = SafeComRead(bytesToRead, out buffer);
+                    int bytesRead = SafeComRead(bytesToRead, out byte[]? buffer);
 
                     if (bytesRead > 0 && buffer != null)
                     {
@@ -165,7 +162,7 @@ namespace DogAgilityCompetition.Circe.Session
             return -1;
         }
 
-        private int SafeComRead(int bytesToRead, [CanBeNull] out byte[] buffer)
+        private int SafeComRead(int bytesToRead, out byte[]? buffer)
         {
             buffer = null;
 
@@ -175,6 +172,7 @@ namespace DogAgilityCompetition.Circe.Session
             }
 
             buffer = new byte[bytesToRead];
+
             try
             {
                 return comPort.Read(buffer, 0, bytesToRead);
@@ -193,9 +191,10 @@ namespace DogAgilityCompetition.Circe.Session
             return -1;
         }
 
-        private void AssemblerOnCompletePacketAdded([CanBeNull] object sender, [NotNull] EventArgs<byte[]> e)
+        private void AssemblerOnCompletePacketAdded(object? sender, EventArgs<byte[]> e)
         {
-            Operation operation = null;
+            Operation? operation = null;
+
             try
             {
                 operation = reader.Read(e.Argument);
@@ -213,8 +212,7 @@ namespace DogAgilityCompetition.Circe.Session
             {
                 PacketReceived?.Invoke(this, EventArgs.Empty);
 
-                var logOperation = operation as LogOperation;
-                if (logOperation != null)
+                if (operation is LogOperation logOperation)
                 {
                     Log.Debug($"Discarding assembled operation: {logOperation}{logOperation.FormatLogData()}");
                 }
@@ -226,14 +224,14 @@ namespace DogAgilityCompetition.Circe.Session
             }
         }
 
-        private void ComPortOnErrorReceived([CanBeNull] object sender, [NotNull] SerialErrorReceivedEventArgs e)
+        private void ComPortOnErrorReceived(object? sender, SerialErrorReceivedEventArgs e)
         {
             // When not all data is received, may need to increase SerialPort.ReadBufferSize / WriteBufferSize 
             // (default value: 4096 bytes) or consider switching to hardware flow control.
             Log.Error($"Port {PortName} reported error {e.EventType}.");
         }
 
-        private void ComPortOnPinChanged([CanBeNull] object sender, [NotNull] SerialPinChangedEventArgs e)
+        private void ComPortOnPinChanged(object? sender, SerialPinChangedEventArgs e)
         {
             Log.Debug($"Port {PortName} reported pin change {e.EventType}.");
         }

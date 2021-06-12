@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -9,34 +8,17 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class DataGridViewProgressBarColumn : DataGridViewTextBoxColumn
     {
-        [CanBeNull]
-        public override DataGridViewCell CellTemplate
-        {
-            get
-            {
-                return base.CellTemplate;
-            }
-            set
-            {
-                if (!(value is DataGridViewProgressBarCell))
-                {
-                    throw new InvalidOperationException(
-                        $"CellTemplate must be set to a {typeof (DataGridViewProgressBarCell).Name} object.");
-                }
-                base.CellTemplate = value;
-            }
-        }
-
-        [NotNull]
         private DataGridViewProgressBarCell ProgressBarCell
         {
             get
             {
-                var result = (DataGridViewProgressBarCell) CellTemplate;
+                var result = CellTemplate as DataGridViewProgressBarCell;
+
                 if (result == null)
                 {
-                    throw new InvalidOperationException("CellTemplate is not set.");
+                    throw new InvalidOperationException("CellTemplate is not properly set.");
                 }
+
                 return result;
             }
         }
@@ -46,22 +28,21 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// </summary>
         public int Maximum
         {
-            get
-            {
-                return ProgressBarCell.Maximum;
-            }
+            get => ProgressBarCell.Maximum;
             set
             {
                 if (Maximum != value)
                 {
                     ProgressBarCell.Maximum = value;
+
                     if (DataGridView != null)
                     {
                         int rowCount = DataGridView.RowCount;
+
                         for (int i = 0; i < rowCount; i++)
                         {
-                            DataGridViewRow r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell) r.Cells[Index]).Maximum = value;
+                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
+                            ((DataGridViewProgressBarCell)r.Cells[Index]).Maximum = value;
                         }
                     }
                 }
@@ -73,10 +54,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         /// </summary>
         public int Minimum
         {
-            get
-            {
-                return ProgressBarCell.Minimum;
-            }
+            get => ProgressBarCell.Minimum;
             set
             {
                 if (Minimum != value)
@@ -86,10 +64,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls
                     if (DataGridView != null)
                     {
                         int rowCount = DataGridView.RowCount;
+
                         for (int i = 0; i < rowCount; i++)
                         {
-                            DataGridViewRow r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell) r.Cells[Index]).Minimum = value;
+                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
+                            ((DataGridViewProgressBarCell)r.Cells[Index]).Minimum = value;
                         }
                     }
                 }

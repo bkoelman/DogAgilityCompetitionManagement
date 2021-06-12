@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
@@ -15,19 +14,15 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class AlertPictureSourceItem : AlertSourceItem, IDisposable
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
-        public static readonly AlertPictureSourceItem None = new AlertPictureSourceItem(false, null);
+        public static readonly AlertPictureSourceItem None = new(false, null);
 
-        [CanBeNull]
-        private Bitmap item;
+        private Bitmap? item;
 
-        [CanBeNull]
-        public Bitmap EffectiveItem => !IsEnabled ? null : item;
+        public Bitmap? EffectiveItem => !IsEnabled ? null : item;
 
-        public AlertPictureSourceItem(bool isEnabled, [CanBeNull] string picturePath)
+        public AlertPictureSourceItem(bool isEnabled, string? picturePath)
             : base(isEnabled, picturePath)
         {
             SafePictureLoad();
@@ -48,8 +43,7 @@ namespace DogAgilityCompetition.Controller.Engine
             }
         }
 
-        [NotNull]
-        private static Bitmap LoadBitmapWithoutHoldingFileLock([NotNull] string imagePath)
+        private static Bitmap LoadBitmapWithoutHoldingFileLock(string imagePath)
         {
             var bitmapStream = new MemoryStream();
 

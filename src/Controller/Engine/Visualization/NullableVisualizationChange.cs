@@ -7,15 +7,17 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class NullableVisualizationChange<T> : VisualizationChange
     {
-        [CanBeNull]
-        protected T Value { get; }
+        protected T? Value { get; }
 
-        protected NullableVisualizationChange([CanBeNull] T value)
+        protected NullableVisualizationChange(T? value)
         {
             Value = value;
         }
 
         [Pure]
-        public override string ToString() => $"{GetType().Name} Value: {(Value == null ? "(null)" : Value.ToString())}";
+        public override string ToString()
+        {
+            return $"{GetType().Name} Value: {(Value is null ? "(null)" : Value.ToString())}";
+        }
     }
 }

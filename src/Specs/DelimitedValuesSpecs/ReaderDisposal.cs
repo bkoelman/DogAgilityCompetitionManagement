@@ -3,17 +3,16 @@ using System.Linq;
 using DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
 using DogAgilityCompetition.Specs.Builders;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
 {
     /// <summary>
     /// Tests for lifetime management in <see cref="DelimitedValuesReader" />.
     /// </summary>
-    [TestFixture]
     public sealed class ReaderDisposal
     {
-        [Test]
+        [Fact]
         public void When_accessing_line_number_after_disposal_it_should_fail()
         {
             // Arrange
@@ -21,17 +20,13 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            Action action = () =>
-            {
-                // ReSharper disable once UnusedVariable
-                int dummy = reader.LineNumber;
-            };
+            Action action = () => _ = reader.LineNumber;
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_accessing_line_after_disposal_it_should_fail()
         {
             // Arrange
@@ -39,17 +34,13 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            Action action = () =>
-            {
-                // ReSharper disable once UnusedVariable
-                string dummy = reader.Line;
-            };
+            Action action = () => _ = reader.Line;
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_getting_enumerator_after_disposal_it_should_fail()
         {
             // Arrange
@@ -57,15 +48,13 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable once ConvertToLambdaExpression
-            Action action = () => { reader.GetEnumerator(); };
+            Action action = () => _ = reader.GetEnumerator();
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
 
-        [Test]
+        [Fact]
         public void When_enumerating_after_disposal_it_should_fail()
         {
             // Arrange
@@ -73,12 +62,10 @@ namespace DogAgilityCompetition.Specs.DelimitedValuesSpecs
             reader.Dispose();
 
             // Act
-            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable once ConvertToLambdaExpression
-            Action action = () => { reader.TakeWhile(x => true).ToArray(); };
+            Action action = () => _ = reader.TakeWhile(_ => true).ToArray();
 
             // Assert
-            action.Should().Throw<ObjectDisposedException>();
+            action.Should().ThrowExactly<ObjectDisposedException>();
         }
     }
 }

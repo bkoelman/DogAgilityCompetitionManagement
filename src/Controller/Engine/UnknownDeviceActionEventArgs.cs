@@ -1,22 +1,22 @@
 ﻿using System;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine
 {
     /// <summary />
     public sealed class UnknownDeviceActionEventArgs : DeviceTimeEventArgs
     {
-        [CanBeNull]
-        public RemoteKey? Key { get; private set; }
+        public RemoteKey? Key { get; }
 
-        public UnknownDeviceActionEventArgs([NotNull] WirelessNetworkAddress source, [CanBeNull] TimeSpan? sensorTime,
-            [CanBeNull] RemoteKey? key)
+        public UnknownDeviceActionEventArgs(WirelessNetworkAddress source, TimeSpan? sensorTime, RemoteKey? key)
             : base(source, sensorTime)
         {
             Key = key;
         }
 
-        public override string ToString() => $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
+        public override string ToString()
+        {
+            return $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
+        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Reflection;
-using JetBrains.Annotations;
+﻿using System.IO;
+using System.Reflection;
 using log4net;
+using log4net.Config;
+using log4net.Repository;
 
 namespace DogAgilityCompetition.DeviceConfigurer
 {
@@ -9,16 +11,22 @@ namespace DogAgilityCompetition.DeviceConfigurer
     /// </summary>
     internal static class Program
     {
-        [NotNull]
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        private static void Main([NotNull] [ItemNotNull] string[] args)
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        private static void Main(string[] args)
         {
             //CirceSpecExamples.DumpScenarios();
 
-            StartupArguments startupArguments = StartupArguments.Parse(args);
+            StartupArguments? startupArguments = StartupArguments.Parse(args);
+
             if (startupArguments != null)
             {
+                ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+                XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.DeviceConfigurer.log4net.config"));
+
                 Log.Info("Application started.");
 
                 var process = new MainProcess(startupArguments);

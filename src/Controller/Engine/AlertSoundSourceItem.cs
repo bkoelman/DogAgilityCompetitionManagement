@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-
 namespace DogAgilityCompetition.Controller.Engine
 {
     /// <summary>
@@ -10,10 +8,9 @@ namespace DogAgilityCompetition.Controller.Engine
     /// </remarks>
     public sealed class AlertSoundSourceItem : AlertSourceItem
     {
-        [NotNull]
-        public static readonly AlertSoundSourceItem None = new AlertSoundSourceItem(false, null);
+        public static readonly AlertSoundSourceItem None = new(false, null);
 
-        public AlertSoundSourceItem(bool isEnabled, [CanBeNull] string soundPath)
+        public AlertSoundSourceItem(bool isEnabled, string? soundPath)
             : base(isEnabled, soundPath)
         {
         }

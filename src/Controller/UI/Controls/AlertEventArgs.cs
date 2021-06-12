@@ -3,22 +3,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
     /// <summary />
     public sealed class AlertEventArgs : EventArgs
     {
-        [NotNull]
-        public WirelessNetworkAddress DestinationAddress { get; private set; }
+        public WirelessNetworkAddress DestinationAddress { get; }
+        public Task? Task { get; set; }
+        public CancellationToken CancelToken { get; }
 
-        [CanBeNull]
-        public Task Task { get; set; }
-
-        public CancellationToken CancelToken { get; private set; }
-
-        public AlertEventArgs([NotNull] WirelessNetworkAddress destinationAddress, CancellationToken cancelToken)
+        public AlertEventArgs(WirelessNetworkAddress destinationAddress, CancellationToken cancelToken)
         {
             Guard.NotNull(destinationAddress, nameof(destinationAddress));
 

@@ -10,7 +10,6 @@ using DogAgilityCompetition.MediatorEmulator.Engine;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization;
 using DogAgilityCompetition.WinForms;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 {
@@ -19,39 +18,29 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
     /// </summary>
     public sealed partial class EmulatorForm : Form
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        [NotNull]
         private readonly StartupArguments startupArguments;
-
-        [NotNull]
         private readonly DisposableComponent<CirceMediatorSessionManager> sessionManager;
-
-        [NotNull]
-        private NetworkConfigurationFile file = new NetworkConfigurationFile();
-
-        [NotNull]
-        private MediatorForm mediatorForm;
-
-        [NotNull]
-        private readonly RandomSettingsGenerator settingsGenerator = new RandomSettingsGenerator();
-
-        [NotNull]
+        private readonly RandomSettingsGenerator settingsGenerator = new();
         private readonly MostRecentlyUsedContainer mruContainer = RegistrySettingsProvider.GetMruList();
 
-        public EmulatorForm([NotNull] StartupArguments startupArguments)
+        private NetworkConfigurationFile file = new();
+
+        // Justification for nullable suppression: This value is assigned during EmulatorForm_Load.
+        private MediatorForm mediatorForm = null!;
+
+        public EmulatorForm(StartupArguments startupArguments)
         {
             this.startupArguments = startupArguments;
             InitializeComponent();
 
             Text += AssemblyReader.GetInformationalVersion();
 
-            sessionManager = new DisposableComponent<CirceMediatorSessionManager>(new CirceMediatorSessionManager(),
-                ref components);
+            sessionManager = new DisposableComponent<CirceMediatorSessionManager>(new CirceMediatorSessionManager(), ref components);
         }
 
-        private void EmulatorForm_Load([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void EmulatorForm_Load(object? sender, EventArgs e)
         {
             ApplyLayoutFromStartupArguments();
 
@@ -93,7 +82,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         private void MaximizeOnSecondaryScreen()
         {
-            Screen secondaryScreen = Screen.AllScreens.FirstOrDefault(s => !s.Primary);
+            Screen? secondaryScreen = Screen.AllScreens.FirstOrDefault(s => !s.Primary);
+
             if (secondaryScreen != null)
             {
                 StartPosition = FormStartPosition.Manual;
@@ -123,21 +113,21 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void CreateMediatorForm([NotNull] MediatorSettingsXml settings)
+        private void CreateMediatorForm(MediatorSettingsXml settings)
         {
             mediatorForm = new MediatorForm(settings, file.Configuration.IsMaximized, sessionManager.Component)
             {
                 MdiParent = this
             };
+
             mediatorForm.WindowStateChanging += MdiFormOnWindowStateChanging;
             mediatorForm.Show();
             Log.Info("Added Mediator.");
         }
 
-        private void MdiFormOnWindowStateChanging([CanBeNull] object sender, [NotNull] WindowStateChangingEventArgs e)
+        private void MdiFormOnWindowStateChanging(object? sender, WindowStateChangingEventArgs e)
         {
-            var deviceForm = sender as Form;
-            if (deviceForm != null && deviceForm.WindowState == FormWindowState.Maximized)
+            if (sender is Form { WindowState: FormWindowState.Maximized })
             {
                 file.Configuration.IsMaximized = false;
             }
@@ -147,49 +137,52 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void CreateGateForm([NotNull] GateSettingsXml settings)
+        private void CreateGateForm(GateSettingsXml settings)
         {
             var form = new GateForm(settings, file.Configuration.IsMaximized, sessionManager.Component)
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
             Log.Info($"Added Gate {settings.DeviceAddressNotNull}.");
         }
 
-        private void DeviceFormOnDeviceRemoved([CanBeNull] object sender, [NotNull] EventArgs<WirelessNetworkAddress> e)
+        private void DeviceFormOnDeviceRemoved(object? sender, EventArgs<WirelessNetworkAddress> e)
         {
             file.Configuration.RemoveDevice(e.Argument);
             Log.Info($"Removed {e.Argument}.");
         }
 
-        private void CreateRemoteForm([NotNull] RemoteSettingsXml settings)
+        private void CreateRemoteForm(RemoteSettingsXml settings)
         {
             var form = new RemoteForm(settings, file.Configuration.IsMaximized, sessionManager.Component)
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
             Log.Info($"Added Remote {settings.DeviceAddressNotNull}.");
         }
 
-        private void CreateDisplayForm([NotNull] DisplaySettingsXml settings)
+        private void CreateDisplayForm(DisplaySettingsXml settings)
         {
             var form = new DisplayForm(settings, file.Configuration.IsMaximized, sessionManager.Component)
             {
                 MdiParent = this
             };
+
             form.DeviceRemoved += DeviceFormOnDeviceRemoved;
             form.WindowStateChanging += MdiFormOnWindowStateChanging;
             form.Show();
             Log.Info($"Added Display {settings.DeviceAddressNotNull}.");
         }
 
-        private void GateToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void GateToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             var settings = new GateSettingsXml
             {
@@ -201,7 +194,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             CreateGateForm(settings);
         }
 
-        private void RemoteToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void RemoteToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             var settings = new RemoteSettingsXml
             {
@@ -214,7 +207,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             CreateRemoteForm(settings);
         }
 
-        private void DisplayToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void DisplayToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             var settings = new DisplaySettingsXml
             {
@@ -226,25 +219,26 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             CreateDisplayForm(settings);
         }
 
-        private void OpenToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void OpenToolStripMenuItem_Click(object? sender, EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
+            using var dialog = new OpenFileDialog
             {
-                dialog.Title = @"Open network configuration";
-                dialog.Filter = @"Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                Title = "Open network configuration",
+                Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*"
+            };
 
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    OpenFromFile(dialog.FileName);
-                }
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                OpenFromFile(dialog.FileName);
             }
         }
 
-        private bool OpenFromFile([NotNull] string path)
+        private bool OpenFromFile(string path)
         {
             Guard.NotNullNorEmpty(path, nameof(path));
 
             NetworkConfigurationFile newFile;
+
             try
             {
                 newFile = NetworkConfigurationFile.Load(path);
@@ -273,13 +267,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
 
             Form[] childrenNotMediator = MdiChildren.Where(form => form != mediatorForm).ToArray();
+
             foreach (Form child in childrenNotMediator)
             {
                 child.Close();
             }
         }
 
-        private void SaveToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void SaveToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             if (file.FilePath == null)
             {
@@ -291,21 +286,21 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void SaveAsToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void SaveAsToolStripMenuItem_Click(object? sender, EventArgs e)
         {
-            using (var dialog = new SaveFileDialog())
+            using var dialog = new SaveFileDialog
             {
-                dialog.Title = @"Save network configuration";
-                dialog.Filter = @"Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                Title = "Save network configuration",
+                Filter = "Network Configuration Files (*.xml)|*.xml|All Files (*.*)|*.*"
+            };
 
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    SaveFile(dialog.FileName);
-                }
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                SaveFile(dialog.FileName);
             }
         }
 
-        private void SaveFile([NotNull] string path)
+        private void SaveFile(string path)
         {
             string absolutePath = Path.GetFullPath(path);
 
@@ -314,32 +309,32 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             file.SaveAs(absolutePath);
         }
 
-        private void CascadeToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CascadeToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.Cascade);
         }
 
-        private void TileHorizontalToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TileHorizontalToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileHorizontal);
         }
 
-        private void TileVerticalToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void TileVerticalToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileVertical);
         }
 
-        private void ArrangeToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void ArrangeToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.ArrangeIcons);
         }
 
-        private void MediatorToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void MediatorToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             mediatorForm.BringToFront();
         }
 
-        private void MinimizeAllWindowsToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void MinimizeAllWindowsToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             foreach (Form child in MdiChildren)
             {
@@ -347,22 +342,27 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void CloseAllWindowsToolStripMenuItem_Click([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void CloseAllWindowsToolStripMenuItem_Click(object? sender, EventArgs e)
         {
             CloseMdiChildren(false);
         }
 
-        private void FileToolStripMenuItem_DropDownOpening([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void FileToolStripMenuItem_DropDownOpening(object? sender, EventArgs e)
         {
             foreach (ToolStripItem mruMenuItem in recentFilesToolStripMenuItem.DropDownItems)
             {
                 mruMenuItem.Click -= MruMenuItemOnClick;
             }
+
             recentFilesToolStripMenuItem.DropDownItems.Clear();
 
             foreach (string path in mruContainer.Items)
             {
-                var mruMenuItem = new ToolStripMenuItem(Path.GetFileName(path)) { Tag = path };
+                var mruMenuItem = new ToolStripMenuItem(Path.GetFileName(path))
+                {
+                    Tag = path
+                };
+
                 mruMenuItem.Click += MruMenuItemOnClick;
 
                 recentFilesToolStripMenuItem.DropDownItems.Add(mruMenuItem);
@@ -371,12 +371,12 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             recentFilesToolStripMenuItem.Enabled = mruContainer.Items.Count > 0;
         }
 
-        private void MruMenuItemOnClick([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+        private void MruMenuItemOnClick(object? sender, EventArgs eventArgs)
         {
-            var mruMenuItem = (ToolStripMenuItem) sender;
-            if (mruMenuItem != null)
+            if (sender is ToolStripMenuItem mruMenuItem)
             {
-                string path = (string) mruMenuItem.Tag;
+                string path = (string)mruMenuItem.Tag;
+
                 if (!OpenFromFile(path))
                 {
                     mruContainer.Remove(path);
@@ -384,7 +384,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
             }
         }
 
-        private void EmulatorForm_FormClosing([CanBeNull] object sender, [NotNull] EventArgs eventArgs)
+        private void EmulatorForm_FormClosing(object? sender, EventArgs eventArgs)
         {
             RegistrySettingsProvider.SaveMruList(mruContainer);
         }

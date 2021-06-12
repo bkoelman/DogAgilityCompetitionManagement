@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.Engine.Visualization
@@ -8,14 +9,19 @@ namespace DogAgilityCompetition.Controller.Engine.Visualization
     /// </summary>
     public abstract class VisualizationChange
     {
-        public abstract void ApplyTo([NotNull] IVisualizationActor actor);
+        public abstract void ApplyTo(IVisualizationActor actor);
 
-        public void WriteTo([NotNull] TextWriter writer)
+        public void WriteTo(TextWriter writer)
         {
+            Guard.NotNull(writer, nameof(writer));
+
             writer.Write(ToString());
         }
 
         [Pure]
-        public override string ToString() => GetType().Name;
+        public override string ToString()
+        {
+            return GetType().Name;
+        }
     }
 }

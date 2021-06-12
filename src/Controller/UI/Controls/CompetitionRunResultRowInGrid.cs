@@ -1,7 +1,6 @@
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 using DogAgilityCompetition.Controller.Engine.Storage;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls
 {
@@ -10,93 +9,47 @@ namespace DogAgilityCompetition.Controller.UI.Controls
     /// </summary>
     public sealed class CompetitionRunResultRowInGrid
     {
-        [NotNull]
         private readonly CompetitionRunResult original;
 
-        [CanBeNull]
         private TimeSpanWithAccuracy? intermediateTime1;
-
-        [CanBeNull]
         private TimeSpanWithAccuracy? intermediateTime2;
-
-        [CanBeNull]
         private TimeSpanWithAccuracy? intermediateTime3;
-
-        [CanBeNull]
         private TimeSpanWithAccuracy? finishTime;
-
         private int faultCount;
         private int refusalCount;
 
         public int CompetitorNumber { get; private set; }
+        public string HandlerName { get; }
+        public string DogName { get; }
+        public string? CountryCode { get; private set; }
 
-        [NotNull]
-        public string HandlerName { get; private set; }
-
-        [NotNull]
-        public string DogName { get; private set; }
-
-        [CanBeNull]
-        public string CountryCode { get; private set; }
-
-        [NotNull]
         public string IntermediateTime1
         {
-            get
-            {
-                return intermediateTime1?.ToString() ?? string.Empty;
-            }
-            set
-            {
-                intermediateTime1 = ParseForceUserEdited(value);
-            }
+            get => intermediateTime1?.ToString() ?? string.Empty;
+            set => intermediateTime1 = ParseForceUserEdited(value);
         }
 
-        [NotNull]
         public string IntermediateTime2
         {
-            get
-            {
-                return intermediateTime2?.ToString() ?? string.Empty;
-            }
-            set
-            {
-                intermediateTime2 = ParseForceUserEdited(value);
-            }
+            get => intermediateTime2?.ToString() ?? string.Empty;
+            set => intermediateTime2 = ParseForceUserEdited(value);
         }
 
-        [NotNull]
         public string IntermediateTime3
         {
-            get
-            {
-                return intermediateTime3?.ToString() ?? string.Empty;
-            }
-            set
-            {
-                intermediateTime3 = ParseForceUserEdited(value);
-            }
+            get => intermediateTime3?.ToString() ?? string.Empty;
+            set => intermediateTime3 = ParseForceUserEdited(value);
         }
 
-        [NotNull]
         public string FinishTime
         {
-            get
-            {
-                return finishTime?.ToString() ?? string.Empty;
-            }
-            set
-            {
-                finishTime = ParseForceUserEdited(value);
-            }
+            get => finishTime?.ToString() ?? string.Empty;
+            set => finishTime = ParseForceUserEdited(value);
         }
 
         public int FaultCount
         {
-            get
-            {
-                return faultCount;
-            }
+            get => faultCount;
             set
             {
                 CompetitionRunResult.AssertFaultCountIsValid(value);
@@ -106,10 +59,7 @@ namespace DogAgilityCompetition.Controller.UI.Controls
 
         public int RefusalCount
         {
-            get
-            {
-                return refusalCount;
-            }
+            get => refusalCount;
             set
             {
                 CompetitionRunResult.AssertRefusalCountIsValid(value);
@@ -118,12 +68,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls
         }
 
         public bool IsEliminated { get; set; }
-
-        [NotNull]
         public string PlacementText { get; private set; }
 
-        private CompetitionRunResultRowInGrid([NotNull] CompetitionRunResult original, [NotNull] string handlerName,
-            [NotNull] string dogName)
+        private CompetitionRunResultRowInGrid(CompetitionRunResult original, string handlerName, string dogName)
         {
             Guard.NotNull(original, nameof(original));
             Guard.NotNullNorEmpty(handlerName, nameof(handlerName));
@@ -135,15 +82,13 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             PlacementText = string.Empty;
         }
 
-        [CanBeNull]
-        private static TimeSpanWithAccuracy? ParseForceUserEdited([CanBeNull] string timeValue)
+        private static TimeSpanWithAccuracy? ParseForceUserEdited(string? timeValue)
         {
             TimeSpanWithAccuracy? result = TimeSpanWithAccuracy.FromString(timeValue);
             return result?.ChangeAccuracy(TimeAccuracy.UserEdited);
         }
 
-        [NotNull]
-        public static CompetitionRunResultRowInGrid FromCompetitionRunResult([NotNull] CompetitionRunResult source)
+        public static CompetitionRunResultRowInGrid FromCompetitionRunResult(CompetitionRunResult source)
         {
             Guard.NotNull(source, nameof(source));
 
@@ -162,17 +107,19 @@ namespace DogAgilityCompetition.Controller.UI.Controls
             };
         }
 
-        [NotNull]
         public CompetitionRunResult ToCompetitionRunResult()
         {
-            CompetitionRunTimings timings = original.UpdateTimingsFrom(intermediateTime1, intermediateTime2,
-                intermediateTime3, finishTime);
+            CompetitionRunTimings timings = original.UpdateTimingsFrom(intermediateTime1, intermediateTime2, intermediateTime3, finishTime);
 
-            return
-                original.ChangeTimings(timings)
-                    .ChangeFaultCount(FaultCount)
-                    .ChangeRefusalCount(RefusalCount)
-                    .ChangeIsEliminated(IsEliminated);
+            // @formatter:keep_existing_linebreaks true
+
+            return original
+                .ChangeTimings(timings)
+                .ChangeFaultCount(FaultCount)
+                .ChangeRefusalCount(RefusalCount)
+                .ChangeIsEliminated(IsEliminated);
+
+            // @formatter:keep_existing_linebreaks restore
         }
     }
 }

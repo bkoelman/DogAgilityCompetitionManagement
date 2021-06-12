@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Circe.Controller
 {
@@ -16,49 +15,32 @@ namespace DogAgilityCompetition.Circe.Controller
     /// </summary>
     internal sealed class SessionGuard : IDisposable
     {
-        [NotNull]
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        [NotNull]
-        private static readonly Version ProtocolVersionExpected =
-            new Version(KeepAliveOperation.CurrentProtocolVersion.Major, KeepAliveOperation.CurrentProtocolVersion.Minor);
-
         private const int TryNextComPortDelayInMilliseconds = 100;
 
-        [NotNull]
-        private readonly object stateLock = new object();
+        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-        private bool hasBeenStarted;
-        private bool hasBeenDisposed;
+        private static readonly Version ProtocolVersionExpected =
+            new(KeepAliveOperation.CurrentProtocolVersion.Major, KeepAliveOperation.CurrentProtocolVersion.Minor);
 
-        [NotNull]
-        private readonly ComPortRotator portRotator = new ComPortRotator();
-
-        [NotNull]
+        private readonly ComPortRotator portRotator = new();
         private readonly ActionQueue outgoingOperationsQueue;
+        private readonly ManualResetEventSlim disposeRequestedWaitHandle = new(false);
+        private readonly ManualResetEventSlim reconnectLoopTerminatedWaitHandle = new(false);
+        private readonly FreshObjectReference<CirceComConnection?> activeConnection = new(null);
+        private readonly FreshDateTime lastRefreshTimeInUtc = new(DateTime.MinValue);
+        private readonly FreshNullableBoolean seenProtocolVersionMismatch = new(null);
 
-        [NotNull]
-        private readonly ManualResetEventSlim disposeRequestedWaitHandle = new ManualResetEventSlim(false);
+        private readonly object stateLock = new();
 
-        [NotNull]
-        private readonly ManualResetEventSlim reconnectLoopTerminatedWaitHandle = new ManualResetEventSlim(false);
+        private bool hasBeenStarted; // Protected by stateLock
+        private bool hasBeenDisposed; // Protected by stateLock
 
-        [NotNull]
-        private readonly FreshReference<CirceComConnection> activeConnection =
-            new FreshReference<CirceComConnection>(null);
+        public event EventHandler? BeforePacketSent;
+        public event EventHandler? AfterPacketReceived;
+        public event EventHandler<ControllerConnectionStateEventArgs>? StateChanged;
+        public event EventHandler<IncomingOperationEventArgs>? OperationReceived;
 
-        [NotNull]
-        private readonly FreshDateTime lastRefreshTimeInUtc = new FreshDateTime(DateTime.MinValue);
-
-        [NotNull]
-        private readonly FreshNullableBoolean seenProtocolVersionMismatch = new FreshNullableBoolean(null);
-
-        public event EventHandler BeforePacketSent;
-        public event EventHandler AfterPacketReceived;
-        public event EventHandler<ControllerConnectionStateEventArgs> StateChanged;
-        public event EventHandler<IncomingOperationEventArgs> OperationReceived;
-
-        public SessionGuard([NotNull] ActionQueue outgoingOperationsQueue)
+        public SessionGuard(ActionQueue outgoingOperationsQueue)
         {
             Guard.NotNull(outgoingOperationsQueue, nameof(outgoingOperationsQueue));
 
@@ -67,7 +49,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
         public void Start()
         {
-            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()))
+            using (var lockTracker = new LockTracker(Log, MethodBase.GetCurrentMethod()!))
             {
                 lock (stateLock)
                 {
@@ -78,13 +60,15 @@ namespace DogAgilityCompetition.Circe.Controller
                         Log.Debug("Already started or disposed.");
                         return;
                     }
+
                     hasBeenStarted = true;
                 }
             }
 
             Log.Debug("Creating task for reconnect loop.");
-            Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning,
-                TaskScheduler.Default).ContinueWith(task => reconnectLoopTerminatedWaitHandle.Set());
+
+            Task.Factory.StartNew(ReconnectLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default)
+                .ContinueWith(_ => reconnectLoopTerminatedWaitHandle.Set(), TaskScheduler.Default);
         }
 
         public void Dispose()
@@ -120,14 +104,13 @@ namespace DogAgilityCompetition.Circe.Controller
                 disposeRequestedWaitHandle.Dispose();
                 reconnectLoopTerminatedWaitHandle.Dispose();
 
-                using (var lockTracker = new LockTracker(Log, "Dispose (post)"))
-                {
-                    lock (stateLock)
-                    {
-                        lockTracker.Acquired();
+                using var lockTracker = new LockTracker(Log, "Dispose (post)");
 
-                        hasBeenDisposed = true;
-                    }
+                lock (stateLock)
+                {
+                    lockTracker.Acquired();
+
+                    hasBeenDisposed = true;
                 }
             }
             else
@@ -136,12 +119,12 @@ namespace DogAgilityCompetition.Circe.Controller
             }
         }
 
-        [NotNull]
-        public Task SendAsync([NotNull] Operation operation, CancellationToken cancellationToken)
+        public Task SendAsync(Operation operation, CancellationToken cancellationToken)
         {
             Guard.NotNull(operation, nameof(operation));
 
             Log.Debug($"Adding outgoing operation to queue: {operation}");
+
             return outgoingOperationsQueue.Enqueue(() =>
             {
                 // The reconnect thread will pause the queue before changing the active connection.
@@ -149,14 +132,14 @@ namespace DogAgilityCompetition.Circe.Controller
                 // completed. So we can assume that the active connection never changes while this 
                 // callback is running.
 
-                CirceComConnection connectionSnapshot = activeConnection.Value;
+                CirceComConnection? connectionSnapshot = activeConnection.Value;
+
                 if (connectionSnapshot == null)
                 {
                     throw new NotConnectedToMediatorException();
                 }
 
-                Exception error;
-                if (!TryDirectSend(connectionSnapshot, false, operation, out error))
+                if (!TryDirectSend(connectionSnapshot, false, operation, out Exception? error))
                 {
                     throw new Exception("Failed to send outgoing operation.", error);
                 }
@@ -166,6 +149,7 @@ namespace DogAgilityCompetition.Circe.Controller
         private void ReconnectLoop()
         {
             Log.Debug("Entering ReconnectLoop.");
+
             while (true)
             {
                 try
@@ -221,7 +205,7 @@ namespace DogAgilityCompetition.Circe.Controller
 
             // It should not be needed to set ActiveConnection to null until we have reconnected,
             // but doing so will cause NullReferenceExceptions, which are easier to trace (just in case).
-            CirceComConnection previousConnection = activeConnection.Exchange(null);
+            CirceComConnection? previousConnection = activeConnection.Exchange(null);
 
             if (previousConnection != null)
             {
@@ -232,8 +216,8 @@ namespace DogAgilityCompetition.Circe.Controller
                 // The outgoing queue has been paused. So we are guaranteed to be the only 
                 // thread that is writing to the port. So locking for exclusive write 
                 // access is not needed here.
-                Exception logoutError;
-                if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out logoutError))
+
+                if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out Exception? logoutError))
                 {
                     Log.Debug("Failed to send Logout operation.", logoutError);
                 }
@@ -257,8 +241,9 @@ namespace DogAgilityCompetition.Circe.Controller
             Log.Debug("Entering CreateSession.");
 
             // Block until we have successfully sent a Login operation.
-            Exception connectError;
+            Exception? connectError;
             CirceComConnection newConnection;
+
             do
             {
                 // Block until we have obtained a COM port.
@@ -269,7 +254,7 @@ namespace DogAgilityCompetition.Circe.Controller
 #if DEBUGGING_HACKS
                 string comPortName = "COM3"; // Force single COM port
 #else
-                string comPortName = portRotator.GetNextPortName();
+                string? comPortName = portRotator.GetNextPortName();
 #endif
 
                 while (comPortName == null)
@@ -302,7 +287,10 @@ namespace DogAgilityCompetition.Circe.Controller
 
                 seenProtocolVersionMismatch.Value = null;
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 newConnection = new CirceComConnection(comPortName);
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
                 newConnection.PacketSending += NewConnectionOnPacketSending;
                 newConnection.PacketReceived += NewConnectionOnPacketReceived;
                 newConnection.OperationReceived += NewConnectionOnOperationReceived;
@@ -337,20 +325,20 @@ namespace DogAgilityCompetition.Circe.Controller
             activeConnection.Value = newConnection;
         }
 
-        private void NewConnectionOnPacketSending([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NewConnectionOnPacketSending(object? sender, EventArgs e)
         {
             BeforePacketSent?.Invoke(sender, e);
         }
 
-        private void NewConnectionOnPacketReceived([CanBeNull] object sender, [NotNull] EventArgs e)
+        private void NewConnectionOnPacketReceived(object? sender, EventArgs e)
         {
             AfterPacketReceived?.Invoke(sender, e);
         }
 
-        private static bool TryDirectSend([NotNull] CirceComConnection connection, bool openBeforeSend,
-            [NotNull] Operation operation, [CanBeNull] out Exception error)
+        private static bool TryDirectSend(CirceComConnection connection, bool openBeforeSend, Operation operation, out Exception? error)
         {
             error = null;
+
             try
             {
                 if (openBeforeSend)
@@ -379,10 +367,11 @@ namespace DogAgilityCompetition.Circe.Controller
             {
                 error = ex;
             }
+
             return false;
         }
 
-        private void NewConnectionOnOperationReceived([CanBeNull] object sender, [NotNull] IncomingOperationEventArgs e)
+        private void NewConnectionOnOperationReceived(object? sender, IncomingOperationEventArgs e)
         {
             Log.Debug("Entering NewConnectionOnOperationReceived.");
 
@@ -401,18 +390,16 @@ namespace DogAgilityCompetition.Circe.Controller
             // is a reconnect due to incorrect logic regarding version or keep-alive, which is much less problematic
             // than taking an exclusive lock, risking potential deadlocks.
 
-            var keepAliveOperation = e.Operation as KeepAliveOperation;
-            if (keepAliveOperation != null)
+            if (e.Operation is KeepAliveOperation keepAliveOperation)
             {
                 // Major and Minor version must match exactly; Build is ignored here and Revision is not used by the CIRCE spec.
 
-                // ReSharper disable once PossibleNullReferenceException
-                // Reason: Operation has been validated for required parameters when this code is reached.
-                var incomingVersion = new Version(keepAliveOperation.ProtocolVersion.Major,
-                    keepAliveOperation.ProtocolVersion.Minor);
+                // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+                var incomingVersion = new Version(keepAliveOperation.ProtocolVersion!.Major, keepAliveOperation.ProtocolVersion.Minor);
                 bool isVersionMismatch = incomingVersion != ProtocolVersionExpected;
 
                 bool? wasVersionMismatch = seenProtocolVersionMismatch.CompareExchange(isVersionMismatch, null);
+
                 if (wasVersionMismatch == null)
                 {
                     // We are in the process of establishing a connection
@@ -443,6 +430,7 @@ namespace DogAgilityCompetition.Circe.Controller
             }
 
             bool? seenProtocolVersionMismatchSnapshot = seenProtocolVersionMismatch.Value;
+
             if (seenProtocolVersionMismatchSnapshot == false)
             {
                 Log.Debug("Extending session lifetime.");
@@ -459,19 +447,16 @@ namespace DogAgilityCompetition.Circe.Controller
                 }
                 catch (Exception ex)
                 {
-                    string message =
-                        $"Unexpected error while processing incoming operation on {e.Connection}: {e.Operation}";
-                    Log.Error(message, ex);
+                    Log.Error($"Unexpected error while processing incoming operation on {e.Connection}: {e.Operation}", ex);
                 }
             }
             else
             {
-                Log.Warn(
-                    $"Discarding incoming operation after detection of version mismatch on {e.Connection}: {e.Operation}");
+                Log.Warn($"Discarding incoming operation after detection of version mismatch on {e.Connection}: {e.Operation}");
             }
         }
 
-        private void OnStateChanged(ControllerConnectionState connectionState, [CanBeNull] string comPort)
+        private void OnStateChanged(ControllerConnectionState connectionState, string? comPort)
         {
             Log.Debug($"Raising state change event with state={connectionState}, port={comPort}.");
             StateChanged?.Invoke(this, new ControllerConnectionStateEventArgs(connectionState, comPort));

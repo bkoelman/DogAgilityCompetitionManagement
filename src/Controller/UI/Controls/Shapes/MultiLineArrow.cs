@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using DogAgilityCompetition.Circe;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 {
@@ -12,50 +11,46 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
     /// </summary>
     public sealed class MultiLineArrow : ArrowShape
     {
-        [NotNull]
         private readonly PointF[] arrowPoints;
-
-        [NotNull]
         private readonly PointF[] shadowPoints;
 
-        private MultiLineArrow([NotNull] IEnumerable<PointF> points)
+        private MultiLineArrow(IEnumerable<PointF> points)
         {
             Guard.NotNull(points, nameof(points));
 
             arrowPoints = points.ToArray();
-            shadowPoints =
-                arrowPoints.Select(point => new PointF(point.X + ShadowOffset, point.Y + ShadowOffset)).ToArray();
+            shadowPoints = arrowPoints.Select(point => new PointF(point.X + ShadowOffset, point.Y + ShadowOffset)).ToArray();
         }
 
         public override void DrawShadow(Graphics graphics)
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var path = new GraphicsPath())
+            using var path = new GraphicsPath();
+
+            using var arrowPen = new Pen(Brushes.Gray, 6)
             {
-                using (var arrowPen = new Pen(Brushes.Gray, 6) { EndCap = LineCap.ArrowAnchor })
-                {
-                    path.AddLines(shadowPoints);
-                    graphics.DrawPath(arrowPen, path);
-                }
-            }
+                EndCap = LineCap.ArrowAnchor
+            };
+
+            path.AddLines(shadowPoints);
+            graphics.DrawPath(arrowPen, path);
         }
 
         public override void DrawFill(Graphics graphics)
         {
             Guard.NotNull(graphics, nameof(graphics));
 
-            using (var path = new GraphicsPath())
+            using var path = new GraphicsPath();
+            using Brush fillBrush = new SolidBrush(GetColorForState());
+
+            using var arrowPen = new Pen(fillBrush, 6)
             {
-                using (Brush fillBrush = new SolidBrush(GetColorForState()))
-                {
-                    using (var arrowPen = new Pen(fillBrush, 6) { EndCap = LineCap.ArrowAnchor })
-                    {
-                        path.AddLines(arrowPoints);
-                        graphics.DrawPath(arrowPen, path);
-                    }
-                }
-            }
+                EndCap = LineCap.ArrowAnchor
+            };
+
+            path.AddLines(arrowPoints);
+            graphics.DrawPath(arrowPen, path);
         }
 
         private Color GetColorForState()
@@ -75,21 +70,21 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
 
         internal sealed class Builder
         {
-            [NotNull]
             private readonly IList<PointF> arrowPoints;
 
             public Builder(PointF start)
             {
-                arrowPoints = new[] { start }.ToList();
+                arrowPoints = new[]
+                {
+                    start
+                }.ToList();
             }
 
-            [NotNull]
             public Builder Up(float length)
             {
                 return Down(-length);
             }
 
-            [NotNull]
             public Builder Down(float length)
             {
                 PointF lastPoint = arrowPoints.Last();
@@ -97,13 +92,11 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
                 return this;
             }
 
-            [NotNull]
             public Builder Left(float length)
             {
                 return Right(-length);
             }
 
-            [NotNull]
             public Builder Right(float length)
             {
                 PointF lastPoint = arrowPoints.Last();
@@ -111,10 +104,9 @@ namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
                 return this;
             }
 
-            [NotNull]
             public MultiLineArrow Build()
             {
-                return new MultiLineArrow(arrowPoints);
+                return new(arrowPoints);
             }
         }
     }

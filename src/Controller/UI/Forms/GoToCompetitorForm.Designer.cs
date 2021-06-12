@@ -66,7 +66,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 13);
+            this.label1.Size = new System.Drawing.Size(126, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Go to competitor number:";
             // 
@@ -84,7 +84,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(197, 95);
             this.Controls.Add(this.competitorNumberTextBox);

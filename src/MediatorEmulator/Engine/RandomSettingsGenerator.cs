@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace DogAgilityCompetition.MediatorEmulator.Engine
 {
@@ -8,8 +7,7 @@ namespace DogAgilityCompetition.MediatorEmulator.Engine
     /// </summary>
     public sealed class RandomSettingsGenerator
     {
-        [NotNull]
-        private readonly Random randomizer = new Random();
+        private readonly Random randomizer = new();
 
         public int GetSignalStrength()
         {

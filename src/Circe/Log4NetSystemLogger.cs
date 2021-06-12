@@ -6,53 +6,51 @@ namespace DogAgilityCompetition.Circe
 {
     public sealed class Log4NetSystemLogger : ISystemLogger
     {
-        [NotNull]
         private readonly ILog log;
 
-        public Log4NetSystemLogger(
-            [CanBeNull] /* relaxed nullability constraint to prevent numerous warnings */ Type type)
+        public Log4NetSystemLogger(Type type)
         {
             Guard.NotNull(type, nameof(type));
             log = LogManager.GetLogger(type);
         }
 
-        void ISystemLogger.Debug(object message)
+        void ISystemLogger.Debug(object? message)
         {
             log.Debug(message);
         }
 
         [StringFormatMethod("format")]
-        void ISystemLogger.Debug(object message, Exception exception)
+        void ISystemLogger.Debug(object? message, Exception? exception)
         {
             log.Debug(message, exception);
         }
 
-        void ISystemLogger.Error(object message)
+        void ISystemLogger.Error(object? message)
         {
             log.Error(message);
         }
 
-        void ISystemLogger.Error(object message, Exception exception)
+        void ISystemLogger.Error(object? message, Exception? exception)
         {
             log.Error(message, exception);
         }
 
-        void ISystemLogger.Info(object message)
+        void ISystemLogger.Info(object? message)
         {
             log.Info(message);
         }
 
-        void ISystemLogger.Info(object message, Exception exception)
+        void ISystemLogger.Info(object? message, Exception? exception)
         {
             log.Info(message, exception);
         }
 
-        void ISystemLogger.Warn(object message)
+        void ISystemLogger.Warn(object? message)
         {
             log.Warn(message);
         }
 
-        void ISystemLogger.Warn(object message, Exception exception)
+        void ISystemLogger.Warn(object? message, Exception? exception)
         {
             log.Warn(message, exception);
         }

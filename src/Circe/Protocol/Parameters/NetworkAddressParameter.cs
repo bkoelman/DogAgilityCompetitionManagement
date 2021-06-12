@@ -8,28 +8,20 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
     /// <summary>
     /// Represents a parameter whose value indicates a wireless network address.
     /// </summary>
-    [Serializable]
     public sealed class NetworkAddressParameter : Parameter
     {
         private const int CharCount = 6;
 
-        [NotNull]
-        private static readonly Regex ValueFormatRegex = new Regex("^[0-9A-F]{" + CharCount + "}$",
-            RegexOptions.Compiled);
+        private static readonly Regex ValueFormatRegex = new("^[0-9A-F]{" + CharCount + "}$", RegexOptions.Compiled);
 
-        [CanBeNull]
-        private string innerValue;
+        private string? innerValue;
 
         /// <summary>
         /// Gets or sets the value of this parameter.
         /// </summary>
-        [CanBeNull]
-        public string Value
+        public string? Value
         {
-            get
-            {
-                return innerValue;
-            }
+            get => innerValue;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -43,6 +35,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
                         throw new ArgumentOutOfRangeException(nameof(value), value,
                             $"Value of {GetType().Name} {Name} must consist of {CharCount} characters in range 0-9 or A-F.");
                     }
+
                     innerValue = value;
                 }
             }
@@ -56,12 +49,6 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// </value>
         public override bool HasValue => !string.IsNullOrEmpty(innerValue);
 
-        [CanBeNull]
-        public string GetValueOrNull()
-        {
-            return HasValue ? Value : null;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkAddressParameter" /> class.
         /// </summary>
@@ -74,7 +61,7 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         /// <param name="isRequired">
         /// If set to <c>true</c>, the parameter is required.
         /// </param>
-        public NetworkAddressParameter([NotNull] string name, int id, bool isRequired)
+        public NetworkAddressParameter(string name, int id, bool isRequired)
             : base(name, id, CharCount, isRequired)
         {
         }
@@ -113,15 +100,18 @@ namespace DogAgilityCompetition.Circe.Protocol.Parameters
         }
 
         /// <summary>
-        /// Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// Returns a <see cref="string" /> that represents the current <see cref="object" />.
         /// </summary>
         /// <returns>
-        /// A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// A <see cref="string" /> that represents the current <see cref="object" />.
         /// </returns>
         [Pure]
-        public override string ToString() => HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        public override string ToString()
+        {
+            return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        }
 
-        public static bool IsValidAddress([CanBeNull] string value)
+        public static bool IsValidAddress(string? value)
         {
             return !string.IsNullOrEmpty(value) && ValueFormatRegex.IsMatch(value);
         }

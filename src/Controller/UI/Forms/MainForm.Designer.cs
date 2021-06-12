@@ -63,9 +63,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // logLinkLabel
             // 
             this.logLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.logLinkLabel.Location = new System.Drawing.Point(23, 117);
+            this.logLinkLabel.AutoSize = true;
+            this.logLinkLabel.Location = new System.Drawing.Point(41, 114);
             this.logLinkLabel.Name = "logLinkLabel";
-            this.logLinkLabel.Size = new System.Drawing.Size(87, 13);
+            this.logLinkLabel.Size = new System.Drawing.Size(56, 15);
             this.logLinkLabel.TabIndex = 6;
             this.logLinkLabel.TabStop = true;
             this.logLinkLabel.Text = "Show log";
@@ -76,9 +77,10 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // emulatorLinkLabel
             // 
             this.emulatorLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.emulatorLinkLabel.Location = new System.Drawing.Point(116, 117);
+            this.emulatorLinkLabel.AutoSize = true;
+            this.emulatorLinkLabel.Location = new System.Drawing.Point(103, 114);
             this.emulatorLinkLabel.Name = "emulatorLinkLabel";
-            this.emulatorLinkLabel.Size = new System.Drawing.Size(87, 13);
+            this.emulatorLinkLabel.Size = new System.Drawing.Size(100, 15);
             this.emulatorLinkLabel.TabIndex = 7;
             this.emulatorLinkLabel.TabStop = true;
             this.emulatorLinkLabel.Text = "Turn emulator on";
@@ -275,7 +277,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             this.competitionStateOverview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.competitionStateOverview.Location = new System.Drawing.Point(6, 13);
+            this.competitionStateOverview.Location = new System.Drawing.Point(6, 15);
             this.competitionStateOverview.Name = "competitionStateOverview";
             this.competitionStateOverview.Size = new System.Drawing.Size(713, 188);
             this.competitionStateOverview.TabIndex = 0;
@@ -306,8 +308,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1120, 741);
             this.Controls.Add(this.competitionOverviewGroupBox);
             this.Controls.Add(this.stateGroupBox);
