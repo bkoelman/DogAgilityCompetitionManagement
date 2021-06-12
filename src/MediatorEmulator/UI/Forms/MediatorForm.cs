@@ -165,11 +165,27 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                 ComPortName = settings.ComPortName
             };
 
-            if (form.ShowDialog() == DialogResult.OK)
+            if (ShowDialogForm(form) == DialogResult.OK)
             {
                 settings.ComPortName = form.ComPortName;
                 UpdateControlsFromSettings();
                 UpdateSessionManagerFromSettings();
+            }
+        }
+
+        private DialogResult ShowDialogForm(Form form)
+        {
+            var emulatorForm = (Form)Parent.Parent;
+            bool wasTopMost = emulatorForm.TopMost;
+            emulatorForm.TopMost = false;
+
+            try
+            {
+                return form.ShowDialog(this);
+            }
+            finally
+            {
+                emulatorForm.TopMost = wasTopMost;
             }
         }
 
@@ -180,7 +196,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                 StatusCode = settings.MediatorStatus
             };
 
-            if (form.ShowDialog(this) == DialogResult.OK)
+            if (ShowDialogForm(form) == DialogResult.OK)
             {
                 settings.MediatorStatus = form.StatusCode;
                 UpdateControlsFromSettings();
@@ -195,7 +211,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
                 Version = settings.ProtocolVersionOrDefault
             };
 
-            if (form.ShowDialog(this) == DialogResult.OK)
+            if (ShowDialogForm(form) == DialogResult.OK)
             {
                 settings.ProtocolVersion = form.Version.ToString();
                 UpdateControlsFromSettings();
@@ -207,7 +223,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             using var form = new LogMessageForm();
 
-            if (form.ShowDialog() == DialogResult.OK)
+            if (ShowDialogForm(form) == DialogResult.OK)
             {
                 byte[] data = Encoding.UTF8.GetBytes(form.Message);
                 sessionManager.Value.LogData(data);
