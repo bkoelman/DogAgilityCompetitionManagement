@@ -147,7 +147,7 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
                         return ClockSynchronizationStatus.RequiresSync;
                     }
 
-                    if (syncRequestReceivedAt.Value.AddSeconds(4) > SystemContext.UtcNow())
+                    if (syncRequestReceivedAt.Value.AddSeconds(2) > SystemContext.UtcNow())
                     {
                         return ClockSynchronizationStatus.SyncSucceeded;
                     }
@@ -167,6 +167,8 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
 
         public void StartClockSynchronization()
         {
+            syncRequestReceivedAt = DateTime.MinValue;
+
             RaiseChangeOnValueChange(() => SynchronizationStatus, () =>
             {
                 DateTime now = SystemContext.UtcNow();

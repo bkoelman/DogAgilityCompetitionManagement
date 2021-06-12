@@ -125,6 +125,11 @@ namespace DogAgilityCompetition.Circe.Session
             return new(DeviceAddress, IsInNetwork, Capabilities, roles, SignalStrength, BatteryStatus, IsAligned, ClockSynchronization, HasVersionMismatch);
         }
 
+        public DeviceStatus ChangeClockSynchronization(ClockSynchronizationStatus? clockSynchronization)
+        {
+            return new(DeviceAddress, IsInNetwork, Capabilities, Roles, SignalStrength, BatteryStatus, IsAligned, clockSynchronization, HasVersionMismatch);
+        }
+
         [Pure]
         public override string ToString()
         {
