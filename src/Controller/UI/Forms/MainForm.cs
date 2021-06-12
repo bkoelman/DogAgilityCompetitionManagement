@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
@@ -482,7 +481,7 @@ namespace DogAgilityCompetition.Controller.UI.Forms
 
         private static string GetPathForFileInApplicationFolder(string fileName)
         {
-            string applicationPath = Assembly.GetEntryAssembly()!.Location;
+            string applicationPath = AppContext.BaseDirectory;
             string applicationFolder = Path.GetDirectoryName(applicationPath)!;
             return Path.GetFullPath(Path.Combine(applicationFolder, fileName));
         }

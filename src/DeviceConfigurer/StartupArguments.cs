@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
@@ -62,7 +62,7 @@ namespace DogAgilityCompetition.DeviceConfigurer
             if (comPortName == null || newAddress == null)
             {
                 string title = "Dog Agility Competition Management - Device Configurer" + AssemblyReader.GetInformationalVersion();
-                string exeName = Path.GetFileName(Assembly.GetEntryAssembly()!.Location);
+                string exeName = GetExeName();
 
                 Console.WriteLine(title);
                 Console.WriteLine();
@@ -94,6 +94,12 @@ namespace DogAgilityCompetition.DeviceConfigurer
         private static DeviceCapabilities? ParseCapabilities(string value)
         {
             return (DeviceCapabilities)Enum.Parse(typeof(DeviceCapabilities), value, true);
+        }
+
+        private static string GetExeName()
+        {
+            using var process = Process.GetCurrentProcess();
+            return Path.GetFileName(process.MainModule!.FileName!);
         }
 
         private static string GetAllowedCapabilities()

@@ -15,6 +15,7 @@
     -->
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <OutputPath>$(MSBuildThisFileDirectory)\..\bin\$(Configuration)\</OutputPath>
+    <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
