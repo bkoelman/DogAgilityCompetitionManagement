@@ -9,7 +9,7 @@ See [CIRCE Interface Specification](doc/CIRCE%20Interface%20Specification.md)
 # Running without loopback cable
 
 1. Download and install
-	http://sourceforge.net/projects/com0com/files/com0com/2.2.2.0/com0com-2.2.2.0-x64-fre-signed.zip/download
+	https://sourceforge.net/projects/com0com/files/com0com/3.0.0.0/com0com-3.0.0.0-i386-and-x64-signed.zip/download
 
 2. Start > Programs > com0com > Setup Command Prompt
 
