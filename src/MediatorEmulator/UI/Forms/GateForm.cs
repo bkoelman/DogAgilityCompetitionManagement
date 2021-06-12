@@ -136,7 +136,15 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
         {
             if (lastStatus.Value != null)
             {
-                sessionManager.Value.NotifyStatus(lastStatus.Value);
+                NotifyStatus(lastStatus.Value);
+            }
+        }
+
+        private void NotifyStatus(DeviceStatus status)
+        {
+            if (lastStatus.Value != null)
+            {
+                sessionManager.Value.NotifyStatus(status);
             }
         }
 
@@ -177,7 +185,14 @@ namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
 
         void IWirelessDevice.Accept(SynchronizeClocksOperation operation)
         {
-            this.EnsureOnMainThread(() => hardwareStatus.StartClockSynchronization());
+            this.EnsureOnMainThread(() =>
+            {
+                HardwareStatus_StatusChanged(this, EventArgs.Empty);
+                DeviceStatus resetSyncStatus = lastStatus.Value!.ChangeClockSynchronization(null);
+                NotifyStatus(resetSyncStatus);
+
+                hardwareStatus.StartClockSynchronization();
+            });
         }
 
         void IWirelessDevice.Accept(VisualizeOperation operation)

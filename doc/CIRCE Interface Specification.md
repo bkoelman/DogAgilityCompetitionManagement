@@ -1,4 +1,4 @@
-# CIRCE Interface Specification - Version 0.2.1 [DRAFT]
+﻿# CIRCE Interface Specification - Version 0.2.3 [DRAFT]
 
 **Table of Contents**
 
@@ -42,6 +42,7 @@
 
 | Revision  | Release date | Author   | Modification                                                                             |
 |:----------|:-------------|:---------|:-----------------------------------------------------------------------------------------|
+| **0.2.3** | 2021-06-12   | bkoelman | <ul><li>Clarification on clock synchronization process</li></ul> |
 | **0.2.2** | 2016-01-29   | bkoelman | <ul><li>Renamed Timer Value parameter to Primary Timer Value</li><li>Added parameter Secondary Timer Value</li></ul> |
 | **0.2.1** | 2015-05-30   | bkoelman | <ul><li>Changed parameter Timer Value into Start Timer</li></ul> |
 | **0.2.0** | 2015-03-20   | bkoelman | <ul><li>Reversed values of Eliminated parameter</li><li>Changed all time values to length 6</li><li>Added new optional parameter VersionMismatch</li></ul> |
@@ -332,7 +333,8 @@ A controller may send this operation after login. Upon receipt of this operation
 
 ## <a name="operation-synchronize-clocks"></a>Synchronize Clocks (06)
 
-This operation is periodically used by a controller to synchronize the hardware clocks of all wireless devices in the logical network. The controller can determine whether the synchronization succeeded by waiting for three seconds on incoming Notify Status (52) operations from devices, which are expected to include the Clock Synchronization parameter with value Sync Succeeded.
+This operation is periodically used by a controller to synchronize the hardware clocks of all wireless devices in the logical network. Each device is expected to respond with two Notify Status (52) operations within three seconds.
+The first status must not include the Clock Synchronization parameter, while the second status is expected to include the Clock Synchronization parameter with value Sync Succeeded.
 
 This operation does not contain any parameters.
 
