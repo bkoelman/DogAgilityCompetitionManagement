@@ -41,7 +41,7 @@ public sealed class AutoScalingLabel : Label
         get => innerText;
         set
         {
-            // ReSharper disable once ConstantNullCoalescingCondition
+            // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
             // Justification: Although this property is not nullable, caller could still pass in 'null' anyway.
             value ??= string.Empty;
 

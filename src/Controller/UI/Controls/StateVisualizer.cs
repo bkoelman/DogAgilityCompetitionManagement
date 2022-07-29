@@ -88,10 +88,15 @@ public sealed class StateVisualizer : Control
 
     private CompetitionClassState? TryGetPreviousState()
     {
-        KeyValuePair<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> arrowFromPreviousState =
-            arrows.TransitionTable.FirstOrDefault(pair => pair.Value.State == ShapeState.Selected);
+        if (arrows.TransitionTable.Any(pair => pair.Value.State == ShapeState.Selected))
+        {
+            KeyValuePair<Tuple<CompetitionClassState, CompetitionClassState>, ArrowShape> arrowFromPreviousState =
+                arrows.TransitionTable.First(pair => pair.Value.State == ShapeState.Selected);
 
-        return arrowFromPreviousState.Key?.Item1;
+            return arrowFromPreviousState.Key.Item1;
+        }
+
+        return null;
     }
 
     private static Icon GetIconFromErrorProvider()
