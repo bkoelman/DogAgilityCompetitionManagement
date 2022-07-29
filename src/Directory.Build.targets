@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- System.Threading.Timer conflicts with System.Windows.Forms.Timer -->
+    <Using Remove="System.Threading" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+</Project>
