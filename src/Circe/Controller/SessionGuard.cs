@@ -251,7 +251,7 @@ internal sealed class SessionGuard : IDisposable
 #if DEBUGGING_HACKS
             string? comPortName = "COM3"; // Force single COM port
 #else
-            string? comPortName = portRotator.GetNextPortName();
+            string? comPortName = Environment.GetEnvironmentVariable("CIRCE_FORCE_COM_PORT") ?? portRotator.GetNextPortName();
 #endif
 
             while (comPortName == null)

@@ -1,10 +1,14 @@
-﻿using DogAgilityCompetition.Circe.Controller;
+﻿using System.Reflection;
+using DogAgilityCompetition.Circe.Controller;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Operations;
 using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using FluentAssertions.Extensions;
+using log4net;
+using log4net.Config;
+using log4net.Repository;
 using Xunit;
 using Xunit.Categories;
 
@@ -17,6 +21,19 @@ namespace DogAgilityCompetition.Specs.CirceSpecs;
 /// </summary>
 public sealed class CirceControllerSessionEvents
 {
+    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+
+    public CirceControllerSessionEvents()
+    {
+        ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+        XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.Specs.log4net.config"));
+
+        Log.Info("Integration test run started.");
+
+        // Enables running via com0com (see README.md), in case physical loopback cable is unavailable.
+        Environment.SetEnvironmentVariable("CIRCE_FORCE_COM_PORT", "COM8");
+    }
+
     [Fact]
     [IntegrationTest]
     public void When_keep_alive_with_incorrect_version_is_received_it_must_disconnect()

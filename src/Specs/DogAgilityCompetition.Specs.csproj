@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Controller\DogAgilityCompetition.Controller.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DogAgilityCompetition.Specs.log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
