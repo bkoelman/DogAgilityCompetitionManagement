@@ -1,77 +1,75 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Circe
+namespace DogAgilityCompetition.Circe;
+
+/// <summary>
+/// Writes a list of name/value pairs in a comma-separated formatted string.
+/// </summary>
+public sealed class ObjectFormatter : IDisposable
 {
-    /// <summary>
-    /// Writes a list of name/value pairs in a comma-separated formatted string.
-    /// </summary>
-    public sealed class ObjectFormatter : IDisposable
+    private readonly object? outerInstance;
+    private readonly string? outerText;
+    private readonly StringBuilder builder;
+
+    public ObjectFormatter(StringBuilder builder, string? outerText = null)
     {
-        private readonly object? outerInstance;
-        private readonly string? outerText;
-        private readonly StringBuilder builder;
+        Guard.NotNull(builder, nameof(builder));
 
-        public ObjectFormatter(StringBuilder builder, string? outerText = null)
+        this.builder = builder;
+        this.outerText = outerText;
+    }
+
+    public ObjectFormatter(StringBuilder builder, object? outerInstance = null)
+    {
+        Guard.NotNull(builder, nameof(builder));
+
+        this.builder = builder;
+        this.outerInstance = outerInstance;
+    }
+
+    public void Append<T>(T? value, [InvokerParameterName] string name)
+    {
+        AppendToBuilder(value, name);
+    }
+
+    public void AppendText(string? text)
+    {
+        if (!string.IsNullOrEmpty(text))
         {
-            Guard.NotNull(builder, nameof(builder));
-
-            this.builder = builder;
-            this.outerText = outerText;
+            AppendToBuilder(text, null);
         }
+    }
 
-        public ObjectFormatter(StringBuilder builder, object? outerInstance = null)
+    private void AppendToBuilder(object? value, string? name)
+    {
+        if (value != null)
         {
-            Guard.NotNull(builder, nameof(builder));
-
-            this.builder = builder;
-            this.outerInstance = outerInstance;
-        }
-
-        public void Append<T>(T? value, [InvokerParameterName] string name)
-        {
-            AppendToBuilder(value, name);
-        }
-
-        public void AppendText(string? text)
-        {
-            if (!string.IsNullOrEmpty(text))
+            if (builder.Length > 0)
             {
-                AppendToBuilder(text, null);
+                builder.Append(", ");
             }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                builder.Append(name);
+                builder.Append('=');
+            }
+
+            builder.Append(value);
         }
+    }
 
-        private void AppendToBuilder(object? value, string? name)
+    public void Dispose()
+    {
+        if (outerInstance != null)
         {
-            if (value != null)
-            {
-                if (builder.Length > 0)
-                {
-                    builder.Append(", ");
-                }
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    builder.Append(name);
-                    builder.Append('=');
-                }
-
-                builder.Append(value);
-            }
+            builder.Insert(0, outerInstance.GetType().Name + " (");
+            builder.Append(')');
         }
-
-        public void Dispose()
+        else if (outerText != null)
         {
-            if (outerInstance != null)
-            {
-                builder.Insert(0, outerInstance.GetType().Name + " (");
-                builder.Append(')');
-            }
-            else if (outerText != null)
-            {
-                builder.Insert(0, outerText + " ");
-            }
+            builder.Insert(0, outerText + " ");
         }
     }
 }

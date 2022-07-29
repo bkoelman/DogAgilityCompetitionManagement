@@ -1,24 +1,22 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace DogAgilityCompetition.Circe
+namespace DogAgilityCompetition.Circe;
+
+public static class AssemblyReader
 {
-    public static class AssemblyReader
+    public static string GetInformationalVersion()
     {
-        public static string GetInformationalVersion()
+        var assembly = Assembly.GetEntryAssembly();
+
+        CustomAttributeData? versionAttribute =
+            assembly?.CustomAttributes.FirstOrDefault(data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
+
+        if (versionAttribute != null && versionAttribute.ConstructorArguments.Any())
         {
-            var assembly = Assembly.GetEntryAssembly();
-
-            CustomAttributeData? versionAttribute =
-                assembly?.CustomAttributes.FirstOrDefault(data => data.AttributeType.Name == "AssemblyInformationalVersionAttribute");
-
-            if (versionAttribute != null && versionAttribute.ConstructorArguments.Any())
-            {
-                CustomAttributeTypedArgument versionText = versionAttribute.ConstructorArguments.FirstOrDefault();
-                return " v" + versionText.Value;
-            }
-
-            return string.Empty;
+            CustomAttributeTypedArgument versionText = versionAttribute.ConstructorArguments.FirstOrDefault();
+            return " v" + versionText.Value;
         }
+
+        return string.Empty;
     }
 }

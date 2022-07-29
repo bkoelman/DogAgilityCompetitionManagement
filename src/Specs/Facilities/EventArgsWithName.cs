@@ -1,28 +1,26 @@
-﻿using System;
-using DogAgilityCompetition.Circe;
+﻿using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.Specs.Facilities
+namespace DogAgilityCompetition.Specs.Facilities;
+
+/// <summary />
+// ReSharper disable once UnusedTypeParameter
+// Justification: Generic argument is used to enable creation of test-specific extensions methods.
+public sealed class EventArgsWithName<TTestScope>
 {
-    /// <summary />
-    // ReSharper disable once UnusedTypeParameter
-    // Justification: Generic argument is used to enable creation of test-specific extensions methods.
-    public sealed class EventArgsWithName<TTestScope>
+    public string Name { get; }
+    public EventArgs EventArgs { get; }
+
+    public EventArgsWithName(string name, EventArgs eventArgs)
     {
-        public string Name { get; }
-        public EventArgs EventArgs { get; }
+        Guard.NotNullNorEmpty(name, nameof(name));
+        Guard.NotNull(eventArgs, nameof(eventArgs));
 
-        public EventArgsWithName(string name, EventArgs eventArgs)
-        {
-            Guard.NotNullNorEmpty(name, nameof(name));
-            Guard.NotNull(eventArgs, nameof(eventArgs));
+        Name = name;
+        EventArgs = eventArgs;
+    }
 
-            Name = name;
-            EventArgs = eventArgs;
-        }
-
-        public override string ToString()
-        {
-            return $"{Name}: {EventArgs}";
-        }
+    public override string ToString()
+    {
+        return $"{Name}: {EventArgs}";
     }
 }

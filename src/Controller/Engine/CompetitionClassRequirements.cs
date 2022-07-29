@@ -1,193 +1,189 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DogAgilityCompetition.Circe;
+﻿using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary>
+/// Defines under what conditions a competition class is allowed to be started.
+/// </summary>
+/// <remarks>
+/// Deeply immutable by design to allow for safe cross-thread member access.
+/// </remarks>
+public sealed class CompetitionClassRequirements : IEquatable<CompetitionClassRequirements>
 {
-    /// <summary>
-    /// Defines under what conditions a competition class is allowed to be started.
-    /// </summary>
-    /// <remarks>
-    /// Deeply immutable by design to allow for safe cross-thread member access.
-    /// </remarks>
-    public sealed class CompetitionClassRequirements : IEquatable<CompetitionClassRequirements>
+    public static readonly CompetitionClassRequirements Default = new(0, TimeSpan.Zero);
+
+    public int IntermediateTimerCount { get; }
+    public TimeSpan StartFinishMinDelayForSingleSensor { get; }
+
+    private CompetitionClassRequirements(int intermediateTimerCount, TimeSpan startFinishMinDelayForSingleSensor)
     {
-        public static readonly CompetitionClassRequirements Default = new(0, TimeSpan.Zero);
+        IntermediateTimerCount = intermediateTimerCount;
+        StartFinishMinDelayForSingleSensor = startFinishMinDelayForSingleSensor;
+    }
 
-        public int IntermediateTimerCount { get; }
-        public TimeSpan StartFinishMinDelayForSingleSensor { get; }
+    public CompetitionClassRequirements ChangeIntermediateTimerCount(int intermediateTimerCount)
+    {
+        Guard.InRangeInclusive(intermediateTimerCount, nameof(intermediateTimerCount), 0, 3);
 
-        private CompetitionClassRequirements(int intermediateTimerCount, TimeSpan startFinishMinDelayForSingleSensor)
+        return new CompetitionClassRequirements(intermediateTimerCount, StartFinishMinDelayForSingleSensor);
+    }
+
+    public CompetitionClassRequirements ChangeStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
+    {
+        AssertNotNegative(startFinishMinDelayForSingleSensor);
+
+        return new CompetitionClassRequirements(IntermediateTimerCount, startFinishMinDelayForSingleSensor);
+    }
+
+    [AssertionMethod]
+    private static void AssertNotNegative(TimeSpan startFinishMinDelayForSingleSensor)
+    {
+        if (startFinishMinDelayForSingleSensor < TimeSpan.Zero)
         {
-            IntermediateTimerCount = intermediateTimerCount;
-            StartFinishMinDelayForSingleSensor = startFinishMinDelayForSingleSensor;
+            throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor), startFinishMinDelayForSingleSensor,
+                "Minimum delay between passage of Start and Finish sensors cannot be negative.");
+        }
+    }
+
+    [AssertionMethod]
+    public IList<NetworkComplianceMismatch> AssertComplianceWith(NetworkComposition composition)
+    {
+        Guard.NotNull(composition, nameof(composition));
+
+        var mismatches = new List<NetworkComplianceMismatch>();
+
+        // Must have at least one device in role KEYPAD.
+        if (!composition.GetDevicesInAnyRole(DeviceRoles.Keypad).Any())
+        {
+            mismatches.Add(NetworkComplianceMismatch.MissingKeypad);
         }
 
-        public CompetitionClassRequirements ChangeIntermediateTimerCount(int intermediateTimerCount)
+        // Must have at least one device in role START that can report times.
+        if (!composition.GetDevicesInAnyRole(DeviceRoles.StartTimer).Any())
         {
-            Guard.InRangeInclusive(intermediateTimerCount, nameof(intermediateTimerCount), 0, 3);
-
-            return new CompetitionClassRequirements(intermediateTimerCount, StartFinishMinDelayForSingleSensor);
+            mismatches.Add(NetworkComplianceMismatch.MissingStartTimer);
         }
 
-        public CompetitionClassRequirements ChangeStartFinishMinDelayForSingleSensor(TimeSpan startFinishMinDelayForSingleSensor)
+        // Must have at least one device in role FINISH that can report times.
+        if (!composition.GetDevicesInAnyRole(DeviceRoles.FinishTimer).Any())
         {
-            AssertNotNegative(startFinishMinDelayForSingleSensor);
-
-            return new CompetitionClassRequirements(IntermediateTimerCount, startFinishMinDelayForSingleSensor);
+            mismatches.Add(NetworkComplianceMismatch.MissingFinishTimer);
         }
 
-        [AssertionMethod]
-        private static void AssertNotNegative(TimeSpan startFinishMinDelayForSingleSensor)
+        if (StartFinishMinDelayForSingleSensor == TimeSpan.Zero)
         {
-            if (startFinishMinDelayForSingleSensor < TimeSpan.Zero)
+            // A gate cannot be both START and FINISH sensor when no minimum delay between passage
+            // of Start and Finish sensors has been specified.
+            if (composition.GetDeviceAddresses().Any(composition.IsStartFinishGate))
             {
-                throw new ArgumentOutOfRangeException(nameof(startFinishMinDelayForSingleSensor), startFinishMinDelayForSingleSensor,
-                    "Minimum delay between passage of Start and Finish sensors cannot be negative.");
+                mismatches.Add(NetworkComplianceMismatch.MissingDelayForStartFinishTimer);
             }
         }
 
-        [AssertionMethod]
-        public IList<NetworkComplianceMismatch> AssertComplianceWith(NetworkComposition composition)
+        // Can have multiple INTERMEDIATE roles.
+        const DeviceRoles intermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
+
+        foreach (WirelessNetworkAddress deviceAddress in composition.GetDevicesInAnyRole(intermediateTimers))
         {
-            Guard.NotNull(composition, nameof(composition));
-
-            var mismatches = new List<NetworkComplianceMismatch>();
-
-            // Must have at least one device in role KEYPAD.
-            if (!composition.GetDevicesInAnyRole(DeviceRoles.Keypad).Any())
+            if (composition.HasCapability(deviceAddress, DeviceCapabilities.TimeSensor))
             {
-                mismatches.Add(NetworkComplianceMismatch.MissingKeypad);
-            }
-
-            // Must have at least one device in role START that can report times.
-            if (!composition.GetDevicesInAnyRole(DeviceRoles.StartTimer).Any())
-            {
-                mismatches.Add(NetworkComplianceMismatch.MissingStartTimer);
-            }
-
-            // Must have at least one device in role FINISH that can report times.
-            if (!composition.GetDevicesInAnyRole(DeviceRoles.FinishTimer).Any())
-            {
-                mismatches.Add(NetworkComplianceMismatch.MissingFinishTimer);
-            }
-
-            if (StartFinishMinDelayForSingleSensor == TimeSpan.Zero)
-            {
-                // A gate cannot be both START and FINISH sensor when no minimum delay between passage
-                // of Start and Finish sensors has been specified.
-                if (composition.GetDeviceAddresses().Any(composition.IsStartFinishGate))
+                // Gates cannot be both INTERMEDIATE and START/FINISH.
+                if (composition.IsInRoleStartTimer(deviceAddress))
                 {
-                    mismatches.Add(NetworkComplianceMismatch.MissingDelayForStartFinishTimer);
+                    mismatches.Add(NetworkComplianceMismatch.GateIsStartAndIntermediate);
+                }
+
+                if (composition.IsInRoleFinishTimer(deviceAddress))
+                {
+                    mismatches.Add(NetworkComplianceMismatch.GateIsFinishAndIntermediate);
+                }
+
+                // Gates cannot be in more than one INTERMEDIATE role.
+                bool inRoleInt12 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer2(deviceAddress);
+                bool inRoleInt23 = composition.IsInRoleIntermediateTimer2(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
+                bool inRoleInt13 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
+
+                if (inRoleInt12 || inRoleInt23 || inRoleInt13)
+                {
+                    mismatches.Add(NetworkComplianceMismatch.GateInMultipleIntermediateTimerRoles);
                 }
             }
-
-            // Can have multiple INTERMEDIATE roles.
-            const DeviceRoles intermediateTimers = DeviceRoles.IntermediateTimer1 | DeviceRoles.IntermediateTimer2 | DeviceRoles.IntermediateTimer3;
-
-            foreach (WirelessNetworkAddress deviceAddress in composition.GetDevicesInAnyRole(intermediateTimers))
-            {
-                if (composition.HasCapability(deviceAddress, DeviceCapabilities.TimeSensor))
-                {
-                    // Gates cannot be both INTERMEDIATE and START/FINISH.
-                    if (composition.IsInRoleStartTimer(deviceAddress))
-                    {
-                        mismatches.Add(NetworkComplianceMismatch.GateIsStartAndIntermediate);
-                    }
-
-                    if (composition.IsInRoleFinishTimer(deviceAddress))
-                    {
-                        mismatches.Add(NetworkComplianceMismatch.GateIsFinishAndIntermediate);
-                    }
-
-                    // Gates cannot be in more than one INTERMEDIATE role.
-                    bool inRoleInt12 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer2(deviceAddress);
-                    bool inRoleInt23 = composition.IsInRoleIntermediateTimer2(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
-                    bool inRoleInt13 = composition.IsInRoleIntermediateTimer1(deviceAddress) && composition.IsInRoleIntermediateTimer3(deviceAddress);
-
-                    if (inRoleInt12 || inRoleInt23 || inRoleInt13)
-                    {
-                        mismatches.Add(NetworkComplianceMismatch.GateInMultipleIntermediateTimerRoles);
-                    }
-                }
-            }
-
-            // Must possibly have various INTERMEDIATE roles (based on class requirements).
-            if (IntermediateTimerCount >= 3 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer3).Any())
-            {
-                mismatches.Add(NetworkComplianceMismatch.MissingIntermediate3Timer);
-            }
-
-            if (IntermediateTimerCount >= 2 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
-            {
-                mismatches.Add(NetworkComplianceMismatch.MissingIntermediate2Timer);
-            }
-
-            if (IntermediateTimerCount >= 1 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
-            {
-                mismatches.Add(NetworkComplianceMismatch.MissingIntermediate1Timer);
-            }
-
-            // Cannot have role INTERMEDIATE 3 without INTERMEDIATE 2 in the network.
-            // Cannot have role INTERMEDIATE 2 without INTERMEDIATE 1 in the network.
-            if (composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer3).Any())
-            {
-                if (!composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
-                {
-                    mismatches.Add(NetworkComplianceMismatch.IntermediateMissing32);
-                }
-            }
-
-            if (composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
-            {
-                if (!composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
-                {
-                    mismatches.Add(NetworkComplianceMismatch.IntermediateMissing21);
-                }
-            }
-
-            // Can have multiple DISPLAY roles.
-
-            return mismatches;
         }
 
-        public bool Equals(CompetitionClassRequirements? other)
+        // Must possibly have various INTERMEDIATE roles (based on class requirements).
+        if (IntermediateTimerCount >= 3 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer3).Any())
         {
-            return !ReferenceEquals(other, null) && IntermediateTimerCount == other.IntermediateTimerCount &&
-                StartFinishMinDelayForSingleSensor == other.StartFinishMinDelayForSingleSensor;
+            mismatches.Add(NetworkComplianceMismatch.MissingIntermediate3Timer);
         }
 
-        public override bool Equals(object? obj)
+        if (IntermediateTimerCount >= 2 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
         {
-            return Equals(obj as CompetitionClassRequirements);
+            mismatches.Add(NetworkComplianceMismatch.MissingIntermediate2Timer);
         }
 
-        public override int GetHashCode()
+        if (IntermediateTimerCount >= 1 && !composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
         {
-            return IntermediateTimerCount.GetHashCode() ^ StartFinishMinDelayForSingleSensor.GetHashCode();
+            mismatches.Add(NetworkComplianceMismatch.MissingIntermediate1Timer);
         }
 
-        public static bool operator ==(CompetitionClassRequirements? left, CompetitionClassRequirements? right)
+        // Cannot have role INTERMEDIATE 3 without INTERMEDIATE 2 in the network.
+        // Cannot have role INTERMEDIATE 2 without INTERMEDIATE 1 in the network.
+        if (composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer3).Any())
         {
-            if (ReferenceEquals(left, right))
+            if (!composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
             {
-                return true;
+                mismatches.Add(NetworkComplianceMismatch.IntermediateMissing32);
             }
-
-            if (ReferenceEquals(left, null))
-            {
-                return false;
-            }
-
-            return left.Equals(right);
         }
 
-        public static bool operator !=(CompetitionClassRequirements? left, CompetitionClassRequirements? right)
+        if (composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer2).Any())
         {
-            return !(left == right);
+            if (!composition.GetDevicesInAnyRole(DeviceRoles.IntermediateTimer1).Any())
+            {
+                mismatches.Add(NetworkComplianceMismatch.IntermediateMissing21);
+            }
         }
+
+        // Can have multiple DISPLAY roles.
+
+        return mismatches;
+    }
+
+    public bool Equals(CompetitionClassRequirements? other)
+    {
+        return !ReferenceEquals(other, null) && IntermediateTimerCount == other.IntermediateTimerCount &&
+            StartFinishMinDelayForSingleSensor == other.StartFinishMinDelayForSingleSensor;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as CompetitionClassRequirements);
+    }
+
+    public override int GetHashCode()
+    {
+        return IntermediateTimerCount.GetHashCode() ^ StartFinishMinDelayForSingleSensor.GetHashCode();
+    }
+
+    public static bool operator ==(CompetitionClassRequirements? left, CompetitionClassRequirements? right)
+    {
+        if (ReferenceEquals(left, right))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(left, null))
+        {
+            return false;
+        }
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(CompetitionClassRequirements? left, CompetitionClassRequirements? right)
+    {
+        return !(left == right);
     }
 }

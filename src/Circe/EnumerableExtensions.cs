@@ -1,32 +1,29 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 
-namespace DogAgilityCompetition.Circe
+namespace DogAgilityCompetition.Circe;
+
+/// <summary />
+public static class EnumerableExtensions
 {
-    /// <summary />
-    public static class EnumerableExtensions
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
+        where T : class?
     {
-        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source)
-            where T : class?
-        {
-            return source ?? Enumerable.Empty<T>();
-        }
+        return source ?? Enumerable.Empty<T>();
+    }
 
-        public static Collection<T> ToCollection<T>(this IEnumerable<T>? source)
-            where T : class?
-        {
-            var result = new Collection<T>();
+    public static Collection<T> ToCollection<T>(this IEnumerable<T>? source)
+        where T : class?
+    {
+        var result = new Collection<T>();
 
-            if (source != null)
+        if (source != null)
+        {
+            foreach (T item in source)
             {
-                foreach (T item in source)
-                {
-                    result.Add(item);
-                }
+                result.Add(item);
             }
-
-            return result;
         }
+
+        return result;
     }
 }

@@ -1,11 +1,10 @@
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary>
+/// Lists the modifier keys on a remote control.
+/// </summary>
+public enum RemoteKeyModifier
 {
-    /// <summary>
-    /// Lists the modifier keys on a remote control.
-    /// </summary>
-    public enum RemoteKeyModifier
-    {
-        EnterCurrentCompetitor,
-        EnterNextCompetitor
-    }
+    EnterCurrentCompetitor,
+    EnterNextCompetitor
 }

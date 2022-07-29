@@ -1,80 +1,78 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
+namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization;
+
+/// <summary>
+/// Provides XML serialization for <see cref="CompetitionClassModel" />.
+/// </summary>
+public sealed class ModelSerializer
 {
-    /// <summary>
-    /// Provides XML serialization for <see cref="CompetitionClassModel" />.
-    /// </summary>
-    public sealed class ModelSerializer
+    private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+
+    private readonly string path;
+
+    public ModelSerializer(string path)
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+        Guard.NotNullNorEmpty(path, nameof(path));
 
-        private readonly string path;
+        this.path = path;
+    }
 
-        public ModelSerializer(string path)
+    public CompetitionClassModel Load()
+    {
+        using var reader = XmlReader.Create(path, new XmlReaderSettings
         {
-            Guard.NotNullNorEmpty(path, nameof(path));
+            CloseInput = true
+        });
 
-            this.path = path;
+        var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
+
+        try
+        {
+            var xmlObject = (CompetitionClassModelXml)serializer.ReadObject(reader)!;
+            return CompetitionClassModelXml.FromXmlObject(xmlObject);
         }
-
-        public CompetitionClassModel Load()
+        catch (Exception ex)
         {
-            using var reader = XmlReader.Create(path, new XmlReaderSettings
-            {
-                CloseInput = true
-            });
+            Log.Error("Failed to load model from XML file.", ex);
 
-            var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
+            string message = $"Failed to load run configuration from file:\n\n{path}\n\n" +
+                $"Error message: {ex.Message}\n\nClick Ok to discard this file and use default settings.\n" +
+                "Click Cancel to close this application without making changes.";
 
-            try
+            DialogResult response = MessageBox.Show(message, "Error - Dog Agility Competition Management System", MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
+
+            if (response == DialogResult.OK)
             {
-                var xmlObject = (CompetitionClassModelXml)serializer.ReadObject(reader)!;
-                return CompetitionClassModelXml.FromXmlObject(xmlObject);
+                return new CompetitionClassModel();
             }
-            catch (Exception ex)
-            {
-                Log.Error("Failed to load model from XML file.", ex);
 
-                string message = $"Failed to load run configuration from file:\n\n{path}\n\n" +
-                    $"Error message: {ex.Message}\n\nClick Ok to discard this file and use default settings.\n" +
-                    "Click Cancel to close this application without making changes.";
-
-                DialogResult response = MessageBox.Show(message, "Error - Dog Agility Competition Management System", MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);
-
-                if (response == DialogResult.OK)
-                {
-                    return new CompetitionClassModel();
-                }
-
-                Environment.Exit(0);
-                throw;
-            }
+            Environment.Exit(0);
+            throw;
         }
+    }
 
-        public void Save(CompetitionClassModel model)
+    public void Save(CompetitionClassModel model)
+    {
+        Guard.NotNull(model, nameof(model));
+
+        CompetitionClassModelXml xmlObject = CompetitionClassModelXml.ToXmlObject(model);
+
+        var settings = new XmlWriterSettings
         {
-            Guard.NotNull(model, nameof(model));
+            CloseOutput = true,
+            Indent = true,
+            Encoding = new UTF8Encoding()
+        };
 
-            CompetitionClassModelXml xmlObject = CompetitionClassModelXml.ToXmlObject(model);
-
-            var settings = new XmlWriterSettings
-            {
-                CloseOutput = true,
-                Indent = true,
-                Encoding = new UTF8Encoding()
-            };
-
-            using var writer = XmlWriter.Create(path, settings);
-            var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
-            serializer.WriteObject(writer, xmlObject);
-        }
+        using var writer = XmlWriter.Create(path, settings);
+        var serializer = new DataContractSerializer(typeof(CompetitionClassModelXml));
+        serializer.WriteObject(writer, xmlObject);
     }
 }

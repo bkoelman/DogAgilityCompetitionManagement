@@ -1,82 +1,79 @@
-using System;
-using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine;
 
-namespace DogAgilityCompetition.Specs.Facilities
+namespace DogAgilityCompetition.Specs.Facilities;
+
+internal sealed class TrackerEventListener : IDisposable
 {
-    internal sealed class TrackerEventListener : IDisposable
+    private RemoteKeyTracker? source;
+
+    public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } = new();
+
+    public TrackerEventListener(RemoteKeyTracker source)
     {
-        private RemoteKeyTracker? source;
+        Guard.NotNull(source, nameof(source));
 
-        public List<EventArgsWithName<RemoteKeyTracker>> EventsCollected { get; } = new();
+        this.source = source;
 
-        public TrackerEventListener(RemoteKeyTracker source)
+        AttachTrackerHandlers();
+    }
+
+    private void SourceOnModifierKeyDown(object? sender, RemoteKeyModifierEventArgs e)
+    {
+        EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyDown", e));
+    }
+
+    private void SourceOnKeyDown(object? sender, RemoteKeyEventArgs e)
+    {
+        EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyDown", e));
+    }
+
+    private void SourceOnKeyUp(object? sender, RemoteKeyEventArgs e)
+    {
+        EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyUp", e));
+    }
+
+    private void SourceOnModifierKeyUp(object? sender, RemoteKeyModifierEventArgs e)
+    {
+        EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyUp", e));
+    }
+
+    private void SourceOnMissingKey(object? sender, DeviceTimeEventArgs e)
+    {
+        EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("MissingKey", e));
+    }
+
+    public void Dispose()
+    {
+        if (source != null)
         {
-            Guard.NotNull(source, nameof(source));
+            DetachTrackerHandlers();
 
-            this.source = source;
-
-            AttachTrackerHandlers();
+            source = null;
         }
+    }
 
-        private void SourceOnModifierKeyDown(object? sender, RemoteKeyModifierEventArgs e)
+    private void AttachTrackerHandlers()
+    {
+        if (source != null)
         {
-            EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyDown", e));
+            source.ModifierKeyDown += SourceOnModifierKeyDown;
+            source.KeyDown += SourceOnKeyDown;
+            source.KeyUp += SourceOnKeyUp;
+            source.ModifierKeyUp += SourceOnModifierKeyUp;
+            source.MissingKey += SourceOnMissingKey;
         }
+    }
 
-        private void SourceOnKeyDown(object? sender, RemoteKeyEventArgs e)
+    private void DetachTrackerHandlers()
+    {
+        if (source != null)
         {
-            EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyDown", e));
-        }
-
-        private void SourceOnKeyUp(object? sender, RemoteKeyEventArgs e)
-        {
-            EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("KeyUp", e));
-        }
-
-        private void SourceOnModifierKeyUp(object? sender, RemoteKeyModifierEventArgs e)
-        {
-            EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("ModifierKeyUp", e));
-        }
-
-        private void SourceOnMissingKey(object? sender, DeviceTimeEventArgs e)
-        {
-            EventsCollected.Add(new EventArgsWithName<RemoteKeyTracker>("MissingKey", e));
-        }
-
-        public void Dispose()
-        {
-            if (source != null)
-            {
-                DetachTrackerHandlers();
-
-                source = null;
-            }
-        }
-
-        private void AttachTrackerHandlers()
-        {
-            if (source != null)
-            {
-                source.ModifierKeyDown += SourceOnModifierKeyDown;
-                source.KeyDown += SourceOnKeyDown;
-                source.KeyUp += SourceOnKeyUp;
-                source.ModifierKeyUp += SourceOnModifierKeyUp;
-                source.MissingKey += SourceOnMissingKey;
-            }
-        }
-
-        private void DetachTrackerHandlers()
-        {
-            if (source != null)
-            {
-                source.ModifierKeyDown -= SourceOnModifierKeyDown;
-                source.KeyDown -= SourceOnKeyDown;
-                source.KeyUp -= SourceOnKeyUp;
-                source.ModifierKeyUp -= SourceOnModifierKeyUp;
-                source.MissingKey -= SourceOnMissingKey;
-            }
+            source.ModifierKeyDown -= SourceOnModifierKeyDown;
+            source.KeyDown -= SourceOnKeyDown;
+            source.KeyUp -= SourceOnKeyUp;
+            source.ModifierKeyUp -= SourceOnModifierKeyUp;
+            source.MissingKey -= SourceOnMissingKey;
         }
     }
 }

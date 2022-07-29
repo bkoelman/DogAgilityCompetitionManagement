@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.WinForms
+namespace DogAgilityCompetition.WinForms;
+
+/// <summary />
+public static class ControlExtensions
 {
-    /// <summary />
-    public static class ControlExtensions
+    public static void EnsureOnMainThread(this Control control, Action action)
     {
-        public static void EnsureOnMainThread(this Control control, Action action)
+        Guard.NotNull(control, nameof(control));
+        Guard.NotNull(action, nameof(action));
+
+        // Critical: do not check whether Invoke is required, because it can change the order of execution.
+
+        if (!control.IsDisposed && control.IsHandleCreated)
         {
-            Guard.NotNull(control, nameof(control));
-            Guard.NotNull(action, nameof(action));
-
-            // Critical: do not check whether Invoke is required, because it can change the order of execution.
-
-            if (!control.IsDisposed && control.IsHandleCreated)
-            {
-                control.BeginInvoke(new MethodInvoker(action));
-            }
+            control.BeginInvoke(new MethodInvoker(action));
         }
+    }
 
-        public static IEnumerable<Control> GetAllChildControlsRecursive(this Control control)
+    public static IEnumerable<Control> GetAllChildControlsRecursive(this Control control)
+    {
+        Guard.NotNull(control, nameof(control));
+
+        foreach (Control child in control.Controls)
         {
-            Guard.NotNull(control, nameof(control));
+            yield return child;
 
-            foreach (Control child in control.Controls)
+            foreach (Control next in GetAllChildControlsRecursive(child))
             {
-                yield return child;
-
-                foreach (Control next in GetAllChildControlsRecursive(child))
-                {
-                    yield return next;
-                }
+                yield return next;
             }
         }
     }

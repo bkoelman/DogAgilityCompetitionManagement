@@ -1,563 +1,558 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Text;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
+namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats;
+
+/// <summary>
+/// Provides a forward-only reader for files in delimited (typically CSV) format. The first line of the input file must contain column names.
+/// </summary>
+/// <remarks>
+/// This reader is compatible with Microsoft Excel .csv format, although parsing is slightly more strict. See
+/// http://creativyst.com/Doc/Articles/CSV/CSV01.htm#CSVAndExcel
+/// </remarks>
+public sealed class DelimitedValuesReader : IEnumerable<IDelimitedValuesReaderRow>, IDisposable
 {
+    private readonly DelimitedValuesReaderSettings settings;
+    private readonly DelimitedValuesEnumerator enumerator;
+
+    private TextReader? source;
+
     /// <summary>
-    /// Provides a forward-only reader for files in delimited (typically CSV) format. The first line of the input file must contain column names.
+    /// Gets the line number in source at which the current row starts.
+    /// </summary>
+    public int LineNumber
+    {
+        get
+        {
+            AssertNotDisposed();
+            return enumerator.RowStartLineNumber;
+        }
+    }
+
+    /// <summary>
+    /// Gets the column names on the first line in source.
+    /// </summary>
+    public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(enumerator.ColumnNames);
+
+    /// <summary>
+    /// Gets the current unparsed line of text from source.
     /// </summary>
     /// <remarks>
-    /// This reader is compatible with Microsoft Excel .csv format, although parsing is slightly more strict. See
-    /// http://creativyst.com/Doc/Articles/CSV/CSV01.htm#CSVAndExcel
+    /// Can be used for logging purposes, after parsing into cells has thrown an exception.
     /// </remarks>
-    public sealed class DelimitedValuesReader : IEnumerable<IDelimitedValuesReaderRow>, IDisposable
+    public string Line
     {
-        private readonly DelimitedValuesReaderSettings settings;
-        private readonly DelimitedValuesEnumerator enumerator;
+        get
+        {
+            AssertNotDisposed();
+            return enumerator.Line;
+        }
+    }
 
-        private TextReader? source;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DelimitedValuesReader" /> class.
+    /// </summary>
+    /// <param name="source">
+    /// The reader that provides input.
+    /// </param>
+    /// <param name="settings">
+    /// Settings that customize the behavior of this instance.
+    /// </param>
+    public DelimitedValuesReader(TextReader source, DelimitedValuesReaderSettings? settings = null)
+    {
+        Guard.NotNull(source, nameof(source));
 
-        /// <summary>
-        /// Gets the line number in source at which the current row starts.
-        /// </summary>
-        public int LineNumber
+        this.settings = settings?.Clone() ?? new DelimitedValuesReaderSettings();
+        this.source = source;
+        enumerator = new DelimitedValuesEnumerator(this);
+    }
+
+    /// <summary>
+    /// Closes the underlying source (default), unless custom settings indicate otherwise.
+    /// </summary>
+    public void Dispose()
+    {
+        if (source != null)
+        {
+            if (settings.AutoCloseReader)
+            {
+                source.Dispose();
+            }
+
+            enumerator.Dispose();
+            source = null;
+        }
+    }
+
+    /// <summary>
+    /// Returns the enumerator that iterates through the source rows.
+    /// </summary>
+    /// <returns>
+    /// The enumerator.
+    /// </returns>
+    public IEnumerator<IDelimitedValuesReaderRow> GetEnumerator()
+    {
+        AssertNotDisposed();
+        return enumerator;
+    }
+
+    /// <summary>
+    /// Returns the enumerator that iterates through the source rows.
+    /// </summary>
+    /// <returns>
+    /// The enumerator.
+    /// </returns>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    [AssertionMethod]
+    private void AssertNotDisposed()
+    {
+        if (source == null)
+        {
+            throw new ObjectDisposedException(GetType().Name);
+        }
+    }
+
+    private sealed class DelimitedValuesEnumerator : IEnumerator<DelimitedValuesReaderRow>
+    {
+        private const char CarriageReturnCharCode = (char)13;
+        private const char LineFeedCharCode = (char)10;
+
+        private readonly DelimitedValuesReader owner;
+        private readonly List<string> columnNames;
+
+        private char effectiveFieldSeparator;
+        private int readerLineNumber;
+        private int rowStartLineNumber;
+        private DelimitedValuesReaderRow? currentRow;
+        private string? currentLine;
+
+        object IEnumerator.Current => Current;
+
+        private bool IsPositionBeforeStart => readerLineNumber == 0;
+
+        public DelimitedValuesReaderRow Current
         {
             get
             {
-                AssertNotDisposed();
-                return enumerator.RowStartLineNumber;
+                AssertNotBeforeStart();
+                return currentRow!;
             }
         }
 
-        /// <summary>
-        /// Gets the column names on the first line in source.
-        /// </summary>
-        public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(enumerator.ColumnNames);
+        public int RowStartLineNumber
+        {
+            get
+            {
+                AssertNotBeforeStart();
+                return rowStartLineNumber;
+            }
+        }
 
-        /// <summary>
-        /// Gets the current unparsed line of text from source.
-        /// </summary>
-        /// <remarks>
-        /// Can be used for logging purposes, after parsing into cells has thrown an exception.
-        /// </remarks>
         public string Line
         {
             get
             {
-                AssertNotDisposed();
-                return enumerator.Line;
+                AssertNotBeforeStart();
+                return currentLine ?? string.Empty;
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelimitedValuesReader" /> class.
-        /// </summary>
-        /// <param name="source">
-        /// The reader that provides input.
-        /// </param>
-        /// <param name="settings">
-        /// Settings that customize the behavior of this instance.
-        /// </param>
-        public DelimitedValuesReader(TextReader source, DelimitedValuesReaderSettings? settings = null)
+        public List<string> ColumnNames
         {
-            Guard.NotNull(source, nameof(source));
-
-            this.settings = settings?.Clone() ?? new DelimitedValuesReaderSettings();
-            this.source = source;
-            enumerator = new DelimitedValuesEnumerator(this);
-        }
-
-        /// <summary>
-        /// Closes the underlying source (default), unless custom settings indicate otherwise.
-        /// </summary>
-        public void Dispose()
-        {
-            if (source != null)
+            get
             {
-                if (settings.AutoCloseReader)
-                {
-                    source.Dispose();
-                }
-
-                enumerator.Dispose();
-                source = null;
+                AssertNotBeforeStart();
+                return columnNames;
             }
         }
 
-        /// <summary>
-        /// Returns the enumerator that iterates through the source rows.
-        /// </summary>
-        /// <returns>
-        /// The enumerator.
-        /// </returns>
-        public IEnumerator<IDelimitedValuesReaderRow> GetEnumerator()
+        public CultureInfo EffectiveCulture { get; }
+
+        public DelimitedValuesEnumerator(DelimitedValuesReader owner)
         {
-            AssertNotDisposed();
-            return enumerator;
+            Guard.NotNull(owner, nameof(owner));
+            owner.AssertNotDisposed();
+
+            this.owner = owner;
+            EffectiveCulture = this.owner.settings.Culture ?? CultureInfo.InvariantCulture;
+
+            string? headerLine = ConsumeLinesForSingleRow();
+
+            if (headerLine == null)
+            {
+                throw new DelimitedValuesParseException("Missing column names on first line.");
+            }
+
+            columnNames = ParseColumnHeaders(headerLine);
         }
 
-        /// <summary>
-        /// Returns the enumerator that iterates through the source rows.
-        /// </summary>
-        /// <returns>
-        /// The enumerator.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator()
+        private List<string> ParseColumnHeaders(string line)
         {
-            return GetEnumerator();
+            SetEffectiveFieldSeparator(line);
+
+            List<string> columnHeaderNames = ParseLineIntoCells(line);
+            AssertNotEmpty(columnHeaderNames);
+            AssertNoDuplicates(columnHeaderNames);
+            return columnHeaderNames;
         }
 
-        [AssertionMethod]
-        private void AssertNotDisposed()
+        private void SetEffectiveFieldSeparator(string line)
         {
-            if (source == null)
+            if (owner.settings.FieldSeparator != null)
             {
-                throw new ObjectDisposedException(GetType().Name);
+                effectiveFieldSeparator = owner.settings.FieldSeparator.Value;
+                return;
             }
+
+            effectiveFieldSeparator = AutoDetectFieldSeparator(line);
         }
 
-        private sealed class DelimitedValuesEnumerator : IEnumerator<DelimitedValuesReaderRow>
+        private static char AutoDetectFieldSeparator(string line)
         {
-            private const char CarriageReturnCharCode = (char)13;
-            private const char LineFeedCharCode = (char)10;
+            // It would be even better to not count occurrences inside qualified text.
+            // But because callers are expected to verify that expected column headers exist
+            // in source, an incorrect separator detection is likely to fail during header
+            // verification anyway.
 
-            private readonly DelimitedValuesReader owner;
-            private readonly List<string> columnNames;
-
-            private char effectiveFieldSeparator;
-            private int readerLineNumber;
-            private int rowStartLineNumber;
-            private DelimitedValuesReaderRow? currentRow;
-            private string? currentLine;
-
-            object IEnumerator.Current => Current;
-
-            private bool IsPositionBeforeStart => readerLineNumber == 0;
-
-            public DelimitedValuesReaderRow Current
+            var charCounts = new Dictionary<char, int>
             {
-                get
+                { '\t', line.Count(c => c == '\t') },
+                { ';', line.Count(c => c == ';') },
+                { ',', line.Count(c => c == ',') },
+                { ':', line.Count(c => c == ':') },
+                { '|', line.Count(c => c == '|') }
+            };
+
+            int highestOccurrence = charCounts.Max(pair => pair.Value);
+            return charCounts.First(pair => pair.Value == highestOccurrence).Key;
+        }
+
+        private List<string> ParseLineIntoCells(string line)
+        {
+            // A cell must be surrounded by text qualifiers when the cell value contains field separator
+            // characters, significant leading/trailing whitespace, line breaks or text qualifier
+            // characters. Any text qualifier characters in the cell value must be duplicated.
+            //
+            // Example: __"_Doe,_John_"__,_"a_""great""_idea"_ => { _Doe,_John_ , a_"great"_idea }
+
+            var cells = new List<string>();
+            StringBuilder? cellBuilder = null;
+
+            // True when cell starts with a normal character (not a text qualifier).
+            bool? isPlainCell = null;
+
+            // True when positioned inside text-qualified section within a cell.
+            bool inTextSection = false;
+
+            // True when passed the closing qualifier of a text-qualified cell.
+            bool textSectionCompleted = false;
+
+            for (int index = 0; index < line.Length; index++)
+            {
+                if (line[index] == effectiveFieldSeparator && !inTextSection)
                 {
-                    AssertNotBeforeStart();
-                    return currentRow!;
-                }
-            }
+                    string cell = cellBuilder?.ToString() ?? string.Empty;
 
-            public int RowStartLineNumber
-            {
-                get
-                {
-                    AssertNotBeforeStart();
-                    return rowStartLineNumber;
-                }
-            }
-
-            public string Line
-            {
-                get
-                {
-                    AssertNotBeforeStart();
-                    return currentLine ?? string.Empty;
-                }
-            }
-
-            public List<string> ColumnNames
-            {
-                get
-                {
-                    AssertNotBeforeStart();
-                    return columnNames;
-                }
-            }
-
-            public CultureInfo EffectiveCulture { get; }
-
-            public DelimitedValuesEnumerator(DelimitedValuesReader owner)
-            {
-                Guard.NotNull(owner, nameof(owner));
-                owner.AssertNotDisposed();
-
-                this.owner = owner;
-                EffectiveCulture = this.owner.settings.Culture ?? CultureInfo.InvariantCulture;
-
-                string? headerLine = ConsumeLinesForSingleRow();
-
-                if (headerLine == null)
-                {
-                    throw new DelimitedValuesParseException("Missing column names on first line.");
-                }
-
-                columnNames = ParseColumnHeaders(headerLine);
-            }
-
-            private List<string> ParseColumnHeaders(string line)
-            {
-                SetEffectiveFieldSeparator(line);
-
-                List<string> columnHeaderNames = ParseLineIntoCells(line);
-                AssertNotEmpty(columnHeaderNames);
-                AssertNoDuplicates(columnHeaderNames);
-                return columnHeaderNames;
-            }
-
-            private void SetEffectiveFieldSeparator(string line)
-            {
-                if (owner.settings.FieldSeparator != null)
-                {
-                    effectiveFieldSeparator = owner.settings.FieldSeparator.Value;
-                    return;
-                }
-
-                effectiveFieldSeparator = AutoDetectFieldSeparator(line);
-            }
-
-            private static char AutoDetectFieldSeparator(string line)
-            {
-                // It would be even better to not count occurrences inside qualified text.
-                // But because callers are expected to verify that expected column headers exist
-                // in source, an incorrect separator detection is likely to fail during header
-                // verification anyway.
-
-                var charCounts = new Dictionary<char, int>
-                {
-                    { '\t', line.Count(c => c == '\t') },
-                    { ';', line.Count(c => c == ';') },
-                    { ',', line.Count(c => c == ',') },
-                    { ':', line.Count(c => c == ':') },
-                    { '|', line.Count(c => c == '|') }
-                };
-
-                int highestOccurrence = charCounts.Max(pair => pair.Value);
-                return charCounts.First(pair => pair.Value == highestOccurrence).Key;
-            }
-
-            private List<string> ParseLineIntoCells(string line)
-            {
-                // A cell must be surrounded by text qualifiers when the cell value contains field separator
-                // characters, significant leading/trailing whitespace, line breaks or text qualifier
-                // characters. Any text qualifier characters in the cell value must be duplicated.
-                //
-                // Example: __"_Doe,_John_"__,_"a_""great""_idea"_ => { _Doe,_John_ , a_"great"_idea }
-
-                var cells = new List<string>();
-                StringBuilder? cellBuilder = null;
-
-                // True when cell starts with a normal character (not a text qualifier).
-                bool? isPlainCell = null;
-
-                // True when positioned inside text-qualified section within a cell.
-                bool inTextSection = false;
-
-                // True when passed the closing qualifier of a text-qualified cell.
-                bool textSectionCompleted = false;
-
-                for (int index = 0; index < line.Length; index++)
-                {
-                    if (line[index] == effectiveFieldSeparator && !inTextSection)
+                    if (isPlainCell != null && isPlainCell.Value)
                     {
-                        string cell = cellBuilder?.ToString() ?? string.Empty;
-
-                        if (isPlainCell != null && isPlainCell.Value)
-                        {
-                            cell = cell.TrimEnd();
-                        }
-
-                        cells.Add(cell);
-
-                        cellBuilder = new StringBuilder();
-                        isPlainCell = null;
-                        textSectionCompleted = false;
+                        cell = cell.TrimEnd();
                     }
-                    else if (line[index] == owner.settings.TextQualifier)
-                    {
-                        if (isPlainCell == null || inTextSection)
-                        {
-                            // Check for "" inside a quoted string.
-                            if (inTextSection && index + 1 < line.Length && line[index + 1] == owner.settings.TextQualifier)
-                            {
-                                cellBuilder ??= new StringBuilder();
-                                cellBuilder.Append(owner.settings.TextQualifier);
-                                index++;
-                            }
-                            else
-                            {
-                                inTextSection = !inTextSection;
-                                isPlainCell = false;
 
-                                if (!inTextSection)
-                                {
-                                    textSectionCompleted = true;
-                                }
-                            }
+                    cells.Add(cell);
+
+                    cellBuilder = new StringBuilder();
+                    isPlainCell = null;
+                    textSectionCompleted = false;
+                }
+                else if (line[index] == owner.settings.TextQualifier)
+                {
+                    if (isPlainCell == null || inTextSection)
+                    {
+                        // Check for "" inside a quoted string.
+                        if (inTextSection && index + 1 < line.Length && line[index + 1] == owner.settings.TextQualifier)
+                        {
+                            cellBuilder ??= new StringBuilder();
+                            cellBuilder.Append(owner.settings.TextQualifier);
+                            index++;
                         }
                         else
                         {
-                            throw new DelimitedValuesParseException("Text qualifier must be the first non-whitespace character of a cell.");
+                            inTextSection = !inTextSection;
+                            isPlainCell = false;
+
+                            if (!inTextSection)
+                            {
+                                textSectionCompleted = true;
+                            }
                         }
                     }
                     else
                     {
-                        if (isPlainCell == null && char.IsWhiteSpace(line[index]))
-                        {
-                            // Skip over leading whitespace.
-                        }
-                        else if (textSectionCompleted)
-                        {
-                            // Skip over trailing whitespace for text-qualified cell.
-                            if (!char.IsWhiteSpace(line[index]))
-                            {
-                                throw new DelimitedValuesParseException("Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
-                            }
-                        }
-                        else
-                        {
-                            cellBuilder ??= new StringBuilder();
-                            cellBuilder.Append(line[index]);
-
-                            isPlainCell ??= true;
-                        }
+                        throw new DelimitedValuesParseException("Text qualifier must be the first non-whitespace character of a cell.");
                     }
                 }
-
-                if (cellBuilder != null)
+                else
                 {
-                    string lastCell = cellBuilder.ToString();
-
-                    if (isPlainCell != null && isPlainCell.Value)
+                    if (isPlainCell == null && char.IsWhiteSpace(line[index]))
                     {
-                        lastCell = lastCell.TrimEnd();
+                        // Skip over leading whitespace.
                     }
-
-                    cells.Add(lastCell);
-                }
-
-                return cells;
-            }
-
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public bool MoveNext()
-            {
-                owner.AssertNotDisposed();
-
-                string? dataLine = ConsumeLinesForSingleRow();
-
-                if (dataLine == null)
-                {
-                    return false;
-                }
-
-                List<string> cellValues = ParseLineIntoCells(dataLine);
-                AssertCellCountSameAsColumnCount(cellValues);
-                currentRow = new DelimitedValuesReaderRow(this, cellValues);
-
-                return true;
-            }
-
-            private string? ConsumeLinesForSingleRow()
-            {
-                int newRowStartLineNumber = readerLineNumber + 1;
-
-                string? line = ReadToNextLineBreak(out bool missingClosingTextQualifier);
-
-                // Set properties before parsing into cells, so that callers can inspect/log
-                // the unparsed text line after catching any exceptions raised while parsing.
-                rowStartLineNumber = newRowStartLineNumber;
-                currentLine = line;
-
-                if (missingClosingTextQualifier)
-                {
-                    throw new DelimitedValuesParseException("Missing closing text qualifier.");
-                }
-
-                return line;
-            }
-
-            private string? ReadToNextLineBreak(out bool missingClosingTextQualifier)
-            {
-                // Keep reading until we see a line break outside a quoted field.
-                int charsSeen = 0;
-                bool inTextSection = false;
-
-                var builder = new StringBuilder();
-
-                while (true)
-                {
-                    // Justification for nullable suppression: All callers up the call stack have called owner.AssertNotDisposed().
-                    int charCode = owner.source!.Read();
-
-                    if (charCode != -1)
+                    else if (textSectionCompleted)
                     {
+                        // Skip over trailing whitespace for text-qualified cell.
+                        if (!char.IsWhiteSpace(line[index]))
+                        {
+                            throw new DelimitedValuesParseException("Text-qualified cell cannot contain non-whitespace after the closing text qualifier.");
+                        }
+                    }
+                    else
+                    {
+                        cellBuilder ??= new StringBuilder();
+                        cellBuilder.Append(line[index]);
+
+                        isPlainCell ??= true;
+                    }
+                }
+            }
+
+            if (cellBuilder != null)
+            {
+                string lastCell = cellBuilder.ToString();
+
+                if (isPlainCell != null && isPlainCell.Value)
+                {
+                    lastCell = lastCell.TrimEnd();
+                }
+
+                cells.Add(lastCell);
+            }
+
+            return cells;
+        }
+
+        public void Reset()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public bool MoveNext()
+        {
+            owner.AssertNotDisposed();
+
+            string? dataLine = ConsumeLinesForSingleRow();
+
+            if (dataLine == null)
+            {
+                return false;
+            }
+
+            List<string> cellValues = ParseLineIntoCells(dataLine);
+            AssertCellCountSameAsColumnCount(cellValues);
+            currentRow = new DelimitedValuesReaderRow(this, cellValues);
+
+            return true;
+        }
+
+        private string? ConsumeLinesForSingleRow()
+        {
+            int newRowStartLineNumber = readerLineNumber + 1;
+
+            string? line = ReadToNextLineBreak(out bool missingClosingTextQualifier);
+
+            // Set properties before parsing into cells, so that callers can inspect/log
+            // the unparsed text line after catching any exceptions raised while parsing.
+            rowStartLineNumber = newRowStartLineNumber;
+            currentLine = line;
+
+            if (missingClosingTextQualifier)
+            {
+                throw new DelimitedValuesParseException("Missing closing text qualifier.");
+            }
+
+            return line;
+        }
+
+        private string? ReadToNextLineBreak(out bool missingClosingTextQualifier)
+        {
+            // Keep reading until we see a line break outside a quoted field.
+            int charsSeen = 0;
+            bool inTextSection = false;
+
+            var builder = new StringBuilder();
+
+            while (true)
+            {
+                // Justification for nullable suppression: All callers up the call stack have called owner.AssertNotDisposed().
+                int charCode = owner.source!.Read();
+
+                if (charCode != -1)
+                {
+                    charsSeen++;
+                }
+
+                bool maximumReached = MaximumLineLengthEquals(charsSeen);
+
+                if (charCode == -1 || maximumReached)
+                {
+                    missingClosingTextQualifier = inTextSection;
+                    return builder.Length > 0 ? builder.ToString() : null;
+                }
+
+                if (charCode == CarriageReturnCharCode || charCode == LineFeedCharCode)
+                {
+                    readerLineNumber++;
+
+                    if (charCode == CarriageReturnCharCode && owner.source.Peek() == LineFeedCharCode)
+                    {
+                        owner.source.Read();
                         charsSeen++;
-                    }
 
-                    bool maximumReached = MaximumLineLengthEquals(charsSeen);
-
-                    if (charCode == -1 || maximumReached)
-                    {
-                        missingClosingTextQualifier = inTextSection;
-                        return builder.Length > 0 ? builder.ToString() : null;
-                    }
-
-                    if (charCode == CarriageReturnCharCode || charCode == LineFeedCharCode)
-                    {
-                        readerLineNumber++;
-
-                        if (charCode == CarriageReturnCharCode && owner.source.Peek() == LineFeedCharCode)
+                        if (inTextSection)
                         {
-                            owner.source.Read();
-                            charsSeen++;
-
-                            if (inTextSection)
-                            {
-                                builder.Append(CarriageReturnCharCode);
-                                builder.Append(LineFeedCharCode);
-                                continue;
-                            }
+                            builder.Append(CarriageReturnCharCode);
+                            builder.Append(LineFeedCharCode);
+                            continue;
                         }
-                        else
-                        {
-                            if (inTextSection)
-                            {
-                                builder.Append((char)charCode);
-                                continue;
-                            }
-                        }
-
-                        missingClosingTextQualifier = false;
-
-                        if (builder.Length == 0 && owner.source.Peek() == -1)
-                        {
-                            // Allow a single empty line at EOF.
-                            owner.source.Read();
-                            return null;
-                        }
-
-                        return builder.ToString();
                     }
-
-                    if (charCode == owner.settings.TextQualifier)
+                    else
                     {
-                        inTextSection = !inTextSection;
+                        if (inTextSection)
+                        {
+                            builder.Append((char)charCode);
+                            continue;
+                        }
                     }
 
-                    builder.Append((char)charCode);
-                }
-            }
+                    missingClosingTextQualifier = false;
 
-            private bool MaximumLineLengthEquals(int charsSeen)
-            {
-                return owner.settings.MaximumLineLength != null && owner.settings.MaximumLineLength == charsSeen;
-            }
-
-            [AssertionMethod]
-            private void AssertNotBeforeStart()
-            {
-                if (IsPositionBeforeStart)
-                {
-                    throw new InvalidOperationException("Call MoveNext() first.");
-                }
-            }
-
-            [AssertionMethod]
-            private static void AssertNotEmpty(List<string> columnHeaderNames)
-            {
-                if (columnHeaderNames.Count == 0)
-                {
-                    throw new DelimitedValuesParseException("Source contains no columns.");
-                }
-            }
-
-            [AssertionMethod]
-            private static void AssertNoDuplicates(IEnumerable<string> headerColumnNames)
-            {
-                var columnSet = new HashSet<string>();
-
-                foreach (string columnName in headerColumnNames)
-                {
-                    if (columnSet.Contains(columnName))
+                    if (builder.Length == 0 && owner.source.Peek() == -1)
                     {
-                        throw new DelimitedValuesParseException($"Column '{columnName}' occurs multiple times.");
+                        // Allow a single empty line at EOF.
+                        owner.source.Read();
+                        return null;
                     }
 
-                    columnSet.Add(columnName);
+                    return builder.ToString();
                 }
-            }
 
-            [AssertionMethod]
-            private void AssertCellCountSameAsColumnCount(IReadOnlyCollection<string> cellValues)
-            {
-                if (cellValues.Count != columnNames.Count)
+                if (charCode == owner.settings.TextQualifier)
                 {
-                    throw new DelimitedValuesParseException($"Expected {columnNames.Count} cells on row instead of {cellValues.Count}.");
+                    inTextSection = !inTextSection;
                 }
+
+                builder.Append((char)charCode);
             }
         }
 
-        private sealed class DelimitedValuesReaderRow : IDelimitedValuesReaderRow
+        private bool MaximumLineLengthEquals(int charsSeen)
         {
-            private static readonly ITypeDescriptorContext NullContext = null!;
+            return owner.settings.MaximumLineLength != null && owner.settings.MaximumLineLength == charsSeen;
+        }
 
-            private readonly DelimitedValuesEnumerator sourceEnumerator;
-            private readonly List<string> cellValues;
-
-            public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(sourceEnumerator.ColumnNames);
-
-            public DelimitedValuesReaderRow(DelimitedValuesEnumerator sourceEnumerator, List<string> cellValues)
+        [AssertionMethod]
+        private void AssertNotBeforeStart()
+        {
+            if (IsPositionBeforeStart)
             {
-                this.sourceEnumerator = sourceEnumerator;
-                this.cellValues = cellValues;
+                throw new InvalidOperationException("Call MoveNext() first.");
             }
+        }
 
-            public IReadOnlyCollection<string> GetCells()
+        [AssertionMethod]
+        private static void AssertNotEmpty(List<string> columnHeaderNames)
+        {
+            if (columnHeaderNames.Count == 0)
             {
-                return new ReadOnlyCollection<string>(cellValues);
+                throw new DelimitedValuesParseException("Source contains no columns.");
             }
+        }
 
-            public string GetCell(string columnName)
+        [AssertionMethod]
+        private static void AssertNoDuplicates(IEnumerable<string> headerColumnNames)
+        {
+            var columnSet = new HashSet<string>();
+
+            foreach (string columnName in headerColumnNames)
             {
-                Guard.NotNullNorEmpty(columnName, nameof(columnName));
-
-                int index = sourceEnumerator.ColumnNames.FindIndex(c => c == columnName);
-
-                if (index == -1)
+                if (columnSet.Contains(columnName))
                 {
-                    throw new ArgumentException($"Column with name '{columnName}' does not exist.");
+                    throw new DelimitedValuesParseException($"Column '{columnName}' occurs multiple times.");
                 }
 
-                return cellValues[index];
+                columnSet.Add(columnName);
             }
+        }
 
-            public T? GetCell<T>(string columnName, Converter<string, T>? converter = null)
+        [AssertionMethod]
+        private void AssertCellCountSameAsColumnCount(IReadOnlyCollection<string> cellValues)
+        {
+            if (cellValues.Count != columnNames.Count)
             {
-                Guard.NotNullNorEmpty(columnName, nameof(columnName));
-
-                string cellValue = GetCell(columnName);
-                return converter != null ? converter(cellValue) : ConvertCell<T>(cellValue);
+                throw new DelimitedValuesParseException($"Expected {columnNames.Count} cells on row instead of {cellValues.Count}.");
             }
+        }
+    }
 
-            private T? ConvertCell<T>(string cellValue)
+    private sealed class DelimitedValuesReaderRow : IDelimitedValuesReaderRow
+    {
+        private static readonly ITypeDescriptorContext NullContext = null!;
+
+        private readonly DelimitedValuesEnumerator sourceEnumerator;
+        private readonly List<string> cellValues;
+
+        public IReadOnlyCollection<string> ColumnNames => new ReadOnlyCollection<string>(sourceEnumerator.ColumnNames);
+
+        public DelimitedValuesReaderRow(DelimitedValuesEnumerator sourceEnumerator, List<string> cellValues)
+        {
+            this.sourceEnumerator = sourceEnumerator;
+            this.cellValues = cellValues;
+        }
+
+        public IReadOnlyCollection<string> GetCells()
+        {
+            return new ReadOnlyCollection<string>(cellValues);
+        }
+
+        public string GetCell(string columnName)
+        {
+            Guard.NotNullNorEmpty(columnName, nameof(columnName));
+
+            int index = sourceEnumerator.ColumnNames.FindIndex(c => c == columnName);
+
+            if (index == -1)
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
-                object? converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
-                return (T?)converted;
+                throw new ArgumentException($"Column with name '{columnName}' does not exist.");
             }
+
+            return cellValues[index];
+        }
+
+        public T? GetCell<T>(string columnName, Converter<string, T>? converter = null)
+        {
+            Guard.NotNullNorEmpty(columnName, nameof(columnName));
+
+            string cellValue = GetCell(columnName);
+            return converter != null ? converter(cellValue) : ConvertCell<T>(cellValue);
+        }
+
+        private T? ConvertCell<T>(string cellValue)
+        {
+            TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+            object? converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
+            return (T?)converted;
         }
     }
 }

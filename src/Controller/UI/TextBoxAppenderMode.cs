@@ -1,10 +1,9 @@
-namespace DogAgilityCompetition.Controller.UI
+namespace DogAgilityCompetition.Controller.UI;
+
+public enum TextBoxAppenderMode
 {
-    public enum TextBoxAppenderMode
-    {
-        All,
-        Packets,
-        Network,
-        NonNetwork
-    }
+    All,
+    Packets,
+    Network,
+    NonNetwork
 }

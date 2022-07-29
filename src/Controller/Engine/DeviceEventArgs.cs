@@ -1,19 +1,17 @@
-﻿using System;
-using DogAgilityCompetition.Circe;
+﻿using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Protocol;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary />
+public abstract class DeviceEventArgs : EventArgs
 {
-    /// <summary />
-    public abstract class DeviceEventArgs : EventArgs
+    public WirelessNetworkAddress Source { get; }
+
+    protected DeviceEventArgs(WirelessNetworkAddress source)
     {
-        public WirelessNetworkAddress Source { get; }
+        Guard.NotNull(source, nameof(source));
 
-        protected DeviceEventArgs(WirelessNetworkAddress source)
-        {
-            Guard.NotNull(source, nameof(source));
-
-            Source = source;
-        }
+        Source = source;
     }
 }

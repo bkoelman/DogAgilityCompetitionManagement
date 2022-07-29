@@ -1,18 +1,17 @@
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary />
+public sealed class CompetitorNumberSelectionEventArgs : CompetitorSelectionEventArgs
 {
-    /// <summary />
-    public sealed class CompetitorNumberSelectionEventArgs : CompetitorSelectionEventArgs
+    public int CompetitorNumber { get; }
+
+    public CompetitorNumberSelectionEventArgs(int competitorNumber, bool isCurrentCompetitor)
+        : base(isCurrentCompetitor)
     {
-        public int CompetitorNumber { get; }
+        Guard.GreaterOrEqual(competitorNumber, nameof(competitorNumber), 1);
 
-        public CompetitorNumberSelectionEventArgs(int competitorNumber, bool isCurrentCompetitor)
-            : base(isCurrentCompetitor)
-        {
-            Guard.GreaterOrEqual(competitorNumber, nameof(competitorNumber), 1);
-
-            CompetitorNumber = competitorNumber;
-        }
+        CompetitorNumber = competitorNumber;
     }
 }

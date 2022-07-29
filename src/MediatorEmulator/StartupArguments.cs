@@ -1,123 +1,118 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.MediatorEmulator
+namespace DogAgilityCompetition.MediatorEmulator;
+
+/// <summary>
+/// Provides typed access to command-line arguments.
+/// </summary>
+public sealed class StartupArguments
 {
-    /// <summary>
-    /// Provides typed access to command-line arguments.
-    /// </summary>
-    public sealed class StartupArguments
+    public string? Path { get; }
+    public Point? Location { get; }
+    public Size? Size { get; }
+    public FormWindowState State { get; }
+    public bool TransparentOnTop { get; }
+
+    public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop;
+
+    private StartupArguments(string? path, Point? location, Size? size, FormWindowState state, bool transparentOnTop)
     {
-        public string? Path { get; }
-        public Point? Location { get; }
-        public Size? Size { get; }
-        public FormWindowState State { get; }
-        public bool TransparentOnTop { get; }
+        Path = path;
+        Location = location;
+        Size = size;
+        State = state;
+        TransparentOnTop = transparentOnTop;
+    }
 
-        public bool HasLayout => Location != null || Size != null || State != FormWindowState.Normal || TransparentOnTop;
+    public static StartupArguments Parse(IEnumerable<string> args)
+    {
+        Guard.NotNull(args, nameof(args));
 
-        private StartupArguments(string? path, Point? location, Size? size, FormWindowState state, bool transparentOnTop)
+        string? path = null;
+        Point? location = null;
+        Size? size = null;
+        FormWindowState? state = null;
+        bool? transparentOnTop = null;
+
+        foreach (string arg in args)
         {
-            Path = path;
-            Location = location;
-            Size = size;
-            State = state;
-            TransparentOnTop = transparentOnTop;
-        }
-
-        public static StartupArguments Parse(IEnumerable<string> args)
-        {
-            Guard.NotNull(args, nameof(args));
-
-            string? path = null;
-            Point? location = null;
-            Size? size = null;
-            FormWindowState? state = null;
-            bool? transparentOnTop = null;
-
-            foreach (string arg in args)
+            if (arg.StartsWith("pos=", StringComparison.OrdinalIgnoreCase))
             {
-                if (arg.StartsWith("pos=", StringComparison.OrdinalIgnoreCase))
-                {
-                    location = ParseLocation(arg.Substring("pos=".Length));
-                }
-
-                if (arg.StartsWith("size=", StringComparison.OrdinalIgnoreCase))
-                {
-                    size = ParseSize(arg.Substring("size=".Length));
-                }
-                else if (arg.StartsWith("state=", StringComparison.OrdinalIgnoreCase))
-                {
-                    state = ParseWindowState(arg.Substring("state=".Length));
-                }
-                else if (string.Equals(arg, "transparentOnTop", StringComparison.OrdinalIgnoreCase))
-                {
-                    transparentOnTop = true;
-                }
-                else if (!arg.Contains('=', StringComparison.Ordinal))
-                {
-                    if (path != null)
-                    {
-                        throw new InvalidOperationException("Multiple paths are not supported.");
-                    }
-
-                    path = arg;
-                }
+                location = ParseLocation(arg.Substring("pos=".Length));
             }
 
-            return new StartupArguments(path, location, size, state ?? FormWindowState.Normal, transparentOnTop == true);
-        }
-
-        private static Point ParseLocation(string value)
-        {
-            int[]? parts = TrySplitIntoTwoCoordinates(value);
-
-            if (parts != null)
+            if (arg.StartsWith("size=", StringComparison.OrdinalIgnoreCase))
             {
-                return new Point(parts[1], parts[0]);
+                size = ParseSize(arg.Substring("size=".Length));
             }
-
-            throw new Exception("Specify position as top x left, for example: 10x15");
-        }
-
-        private static Size ParseSize(string value)
-        {
-            int[]? parts = TrySplitIntoTwoCoordinates(value);
-
-            if (parts != null)
+            else if (arg.StartsWith("state=", StringComparison.OrdinalIgnoreCase))
             {
-                return new Size(parts[1], parts[0]);
+                state = ParseWindowState(arg.Substring("state=".Length));
             }
-
-            throw new Exception("Specify size as height x width, for example: 250x300");
-        }
-
-        private static int[]? TrySplitIntoTwoCoordinates(string value)
-        {
-            string[] args = value.Split('x');
-
-            if (args.Length == 2)
+            else if (string.Equals(arg, "transparentOnTop", StringComparison.OrdinalIgnoreCase))
             {
-                if (int.TryParse(args[0], out int value0) && int.TryParse(args[1], out int value1))
+                transparentOnTop = true;
+            }
+            else if (!arg.Contains('=', StringComparison.Ordinal))
+            {
+                if (path != null)
                 {
-                    return new[]
-                    {
-                        value0,
-                        value1
-                    };
+                    throw new InvalidOperationException("Multiple paths are not supported.");
                 }
+
+                path = arg;
             }
-
-            return null;
         }
 
-        private static FormWindowState ParseWindowState(string value)
+        return new StartupArguments(path, location, size, state ?? FormWindowState.Normal, transparentOnTop == true);
+    }
+
+    private static Point ParseLocation(string value)
+    {
+        int[]? parts = TrySplitIntoTwoCoordinates(value);
+
+        if (parts != null)
         {
-            return (FormWindowState)Enum.Parse(typeof(FormWindowState), value, true);
+            return new Point(parts[1], parts[0]);
         }
+
+        throw new Exception("Specify position as top x left, for example: 10x15");
+    }
+
+    private static Size ParseSize(string value)
+    {
+        int[]? parts = TrySplitIntoTwoCoordinates(value);
+
+        if (parts != null)
+        {
+            return new Size(parts[1], parts[0]);
+        }
+
+        throw new Exception("Specify size as height x width, for example: 250x300");
+    }
+
+    private static int[]? TrySplitIntoTwoCoordinates(string value)
+    {
+        string[] args = value.Split('x');
+
+        if (args.Length == 2)
+        {
+            if (int.TryParse(args[0], out int value0) && int.TryParse(args[1], out int value1))
+            {
+                return new[]
+                {
+                    value0,
+                    value1
+                };
+            }
+        }
+
+        return null;
+    }
+
+    private static FormWindowState ParseWindowState(string value)
+    {
+        return (FormWindowState)Enum.Parse(typeof(FormWindowState), value, true);
     }
 }

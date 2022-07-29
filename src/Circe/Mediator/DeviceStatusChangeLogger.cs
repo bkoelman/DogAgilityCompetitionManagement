@@ -1,131 +1,127 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Session;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Circe.Mediator
+namespace DogAgilityCompetition.Circe.Mediator;
+
+/// <summary>
+/// Tracks wireless devices whose status change or go on-line/off-line and logs it.
+/// </summary>
+public sealed class DeviceStatusChangeLogger
 {
-    /// <summary>
-    /// Tracks wireless devices whose status change or go on-line/off-line and logs it.
-    /// </summary>
-    public sealed class DeviceStatusChangeLogger
+    private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+
+    private readonly ConcurrentDictionary<WirelessNetworkAddress, DeviceStatus?> deviceStatusMap = new();
+
+    public void ChangeAddress(WirelessNetworkAddress oldAddress, WirelessNetworkAddress newAddress, DeviceCapabilities newCapabilities)
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+        Guard.NotNull(oldAddress, nameof(oldAddress));
+        Guard.NotNull(newAddress, nameof(newAddress));
 
-        private readonly ConcurrentDictionary<WirelessNetworkAddress, DeviceStatus?> deviceStatusMap = new();
-
-        public void ChangeAddress(WirelessNetworkAddress oldAddress, WirelessNetworkAddress newAddress, DeviceCapabilities newCapabilities)
+        if (deviceStatusMap.TryRemove(oldAddress, out DeviceStatus? deviceStatus))
         {
-            Guard.NotNull(oldAddress, nameof(oldAddress));
-            Guard.NotNull(newAddress, nameof(newAddress));
+            deviceStatusMap[newAddress] = deviceStatus;
+            Log.Info($"Device address changed from {oldAddress} to {newAddress} with capabilities: {newCapabilities}.");
+        }
+    }
 
-            if (deviceStatusMap.TryRemove(oldAddress, out DeviceStatus? deviceStatus))
+    public void Update(DeviceStatus status)
+    {
+        Guard.NotNull(status, nameof(status));
+
+        DeviceStatus? previous = deviceStatusMap.ContainsKey(status.DeviceAddress) ? deviceStatusMap[status.DeviceAddress] : null;
+
+        if (previous == null)
+        {
+            Log.Info($"Device on-line: {status}");
+        }
+        else
+        {
+            string changes = FormatChanges(previous, status);
+
+            if (!string.IsNullOrEmpty(changes))
             {
-                deviceStatusMap[newAddress] = deviceStatus;
-                Log.Info($"Device address changed from {oldAddress} to {newAddress} with capabilities: {newCapabilities}.");
+                Log.Info($"Status update for {status.DeviceAddress}: {changes}");
             }
         }
 
-        public void Update(DeviceStatus status)
+        deviceStatusMap[status.DeviceAddress] = status;
+    }
+
+    public void Remove(WirelessNetworkAddress deviceAddress)
+    {
+        Guard.NotNull(deviceAddress, nameof(deviceAddress));
+
+        Log.Info($"Device off-line: {deviceAddress}");
+        deviceStatusMap[deviceAddress] = null;
+    }
+
+    private static string FormatChanges(DeviceStatus previous, DeviceStatus current)
+    {
+        var textBuilder = new StringBuilder();
+
+        using (var formatter = new ObjectFormatter(textBuilder, null))
         {
-            Guard.NotNull(status, nameof(status));
-
-            DeviceStatus? previous = deviceStatusMap.ContainsKey(status.DeviceAddress) ? deviceStatusMap[status.DeviceAddress] : null;
-
-            if (previous == null)
+            if (previous.IsInNetwork != current.IsInNetwork)
             {
-                Log.Info($"Device on-line: {status}");
-            }
-            else
-            {
-                string changes = FormatChanges(previous, status);
-
-                if (!string.IsNullOrEmpty(changes))
-                {
-                    Log.Info($"Status update for {status.DeviceAddress}: {changes}");
-                }
+                formatter.AppendText(previous.IsInNetwork ? "left network" : "joined network");
             }
 
-            deviceStatusMap[status.DeviceAddress] = status;
+            formatter.AppendText(FormatFlagsEnumChanges(previous.Capabilities, current.Capabilities, nameof(current.Capabilities)));
+            formatter.AppendText(FormatFlagsEnumChanges(previous.Roles, current.Roles, nameof(current.Roles)));
+            formatter.AppendText(FormatSimplePropertyChange(previous.SignalStrength, current.SignalStrength, nameof(current.SignalStrength)));
+            formatter.AppendText(FormatSimplePropertyChange(previous.BatteryStatus, current.BatteryStatus, nameof(current.BatteryStatus)));
+            formatter.AppendText(FormatSimplePropertyChange(previous.IsAligned, current.IsAligned, nameof(current.IsAligned)));
+
+            formatter.AppendText(FormatSimplePropertyChange(previous.ClockSynchronization, current.ClockSynchronization, nameof(current.ClockSynchronization)));
+
+            formatter.AppendText(FormatSimplePropertyChange(previous.HasVersionMismatch, current.HasVersionMismatch, nameof(current.HasVersionMismatch)));
         }
 
-        public void Remove(WirelessNetworkAddress deviceAddress)
-        {
-            Guard.NotNull(deviceAddress, nameof(deviceAddress));
+        return textBuilder.ToString();
+    }
 
-            Log.Info($"Device off-line: {deviceAddress}");
-            deviceStatusMap[deviceAddress] = null;
-        }
-
-        private static string FormatChanges(DeviceStatus previous, DeviceStatus current)
+    private static string? FormatFlagsEnumChanges<TEnum>(TEnum previousEnum, TEnum currentEnum, [InvokerParameterName] string name)
+        where TEnum : struct
+    {
+        if (!EqualityComparer<TEnum>.Default.Equals(previousEnum, currentEnum))
         {
+            var previous = (Enum)(object)previousEnum;
+            var current = (Enum)(object)currentEnum;
+
             var textBuilder = new StringBuilder();
 
-            using (var formatter = new ObjectFormatter(textBuilder, null))
+            using (var formatter = new ObjectFormatter(textBuilder, name))
             {
-                if (previous.IsInNetwork != current.IsInNetwork)
+                foreach (Enum value in Enum.GetValues(typeof(TEnum)))
                 {
-                    formatter.AppendText(previous.IsInNetwork ? "left network" : "joined network");
+                    bool inCurrent = current.HasFlag(value);
+                    bool inPrevious = previous.HasFlag(value);
+
+                    if (inCurrent != inPrevious)
+                    {
+                        string symbol = !inPrevious ? "+" : "-";
+                        formatter.AppendText(symbol + Enum.GetName(typeof(TEnum), value));
+                    }
                 }
-
-                formatter.AppendText(FormatFlagsEnumChanges(previous.Capabilities, current.Capabilities, nameof(current.Capabilities)));
-                formatter.AppendText(FormatFlagsEnumChanges(previous.Roles, current.Roles, nameof(current.Roles)));
-                formatter.AppendText(FormatSimplePropertyChange(previous.SignalStrength, current.SignalStrength, nameof(current.SignalStrength)));
-                formatter.AppendText(FormatSimplePropertyChange(previous.BatteryStatus, current.BatteryStatus, nameof(current.BatteryStatus)));
-                formatter.AppendText(FormatSimplePropertyChange(previous.IsAligned, current.IsAligned, nameof(current.IsAligned)));
-
-                formatter.AppendText(FormatSimplePropertyChange(previous.ClockSynchronization, current.ClockSynchronization,
-                    nameof(current.ClockSynchronization)));
-
-                formatter.AppendText(FormatSimplePropertyChange(previous.HasVersionMismatch, current.HasVersionMismatch, nameof(current.HasVersionMismatch)));
             }
 
             return textBuilder.ToString();
         }
 
-        private static string? FormatFlagsEnumChanges<TEnum>(TEnum previousEnum, TEnum currentEnum, [InvokerParameterName] string name)
-            where TEnum : struct
-        {
-            if (!EqualityComparer<TEnum>.Default.Equals(previousEnum, currentEnum))
-            {
-                var previous = (Enum)(object)previousEnum;
-                var current = (Enum)(object)currentEnum;
+        return null;
+    }
 
-                var textBuilder = new StringBuilder();
+    private static string? FormatSimplePropertyChange<T>(T? previous, T? current, [InvokerParameterName] string name)
+    {
+        return !EqualityComparer<T>.Default.Equals(previous, current) ? $"{name} {ValueOrNullText(previous)} -> {ValueOrNullText(current)}" : null;
+    }
 
-                using (var formatter = new ObjectFormatter(textBuilder, name))
-                {
-                    foreach (Enum value in Enum.GetValues(typeof(TEnum)))
-                    {
-                        bool inCurrent = current.HasFlag(value);
-                        bool inPrevious = previous.HasFlag(value);
-
-                        if (inCurrent != inPrevious)
-                        {
-                            string symbol = !inPrevious ? "+" : "-";
-                            formatter.AppendText(symbol + Enum.GetName(typeof(TEnum), value));
-                        }
-                    }
-                }
-
-                return textBuilder.ToString();
-            }
-
-            return null;
-        }
-
-        private static string? FormatSimplePropertyChange<T>(T? previous, T? current, [InvokerParameterName] string name)
-        {
-            return !EqualityComparer<T>.Default.Equals(previous, current) ? $"{name} {ValueOrNullText(previous)} -> {ValueOrNullText(current)}" : null;
-        }
-
-        private static string ValueOrNullText(object? value)
-        {
-            return value?.ToString() ?? "(null)";
-        }
+    private static string ValueOrNullText(object? value)
+    {
+        return value?.ToString() ?? "(null)";
     }
 }

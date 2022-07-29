@@ -1,70 +1,68 @@
-using System.IO;
 using System.Runtime.Serialization;
 using DogAgilityCompetition.Circe;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization
+namespace DogAgilityCompetition.Controller.Engine.Storage.Serialization;
+
+/// <summary>
+/// XML representation for <see cref="Competitor" />.
+/// </summary>
+[DataContract(Namespace = "")]
+public sealed class CompetitorXml
 {
-    /// <summary>
-    /// XML representation for <see cref="Competitor" />.
-    /// </summary>
-    [DataContract(Namespace = "")]
-    public sealed class CompetitorXml
+    [DataMember]
+    public int Number { get; set; }
+
+    [DataMember]
+    public string? HandlerName { get; set; }
+
+    [DataMember]
+    public string? DogName { get; set; }
+
+    [DataMember]
+    public string? CountryCode { get; set; }
+
+    public static CompetitorXml ToXmlObject(Competitor source)
     {
-        [DataMember]
-        public int Number { get; set; }
+        Guard.NotNull(source, nameof(source));
 
-        [DataMember]
-        public string? HandlerName { get; set; }
-
-        [DataMember]
-        public string? DogName { get; set; }
-
-        [DataMember]
-        public string? CountryCode { get; set; }
-
-        public static CompetitorXml ToXmlObject(Competitor source)
+        return new CompetitorXml
         {
-            Guard.NotNull(source, nameof(source));
+            Number = source.Number,
+            HandlerName = source.HandlerName,
+            DogName = source.DogName,
+            CountryCode = source.CountryCode
+        };
+    }
 
-            return new CompetitorXml
-            {
-                Number = source.Number,
-                HandlerName = source.HandlerName,
-                DogName = source.DogName,
-                CountryCode = source.CountryCode
-            };
+    public static Competitor FromXmlObject(CompetitorXml source)
+    {
+        Guard.NotNull(source, nameof(source));
+        string name = AssertHandlerNameNotEmpty(source);
+        string dogName = AssertDogNameNotEmpty(source);
+
+        return new Competitor(source.Number, name, dogName).ChangeCountryCode(source.CountryCode);
+    }
+
+    [AssertionMethod]
+    private static string AssertHandlerNameNotEmpty(CompetitorXml source)
+    {
+        if (string.IsNullOrWhiteSpace(source.HandlerName))
+        {
+            throw new InvalidDataException("Competitor handler name is missing or empty in XML file.");
         }
 
-        public static Competitor FromXmlObject(CompetitorXml source)
-        {
-            Guard.NotNull(source, nameof(source));
-            string name = AssertHandlerNameNotEmpty(source);
-            string dogName = AssertDogNameNotEmpty(source);
+        return source.HandlerName;
+    }
 
-            return new Competitor(source.Number, name, dogName).ChangeCountryCode(source.CountryCode);
+    [AssertionMethod]
+    private static string AssertDogNameNotEmpty(CompetitorXml source)
+    {
+        if (string.IsNullOrWhiteSpace(source.DogName))
+        {
+            throw new InvalidDataException("Competitor dog name is missing or empty in XML file.");
         }
 
-        [AssertionMethod]
-        private static string AssertHandlerNameNotEmpty(CompetitorXml source)
-        {
-            if (string.IsNullOrWhiteSpace(source.HandlerName))
-            {
-                throw new InvalidDataException("Competitor handler name is missing or empty in XML file.");
-            }
-
-            return source.HandlerName;
-        }
-
-        [AssertionMethod]
-        private static string AssertDogNameNotEmpty(CompetitorXml source)
-        {
-            if (string.IsNullOrWhiteSpace(source.DogName))
-            {
-                throw new InvalidDataException("Competitor dog name is missing or empty in XML file.");
-            }
-
-            return source.DogName;
-        }
+        return source.DogName;
     }
 }

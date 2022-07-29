@@ -1,60 +1,58 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe.Protocol;
 
-namespace DogAgilityCompetition.MediatorEmulator.UI.Controls
+namespace DogAgilityCompetition.MediatorEmulator.UI.Controls;
+
+/// <summary>
+/// Enables configuration of network status for emulated wireless devices, such as logical network membership and assigned roles.
+/// </summary>
+public sealed partial class NetworkStatusControl : UserControl
 {
-    /// <summary>
-    /// Enables configuration of network status for emulated wireless devices, such as logical network membership and assigned roles.
-    /// </summary>
-    public sealed partial class NetworkStatusControl : UserControl
+    private DeviceRoles rolesAssigned = DeviceRoles.None;
+
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public bool IsInNetwork
     {
-        private DeviceRoles rolesAssigned = DeviceRoles.None;
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool IsInNetwork
+        get => isInNetworkCheckBox.Checked;
+        set
         {
-            get => isInNetworkCheckBox.Checked;
-            set
+            if (value != IsInNetwork)
             {
-                if (value != IsInNetwork)
-                {
-                    isInNetworkCheckBox.Checked = value;
+                isInNetworkCheckBox.Checked = value;
 
-                    StatusChanged?.Invoke(this, EventArgs.Empty);
-                }
+                StatusChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+    }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DeviceRoles RolesAssigned
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public DeviceRoles RolesAssigned
+    {
+        get => rolesAssigned;
+        set
         {
-            get => rolesAssigned;
-            set
+            if (value != RolesAssigned)
             {
-                if (value != RolesAssigned)
-                {
-                    rolesAssigned = value;
-                    rolesLabel.Text = "Roles: " + rolesAssigned;
+                rolesAssigned = value;
+                rolesLabel.Text = "Roles: " + rolesAssigned;
 
-                    StatusChanged?.Invoke(this, EventArgs.Empty);
-                }
+                StatusChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+    }
 
-        public event EventHandler? StatusChanged;
+    public event EventHandler? StatusChanged;
 
-        public NetworkStatusControl()
-        {
-            InitializeComponent();
-        }
+    public NetworkStatusControl()
+    {
+        InitializeComponent();
+    }
 
-        private void IsInNetworkCheckBox_CheckedChanged(object? sender, EventArgs e)
-        {
-            StatusChanged?.Invoke(this, EventArgs.Empty);
-        }
+    private void IsInNetworkCheckBox_CheckedChanged(object? sender, EventArgs e)
+    {
+        StatusChanged?.Invoke(this, EventArgs.Empty);
     }
 }

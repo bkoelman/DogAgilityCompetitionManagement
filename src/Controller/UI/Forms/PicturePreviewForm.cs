@@ -1,42 +1,41 @@
 ﻿using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.Controller.UI.Forms
+namespace DogAgilityCompetition.Controller.UI.Forms;
+
+/// <summary>
+/// Dialog to preview a picture during configuration.
+/// </summary>
+public sealed partial class PicturePreviewForm : Form
 {
-    /// <summary>
-    /// Dialog to preview a picture during configuration.
-    /// </summary>
-    public sealed partial class PicturePreviewForm : Form
+    public PicturePreviewForm()
     {
-        public PicturePreviewForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public static void ShowPreview(string path, string title, Form parent)
-        {
-            Guard.NotNullNorEmpty(path, nameof(path));
-            Guard.NotNullNorEmpty(title, nameof(title));
-            Guard.NotNull(parent, nameof(parent));
+    public static void ShowPreview(string path, string title, Form parent)
+    {
+        Guard.NotNullNorEmpty(path, nameof(path));
+        Guard.NotNullNorEmpty(title, nameof(title));
+        Guard.NotNull(parent, nameof(parent));
 
-            using var form = new PicturePreviewForm
+        using var form = new PicturePreviewForm
+        {
+            pictureBox =
             {
-                pictureBox =
-                {
-                    ImageLocation = path
-                },
-                Text = title + " preview"
-            };
+                ImageLocation = path
+            },
+            Text = title + " preview"
+        };
 
-            form.ShowDialog(parent);
-        }
+        form.ShowDialog(parent);
+    }
 
-        private void PicturePreviewForm_KeyDown(object? sender, KeyEventArgs e)
+    private void PicturePreviewForm_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Escape)
         {
-            if (e.KeyCode == Keys.Escape)
-            {
-                Close();
-            }
+            Close();
         }
     }
 }

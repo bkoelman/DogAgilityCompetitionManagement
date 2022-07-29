@@ -1,121 +1,116 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security;
 
-namespace DogAgilityCompetition.Circe.Session
+namespace DogAgilityCompetition.Circe.Session;
+
+/// <summary>
+/// Performs a single attempt to find an available serial port on the system and returns a connection for it. A specific port can be selected by
+/// specifying "port=COMx" as command line parameter.
+/// </summary>
+public static class ComPortSelector
 {
-    /// <summary>
-    /// Performs a single attempt to find an available serial port on the system and returns a connection for it. A specific port can be selected by
-    /// specifying "port=COMx" as command line parameter.
-    /// </summary>
-    public static class ComPortSelector
+    private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+
+    public static CirceComConnection GetConnection(Action<CirceComConnection>? attachHandlersCallback = null,
+        Action<CirceComConnection>? detachHandlersCallback = null, string? specificComPort = null)
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+        IList<string> selectablePortNames = SystemPortProvider.GetAllComPorts(true);
 
-        public static CirceComConnection GetConnection(Action<CirceComConnection>? attachHandlersCallback = null,
-            Action<CirceComConnection>? detachHandlersCallback = null, string? specificComPort = null)
+        string displayPortNames = string.Join(", ", selectablePortNames);
+        Log.Debug($"System COM ports: {displayPortNames}");
+
+        if (!selectablePortNames.Any())
         {
-            IList<string> selectablePortNames = SystemPortProvider.GetAllComPorts(true);
+            throw new SerialConnectionException("This system contains no serial ports.");
+        }
 
-            string displayPortNames = string.Join(", ", selectablePortNames);
-            Log.Debug($"System COM ports: {displayPortNames}");
+        string? forcePortTo = specificComPort ?? TryGetPortFromStartupArguments();
 
-            if (!selectablePortNames.Any())
+        if (forcePortTo != null)
+        {
+            if (selectablePortNames.Contains(forcePortTo, StringComparer.OrdinalIgnoreCase))
             {
-                throw new SerialConnectionException("This system contains no serial ports.");
-            }
+                CirceComConnection? specificConnection = TryCreateOpenedConnection(forcePortTo, attachHandlersCallback, detachHandlersCallback);
 
-            string? forcePortTo = specificComPort ?? TryGetPortFromStartupArguments();
-
-            if (forcePortTo != null)
-            {
-                if (selectablePortNames.Contains(forcePortTo, StringComparer.OrdinalIgnoreCase))
+                if (specificConnection != null)
                 {
-                    CirceComConnection? specificConnection = TryCreateOpenedConnection(forcePortTo, attachHandlersCallback, detachHandlersCallback);
-
-                    if (specificConnection != null)
-                    {
-                        return specificConnection;
-                    }
-
-                    throw new SerialConnectionException($"Failed to open serial port {forcePortTo}.");
+                    return specificConnection;
                 }
 
-                throw new SerialConnectionException($"Serial port {forcePortTo} is not available on this system.");
+                throw new SerialConnectionException($"Failed to open serial port {forcePortTo}.");
             }
 
-            foreach (string portName in selectablePortNames)
-            {
-                CirceComConnection? nextConnection = TryCreateOpenedConnection(portName, attachHandlersCallback, detachHandlersCallback);
-
-                if (nextConnection != null)
-                {
-                    return nextConnection;
-                }
-            }
-
-            throw new SerialConnectionException($"None of the available serial ports ({displayPortNames}) could be opened.");
+            throw new SerialConnectionException($"Serial port {forcePortTo} is not available on this system.");
         }
 
-        private static CirceComConnection? TryCreateOpenedConnection(string portName, Action<CirceComConnection>? attachHandlersCallback,
-            Action<CirceComConnection>? detachHandlersCallback)
+        foreach (string portName in selectablePortNames)
         {
-            CirceComConnection? connection = null;
-            Exception error;
+            CirceComConnection? nextConnection = TryCreateOpenedConnection(portName, attachHandlersCallback, detachHandlersCallback);
 
-            try
+            if (nextConnection != null)
             {
-                connection = new CirceComConnection(portName);
-
-                attachHandlersCallback?.Invoke(connection);
-
-                connection.Open();
-                return connection;
+                return nextConnection;
             }
-            catch (InvalidOperationException ex)
-            {
-                // This may happen when you unplug the serial port cable while writing to the port.
-                // The exception indicates that the port has been closed, so writing fails.
-                error = ex;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                error = ex;
-            }
-            catch (SecurityException ex)
-            {
-                error = ex;
-            }
-            catch (IOException ex)
-            {
-                error = ex;
-            }
-
-            Log.Debug($"Failed to open port {portName}: {error.GetType()}: {error.Message}");
-
-            if (connection != null)
-            {
-                detachHandlersCallback?.Invoke(connection);
-
-                connection.Dispose();
-            }
-
-            return null;
         }
 
-        private static string? TryGetPortFromStartupArguments()
+        throw new SerialConnectionException($"None of the available serial ports ({displayPortNames}) could be opened.");
+    }
+
+    private static CirceComConnection? TryCreateOpenedConnection(string portName, Action<CirceComConnection>? attachHandlersCallback,
+        Action<CirceComConnection>? detachHandlersCallback)
+    {
+        CirceComConnection? connection = null;
+        Exception error;
+
+        try
         {
-            const string search = "port=";
+            connection = new CirceComConnection(portName);
 
-            IEnumerable<string> query =
-                from argument in Environment.GetCommandLineArgs()
-                where argument.StartsWith(search, StringComparison.OrdinalIgnoreCase)
-                select argument.Substring(search.Length).ToUpperInvariant();
+            attachHandlersCallback?.Invoke(connection);
 
-            return query.FirstOrDefault(value => value.Length > 0);
+            connection.Open();
+            return connection;
         }
+        catch (InvalidOperationException ex)
+        {
+            // This may happen when you unplug the serial port cable while writing to the port.
+            // The exception indicates that the port has been closed, so writing fails.
+            error = ex;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            error = ex;
+        }
+        catch (SecurityException ex)
+        {
+            error = ex;
+        }
+        catch (IOException ex)
+        {
+            error = ex;
+        }
+
+        Log.Debug($"Failed to open port {portName}: {error.GetType()}: {error.Message}");
+
+        if (connection != null)
+        {
+            detachHandlersCallback?.Invoke(connection);
+
+            connection.Dispose();
+        }
+
+        return null;
+    }
+
+    private static string? TryGetPortFromStartupArguments()
+    {
+        const string search = "port=";
+
+        IEnumerable<string> query =
+            from argument in Environment.GetCommandLineArgs()
+            where argument.StartsWith(search, StringComparison.OrdinalIgnoreCase)
+            select argument.Substring(search.Length).ToUpperInvariant();
+
+        return query.FirstOrDefault(value => value.Length > 0);
     }
 }

@@ -1,50 +1,48 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
 
-namespace DogAgilityCompetition.Circe.Session
+namespace DogAgilityCompetition.Circe.Session;
+
+/// <summary>
+/// Wraps a <see cref="System.Enum" />, where reading and writing the wrapped value always atomically returns the latest value.
+/// </summary>
+/// <remarks>
+/// It is strongly recommended to mark <see cref="FreshEnum{T}" /> members in your class as <c>readonly</c>, because accidentally replacing a FreshEnum
+/// object with another FreshEnum object defeats the whole purpose of this class.
+/// </remarks>
+[SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
+public sealed class FreshEnum<T>
+    where T : struct
 {
-    /// <summary>
-    /// Wraps a <see cref="System.Enum" />, where reading and writing the wrapped value always atomically returns the latest value.
-    /// </summary>
-    /// <remarks>
-    /// It is strongly recommended to mark <see cref="FreshEnum{T}" /> members in your class as <c>readonly</c>, because accidentally replacing a FreshEnum
-    /// object with another FreshEnum object defeats the whole purpose of this class.
-    /// </remarks>
-    [SuppressMessage("Naming", "CA1711:Identifiers should not have incorrect suffix")]
-    public sealed class FreshEnum<T>
-        where T : struct
+    private long innerValue;
+
+    public T Value
     {
-        private long innerValue;
-
-        public T Value
+        get
         {
-            get
-            {
-                long longValue = Interlocked.CompareExchange(ref innerValue, 999, 999);
-                return FromInt64(longValue);
-            }
-            set
-            {
-                long longValue = ToInt64(value);
-                Interlocked.Exchange(ref innerValue, longValue);
-            }
+            long longValue = Interlocked.CompareExchange(ref innerValue, 999, 999);
+            return FromInt64(longValue);
         }
-
-        public FreshEnum(T value)
+        set
         {
-            Value = value;
+            long longValue = ToInt64(value);
+            Interlocked.Exchange(ref innerValue, longValue);
         }
+    }
 
-        private static T FromInt64(long value)
-        {
-            return (T)Enum.Parse(typeof(T), value.ToString(CultureInfo.InvariantCulture));
-        }
+    public FreshEnum(T value)
+    {
+        Value = value;
+    }
 
-        private static long ToInt64(T value)
-        {
-            return Convert.ToInt64(value, CultureInfo.InvariantCulture);
-        }
+    private static T FromInt64(long value)
+    {
+        return (T)Enum.Parse(typeof(T), value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    private static long ToInt64(T value)
+    {
+        return Convert.ToInt64(value, CultureInfo.InvariantCulture);
     }
 }

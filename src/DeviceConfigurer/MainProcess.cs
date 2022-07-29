@@ -6,162 +6,161 @@ using DogAgilityCompetition.Circe.Session;
 using DogAgilityCompetition.DeviceConfigurer.Phases;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.DeviceConfigurer
+namespace DogAgilityCompetition.DeviceConfigurer;
+
+/// <summary>
+/// Controls the phase transitions for the wireless network address assignment process.
+/// </summary>
+public sealed class MainProcess
 {
-    /// <summary>
-    /// Controls the phase transitions for the wireless network address assignment process.
-    /// </summary>
-    public sealed class MainProcess
+    private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+
+    private readonly StartupArguments startupArguments;
+    private readonly IncomingOperationDispatcher dispatcher;
+
+    private bool IsConfiguringMediator => startupArguments.Capabilities == null;
+
+    public MainProcess(StartupArguments startupArguments)
     {
-        private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
+        Guard.NotNull(startupArguments, nameof(startupArguments));
 
-        private readonly StartupArguments startupArguments;
-        private readonly IncomingOperationDispatcher dispatcher;
+        this.startupArguments = startupArguments;
+        dispatcher = new IncomingOperationDispatcher(this);
+    }
 
-        private bool IsConfiguringMediator => startupArguments.Capabilities == null;
+    public void Run()
+    {
+        var stateMachine = new AssignmentStateMachine(new PhaseWaitingForConnection());
+        CirceComConnection connection = null!;
 
-        public MainProcess(StartupArguments startupArguments)
+        Log.Info($"Connecting to mediator on {startupArguments.ComPortName}...");
+
+        stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(_ =>
         {
-            Guard.NotNull(startupArguments, nameof(startupArguments));
+            connection = new CirceComConnection(startupArguments.ComPortName);
+            connection.OperationReceived += (_, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
+            connection.Open();
+            connection.Send(new LoginOperation());
 
-            this.startupArguments = startupArguments;
-            dispatcher = new IncomingOperationDispatcher(this);
+            return new PhaseWaitingForLoginResponse();
+        });
+
+        Log.Info("Waiting for login response...");
+        var readyForDeviceSetup = stateMachine.WaitForPhase<PhaseReadyForDeviceSetup>();
+        Log.Info($"Mediator status in login response: {readyForDeviceSetup.MediatorStatus}.");
+
+        if (!IsConfiguringMediator && readyForDeviceSetup.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured)
+        {
+            Log.Info("ERROR: Connected to unconfigured mediator. Please configure mediator first.");
+            return;
         }
 
-        public void Run()
+        Log.Info("Sending address assignment...");
+
+        stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(_ =>
         {
-            var stateMachine = new AssignmentStateMachine(new PhaseWaitingForConnection());
-            CirceComConnection connection = null!;
-
-            Log.Info($"Connecting to mediator on {startupArguments.ComPortName}...");
-
-            stateMachine.ExecuteIfInPhase<PhaseWaitingForConnection>(_ =>
+            connection.Send(new DeviceSetupOperation(startupArguments.NewAddress)
             {
-                connection = new CirceComConnection(startupArguments.ComPortName);
-                connection.OperationReceived += (_, eventArgs) => ConnectionOperationReceived(eventArgs, stateMachine);
-                connection.Open();
-                connection.Send(new LoginOperation());
-
-                return new PhaseWaitingForLoginResponse();
+                DestinationAddress = startupArguments.OldAddress,
+                Capabilities = startupArguments.Capabilities
             });
 
-            Log.Info("Waiting for login response...");
-            var readyForDeviceSetup = stateMachine.WaitForPhase<PhaseReadyForDeviceSetup>();
-            Log.Info($"Mediator status in login response: {readyForDeviceSetup.MediatorStatus}.");
+            return new PhaseWaitingForSetupResponse(startupArguments.NewAddress);
+        });
 
-            if (!IsConfiguringMediator && readyForDeviceSetup.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured)
-            {
-                Log.Info("ERROR: Connected to unconfigured mediator. Please configure mediator first.");
-                return;
-            }
+        Log.Info("Waiting for response from new device...");
+        var assignmentCompleted = stateMachine.WaitForPhase<PhaseAssignmentCompleted>();
 
-            Log.Info("Sending address assignment...");
+        Log.Info(assignmentCompleted.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured
+            ? "ERROR: Failed to assign mediator address."
+            : "Received response on new address.");
 
-            stateMachine.ExecuteIfInPhase<PhaseReadyForDeviceSetup>(_ =>
-            {
-                connection.Send(new DeviceSetupOperation(startupArguments.NewAddress)
-                {
-                    DestinationAddress = startupArguments.OldAddress,
-                    Capabilities = startupArguments.Capabilities
-                });
+        Log.Info("Disconnecting...");
+        connection.Send(new LogoutOperation());
+    }
 
-                return new PhaseWaitingForSetupResponse(startupArguments.NewAddress);
-            });
+    private void ConnectionOperationReceived(IncomingOperationEventArgs e, AssignmentStateMachine stateMachine)
+    {
+        dispatcher.SetStateMachine(stateMachine);
+        e.Operation.Visit(dispatcher);
+    }
 
-            Log.Info("Waiting for response from new device...");
-            var assignmentCompleted = stateMachine.WaitForPhase<PhaseAssignmentCompleted>();
+    private sealed class IncomingOperationDispatcher : IOperationAcceptor
+    {
+        private readonly MainProcess owner;
 
-            Log.Info(assignmentCompleted.MediatorStatus == KnownMediatorStatusCode.MediatorUnconfigured
-                ? "ERROR: Failed to assign mediator address."
-                : "Received response on new address.");
+        private AssignmentStateMachine? assignmentStateMachine;
 
-            Log.Info("Disconnecting...");
-            connection.Send(new LogoutOperation());
+        public IncomingOperationDispatcher(MainProcess owner)
+        {
+            Guard.NotNull(owner, nameof(owner));
+            this.owner = owner;
         }
 
-        private void ConnectionOperationReceived(IncomingOperationEventArgs e, AssignmentStateMachine stateMachine)
+        public void SetStateMachine(AssignmentStateMachine stateMachine)
         {
-            dispatcher.SetStateMachine(stateMachine);
-            e.Operation.Visit(dispatcher);
+            Guard.NotNull(stateMachine, nameof(stateMachine));
+            assignmentStateMachine = stateMachine;
         }
 
-        private sealed class IncomingOperationDispatcher : IOperationAcceptor
+        public void Accept(LoginOperation operation)
         {
-            private readonly MainProcess owner;
+        }
 
-            private AssignmentStateMachine? assignmentStateMachine;
+        public void Accept(LogoutOperation operation)
+        {
+        }
 
-            public IncomingOperationDispatcher(MainProcess owner)
+        public void Accept(AlertOperation operation)
+        {
+        }
+
+        public void Accept(NetworkSetupOperation operation)
+        {
+        }
+
+        public void Accept(DeviceSetupOperation operation)
+        {
+        }
+
+        public void Accept(SynchronizeClocksOperation operation)
+        {
+        }
+
+        public void Accept(VisualizeOperation operation)
+        {
+        }
+
+        public void Accept(KeepAliveOperation operation)
+        {
+            AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
+
+            bool transitioned = stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(_ => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
+
+            if (!transitioned)
             {
-                Guard.NotNull(owner, nameof(owner));
-                this.owner = owner;
+                stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(_ =>
+                    owner.IsConfiguringMediator ? (AssignmentPhase)new PhaseAssignmentCompleted(operation.MediatorStatus) : null);
             }
+        }
 
-            public void SetStateMachine(AssignmentStateMachine stateMachine)
-            {
-                Guard.NotNull(stateMachine, nameof(stateMachine));
-                assignmentStateMachine = stateMachine;
-            }
+        public void Accept(NotifyStatusOperation operation)
+        {
+            AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
 
-            public void Accept(LoginOperation operation)
-            {
-            }
+            stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(phase =>
+                phase.NewAddress == operation.OriginatingAddress ? new PhaseAssignmentCompleted(null) : null);
+        }
 
-            public void Accept(LogoutOperation operation)
-            {
-            }
+        public void Accept(NotifyActionOperation operation)
+        {
+        }
 
-            public void Accept(AlertOperation operation)
-            {
-            }
-
-            public void Accept(NetworkSetupOperation operation)
-            {
-            }
-
-            public void Accept(DeviceSetupOperation operation)
-            {
-            }
-
-            public void Accept(SynchronizeClocksOperation operation)
-            {
-            }
-
-            public void Accept(VisualizeOperation operation)
-            {
-            }
-
-            public void Accept(KeepAliveOperation operation)
-            {
-                AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
-
-                bool transitioned = stateMachine.ExecuteIfInPhase<PhaseWaitingForLoginResponse>(_ => new PhaseReadyForDeviceSetup(operation.MediatorStatus));
-
-                if (!transitioned)
-                {
-                    stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(_ =>
-                        owner.IsConfiguringMediator ? (AssignmentPhase)new PhaseAssignmentCompleted(operation.MediatorStatus) : null);
-                }
-            }
-
-            public void Accept(NotifyStatusOperation operation)
-            {
-                AssignmentStateMachine stateMachine = AssertStateMachineIsAssigned(assignmentStateMachine);
-
-                stateMachine.ExecuteIfInPhase<PhaseWaitingForSetupResponse>(phase =>
-                    phase.NewAddress == operation.OriginatingAddress ? new PhaseAssignmentCompleted(null) : null);
-            }
-
-            public void Accept(NotifyActionOperation operation)
-            {
-            }
-
-            [AssertionMethod]
-            private static AssignmentStateMachine AssertStateMachineIsAssigned(AssignmentStateMachine? stateMachine)
-            {
-                Guard.NotNull(stateMachine, nameof(stateMachine));
-                return stateMachine;
-            }
+        [AssertionMethod]
+        private static AssignmentStateMachine AssertStateMachineIsAssigned(AssignmentStateMachine? stateMachine)
+        {
+            Guard.NotNull(stateMachine, nameof(stateMachine));
+            return stateMachine;
         }
     }
 }

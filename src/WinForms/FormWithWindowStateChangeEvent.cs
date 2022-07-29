@@ -1,82 +1,80 @@
-using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace DogAgilityCompetition.WinForms
+namespace DogAgilityCompetition.WinForms;
+
+/// <summary>
+/// A <see cref="Form" /> that notifies about changes in window state (minimize, maximize and restore).
+/// </summary>
+public class FormWithWindowStateChangeEvent : FormWithHandleManagement
 {
-    /// <summary>
-    /// A <see cref="Form" /> that notifies about changes in window state (minimize, maximize and restore).
-    /// </summary>
-    public class FormWithWindowStateChangeEvent : FormWithHandleManagement
+    [Category("Property Changed")]
+    [Description("Event raised before the value of WindowState property is changed on Form.")]
+    public event EventHandler<WindowStateChangingEventArgs>? WindowStateChanging;
+
+    [Category("Property Changed")]
+    [Description("Event raised after the value of WindowState property is changed on Form.")]
+    public event EventHandler? WindowStateChanged;
+
+    protected override void WndProc(ref Message m)
     {
-        [Category("Property Changed")]
-        [Description("Event raised before the value of WindowState property is changed on Form.")]
-        public event EventHandler<WindowStateChangingEventArgs>? WindowStateChanging;
+        FormWindowState? newWindowState = null;
 
-        [Category("Property Changed")]
-        [Description("Event raised after the value of WindowState property is changed on Form.")]
-        public event EventHandler? WindowStateChanged;
-
-        protected override void WndProc(ref Message m)
+        if (m.Msg == WinUserConstants.WmSysCommand)
         {
-            FormWindowState? newWindowState = null;
+            int wParam = m.WParam.ToInt32() & 0xFFF0;
 
-            if (m.Msg == WinUserConstants.WmSysCommand)
+            if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize || wParam == WinUserConstants.ScRestore)
             {
-                int wParam = m.WParam.ToInt32() & 0xFFF0;
+                newWindowState = TranslateWindowState(wParam);
+            }
+        }
 
-                if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize || wParam == WinUserConstants.ScRestore)
+        if (newWindowState != null)
+        {
+            EventHandler<WindowStateChangingEventArgs>? eventHandler = WindowStateChanging;
+
+            if (eventHandler != null)
+            {
+                var args = new WindowStateChangingEventArgs(newWindowState.Value);
+                eventHandler(this, args);
+
+                if (args.Cancel)
                 {
-                    newWindowState = TranslateWindowState(wParam);
+                    return;
                 }
             }
-
-            if (newWindowState != null)
-            {
-                EventHandler<WindowStateChangingEventArgs>? eventHandler = WindowStateChanging;
-
-                if (eventHandler != null)
-                {
-                    var args = new WindowStateChangingEventArgs(newWindowState.Value);
-                    eventHandler(this, args);
-
-                    if (args.Cancel)
-                    {
-                        return;
-                    }
-                }
-            }
-
-            base.WndProc(ref m);
-
-            if (newWindowState != null)
-            {
-                WindowStateChanged?.Invoke(this, EventArgs.Empty);
-            }
         }
 
-        private static FormWindowState? TranslateWindowState(int wParam)
+        base.WndProc(ref m);
+
+        if (newWindowState != null)
         {
-            switch (wParam)
-            {
-                case WinUserConstants.ScMinimize:
-                    return FormWindowState.Minimized;
-                case WinUserConstants.ScMaximize:
-                    return FormWindowState.Maximized;
-                case WinUserConstants.ScRestore:
-                    return FormWindowState.Normal;
-                default:
-                    return null;
-            }
+            WindowStateChanged?.Invoke(this, EventArgs.Empty);
         }
+    }
 
-        private static class WinUserConstants
+    private static FormWindowState? TranslateWindowState(int wParam)
+    {
+        switch (wParam)
         {
-            public const int WmSysCommand = 0x0112;
-
-            public const int ScMinimize = 0xF020;
-            public const int ScMaximize = 0xF030;
-            public const int ScRestore = 0xF120;
+            case WinUserConstants.ScMinimize:
+                return FormWindowState.Minimized;
+            case WinUserConstants.ScMaximize:
+                return FormWindowState.Maximized;
+            case WinUserConstants.ScRestore:
+                return FormWindowState.Normal;
+            default:
+                return null;
         }
+    }
+
+    private static class WinUserConstants
+    {
+        public const int WmSysCommand = 0x0112;
+
+        public const int ScMinimize = 0xF020;
+        public const int ScMaximize = 0xF030;
+        public const int ScRestore = 0xF120;
     }
 }

@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace DogAgilityCompetition.Controller.Engine;
 
-namespace DogAgilityCompetition.Controller.Engine
+/// <summary />
+public sealed class EliminationEventArgs : EventArgs
 {
-    /// <summary />
-    public sealed class EliminationEventArgs : EventArgs
-    {
-        public bool IsEliminated { get; }
+    public bool IsEliminated { get; }
 
-        public EliminationEventArgs(bool isEliminated)
-        {
-            IsEliminated = isEliminated;
-        }
+    public EliminationEventArgs(bool isEliminated)
+    {
+        IsEliminated = isEliminated;
     }
 }

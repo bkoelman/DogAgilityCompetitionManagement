@@ -1,22 +1,20 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary />
+public sealed class RemoteKeyEventArgs : DeviceTimeEventArgs
 {
-    /// <summary />
-    public sealed class RemoteKeyEventArgs : DeviceTimeEventArgs
+    public RemoteKey Key { get; }
+
+    public RemoteKeyEventArgs(WirelessNetworkAddress source, RemoteKey key, TimeSpan? sensorTime)
+        : base(source, sensorTime)
     {
-        public RemoteKey Key { get; }
+        Key = key;
+    }
 
-        public RemoteKeyEventArgs(WirelessNetworkAddress source, RemoteKey key, TimeSpan? sensorTime)
-            : base(source, sensorTime)
-        {
-            Key = key;
-        }
-
-        public override string ToString()
-        {
-            return $"{GetType().Name}: Key={Key}, SensorTime={SensorTime}, Source={Source}";
-        }
+    public override string ToString()
+    {
+        return $"{GetType().Name}: Key={Key}, SensorTime={SensorTime}, Source={Source}";
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace DogAgilityCompetition.Controller.UI.Controls.Shapes
+﻿namespace DogAgilityCompetition.Controller.UI.Controls.Shapes;
+
+public abstract class ArrowShape : Shape
 {
-    public abstract class ArrowShape : Shape
-    {
-    }
 }

@@ -1,15 +1,12 @@
-using System;
+namespace DogAgilityCompetition.Controller.Engine;
 
-namespace DogAgilityCompetition.Controller.Engine
+/// <summary />
+public class CompetitorSelectionEventArgs : EventArgs
 {
-    /// <summary />
-    public class CompetitorSelectionEventArgs : EventArgs
-    {
-        public bool IsCurrentCompetitor { get; }
+    public bool IsCurrentCompetitor { get; }
 
-        public CompetitorSelectionEventArgs(bool isCurrentCompetitor)
-        {
-            IsCurrentCompetitor = isCurrentCompetitor;
-        }
+    public CompetitorSelectionEventArgs(bool isCurrentCompetitor)
+    {
+        IsCurrentCompetitor = isCurrentCompetitor;
     }
 }

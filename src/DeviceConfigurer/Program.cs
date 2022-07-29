@@ -1,39 +1,37 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
 
-namespace DogAgilityCompetition.DeviceConfigurer
+namespace DogAgilityCompetition.DeviceConfigurer;
+
+/// <summary>
+/// The application entry point.
+/// </summary>
+internal static class Program
 {
+    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+
     /// <summary>
-    /// The application entry point.
+    /// The main entry point for the application.
     /// </summary>
-    internal static class Program
+    private static void Main(string[] args)
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        //CirceSpecExamples.DumpScenarios();
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        private static void Main(string[] args)
+        StartupArguments? startupArguments = StartupArguments.Parse(args);
+
+        if (startupArguments != null)
         {
-            //CirceSpecExamples.DumpScenarios();
+            ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.DeviceConfigurer.log4net.config"));
 
-            StartupArguments? startupArguments = StartupArguments.Parse(args);
+            Log.Info("Application started.");
 
-            if (startupArguments != null)
-            {
-                ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-                XmlConfigurator.ConfigureAndWatch(logRepository, new FileInfo("DogAgilityCompetition.DeviceConfigurer.log4net.config"));
+            var process = new MainProcess(startupArguments);
+            process.Run();
 
-                Log.Info("Application started.");
-
-                var process = new MainProcess(startupArguments);
-                process.Run();
-
-                Log.Info("Application ended.");
-            }
+            Log.Info("Application ended.");
         }
     }
 }

@@ -1,22 +1,20 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary />
+public class DeviceTimeEventArgs : DeviceEventArgs
 {
-    /// <summary />
-    public class DeviceTimeEventArgs : DeviceEventArgs
+    public TimeSpan? SensorTime { get; }
+
+    public DeviceTimeEventArgs(WirelessNetworkAddress source, TimeSpan? sensorTime)
+        : base(source)
     {
-        public TimeSpan? SensorTime { get; }
+        SensorTime = sensorTime;
+    }
 
-        public DeviceTimeEventArgs(WirelessNetworkAddress source, TimeSpan? sensorTime)
-            : base(source)
-        {
-            SensorTime = sensorTime;
-        }
-
-        public override string ToString()
-        {
-            return $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
-        }
+    public override string ToString()
+    {
+        return $"{GetType().Name}: SensorTime={SensorTime}, Source={Source}";
     }
 }

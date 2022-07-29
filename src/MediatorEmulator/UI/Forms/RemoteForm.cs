@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Circe.Mediator;
 using DogAgilityCompetition.Circe.Protocol;
@@ -9,209 +8,208 @@ using DogAgilityCompetition.MediatorEmulator.Engine;
 using DogAgilityCompetition.MediatorEmulator.Engine.Storage.Serialization;
 using DogAgilityCompetition.WinForms;
 
-namespace DogAgilityCompetition.MediatorEmulator.UI.Forms
+namespace DogAgilityCompetition.MediatorEmulator.UI.Forms;
+
+/// <summary>
+/// An MDI child that represents an emulated wireless remote control.
+/// </summary>
+public sealed partial class RemoteForm : FormWithWindowStateChangeEvent, IWirelessDevice
 {
-    /// <summary>
-    /// An MDI child that represents an emulated wireless remote control.
-    /// </summary>
-    public sealed partial class RemoteForm : FormWithWindowStateChangeEvent, IWirelessDevice
+    private readonly RemoteSettingsXml settings;
+    private readonly bool initiallyMaximized;
+    private readonly FreshObjectReference<CirceMediatorSessionManager> sessionManager;
+    private readonly FreshObjectReference<DeviceStatus?> lastStatus = new(null);
+
+    // Prevents endless recursion when updating controls that raise change events.
+    private bool isUpdatingControlsFromSettings;
+
+    bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
+
+    WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
+
+    public event EventHandler<EventArgs<WirelessNetworkAddress>>? DeviceRemoved;
+
+    public RemoteForm(RemoteSettingsXml remoteSettings, bool initiallyMaximized, CirceMediatorSessionManager mediatorSessionManager)
     {
-        private readonly RemoteSettingsXml settings;
-        private readonly bool initiallyMaximized;
-        private readonly FreshObjectReference<CirceMediatorSessionManager> sessionManager;
-        private readonly FreshObjectReference<DeviceStatus?> lastStatus = new(null);
+        Guard.NotNull(remoteSettings, nameof(remoteSettings));
+        Guard.NotNull(mediatorSessionManager, nameof(mediatorSessionManager));
 
-        // Prevents endless recursion when updating controls that raise change events.
-        private bool isUpdatingControlsFromSettings;
+        settings = remoteSettings;
+        this.initiallyMaximized = initiallyMaximized;
+        sessionManager = new FreshObjectReference<CirceMediatorSessionManager>(mediatorSessionManager);
+        sessionManager.Value.Devices[settings.DeviceAddressNotNull] = this;
 
-        bool IWirelessDevice.IsPoweredOn => powerStatus.ThreadSafeIsPoweredOn;
+        InitializeComponent();
+        EnsureHandleCreated();
 
-        WirelessNetworkAddress IWirelessDevice.Address => settings.DeviceAddressNotNull;
+        keypad.KeysDownChanged += KeypadOnKeysDownChanged;
+    }
 
-        public event EventHandler<EventArgs<WirelessNetworkAddress>>? DeviceRemoved;
+    private void RemoteForm_Load(object? sender, EventArgs e)
+    {
+        MdiChildWindow.Register(this, settings, initiallyMaximized, ref components);
 
-        public RemoteForm(RemoteSettingsXml remoteSettings, bool initiallyMaximized, CirceMediatorSessionManager mediatorSessionManager)
+        UpdateControlsFromSettings();
+        UpdateLastStatusFromSettings();
+    }
+
+    private void UpdateControlsFromSettings()
+    {
+        try
         {
-            Guard.NotNull(remoteSettings, nameof(remoteSettings));
-            Guard.NotNull(mediatorSessionManager, nameof(mediatorSessionManager));
+            isUpdatingControlsFromSettings = true;
 
-            settings = remoteSettings;
-            this.initiallyMaximized = initiallyMaximized;
-            sessionManager = new FreshObjectReference<CirceMediatorSessionManager>(mediatorSessionManager);
-            sessionManager.Value.Devices[settings.DeviceAddressNotNull] = this;
+            Text = "Remote " + settings.DeviceAddressNotNull;
 
-            InitializeComponent();
-            EnsureHandleCreated();
+            powerStatus.IsPoweredOn = settings.IsPoweredOn;
+            statusUpdateTimer.Enabled = settings.IsPoweredOn;
 
-            keypad.KeysDownChanged += KeypadOnKeysDownChanged;
+            networkStatus.Enabled = settings.IsPoweredOn;
+            networkStatus.IsInNetwork = settings.IsInNetwork;
+            networkStatus.RolesAssigned = settings.RolesAssigned;
+
+            hardwareStatus.Enabled = settings.IsPoweredOn;
+            hardwareStatus.SignalStrength = settings.SignalStrength;
+            hardwareStatus.BatteryStatus = settings.BatteryStatus;
+            hardwareStatus.HasVersionMismatch = settings.HasVersionMismatch;
+
+            keypad.Enabled = settings.IsPoweredOn;
+            keypad.Features = settings.Features;
+        }
+        finally
+        {
+            isUpdatingControlsFromSettings = false;
+        }
+    }
+
+    private void UpdateLastStatusFromSettings()
+    {
+        if (lastStatus.Value != null && !settings.IsPoweredOn)
+        {
+            sessionManager.Value.NotifyOffline(settings.DeviceAddressNotNull);
         }
 
-        private void RemoteForm_Load(object? sender, EventArgs e)
-        {
-            MdiChildWindow.Register(this, settings, initiallyMaximized, ref components);
+        lastStatus.Value = settings.IsPoweredOn
+            ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork, settings.Features.ToCapabilities(), settings.RolesAssigned,
+                settings.SignalStrength, settings.BatteryStatus, null, hardwareStatus.SynchronizationStatus, settings.HasVersionMismatch.TrueOrNull())
+            : null;
+    }
 
+    private void PowerStatus_StatusChanged(object? sender, EventArgs e)
+    {
+        if (!isUpdatingControlsFromSettings)
+        {
+            settings.IsPoweredOn = powerStatus.IsPoweredOn;
             UpdateControlsFromSettings();
             UpdateLastStatusFromSettings();
         }
+    }
 
-        private void UpdateControlsFromSettings()
+    private void NetworkStatus_StatusChanged(object? sender, EventArgs e)
+    {
+        if (!isUpdatingControlsFromSettings)
         {
-            try
-            {
-                isUpdatingControlsFromSettings = true;
-
-                Text = "Remote " + settings.DeviceAddressNotNull;
-
-                powerStatus.IsPoweredOn = settings.IsPoweredOn;
-                statusUpdateTimer.Enabled = settings.IsPoweredOn;
-
-                networkStatus.Enabled = settings.IsPoweredOn;
-                networkStatus.IsInNetwork = settings.IsInNetwork;
-                networkStatus.RolesAssigned = settings.RolesAssigned;
-
-                hardwareStatus.Enabled = settings.IsPoweredOn;
-                hardwareStatus.SignalStrength = settings.SignalStrength;
-                hardwareStatus.BatteryStatus = settings.BatteryStatus;
-                hardwareStatus.HasVersionMismatch = settings.HasVersionMismatch;
-
-                keypad.Enabled = settings.IsPoweredOn;
-                keypad.Features = settings.Features;
-            }
-            finally
-            {
-                isUpdatingControlsFromSettings = false;
-            }
+            settings.IsInNetwork = networkStatus.IsInNetwork;
+            settings.RolesAssigned = networkStatus.RolesAssigned;
+            UpdateLastStatusFromSettings();
         }
+    }
 
-        private void UpdateLastStatusFromSettings()
+    private void HardwareStatus_StatusChanged(object? sender, EventArgs e)
+    {
+        if (!isUpdatingControlsFromSettings)
         {
-            if (lastStatus.Value != null && !settings.IsPoweredOn)
-            {
-                sessionManager.Value.NotifyOffline(settings.DeviceAddressNotNull);
-            }
-
-            lastStatus.Value = settings.IsPoweredOn
-                ? new DeviceStatus(settings.DeviceAddressNotNull, settings.IsInNetwork, settings.Features.ToCapabilities(), settings.RolesAssigned,
-                    settings.SignalStrength, settings.BatteryStatus, null, hardwareStatus.SynchronizationStatus, settings.HasVersionMismatch.TrueOrNull())
-                : null;
+            settings.SignalStrength = hardwareStatus.SignalStrength;
+            settings.BatteryStatus = hardwareStatus.BatteryStatus.GetValueOrDefault(255);
+            settings.HasVersionMismatch = hardwareStatus.HasVersionMismatch;
+            UpdateLastStatusFromSettings();
         }
+    }
 
-        private void PowerStatus_StatusChanged(object? sender, EventArgs e)
+    private void Keypad_StatusChanged(object? sender, EventArgs e)
+    {
+        if (!isUpdatingControlsFromSettings)
         {
-            if (!isUpdatingControlsFromSettings)
-            {
-                settings.IsPoweredOn = powerStatus.IsPoweredOn;
-                UpdateControlsFromSettings();
-                UpdateLastStatusFromSettings();
-            }
-        }
+            settings.Features = keypad.Features;
 
-        private void NetworkStatus_StatusChanged(object? sender, EventArgs e)
+            hardwareStatus.SupportsClock = (keypad.Features & RemoteEmulatorFeatures.TimerKeys) != 0;
+
+            UpdateLastStatusFromSettings();
+        }
+    }
+
+    private void KeypadOnKeysDownChanged(object? sender, EventArgs<RawDeviceKeys> e)
+    {
+        TimeSpan? clockValueOrNull = hardwareStatus.SupportsClock ? hardwareStatus.ClockValue : null;
+        var deviceAction = new DeviceAction(settings.DeviceAddressNotNull, e.Argument, clockValueOrNull);
+        sessionManager.Value.NotifyAction(deviceAction);
+    }
+
+    private void StatusUpdateTimer_Tick(object? sender, EventArgs e)
+    {
+        if (lastStatus.Value != null)
         {
-            if (!isUpdatingControlsFromSettings)
-            {
-                settings.IsInNetwork = networkStatus.IsInNetwork;
-                settings.RolesAssigned = networkStatus.RolesAssigned;
-                UpdateLastStatusFromSettings();
-            }
+            NotifyStatus(lastStatus.Value);
         }
+    }
 
-        private void HardwareStatus_StatusChanged(object? sender, EventArgs e)
+    private void NotifyStatus(DeviceStatus status)
+    {
+        if (lastStatus.Value != null)
         {
-            if (!isUpdatingControlsFromSettings)
-            {
-                settings.SignalStrength = hardwareStatus.SignalStrength;
-                settings.BatteryStatus = hardwareStatus.BatteryStatus.GetValueOrDefault(255);
-                settings.HasVersionMismatch = hardwareStatus.HasVersionMismatch;
-                UpdateLastStatusFromSettings();
-            }
+            sessionManager.Value.NotifyStatus(status);
         }
+    }
 
-        private void Keypad_StatusChanged(object? sender, EventArgs e)
+    private void RemoteForm_FormClosing(object? sender, FormClosingEventArgs e)
+    {
+        sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out _);
+
+        DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(settings.DeviceAddressNotNull));
+    }
+
+    void IWirelessDevice.ChangeAddress(WirelessNetworkAddress newAddress)
+    {
+        this.EnsureOnMainThread(() =>
         {
-            if (!isUpdatingControlsFromSettings)
-            {
-                settings.Features = keypad.Features;
+            settings.DeviceAddress = newAddress;
+            UpdateControlsFromSettings();
+            UpdateLastStatusFromSettings();
+        });
+    }
 
-                hardwareStatus.SupportsClock = (keypad.Features & RemoteEmulatorFeatures.TimerKeys) != 0;
+    void IWirelessDevice.Accept(AlertOperation operation)
+    {
+        this.EnsureOnMainThread(() => powerStatus.BlinkAsync());
+    }
 
-                UpdateLastStatusFromSettings();
-            }
-        }
-
-        private void KeypadOnKeysDownChanged(object? sender, EventArgs<RawDeviceKeys> e)
+    void IWirelessDevice.Accept(NetworkSetupOperation operation)
+    {
+        this.EnsureOnMainThread(() =>
         {
-            TimeSpan? clockValueOrNull = hardwareStatus.SupportsClock ? hardwareStatus.ClockValue : null;
-            var deviceAction = new DeviceAction(settings.DeviceAddressNotNull, e.Argument, clockValueOrNull);
-            sessionManager.Value.NotifyAction(deviceAction);
-        }
+            // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
+            settings.IsInNetwork = operation.SetMembership!.Value;
+            settings.RolesAssigned = operation.Roles!.Value;
 
-        private void StatusUpdateTimer_Tick(object? sender, EventArgs e)
+            UpdateControlsFromSettings();
+            UpdateLastStatusFromSettings();
+        });
+    }
+
+    void IWirelessDevice.Accept(SynchronizeClocksOperation operation)
+    {
+        this.EnsureOnMainThread(() =>
         {
-            if (lastStatus.Value != null)
-            {
-                NotifyStatus(lastStatus.Value);
-            }
-        }
+            HardwareStatus_StatusChanged(this, EventArgs.Empty);
+            DeviceStatus resetSyncStatus = lastStatus.Value!.ChangeClockSynchronization(null);
+            NotifyStatus(resetSyncStatus);
 
-        private void NotifyStatus(DeviceStatus status)
-        {
-            if (lastStatus.Value != null)
-            {
-                sessionManager.Value.NotifyStatus(status);
-            }
-        }
+            hardwareStatus.StartClockSynchronization();
+        });
+    }
 
-        private void RemoteForm_FormClosing(object? sender, FormClosingEventArgs e)
-        {
-            sessionManager.Value.Devices.TryRemove(settings.DeviceAddressNotNull, out _);
-
-            DeviceRemoved?.Invoke(this, new EventArgs<WirelessNetworkAddress>(settings.DeviceAddressNotNull));
-        }
-
-        void IWirelessDevice.ChangeAddress(WirelessNetworkAddress newAddress)
-        {
-            this.EnsureOnMainThread(() =>
-            {
-                settings.DeviceAddress = newAddress;
-                UpdateControlsFromSettings();
-                UpdateLastStatusFromSettings();
-            });
-        }
-
-        void IWirelessDevice.Accept(AlertOperation operation)
-        {
-            this.EnsureOnMainThread(() => powerStatus.BlinkAsync());
-        }
-
-        void IWirelessDevice.Accept(NetworkSetupOperation operation)
-        {
-            this.EnsureOnMainThread(() =>
-            {
-                // Justification for nullable suppression: Operation has been validated for required parameters when this code is reached.
-                settings.IsInNetwork = operation.SetMembership!.Value;
-                settings.RolesAssigned = operation.Roles!.Value;
-
-                UpdateControlsFromSettings();
-                UpdateLastStatusFromSettings();
-            });
-        }
-
-        void IWirelessDevice.Accept(SynchronizeClocksOperation operation)
-        {
-            this.EnsureOnMainThread(() =>
-            {
-                HardwareStatus_StatusChanged(this, EventArgs.Empty);
-                DeviceStatus resetSyncStatus = lastStatus.Value!.ChangeClockSynchronization(null);
-                NotifyStatus(resetSyncStatus);
-
-                hardwareStatus.StartClockSynchronization();
-            });
-        }
-
-        void IWirelessDevice.Accept(VisualizeOperation operation)
-        {
-            // Not applicable for a remote.
-        }
+    void IWirelessDevice.Accept(VisualizeOperation operation)
+    {
+        // Not applicable for a remote.
     }
 }

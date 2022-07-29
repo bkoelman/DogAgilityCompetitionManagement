@@ -1,156 +1,154 @@
-using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary>
+/// Represents a <see cref="TimeSpan" />, rounded to whole milliseconds, along with a flag that indicates where the time value came from.
+/// </summary>
+/// <remarks>
+/// Deeply immutable by design to allow for safe cross-thread member access.
+/// </remarks>
+public readonly struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanWithAccuracy>
 {
+    private const string TimeRegexFormat = @"^(?<Seconds>[0-9]{1,3})DecimalSeparatorPlaceholder(?<Milliseconds>[0-9][0-9][0-9])(?<AccuracySymbol>[~*]?)$";
+
     /// <summary>
-    /// Represents a <see cref="TimeSpan" />, rounded to whole milliseconds, along with a flag that indicates where the time value came from.
+    /// Time value, in whole milliseconds.
     /// </summary>
-    /// <remarks>
-    /// Deeply immutable by design to allow for safe cross-thread member access.
-    /// </remarks>
-    public readonly struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanWithAccuracy>
+    public TimeSpan TimeValue { get; }
+
+    public TimeAccuracy Accuracy { get; }
+
+    public TimeSpanWithAccuracy(TimeSpan timeValue, TimeAccuracy accuracy)
     {
-        private const string TimeRegexFormat = @"^(?<Seconds>[0-9]{1,3})DecimalSeparatorPlaceholder(?<Milliseconds>[0-9][0-9][0-9])(?<AccuracySymbol>[~*]?)$";
+        TimeValue = GetTimeValueRoundedToWholeMilliseconds(timeValue);
+        Accuracy = accuracy;
+    }
 
-        /// <summary>
-        /// Time value, in whole milliseconds.
-        /// </summary>
-        public TimeSpan TimeValue { get; }
+    private static TimeSpan GetTimeValueRoundedToWholeMilliseconds(TimeSpan source)
+    {
+        double wholeSecondsTruncated = Math.Truncate(source.TotalSeconds);
+        double ticksRemainingForMilliseconds = source.Ticks - wholeSecondsTruncated * TimeSpan.TicksPerSecond;
 
-        public TimeAccuracy Accuracy { get; }
+        double fractionalMilliseconds = ticksRemainingForMilliseconds / TimeSpan.TicksPerMillisecond;
+        double wholeMillisecondsRounded = Math.Round(fractionalMilliseconds, MidpointRounding.AwayFromZero);
 
-        public TimeSpanWithAccuracy(TimeSpan timeValue, TimeAccuracy accuracy)
+        return TimeSpan.FromSeconds(wholeSecondsTruncated).Add(TimeSpan.FromMilliseconds(wholeMillisecondsRounded));
+    }
+
+    public TimeSpanWithAccuracy ChangeAccuracy(TimeAccuracy timeAccuracy)
+    {
+        return new TimeSpanWithAccuracy(TimeValue, timeAccuracy);
+    }
+
+    public static TimeSpanWithAccuracy? FromString(string? text, IFormatProvider? formatProvider = null)
+    {
+        if (string.IsNullOrWhiteSpace(text))
         {
-            TimeValue = GetTimeValueRoundedToWholeMilliseconds(timeValue);
-            Accuracy = accuracy;
+            return null;
         }
 
-        private static TimeSpan GetTimeValueRoundedToWholeMilliseconds(TimeSpan source)
+        string trimmed = text.Trim();
+
+        Regex timeRegex = CreateTimeRegexFor(formatProvider);
+        Match match = timeRegex.Match(trimmed);
+
+        if (match.Success)
         {
-            double wholeSecondsTruncated = Math.Truncate(source.TotalSeconds);
-            double ticksRemainingForMilliseconds = source.Ticks - wholeSecondsTruncated * TimeSpan.TicksPerSecond;
+            string accuracySymbol = match.Groups["AccuracySymbol"].Value;
+            string seconds = match.Groups["Seconds"].Value;
+            string milliseconds = match.Groups["Milliseconds"].Value;
 
-            double fractionalMilliseconds = ticksRemainingForMilliseconds / TimeSpan.TicksPerMillisecond;
-            double wholeMillisecondsRounded = Math.Round(fractionalMilliseconds, MidpointRounding.AwayFromZero);
+            TimeSpan timeValue = TimeSpan.FromSeconds(int.Parse(seconds)) + TimeSpan.FromMilliseconds(int.Parse(milliseconds));
 
-            return TimeSpan.FromSeconds(wholeSecondsTruncated).Add(TimeSpan.FromMilliseconds(wholeMillisecondsRounded));
+            TimeAccuracy accuracy = GetAccuracyForSymbol(accuracySymbol);
+            return new TimeSpanWithAccuracy(timeValue, accuracy);
         }
 
-        public TimeSpanWithAccuracy ChangeAccuracy(TimeAccuracy timeAccuracy)
+        throw new FormatException($"Time value '{text}' is invalid. Use format: s.mmm.");
+    }
+
+    private static Regex CreateTimeRegexFor(IFormatProvider? formatProvider)
+    {
+        formatProvider ??= NumberFormatInfo.InvariantInfo;
+        var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        string separator = Regex.Escape(formatInfo.NumberDecimalSeparator);
+
+        string timeRegexPattern = TimeRegexFormat.Replace("DecimalSeparatorPlaceholder", separator);
+        var timeRegex = new Regex(timeRegexPattern);
+        return timeRegex;
+    }
+
+    private static TimeAccuracy GetAccuracyForSymbol(string? symbol)
+    {
+        switch (symbol)
         {
-            return new(TimeValue, timeAccuracy);
+            case "~":
+                return TimeAccuracy.LowPrecision;
+            case "*":
+                return TimeAccuracy.UserEdited;
+            default:
+                return TimeAccuracy.HighPrecision;
         }
+    }
 
-        public static TimeSpanWithAccuracy? FromString(string? text, IFormatProvider? formatProvider = null)
+    [Pure]
+    public override string ToString()
+    {
+        return ToString(null, null);
+    }
+
+    [Pure]
+    public string ToString(string? format /* discarded */, IFormatProvider? formatProvider)
+    {
+        formatProvider ??= NumberFormatInfo.InvariantInfo;
+        var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
+
+        double secondsTruncated = Math.Truncate(TimeValue.TotalSeconds);
+        string timeString = $"{secondsTruncated:##0}{formatInfo.NumberDecimalSeparator}{TimeValue.Milliseconds:000}";
+
+        switch (Accuracy)
         {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return null;
-            }
-
-            string trimmed = text.Trim();
-
-            Regex timeRegex = CreateTimeRegexFor(formatProvider);
-            Match match = timeRegex.Match(trimmed);
-
-            if (match.Success)
-            {
-                string accuracySymbol = match.Groups["AccuracySymbol"].Value;
-                string seconds = match.Groups["Seconds"].Value;
-                string milliseconds = match.Groups["Milliseconds"].Value;
-
-                TimeSpan timeValue = TimeSpan.FromSeconds(int.Parse(seconds)) + TimeSpan.FromMilliseconds(int.Parse(milliseconds));
-
-                TimeAccuracy accuracy = GetAccuracyForSymbol(accuracySymbol);
-                return new TimeSpanWithAccuracy(timeValue, accuracy);
-            }
-
-            throw new FormatException($"Time value '{text}' is invalid. Use format: s.mmm.");
+            case TimeAccuracy.HighPrecision:
+                return timeString;
+            case TimeAccuracy.LowPrecision:
+                return timeString + "~";
+            case TimeAccuracy.UserEdited:
+                return timeString + "*";
+            default:
+                throw ExceptionFactory.CreateNotSupportedExceptionFor(Accuracy);
         }
+    }
 
-        private static Regex CreateTimeRegexFor(IFormatProvider? formatProvider)
-        {
-            formatProvider ??= NumberFormatInfo.InvariantInfo;
-            var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
-            string separator = Regex.Escape(formatInfo.NumberDecimalSeparator);
+    [Pure]
+    public bool Equals(TimeSpanWithAccuracy other)
+    {
+        return other.TimeValue == TimeValue && other.Accuracy == Accuracy;
+    }
 
-            string timeRegexPattern = TimeRegexFormat.Replace("DecimalSeparatorPlaceholder", separator);
-            var timeRegex = new Regex(timeRegexPattern);
-            return timeRegex;
-        }
+    [Pure]
+    public override bool Equals(object? obj)
+    {
+        return obj is TimeSpanWithAccuracy timeSpanWithAccuracy && Equals(timeSpanWithAccuracy);
+    }
 
-        private static TimeAccuracy GetAccuracyForSymbol(string? symbol)
-        {
-            switch (symbol)
-            {
-                case "~":
-                    return TimeAccuracy.LowPrecision;
-                case "*":
-                    return TimeAccuracy.UserEdited;
-                default:
-                    return TimeAccuracy.HighPrecision;
-            }
-        }
+    [Pure]
+    public override int GetHashCode()
+    {
+        return TimeValue.GetHashCode() ^ Accuracy.GetHashCode();
+    }
 
-        [Pure]
-        public override string ToString()
-        {
-            return ToString(null, null);
-        }
+    [Pure]
+    public static bool operator ==(TimeSpanWithAccuracy left, TimeSpanWithAccuracy right)
+    {
+        return left.Equals(right);
+    }
 
-        [Pure]
-        public string ToString(string? format /* discarded */, IFormatProvider? formatProvider)
-        {
-            formatProvider ??= NumberFormatInfo.InvariantInfo;
-            var formatInfo = NumberFormatInfo.GetInstance(formatProvider);
-
-            double secondsTruncated = Math.Truncate(TimeValue.TotalSeconds);
-            string timeString = $"{secondsTruncated:##0}{formatInfo.NumberDecimalSeparator}{TimeValue.Milliseconds:000}";
-
-            switch (Accuracy)
-            {
-                case TimeAccuracy.HighPrecision:
-                    return timeString;
-                case TimeAccuracy.LowPrecision:
-                    return timeString + "~";
-                case TimeAccuracy.UserEdited:
-                    return timeString + "*";
-                default:
-                    throw ExceptionFactory.CreateNotSupportedExceptionFor(Accuracy);
-            }
-        }
-
-        [Pure]
-        public bool Equals(TimeSpanWithAccuracy other)
-        {
-            return other.TimeValue == TimeValue && other.Accuracy == Accuracy;
-        }
-
-        [Pure]
-        public override bool Equals(object? obj)
-        {
-            return obj is TimeSpanWithAccuracy timeSpanWithAccuracy && Equals(timeSpanWithAccuracy);
-        }
-
-        [Pure]
-        public override int GetHashCode()
-        {
-            return TimeValue.GetHashCode() ^ Accuracy.GetHashCode();
-        }
-
-        [Pure]
-        public static bool operator ==(TimeSpanWithAccuracy left, TimeSpanWithAccuracy right)
-        {
-            return left.Equals(right);
-        }
-
-        [Pure]
-        public static bool operator !=(TimeSpanWithAccuracy left, TimeSpanWithAccuracy right)
-        {
-            return !(left == right);
-        }
+    [Pure]
+    public static bool operator !=(TimeSpanWithAccuracy left, TimeSpanWithAccuracy right)
+    {
+        return !(left == right);
     }
 }

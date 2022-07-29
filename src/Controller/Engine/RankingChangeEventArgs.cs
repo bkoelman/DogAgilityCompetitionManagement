@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
 using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Storage;
 
-namespace DogAgilityCompetition.Controller.Engine
+namespace DogAgilityCompetition.Controller.Engine;
+
+/// <summary />
+public sealed class RankingChangeEventArgs : EventArgs
 {
-    /// <summary />
-    public sealed class RankingChangeEventArgs : EventArgs
+    public IReadOnlyCollection<CompetitionRunResult> Rankings { get; }
+    public CompetitionRunResult? PreviousRunResult { get; }
+
+    public RankingChangeEventArgs(IReadOnlyCollection<CompetitionRunResult> rankings, CompetitionRunResult? previousRunResult)
     {
-        public IReadOnlyCollection<CompetitionRunResult> Rankings { get; }
-        public CompetitionRunResult? PreviousRunResult { get; }
+        Guard.NotNull(rankings, nameof(rankings));
 
-        public RankingChangeEventArgs(IReadOnlyCollection<CompetitionRunResult> rankings, CompetitionRunResult? previousRunResult)
-        {
-            Guard.NotNull(rankings, nameof(rankings));
-
-            Rankings = rankings;
-            PreviousRunResult = previousRunResult;
-        }
+        Rankings = rankings;
+        PreviousRunResult = previousRunResult;
     }
 }

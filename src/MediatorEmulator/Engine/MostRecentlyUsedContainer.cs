@@ -1,85 +1,82 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.MediatorEmulator.Engine
+namespace DogAgilityCompetition.MediatorEmulator.Engine;
+
+/// <summary>
+/// A case-insensitive list of most-recently-used texts.
+/// </summary>
+public sealed class MostRecentlyUsedContainer
 {
-    /// <summary>
-    /// A case-insensitive list of most-recently-used texts.
-    /// </summary>
-    public sealed class MostRecentlyUsedContainer
+    private readonly bool ignoreCase;
+    private readonly List<string> mruList = new();
+
+    public IReadOnlyCollection<string> Items => mruList.AsReadOnly();
+
+    public MostRecentlyUsedContainer(bool ignoreCase = true)
     {
-        private readonly bool ignoreCase;
-        private readonly List<string> mruList = new();
+        this.ignoreCase = ignoreCase;
+    }
 
-        public IReadOnlyCollection<string> Items => mruList.AsReadOnly();
+    public void Import(IEnumerable<string?> items)
+    {
+        Guard.NotNull(items, nameof(items));
 
-        public MostRecentlyUsedContainer(bool ignoreCase = true)
+        IEnumerable<string> itemsReversed = items.Reverse().Where(item => !string.IsNullOrWhiteSpace(item)).Cast<string>();
+
+        foreach (string item in itemsReversed)
         {
-            this.ignoreCase = ignoreCase;
+            MarkAsUsed(item);
         }
+    }
 
-        public void Import(IEnumerable<string?> items)
+    /// <summary>
+    /// Updates the MRU list with the specified text. If the MRU list already contains this text, it is moved to the top of the list (preserving existing
+    /// case).
+    /// </summary>
+    public void MarkAsUsed(string text)
+    {
+        Guard.NotNullNorEmpty(text, nameof(text));
+
+        if (text.Length > 0)
         {
-            Guard.NotNull(items, nameof(items));
+            int existingIndex = GetExistingIndex(text);
 
-            IEnumerable<string> itemsReversed = items.Reverse().Where(item => !string.IsNullOrWhiteSpace(item)).Cast<string>();
-
-            foreach (string item in itemsReversed)
+            if (existingIndex == -1)
             {
-                MarkAsUsed(item);
+                mruList.Insert(0, text);
+            }
+            else
+            {
+                string originalText = mruList[existingIndex];
+                mruList.RemoveAt(existingIndex);
+                mruList.Insert(0, originalText);
+            }
+        }
+    }
+
+    public void Remove(string path)
+    {
+        Guard.NotNullNorEmpty(path, nameof(path));
+
+        int index = GetExistingIndex(path);
+
+        if (index != -1)
+        {
+            mruList.RemoveAt(index);
+        }
+    }
+
+    private int GetExistingIndex(string text)
+    {
+        for (int itemIndex = 0; itemIndex < mruList.Count; itemIndex++)
+        {
+            if (string.Compare(text, mruList[itemIndex], ignoreCase, CultureInfo.InvariantCulture) == 0)
+            {
+                return itemIndex;
             }
         }
 
-        /// <summary>
-        /// Updates the MRU list with the specified text. If the MRU list already contains this text, it is moved to the top of the list (preserving existing
-        /// case).
-        /// </summary>
-        public void MarkAsUsed(string text)
-        {
-            Guard.NotNullNorEmpty(text, nameof(text));
-
-            if (text.Length > 0)
-            {
-                int existingIndex = GetExistingIndex(text);
-
-                if (existingIndex == -1)
-                {
-                    mruList.Insert(0, text);
-                }
-                else
-                {
-                    string originalText = mruList[existingIndex];
-                    mruList.RemoveAt(existingIndex);
-                    mruList.Insert(0, originalText);
-                }
-            }
-        }
-
-        public void Remove(string path)
-        {
-            Guard.NotNullNorEmpty(path, nameof(path));
-
-            int index = GetExistingIndex(path);
-
-            if (index != -1)
-            {
-                mruList.RemoveAt(index);
-            }
-        }
-
-        private int GetExistingIndex(string text)
-        {
-            for (int itemIndex = 0; itemIndex < mruList.Count; itemIndex++)
-            {
-                if (string.Compare(text, mruList[itemIndex], ignoreCase, CultureInfo.InvariantCulture) == 0)
-                {
-                    return itemIndex;
-                }
-            }
-
-            return -1;
-        }
+        return -1;
     }
 }

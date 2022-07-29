@@ -1,21 +1,19 @@
-using System;
 using DogAgilityCompetition.Circe.Protocol;
 
-namespace DogAgilityCompetition.Circe.Session
+namespace DogAgilityCompetition.Circe.Session;
+
+/// <summary />
+public sealed class IncomingOperationEventArgs : EventArgs
 {
-    /// <summary />
-    public sealed class IncomingOperationEventArgs : EventArgs
+    public Operation Operation { get; }
+    public CirceComConnection Connection { get; }
+
+    public IncomingOperationEventArgs(Operation operation, CirceComConnection connection)
     {
-        public Operation Operation { get; }
-        public CirceComConnection Connection { get; }
+        Guard.NotNull(operation, nameof(operation));
+        Guard.NotNull(connection, nameof(connection));
 
-        public IncomingOperationEventArgs(Operation operation, CirceComConnection connection)
-        {
-            Guard.NotNull(operation, nameof(operation));
-            Guard.NotNull(connection, nameof(connection));
-
-            Operation = operation;
-            Connection = connection;
-        }
+        Operation = operation;
+        Connection = connection;
     }
 }

@@ -1,43 +1,40 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DogAgilityCompetition.Circe;
+﻿using DogAgilityCompetition.Circe;
 using DogAgilityCompetition.Controller.Engine.Visualization.Changes;
 
-namespace DogAgilityCompetition.Controller.Engine.Visualization
+namespace DogAgilityCompetition.Controller.Engine.Visualization;
+
+/// <summary>
+/// Resolves conflicts in an outgoing set of visualization changes, according to CIRCE rules.
+/// </summary>
+public static class VisualizationConflictResolver
 {
-    /// <summary>
-    /// Resolves conflicts in an outgoing set of visualization changes, according to CIRCE rules.
-    /// </summary>
-    public static class VisualizationConflictResolver
+    public static void InspectChangeSet(IList<VisualizationChange> changeSet)
     {
-        public static void InspectChangeSet(IList<VisualizationChange> changeSet)
-        {
-            Guard.NotNull(changeSet, nameof(changeSet));
+        Guard.NotNull(changeSet, nameof(changeSet));
 
-            ResolvePrimaryTimePrecedence(changeSet);
-            ResolveEliminationPrecedence(changeSet);
+        ResolvePrimaryTimePrecedence(changeSet);
+        ResolveEliminationPrecedence(changeSet);
+    }
+
+    private static void ResolvePrimaryTimePrecedence(ICollection<VisualizationChange> changeSet)
+    {
+        StartPrimaryTimer? startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
+        PrimaryTimeStopAndSet? setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();
+
+        if (startPrimaryTimer != null && setPrimaryValue != null)
+        {
+            changeSet.Remove(setPrimaryValue);
         }
+    }
 
-        private static void ResolvePrimaryTimePrecedence(ICollection<VisualizationChange> changeSet)
+    private static void ResolveEliminationPrecedence(IList<VisualizationChange> changeSet)
+    {
+        EliminationUpdate? eliminationUpdate = changeSet.OfType<EliminationUpdate>().FirstOrDefault();
+
+        if (eliminationUpdate != null)
         {
-            StartPrimaryTimer? startPrimaryTimer = changeSet.OfType<StartPrimaryTimer>().FirstOrDefault();
-            PrimaryTimeStopAndSet? setPrimaryValue = changeSet.OfType<PrimaryTimeStopAndSet>().FirstOrDefault();
-
-            if (startPrimaryTimer != null && setPrimaryValue != null)
-            {
-                changeSet.Remove(setPrimaryValue);
-            }
-        }
-
-        private static void ResolveEliminationPrecedence(IList<VisualizationChange> changeSet)
-        {
-            EliminationUpdate? eliminationUpdate = changeSet.OfType<EliminationUpdate>().FirstOrDefault();
-
-            if (eliminationUpdate != null)
-            {
-                changeSet.Remove(eliminationUpdate);
-                changeSet.Insert(0, eliminationUpdate);
-            }
+            changeSet.Remove(eliminationUpdate);
+            changeSet.Insert(0, eliminationUpdate);
         }
     }
 }

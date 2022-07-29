@@ -1,83 +1,81 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-namespace DogAgilityCompetition.Controller.UI.Controls
+namespace DogAgilityCompetition.Controller.UI.Controls;
+
+/// <summary>
+/// A column in a <see cref="DataGridView" /> that contains a colored progress bar.
+/// </summary>
+public sealed class DataGridViewProgressBarColumn : DataGridViewTextBoxColumn
 {
-    /// <summary>
-    /// A column in a <see cref="DataGridView" /> that contains a colored progress bar.
-    /// </summary>
-    public sealed class DataGridViewProgressBarColumn : DataGridViewTextBoxColumn
+    private DataGridViewProgressBarCell ProgressBarCell
     {
-        private DataGridViewProgressBarCell ProgressBarCell
+        get
         {
-            get
+            var result = CellTemplate as DataGridViewProgressBarCell;
+
+            if (result == null)
             {
-                var result = CellTemplate as DataGridViewProgressBarCell;
-
-                if (result == null)
-                {
-                    throw new InvalidOperationException("CellTemplate is not properly set.");
-                }
-
-                return result;
+                throw new InvalidOperationException("CellTemplate is not properly set.");
             }
+
+            return result;
         }
+    }
 
-        /// <summary>
-        /// ProgressBar Max
-        /// </summary>
-        public int Maximum
+    /// <summary>
+    /// ProgressBar Max
+    /// </summary>
+    public int Maximum
+    {
+        get => ProgressBarCell.Maximum;
+        set
         {
-            get => ProgressBarCell.Maximum;
-            set
+            if (Maximum != value)
             {
-                if (Maximum != value)
+                ProgressBarCell.Maximum = value;
+
+                if (DataGridView != null)
                 {
-                    ProgressBarCell.Maximum = value;
+                    int rowCount = DataGridView.RowCount;
 
-                    if (DataGridView != null)
+                    for (int i = 0; i < rowCount; i++)
                     {
-                        int rowCount = DataGridView.RowCount;
-
-                        for (int i = 0; i < rowCount; i++)
-                        {
-                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell)r.Cells[Index]).Maximum = value;
-                        }
+                        DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
+                        ((DataGridViewProgressBarCell)r.Cells[Index]).Maximum = value;
                     }
                 }
             }
         }
+    }
 
-        /// <summary>
-        /// ProgressBar Min
-        /// </summary>
-        public int Minimum
+    /// <summary>
+    /// ProgressBar Min
+    /// </summary>
+    public int Minimum
+    {
+        get => ProgressBarCell.Minimum;
+        set
         {
-            get => ProgressBarCell.Minimum;
-            set
+            if (Minimum != value)
             {
-                if (Minimum != value)
+                ProgressBarCell.Minimum = value;
+
+                if (DataGridView != null)
                 {
-                    ProgressBarCell.Minimum = value;
+                    int rowCount = DataGridView.RowCount;
 
-                    if (DataGridView != null)
+                    for (int i = 0; i < rowCount; i++)
                     {
-                        int rowCount = DataGridView.RowCount;
-
-                        for (int i = 0; i < rowCount; i++)
-                        {
-                            DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
-                            ((DataGridViewProgressBarCell)r.Cells[Index]).Minimum = value;
-                        }
+                        DataGridViewRow? r = DataGridView.Rows.SharedRow(i);
+                        ((DataGridViewProgressBarCell)r.Cells[Index]).Minimum = value;
                     }
                 }
             }
         }
+    }
 
-        public DataGridViewProgressBarColumn()
-        {
-            CellTemplate = new DataGridViewProgressBarCell();
-        }
+    public DataGridViewProgressBarColumn()
+    {
+        CellTemplate = new DataGridViewProgressBarCell();
     }
 }

@@ -1,110 +1,108 @@
-﻿using System;
-using DogAgilityCompetition.Circe.Protocol.Parameters;
+﻿using DogAgilityCompetition.Circe.Protocol.Parameters;
 
-namespace DogAgilityCompetition.Circe.Protocol.Operations
+namespace DogAgilityCompetition.Circe.Protocol.Operations;
+
+/// <summary>
+/// This operation is used by a mediator to notify about an activity that occurred in the logical network configuration. For instance, when a gate is
+/// signaled or a key on a remote control has been pressed.
+/// </summary>
+public sealed class NotifyActionOperation : Operation
 {
+    internal const int TypeCode = 53;
+
+    private readonly NetworkAddressParameter originatingAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.OriginatingAddress, true);
+    private readonly IntegerParameter inputKeysParameter = ParameterFactory.Create(ParameterType.Integer.InputKeys, false);
+    private readonly IntegerParameter sensorTimeParameter = ParameterFactory.Create(ParameterType.Integer.SensorTime, false);
+
     /// <summary>
-    /// This operation is used by a mediator to notify about an activity that occurred in the logical network configuration. For instance, when a gate is
-    /// signaled or a key on a remote control has been pressed.
+    /// Required. Gets or sets the originating address of the device in the wireless network.
     /// </summary>
-    public sealed class NotifyActionOperation : Operation
+    public WirelessNetworkAddress? OriginatingAddress
     {
-        internal const int TypeCode = 53;
-
-        private readonly NetworkAddressParameter originatingAddressParameter = ParameterFactory.Create(ParameterType.NetworkAddress.OriginatingAddress, true);
-        private readonly IntegerParameter inputKeysParameter = ParameterFactory.Create(ParameterType.Integer.InputKeys, false);
-        private readonly IntegerParameter sensorTimeParameter = ParameterFactory.Create(ParameterType.Integer.SensorTime, false);
-
-        /// <summary>
-        /// Required. Gets or sets the originating address of the device in the wireless network.
-        /// </summary>
-        public WirelessNetworkAddress? OriginatingAddress
+        get
         {
-            get
-            {
-                string? parameterValue = originatingAddressParameter.Value;
-                return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
-            }
-            set => originatingAddressParameter.Value = value?.Value;
+            string? parameterValue = originatingAddressParameter.Value;
+            return parameterValue != null ? new WirelessNetworkAddress(parameterValue) : null;
         }
+        set => originatingAddressParameter.Value = value?.Value;
+    }
 
-        /// <summary>
-        /// Optional. Gets or sets the input keys on a remote control that are currently pushed down.
-        /// </summary>
-        public RawDeviceKeys? InputKeys
-        {
-            get => inputKeysParameter.Value == null ? null : (RawDeviceKeys?)inputKeysParameter.Value;
-            set => inputKeysParameter.Value = value == null ? null : (int?)value;
-        }
+    /// <summary>
+    /// Optional. Gets or sets the input keys on a remote control that are currently pushed down.
+    /// </summary>
+    public RawDeviceKeys? InputKeys
+    {
+        get => inputKeysParameter.Value == null ? null : (RawDeviceKeys?)inputKeysParameter.Value;
+        set => inputKeysParameter.Value = value == null ? null : (int?)value;
+    }
 
-        /// <summary>
-        /// Optional. Gets or sets the time (in whole milliseconds precision) at which a time sensor detected motion.
-        /// </summary>
-        public TimeSpan? SensorTime
+    /// <summary>
+    /// Optional. Gets or sets the time (in whole milliseconds precision) at which a time sensor detected motion.
+    /// </summary>
+    public TimeSpan? SensorTime
+    {
+        get
         {
-            get
+            if (sensorTimeParameter.Value == null)
             {
-                if (sensorTimeParameter.Value == null)
-                {
-                    return null;
-                }
-
-                double milliseconds = (double)sensorTimeParameter.Value;
-
-                // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
-                // rounds the input value to whole milliseconds.
-                return TimeSpan.FromMilliseconds(milliseconds);
+                return null;
             }
-            set
+
+            double milliseconds = (double)sensorTimeParameter.Value;
+
+            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
+            // rounds the input value to whole milliseconds.
+            return TimeSpan.FromMilliseconds(milliseconds);
+        }
+        set
+        {
+            if (value == null)
             {
-                if (value == null)
-                {
-                    sensorTimeParameter.Value = null;
-                }
-                else
-                {
-                    int milliseconds = (int)Math.Round(value.Value.TotalMilliseconds, MidpointRounding.AwayFromZero);
-                    sensorTimeParameter.Value = milliseconds;
-                }
+                sensorTimeParameter.Value = null;
+            }
+            else
+            {
+                int milliseconds = (int)Math.Round(value.Value.TotalMilliseconds, MidpointRounding.AwayFromZero);
+                sensorTimeParameter.Value = milliseconds;
             }
         }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotifyActionOperation" /> class with required parameters.
-        /// </summary>
-        /// <param name="originatingAddress">
-        /// The originating address of the device in the wireless network.
-        /// </param>
-        public NotifyActionOperation(WirelessNetworkAddress originatingAddress)
-            : this()
-        {
-            Guard.NotNull(originatingAddress, nameof(originatingAddress));
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotifyActionOperation" /> class with required parameters.
+    /// </summary>
+    /// <param name="originatingAddress">
+    /// The originating address of the device in the wireless network.
+    /// </param>
+    public NotifyActionOperation(WirelessNetworkAddress originatingAddress)
+        : this()
+    {
+        Guard.NotNull(originatingAddress, nameof(originatingAddress));
 
-            OriginatingAddress = originatingAddress;
-        }
+        OriginatingAddress = originatingAddress;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotifyActionOperation" /> class.
-        /// </summary>
-        internal NotifyActionOperation()
-            : base(TypeCode)
-        {
-            Parameters.Add(originatingAddressParameter);
-            Parameters.Add(inputKeysParameter);
-            Parameters.Add(sensorTimeParameter);
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotifyActionOperation" /> class.
+    /// </summary>
+    internal NotifyActionOperation()
+        : base(TypeCode)
+    {
+        Parameters.Add(originatingAddressParameter);
+        Parameters.Add(inputKeysParameter);
+        Parameters.Add(sensorTimeParameter);
+    }
 
-        /// <summary>
-        /// Implements the Visitor design pattern.
-        /// </summary>
-        /// <param name="acceptor">
-        /// The object accepting this operation.
-        /// </param>
-        public override void Visit(IOperationAcceptor acceptor)
-        {
-            Guard.NotNull(acceptor, nameof(acceptor));
+    /// <summary>
+    /// Implements the Visitor design pattern.
+    /// </summary>
+    /// <param name="acceptor">
+    /// The object accepting this operation.
+    /// </param>
+    public override void Visit(IOperationAcceptor acceptor)
+    {
+        Guard.NotNull(acceptor, nameof(acceptor));
 
-            acceptor.Accept(this);
-        }
+        acceptor.Accept(this);
     }
 }

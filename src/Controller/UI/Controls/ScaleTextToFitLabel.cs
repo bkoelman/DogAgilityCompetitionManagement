@@ -1,161 +1,158 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
+﻿using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Windows.Forms;
 using DogAgilityCompetition.Circe;
 
-namespace DogAgilityCompetition.Controller.UI.Controls
+namespace DogAgilityCompetition.Controller.UI.Controls;
+
+/// <summary>
+/// Represents a <see cref="System.Windows.Forms.Label" /> whose text is always scaled and stretched to occupy the entire control area.
+/// </summary>
+public sealed class ScaleTextToFitLabel : Label
 {
-    /// <summary>
-    /// Represents a <see cref="System.Windows.Forms.Label" /> whose text is always scaled and stretched to occupy the entire control area.
-    /// </summary>
-    public sealed class ScaleTextToFitLabel : Label
+    private static readonly PointF TopLeftPoint = new(0, 0);
+
+    private RectangleF previousTextBounds;
+
+    [Browsable(false)]
+    [DefaultValue(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public override bool AutoSize
     {
-        private static readonly PointF TopLeftPoint = new(0, 0);
-
-        private RectangleF previousTextBounds;
-
-        [Browsable(false)]
-        [DefaultValue(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public override bool AutoSize
+        get => false;
+        set
         {
-            get => false;
-            set
+        }
+    }
+
+    [Browsable(false)]
+    [DefaultValue(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public override ContentAlignment TextAlign
+    {
+        get => ContentAlignment.TopLeft;
+        set
+        {
+        }
+    }
+
+    [Browsable(false)]
+    [DefaultValue(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public new bool AutoEllipsis => false;
+
+    public bool EnableStabilization { get; set; }
+
+    public ScaleTextToFitLabel()
+    {
+        EnableStabilization = true;
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        Guard.NotNull(e, nameof(e));
+
+        Rectangle clientBounds = Reflected.DeflateRect(ClientRectangle, Padding);
+
+        if (string.IsNullOrWhiteSpace(Text))
+        {
+            e.Graphics.Clear(BackColor);
+
+            if (Image != null)
             {
+                Rectangle imageBounds = Rectangle.Round(clientBounds);
+                DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
+            }
+        }
+        else
+        {
+            using StringFormat stringFormat = Reflected.GetStringFormat(this);
+            using var textPath = new GraphicsPath();
+
+            textPath.AddString(Text, Font.FontFamily, (int)Font.Style, clientBounds.Height, TopLeftPoint, stringFormat);
+
+            PointF[] transformPoints =
+            {
+                new(clientBounds.Left, clientBounds.Top),
+                new(clientBounds.Right, clientBounds.Top),
+                new(clientBounds.Left, clientBounds.Bottom)
+            };
+
+            RectangleF textBounds = Stabilize(textPath.GetBounds());
+            e.Graphics.Transform = new Matrix(textBounds, transformPoints);
+
+            e.Graphics.Clear(BackColor);
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+            if (Image != null)
+            {
+                Rectangle imageBounds = Rectangle.Round(textBounds);
+                DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
+            }
+
+            using (var brush = new SolidBrush(Enabled ? ForeColor : ControlPaint.LightLight(ForeColor)))
+            {
+                e.Graphics.FillPath(brush, textPath);
+            }
+
+            e.Graphics.ResetTransform();
+        }
+    }
+
+    private RectangleF Stabilize(RectangleF rectangle)
+    {
+        if (EnableStabilization)
+        {
+            int epsilonX = ClientSize.Width / 50;
+            int epsilonY = ClientSize.Height / 50;
+
+            if (Math.Abs(previousTextBounds.X - rectangle.X) <= epsilonX && Math.Abs(previousTextBounds.Width - rectangle.Width) <= epsilonX &&
+                Math.Abs(previousTextBounds.Y - rectangle.Y) <= epsilonY && Math.Abs(previousTextBounds.Height - rectangle.Height) <= epsilonY)
+            {
+                return previousTextBounds;
             }
         }
 
-        [Browsable(false)]
-        [DefaultValue(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public override ContentAlignment TextAlign
+        previousTextBounds = rectangle;
+        return rectangle;
+    }
+
+    private static class Reflected
+    {
+        private static readonly MethodInfo DeflateRectMethod;
+        private static readonly MethodInfo CreateStringFormatMethod;
+
+        static Reflected()
         {
-            get => ContentAlignment.TopLeft;
-            set
-            {
-            }
+            Assembly assembly = typeof(Label).Assembly;
+            Type type = Require(assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
+            DeflateRectMethod = Require(type.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
+            CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
         }
 
-        [Browsable(false)]
-        [DefaultValue(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new bool AutoEllipsis => false;
-
-        public bool EnableStabilization { get; set; }
-
-        public ScaleTextToFitLabel()
+        public static Rectangle DeflateRect(Rectangle rect, Padding padding)
         {
-            EnableStabilization = true;
+            return (Rectangle)DeflateRectMethod.Invoke(null, new object[]
+            {
+                rect,
+                padding
+            })!;
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        public static StringFormat GetStringFormat(Control target)
         {
-            Guard.NotNull(e, nameof(e));
-
-            Rectangle clientBounds = Reflected.DeflateRect(ClientRectangle, Padding);
-
-            if (string.IsNullOrWhiteSpace(Text))
-            {
-                e.Graphics.Clear(BackColor);
-
-                if (Image != null)
-                {
-                    Rectangle imageBounds = Rectangle.Round(clientBounds);
-                    DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
-                }
-            }
-            else
-            {
-                using StringFormat stringFormat = Reflected.GetStringFormat(this);
-                using var textPath = new GraphicsPath();
-
-                textPath.AddString(Text, Font.FontFamily, (int)Font.Style, clientBounds.Height, TopLeftPoint, stringFormat);
-
-                PointF[] transformPoints =
-                {
-                    new(clientBounds.Left, clientBounds.Top),
-                    new(clientBounds.Right, clientBounds.Top),
-                    new(clientBounds.Left, clientBounds.Bottom)
-                };
-
-                RectangleF textBounds = Stabilize(textPath.GetBounds());
-                e.Graphics.Transform = new Matrix(textBounds, transformPoints);
-
-                e.Graphics.Clear(BackColor);
-                e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                if (Image != null)
-                {
-                    Rectangle imageBounds = Rectangle.Round(textBounds);
-                    DrawImage(e.Graphics, Image, imageBounds, RtlTranslateAlignment(ImageAlign));
-                }
-
-                using (var brush = new SolidBrush(Enabled ? ForeColor : ControlPaint.LightLight(ForeColor)))
-                {
-                    e.Graphics.FillPath(brush, textPath);
-                }
-
-                e.Graphics.ResetTransform();
-            }
+            return (StringFormat)CreateStringFormatMethod.Invoke(target, Array.Empty<object>())!;
         }
 
-        private RectangleF Stabilize(RectangleF rectangle)
+        private static T Require<T>(T? value)
         {
-            if (EnableStabilization)
+            if (ReferenceEquals(value, null))
             {
-                int epsilonX = ClientSize.Width / 50;
-                int epsilonY = ClientSize.Height / 50;
-
-                if (Math.Abs(previousTextBounds.X - rectangle.X) <= epsilonX && Math.Abs(previousTextBounds.Width - rectangle.Width) <= epsilonX &&
-                    Math.Abs(previousTextBounds.Y - rectangle.Y) <= epsilonY && Math.Abs(previousTextBounds.Height - rectangle.Height) <= epsilonY)
-                {
-                    return previousTextBounds;
-                }
+                throw new Exception("Reflection failure.");
             }
 
-            previousTextBounds = rectangle;
-            return rectangle;
-        }
-
-        private static class Reflected
-        {
-            private static readonly MethodInfo DeflateRectMethod;
-            private static readonly MethodInfo CreateStringFormatMethod;
-
-            static Reflected()
-            {
-                Assembly assembly = typeof(Label).Assembly;
-                Type type = Require(assembly.GetType("System.Windows.Forms.Layout.LayoutUtils", true));
-                DeflateRectMethod = Require(type.GetMethod("DeflateRect", BindingFlags.Public | BindingFlags.Static));
-                CreateStringFormatMethod = Require(typeof(Label).GetMethod("CreateStringFormat", BindingFlags.NonPublic | BindingFlags.Instance));
-            }
-
-            public static Rectangle DeflateRect(Rectangle rect, Padding padding)
-            {
-                return (Rectangle)DeflateRectMethod.Invoke(null, new object[]
-                {
-                    rect,
-                    padding
-                })!;
-            }
-
-            public static StringFormat GetStringFormat(Control target)
-            {
-                return (StringFormat)CreateStringFormatMethod.Invoke(target, Array.Empty<object>())!;
-            }
-
-            private static T Require<T>(T? value)
-            {
-                if (ReferenceEquals(value, null))
-                {
-                    throw new Exception("Reflection failure.");
-                }
-
-                return value;
-            }
+            return value;
         }
     }
 }

@@ -1,193 +1,190 @@
-﻿using System;
-using DogAgilityCompetition.Circe.Protocol;
+﻿using DogAgilityCompetition.Circe.Protocol;
 using DogAgilityCompetition.Circe.Protocol.Exceptions;
 using DogAgilityCompetition.Specs.Facilities;
 using FluentAssertions;
 using Xunit;
 
-namespace DogAgilityCompetition.Specs.CirceSpecs
+namespace DogAgilityCompetition.Specs.CirceSpecs;
+
+/// <summary>
+/// Tests for parsing CIRCE binary packets.
+/// </summary>
+public sealed class CircePacketBinaryFormat
 {
-    /// <summary>
-    /// Tests for parsing CIRCE binary packets.
-    /// </summary>
-    public sealed class CircePacketBinaryFormat
+    [Fact]
+    public void When_parameter_format_is_invalid_it_must_throw()
     {
-        [Fact]
-        public void When_parameter_format_is_invalid_it_must_throw()
+        // Arrange
+        byte[] buffer =
         {
-            // Arrange
-            byte[] buffer =
-            {
-                2,
-                ByteFor('0'),
-                ByteFor('3'),
-                ByteFor('\t'),
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('4'),
-                ByteFor(':'),
-                ByteFor('1'),
-                ByteFor('2'),
-                05,
-                ByteFor('4'),
-                ByteFor('5'),
-                ByteFor('6'),
-                ByteFor('\t'),
-                3
-            };
+            2,
+            ByteFor('0'),
+            ByteFor('3'),
+            ByteFor('\t'),
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('4'),
+            ByteFor(':'),
+            ByteFor('1'),
+            ByteFor('2'),
+            05,
+            ByteFor('4'),
+            ByteFor('5'),
+            ByteFor('6'),
+            ByteFor('\t'),
+            3
+        };
 
-            var reader = new PacketReader();
+        var reader = new PacketReader();
 
-            // Act
-            Action action = () => reader.Read(buffer);
+        // Act
+        Action action = () => reader.Read(buffer);
 
-            // Assert
-            action.Should().ThrowExactly<ParameterValueFormatException>()
-                .WithMessage("Error at position 9: Value of NetworkAddressParameter DestinationAddress must consist of 6 characters in range 0-9 or A-F.*");
-        }
+        // Assert
+        action.Should().ThrowExactly<ParameterValueFormatException>()
+            .WithMessage("Error at position 9: Value of NetworkAddressParameter DestinationAddress must consist of 6 characters in range 0-9 or A-F.*");
+    }
 
-        [Fact]
-        public void When_packet_contains_unexpected_parameter_it_must_warn()
+    [Fact]
+    public void When_packet_contains_unexpected_parameter_it_must_warn()
+    {
+        // Arrange
+        byte[] buffer =
         {
-            // Arrange
-            byte[] buffer =
-            {
-                2,
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('\t'),
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('4'),
-                ByteFor(':'),
-                ByteFor('1'),
-                ByteFor('2'),
-                ByteFor('3'),
-                ByteFor('4'),
-                ByteFor('5'),
-                ByteFor('6'),
-                ByteFor('\t'),
-                3
-            };
+            2,
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('\t'),
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('4'),
+            ByteFor(':'),
+            ByteFor('1'),
+            ByteFor('2'),
+            ByteFor('3'),
+            ByteFor('4'),
+            ByteFor('5'),
+            ByteFor('6'),
+            ByteFor('\t'),
+            3
+        };
 
-            var logger = new FakeSystemLogger();
+        var logger = new FakeSystemLogger();
 
-            var reader = new PacketReader
-            {
-                ActiveLogger = logger
-            };
-
-            // Act
-            reader.Read(buffer);
-
-            // Assert
-            logger.WarningMessages.Should().HaveCount(1);
-
-            logger.WarningMessages[0].Should().StartWith(
-                "Warning at packet position 5: Ignoring unexpected occurrence of parameter 14 in packet for operation 1.");
-        }
-
-        [Fact]
-        public void When_packet_contains_duplicate_parameter_it_must_warn()
+        var reader = new PacketReader
         {
-            // Arrange
-            byte[] buffer =
-            {
-                2,
-                ByteFor('0'),
-                ByteFor('3'),
-                ByteFor('\t'),
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('4'),
-                ByteFor(':'),
-                ByteFor('1'),
-                ByteFor('2'),
-                ByteFor('3'),
-                ByteFor('4'),
-                ByteFor('5'),
-                ByteFor('6'),
-                ByteFor('\t'),
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('4'),
-                ByteFor(':'),
-                ByteFor('1'),
-                ByteFor('2'),
-                ByteFor('3'),
-                ByteFor('4'),
-                ByteFor('5'),
-                ByteFor('6'),
-                ByteFor('\t'),
-                3
-            };
+            ActiveLogger = logger
+        };
 
-            var logger = new FakeSystemLogger();
+        // Act
+        reader.Read(buffer);
 
-            var reader = new PacketReader
-            {
-                ActiveLogger = logger
-            };
+        // Assert
+        logger.WarningMessages.Should().HaveCount(1);
 
-            // Act
-            reader.Read(buffer);
+        logger.WarningMessages[0].Should().StartWith("Warning at packet position 5: Ignoring unexpected occurrence of parameter 14 in packet for operation 1.");
+    }
 
-            // Assert
-            logger.WarningMessages.Should().HaveCount(1);
-
-            logger.WarningMessages[0].Should().StartWith(
-                "Warning at packet position 16: Ignoring additional occurrence of parameter 14 in packet for operation 3.");
-        }
-
-        [Fact]
-        public void When_checksum_is_invalid_it_must_throw()
+    [Fact]
+    public void When_packet_contains_duplicate_parameter_it_must_warn()
+    {
+        // Arrange
+        byte[] buffer =
         {
-            // Arrange
-            byte[] buffer =
-            {
-                2,
-                ByteFor('0'),
-                ByteFor('1'),
-                ByteFor('\t'),
-                ByteFor('6'),
-                68,
-                3
-            };
+            2,
+            ByteFor('0'),
+            ByteFor('3'),
+            ByteFor('\t'),
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('4'),
+            ByteFor(':'),
+            ByteFor('1'),
+            ByteFor('2'),
+            ByteFor('3'),
+            ByteFor('4'),
+            ByteFor('5'),
+            ByteFor('6'),
+            ByteFor('\t'),
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('4'),
+            ByteFor(':'),
+            ByteFor('1'),
+            ByteFor('2'),
+            ByteFor('3'),
+            ByteFor('4'),
+            ByteFor('5'),
+            ByteFor('6'),
+            ByteFor('\t'),
+            3
+        };
 
-            var reader = new PacketReader();
+        var logger = new FakeSystemLogger();
 
-            // Act
-            Action action = () => reader.Read(buffer);
-
-            // Assert
-            action.Should().ThrowExactly<ChecksumMismatchException>().WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
-        }
-
-        [Fact]
-        public void When_operation_code_is_unknown_it_must_throw()
+        var reader = new PacketReader
         {
-            // Arrange
-            byte[] buffer =
-            {
-                2,
-                ByteFor('1'),
-                ByteFor('1'),
-                ByteFor('\t'),
-                3
-            };
+            ActiveLogger = logger
+        };
 
-            var reader = new PacketReader();
+        // Act
+        reader.Read(buffer);
 
-            // Act
-            Action action = () => reader.Read(buffer);
+        // Assert
+        logger.WarningMessages.Should().HaveCount(1);
 
-            // Assert
-            action.Should().ThrowExactly<UnknownOperationException>().WithMessage("Error at position 1: Unsupported operation code 11.*");
-        }
+        logger.WarningMessages[0].Should().StartWith(
+            "Warning at packet position 16: Ignoring additional occurrence of parameter 14 in packet for operation 3.");
+    }
 
-        private static byte ByteFor(char ch)
+    [Fact]
+    public void When_checksum_is_invalid_it_must_throw()
+    {
+        // Arrange
+        byte[] buffer =
         {
-            return (byte)ch;
-        }
+            2,
+            ByteFor('0'),
+            ByteFor('1'),
+            ByteFor('\t'),
+            ByteFor('6'),
+            68,
+            3
+        };
+
+        var reader = new PacketReader();
+
+        // Act
+        Action action = () => reader.Read(buffer);
+
+        // Assert
+        action.Should().ThrowExactly<ChecksumMismatchException>().WithMessage("Error at position 5: Invalid checksum (stored=0x6D, calculated=0x6C).*");
+    }
+
+    [Fact]
+    public void When_operation_code_is_unknown_it_must_throw()
+    {
+        // Arrange
+        byte[] buffer =
+        {
+            2,
+            ByteFor('1'),
+            ByteFor('1'),
+            ByteFor('\t'),
+            3
+        };
+
+        var reader = new PacketReader();
+
+        // Act
+        Action action = () => reader.Read(buffer);
+
+        // Assert
+        action.Should().ThrowExactly<UnknownOperationException>().WithMessage("Error at position 1: Unsupported operation code 11.*");
+    }
+
+    private static byte ByteFor(char ch)
+    {
+        return (byte)ch;
     }
 }
