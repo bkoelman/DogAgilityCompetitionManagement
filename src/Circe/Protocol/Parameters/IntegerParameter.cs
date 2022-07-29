@@ -134,6 +134,6 @@ public sealed class IntegerParameter : Parameter
     [Pure]
     public override string ToString()
     {
-        return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        return HasValue ? $"{base.ToString()}: {innerValue}" : base.ToString();
     }
 }

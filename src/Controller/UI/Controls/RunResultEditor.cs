@@ -166,7 +166,7 @@ public sealed partial class RunResultEditor : UserControl
     {
         competitorTextBox.Text = runResult == null
             ? string.Empty
-            : runResult.Competitor.Number + " - " + runResult.Competitor.HandlerName + " - " + runResult.Competitor.DogName;
+            : $"{runResult.Competitor.Number} - {runResult.Competitor.HandlerName} - {runResult.Competitor.DogName}";
     }
 
     private void SetScreenValueForFinishTime(CompetitionRunResult? runResult)

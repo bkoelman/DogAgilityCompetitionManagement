@@ -109,8 +109,8 @@ public sealed class PacketReader
             {
                 int displayPosition = parameterStartOffset + 1;
 
-                ActiveLogger.Warn($"Warning at packet position {displayPosition}: " + $"Ignoring additional occurrence of parameter {parameterId} in packet " +
-                    $"for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
+                ActiveLogger.Warn($"Warning at packet position {displayPosition}: Ignoring additional occurrence " +
+                    $"of parameter {parameterId} in packet for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
             }
             else
             {
@@ -127,9 +127,8 @@ public sealed class PacketReader
                     {
                         int displayPosition = parameterStartOffset + 1;
 
-                        ActiveLogger.Warn($"Warning at packet position {displayPosition}: " +
-                            $"Ignoring unexpected occurrence of parameter {parameterId} in packet " +
-                            $"for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
+                        ActiveLogger.Warn($"Warning at packet position {displayPosition}: Ignoring unexpected occurrence " +
+                            $"of parameter {parameterId} in packet for operation {operation.Code}.{context.Buffer.Array!.FormatHexBuffer(4)}");
                     }
                 }
                 catch (ArgumentException ex)

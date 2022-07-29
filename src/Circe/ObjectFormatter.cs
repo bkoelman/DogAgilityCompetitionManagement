@@ -64,12 +64,12 @@ public sealed class ObjectFormatter : IDisposable
     {
         if (outerInstance != null)
         {
-            builder.Insert(0, outerInstance.GetType().Name + " (");
+            builder.Insert(0, $"{outerInstance.GetType().Name} (");
             builder.Append(')');
         }
         else if (outerText != null)
         {
-            builder.Insert(0, outerText + " ");
+            builder.Insert(0, $"{outerText} ");
         }
     }
 }

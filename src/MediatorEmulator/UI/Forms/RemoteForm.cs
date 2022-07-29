@@ -59,7 +59,7 @@ public sealed partial class RemoteForm : FormWithWindowStateChangeEvent, IWirele
         {
             isUpdatingControlsFromSettings = true;
 
-            Text = "Remote " + settings.DeviceAddressNotNull;
+            Text = $"Remote {settings.DeviceAddressNotNull}";
 
             powerStatus.IsPoweredOn = settings.IsPoweredOn;
             statusUpdateTimer.Enabled = settings.IsPoweredOn;

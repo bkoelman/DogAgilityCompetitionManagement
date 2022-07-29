@@ -117,9 +117,9 @@ public sealed class RecordedTime : IEquatable<RecordedTime>
         switch (Accuracy)
         {
             case TimeAccuracy.UserEdited:
-                return timeValue + "*";
+                return $"{timeValue}*";
             case TimeAccuracy.LowPrecision:
-                return timeValue + "~";
+                return $"{timeValue}~";
             default:
                 return timeValue;
         }

@@ -98,7 +98,7 @@ public sealed partial class ClassSetupForm : Form
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.ToString(), "Import failed - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.ToString(), $"Import failed - {Text}", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         else

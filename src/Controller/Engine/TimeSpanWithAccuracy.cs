@@ -114,9 +114,9 @@ public readonly struct TimeSpanWithAccuracy : IFormattable, IEquatable<TimeSpanW
             case TimeAccuracy.HighPrecision:
                 return timeString;
             case TimeAccuracy.LowPrecision:
-                return timeString + "~";
+                return $"{timeString}~";
             case TimeAccuracy.UserEdited:
-                return timeString + "*";
+                return $"{timeString}*";
             default:
                 throw ExceptionFactory.CreateNotSupportedExceptionFor(Accuracy);
         }

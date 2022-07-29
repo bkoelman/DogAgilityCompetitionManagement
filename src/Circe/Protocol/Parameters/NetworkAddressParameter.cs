@@ -107,7 +107,7 @@ public sealed class NetworkAddressParameter : Parameter
     [Pure]
     public override string ToString()
     {
-        return HasValue ? base.ToString() + ": " + innerValue : base.ToString();
+        return HasValue ? $"{base.ToString()}: {innerValue}" : base.ToString();
     }
 
     public static bool IsValidAddress(string? value)

@@ -24,7 +24,7 @@ public static class Guard
 
         if (!value.Any())
         {
-            throw new ArgumentException(name + " cannot be empty.", name);
+            throw new ArgumentException($"{name} cannot be empty.", name);
         }
     }
 
@@ -35,7 +35,7 @@ public static class Guard
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException(name + " cannot be empty or contain only whitespace.", name);
+            throw new ArgumentException($"{name} cannot be empty or contain only whitespace.", name);
         }
     }
 

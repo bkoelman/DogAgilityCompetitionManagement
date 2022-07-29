@@ -46,7 +46,7 @@ public sealed class ReaderPositioning
     {
         // Arrange
         const string lineBreaker = "\r";
-        const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
+        const string cellValueWithLineBreak = $"Cell with{lineBreaker}line break";
         string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
@@ -68,7 +68,7 @@ public sealed class ReaderPositioning
     {
         // Arrange
         const string lineBreaker = "\n";
-        const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
+        const string cellValueWithLineBreak = $"Cell with{lineBreaker}line break";
         string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
@@ -90,7 +90,7 @@ public sealed class ReaderPositioning
     {
         // Arrange
         const string lineBreaker = "\r\n";
-        const string cellValueWithLineBreak = "Cell with" + lineBreaker + "line break";
+        const string cellValueWithLineBreak = $"Cell with{lineBreaker}line break";
         string rowWithLineBreak = DefaultTextQualifier + cellValueWithLineBreak + DefaultTextQualifier;
 
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
@@ -114,7 +114,7 @@ public sealed class ReaderPositioning
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
             .WithSingleColumnHeader()
             .WithoutRows()
-            .WithDataLine(DefaultTextQualifier + "12345")
+            .WithDataLine($"{DefaultTextQualifier}12345")
             .WithDataLine("A")
             .WithDataLine("B")
             .Build();

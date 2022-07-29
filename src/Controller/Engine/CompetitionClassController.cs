@@ -330,7 +330,7 @@ public sealed class CompetitionClassController : IDisposable
 
     public void HandleGatePassed(TimeSpan? sensorTime, GatePassage passageGate, WirelessNetworkAddress source)
     {
-        string timeText = sensorTime != null ? "with time " + sensorTime : "without time";
+        string timeText = sensorTime != null ? $"with time {sensorTime}" : "without time";
         Log.Debug($"Entering HandleGatePassed for {passageGate} {timeText}.");
 
         // Devices without capability TimeSensor are considered low-precision, but hardware time is used.

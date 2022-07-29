@@ -29,7 +29,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("A" + Environment.NewLine);
+        output.ToString().Should().Be($"A{Environment.NewLine}");
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("A,B" + Environment.NewLine);
+        output.ToString().Should().Be($"A,B{Environment.NewLine}");
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("A;B" + Environment.NewLine);
+        output.ToString().Should().Be($"A;B{Environment.NewLine}");
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("' X'" + Environment.NewLine);
+        output.ToString().Should().Be($"' X'{Environment.NewLine}");
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("'X '" + Environment.NewLine);
+        output.ToString().Should().Be($"'X '{Environment.NewLine}");
     }
 
     [Fact]
@@ -233,7 +233,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("'X\r'" + Environment.NewLine);
+        output.ToString().Should().Be($"'X\r'{Environment.NewLine}");
     }
 
     [Fact]
@@ -259,7 +259,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("'X\n'" + Environment.NewLine);
+        output.ToString().Should().Be($"'X\n'{Environment.NewLine}");
     }
 
     [Fact]
@@ -287,7 +287,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("'X|Y'|Z" + Environment.NewLine);
+        output.ToString().Should().Be($"'X|Y'|Z{Environment.NewLine}");
     }
 
     [Fact]
@@ -313,7 +313,7 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("'Bed ''n Breakfast'" + Environment.NewLine);
+        output.ToString().Should().Be($"'Bed ''n Breakfast'{Environment.NewLine}");
     }
 
     [Fact]
@@ -338,6 +338,6 @@ public sealed class WriterComposition
         }
 
         // Assert
-        output.ToString().Should().Be("X||" + Environment.NewLine);
+        output.ToString().Should().Be($"X||{Environment.NewLine}");
     }
 }

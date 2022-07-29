@@ -187,7 +187,7 @@ public sealed class ReaderParsing
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
             .WithSingleColumnHeader()
             .WithoutRows()
-            .WithDataLine("a" + DefaultTextQualifier + "b" + DefaultTextQualifier)
+            .WithDataLine($"a{DefaultTextQualifier}b{DefaultTextQualifier}")
             .Build();
 
         // Act
@@ -205,7 +205,7 @@ public sealed class ReaderParsing
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
             .WithSingleColumnHeader()
             .WithoutRows()
-            .WithDataLine(DefaultTextQualifier + "a" + DefaultTextQualifier + "b")
+            .WithDataLine($"{DefaultTextQualifier}a{DefaultTextQualifier}b")
             .Build();
 
         // Act
@@ -247,7 +247,7 @@ public sealed class ReaderParsing
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()
             .WithSettings(new DelimitedValuesReaderSettingsBuilder()
                 .WithFieldSeparator(separator))
-            .WithHeaderLine("A" + separator + "B")
+            .WithHeaderLine($"A{separator}B")
             .WithoutRows()
             .WithDataLine(DefaultTextQualifier + cellValue + DefaultTextQualifier + separator)
             .Build();
@@ -424,7 +424,7 @@ public sealed class ReaderParsing
     {
         // Arrange
         const string header = "C1";
-        string cell = DefaultTextQualifier + "12345";
+        string cell = $"{DefaultTextQualifier}12345";
         int bufferSize = header.Length + Environment.NewLine.Length + cell.Length;
 
         using DelimitedValuesReader reader = new DelimitedValuesReaderBuilder()

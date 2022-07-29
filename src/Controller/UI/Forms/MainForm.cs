@@ -133,7 +133,7 @@ public sealed partial class MainForm : FormWithHandleManagement
 
     private void ShowError(string message)
     {
-        MessageBox.Show(this, message, @"Error - " + Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, message, $@"Error - {Text}", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
     private void MainForm_Load(object? sender, EventArgs e)

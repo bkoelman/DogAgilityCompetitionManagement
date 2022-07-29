@@ -52,7 +52,7 @@ public sealed class AssignmentStateMachine
     private static string GetDisplayNameFor<TPhase>(MethodBase source)
         where TPhase : AssignmentPhase
     {
-        return source.Name + "<" + typeof(TPhase).Name + ">";
+        return $"{source.Name}<{typeof(TPhase).Name}>";
     }
 
     public TPhase WaitForPhase<TPhase>()

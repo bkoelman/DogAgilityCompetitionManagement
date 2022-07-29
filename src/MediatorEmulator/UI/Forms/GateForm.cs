@@ -57,7 +57,7 @@ public sealed partial class GateForm : FormWithWindowStateChangeEvent, IWireless
         {
             isUpdatingControlsFromSettings = true;
 
-            Text = "Gate " + settings.DeviceAddressNotNull;
+            Text = $"Gate {settings.DeviceAddressNotNull}";
 
             powerStatus.IsPoweredOn = settings.IsPoweredOn;
             signalButton.Enabled = settings.IsPoweredOn;

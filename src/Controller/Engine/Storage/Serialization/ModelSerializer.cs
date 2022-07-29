@@ -41,9 +41,8 @@ public sealed class ModelSerializer
         {
             Log.Error("Failed to load model from XML file.", ex);
 
-            string message = $"Failed to load run configuration from file:\n\n{path}\n\n" +
-                $"Error message: {ex.Message}\n\nClick Ok to discard this file and use default settings.\n" +
-                "Click Cancel to close this application without making changes.";
+            string message = $"Failed to load run configuration from file:\n\n{path}\n\nError message: {ex.Message}\n\n" +
+                "Click Ok to discard this file and use default settings.\nClick Cancel to close this application without making changes.";
 
             DialogResult response = MessageBox.Show(message, "Error - Dog Agility Competition Management System", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Error, MessageBoxDefaultButton.Button2);

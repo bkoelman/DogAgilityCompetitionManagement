@@ -130,6 +130,6 @@ public sealed class BinaryParameter : Parameter
     [Pure]
     public override string ToString()
     {
-        return HasValue ? base.ToString() + ": Length=" + innerValue.Count : base.ToString();
+        return HasValue ? $"{base.ToString()}: Length={innerValue.Count}" : base.ToString();
     }
 }

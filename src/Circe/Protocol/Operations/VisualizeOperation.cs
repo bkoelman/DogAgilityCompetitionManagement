@@ -238,8 +238,7 @@ public sealed class VisualizeOperation : Operation
             if (addressSet.Contains(destinationAddress))
             {
                 throw new OperationValidationException(this,
-                    $"Duplicate {nameof(NetworkAddressParameter)} " +
-                    $"{PrototypeDestinationAddressParameter.Name} found with value '{destinationAddress.Value}'.");
+                    $"Duplicate {nameof(NetworkAddressParameter)} {PrototypeDestinationAddressParameter.Name} found with value '{destinationAddress.Value}'.");
             }
 
             addressSet.Add(destinationAddress);

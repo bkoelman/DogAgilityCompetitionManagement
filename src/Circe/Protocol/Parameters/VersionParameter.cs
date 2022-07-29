@@ -128,6 +128,6 @@ public sealed class VersionParameter : Parameter
     [Pure]
     public override string ToString()
     {
-        return innerValue != null ? base.ToString() + ": " + innerValue.ToString(3) : base.ToString();
+        return innerValue != null ? $"{base.ToString()}: {innerValue.ToString(3)}" : base.ToString();
     }
 }

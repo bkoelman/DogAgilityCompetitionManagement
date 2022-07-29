@@ -14,7 +14,7 @@ public static class AssemblyReader
         if (versionAttribute != null && versionAttribute.ConstructorArguments.Any())
         {
             CustomAttributeTypedArgument versionText = versionAttribute.ConstructorArguments.FirstOrDefault();
-            return " v" + versionText.Value;
+            return $" v{versionText.Value}";
         }
 
         return string.Empty;

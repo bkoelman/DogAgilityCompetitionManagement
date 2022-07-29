@@ -58,7 +58,7 @@ public sealed class StartupArguments
 
         if (comPortName == null || newAddress == null)
         {
-            string title = "Dog Agility Competition Management - Device Configurer" + AssemblyReader.GetInformationalVersion();
+            string title = $"Dog Agility Competition Management - Device Configurer{AssemblyReader.GetInformationalVersion()}";
             string exeName = GetExeName();
 
             Console.WriteLine(title);

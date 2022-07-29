@@ -88,6 +88,6 @@ public sealed class BooleanParameter : Parameter
     [Pure]
     public override string ToString()
     {
-        return HasValue ? base.ToString() + ": " + Value : base.ToString();
+        return HasValue ? $"{base.ToString()}: {Value}" : base.ToString();
     }
 }

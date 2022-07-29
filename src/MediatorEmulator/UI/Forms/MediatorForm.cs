@@ -108,7 +108,7 @@ public sealed partial class MediatorForm : FormWithWindowStateChangeEvent, IWire
         {
             isUpdatingControlsFromSettings = true;
 
-            Text = "Mediator " + settings.DeviceAddressNotNull;
+            Text = $"Mediator {settings.DeviceAddressNotNull}";
 
             powerStatus.IsPoweredOn = settings.IsPoweredOn;
             portLabel.Text = settings.ComPortName ?? ComPortSelectionForm.AutoText;

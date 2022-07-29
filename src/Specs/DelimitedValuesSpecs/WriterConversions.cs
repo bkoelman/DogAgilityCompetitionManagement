@@ -36,7 +36,7 @@ public sealed class WriterConversions
         }
 
         // Assert
-        output.ToString().Should().Be("True,,False" + Environment.NewLine);
+        output.ToString().Should().Be($"True,,False{Environment.NewLine}");
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public sealed class WriterConversions
         }
 
         // Assert
-        output.ToString().Should().Be("3,5" + Environment.NewLine);
+        output.ToString().Should().Be($"3,5{Environment.NewLine}");
     }
 
     [Fact]
@@ -87,6 +87,6 @@ public sealed class WriterConversions
         }
 
         // Assert
-        output.ToString().Should().Be("Y" + Environment.NewLine);
+        output.ToString().Should().Be($"Y{Environment.NewLine}");
     }
 }

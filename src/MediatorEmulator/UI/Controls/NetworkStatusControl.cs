@@ -37,7 +37,7 @@ public sealed partial class NetworkStatusControl : UserControl
             if (value != RolesAssigned)
             {
                 rolesAssigned = value;
-                rolesLabel.Text = "Roles: " + rolesAssigned;
+                rolesLabel.Text = $"Roles: {rolesAssigned}";
 
                 StatusChanged?.Invoke(this, EventArgs.Empty);
             }

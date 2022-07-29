@@ -42,6 +42,6 @@ public sealed class CompositeRunVisualizer : ICompetitionRunVisualizer
             change.WriteTo(writer);
         }
 
-        Log.Debug("Applying set of visualization changes: " + writer);
+        Log.Debug($"Applying set of visualization changes: {writer}");
     }
 }

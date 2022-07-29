@@ -62,7 +62,7 @@ public sealed partial class DisplayForm : FormWithWindowStateChangeEvent, IWirel
         {
             isUpdatingControlsFromSettings = true;
 
-            Text = "Display " + settings.DeviceAddressNotNull;
+            Text = $"Display {settings.DeviceAddressNotNull}";
 
             powerStatus.IsPoweredOn = settings.IsPoweredOn;
             statusUpdateTimer.Enabled = settings.IsPoweredOn;

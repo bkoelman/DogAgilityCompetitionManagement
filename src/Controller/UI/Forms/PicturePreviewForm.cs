@@ -25,7 +25,7 @@ public sealed partial class PicturePreviewForm : Form
             {
                 ImageLocation = path
             },
-            Text = title + " preview"
+            Text = $"{title} preview"
         };
 
         form.ShowDialog(parent);
