@@ -249,7 +249,7 @@ internal sealed class SessionGuard : IDisposable
             Log.Debug("Entering wait loop until at least one port found.");
 
 #if DEBUGGING_HACKS
-            string comPortName = "COM3"; // Force single COM port
+            string? comPortName = "COM3"; // Force single COM port
 #else
             string? comPortName = portRotator.GetNextPortName();
 #endif
@@ -284,10 +284,7 @@ internal sealed class SessionGuard : IDisposable
 
             seenProtocolVersionMismatch.Value = null;
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
             newConnection = new CirceComConnection(comPortName);
-#pragma warning restore CA2000 // Dispose objects before losing scope
-
             newConnection.PacketSending += NewConnectionOnPacketSending;
             newConnection.PacketReceived += NewConnectionOnPacketReceived;
             newConnection.OperationReceived += NewConnectionOnOperationReceived;

@@ -22,11 +22,7 @@ public sealed class ActionQueue : IDisposable
 {
     private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-#pragma warning disable CA2213 // Disposable fields should be disposed
-    // Justification: This member is disposed by ConsumerLoop() instead of Dispose().
     private readonly BlockingCollection<WorkItem> workQueue = new();
-#pragma warning restore CA2213 // Disposable fields should be disposed
-
     private readonly object stateLock = new();
 
     private bool isConsumerRunning; // Protected by stateLock
