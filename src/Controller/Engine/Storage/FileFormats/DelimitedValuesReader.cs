@@ -556,7 +556,7 @@ namespace DogAgilityCompetition.Controller.Engine.Storage.FileFormats
             {
                 TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
                 object? converted = converter.ConvertFrom(NullContext, sourceEnumerator.EffectiveCulture, cellValue);
-                return (T)converted;
+                return (T?)converted;
             }
         }
     }

@@ -54,7 +54,7 @@ namespace DogAgilityCompetition.MediatorEmulator
                 {
                     state = ParseWindowState(arg.Substring("state=".Length));
                 }
-                else if (string.Compare(arg, "transparentOnTop", StringComparison.OrdinalIgnoreCase) == 0)
+                else if (string.Equals(arg, "transparentOnTop", StringComparison.OrdinalIgnoreCase))
                 {
                     transparentOnTop = true;
                 }

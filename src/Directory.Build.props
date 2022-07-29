@@ -1,25 +1,26 @@
 <Project>
 
- <PropertyGroup>
+  <PropertyGroup>
     <Version>1.0.0-alpha1</Version>
     <Nullable>enable</Nullable>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
- </PropertyGroup>
-
-  <PropertyGroup>
-    <!-- Workaround for error:
-        "Could not copy the file "XXX.deps.json" because it was not found."
-        during subsequent builds when using shared bin folder.
-        See also: https://github.com/dotnet/sdk/issues/17645
-    -->
-    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
-    <OutputPath>$(MSBuildThisFileDirectory)\..\bin\$(Configuration)\</OutputPath>
-    <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
+  <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('Specs'))">
+    <!--
+      Using a shared output directory only works for local development. Dependent DLLs from NuGet packages aren't being
+	  copied (https://github.com/dotnet/sdk/issues/23342), but referenced via *runtimeconfig.dev.json files which point
+	  to the local NuGet cache. As a result, zipping up the shared directory for someone else won't work.
+	-->
+    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)\..\bin</BaseOutputPath>
+
+    <!-- Workaround for https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/runtimeconfigdev-file -->
+    <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+
+    <!-- Prevents adding *.pdf files in the shared output folder -->
+    <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
+  </PropertyGroup>
 
 </Project>
