@@ -32,7 +32,7 @@ public sealed class PacketAssembler
     private byte[]? ConsumeNextPacket(ref ArraySegment<byte> buffer)
     {
         // When preceding buffers are non-empty, we do not have to find a
-        // start-of-packet first (because the first byte in the preceding buffers is always a 
+        // start-of-packet first (because the first byte in the preceding buffers is always a
         // start-of-packet).
         int packetStartIndex = startOfPacketQueue.Count > 0 ? buffer.Offset : -1;
 
@@ -42,7 +42,7 @@ public sealed class PacketAssembler
         {
             if (buffer.Array![index] == PacketFormatDelimiters.StartOfText)
             {
-                // Start-of-packet found before end-of-packet. Any queued buffers will 
+                // Start-of-packet found before end-of-packet. Any queued buffers will
                 // not be part of the next packet, so consider them garbage.
                 startOfPacketQueue.Clear();
                 packetStartIndex = index;

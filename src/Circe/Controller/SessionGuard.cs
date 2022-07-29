@@ -126,7 +126,7 @@ internal sealed class SessionGuard : IDisposable
         {
             // The reconnect thread will pause the queue before changing the active connection.
             // In turn, when the queue gets paused, it will block until the current action has
-            // completed. So we can assume that the active connection never changes while this 
+            // completed. So we can assume that the active connection never changes while this
             // callback is running.
 
             CirceComConnection? connectionSnapshot = activeConnection.Value;
@@ -183,7 +183,7 @@ internal sealed class SessionGuard : IDisposable
                     CreateSession();
                 }
 
-                // If disposing, must wake immediately. Otherwise, we'll sleep some time 
+                // If disposing, must wake immediately. Otherwise, we'll sleep some time
                 // before re-checking the session.
                 //Log.Debug("Starting sleep on wait handle.");
                 disposeRequestedWaitHandle.Wait(250);
@@ -210,8 +210,8 @@ internal sealed class SessionGuard : IDisposable
 
             // Best effort: If possible, notify the mediator to stop sending.
 
-            // The outgoing queue has been paused. So we are guaranteed to be the only 
-            // thread that is writing to the port. So locking for exclusive write 
+            // The outgoing queue has been paused. So we are guaranteed to be the only
+            // thread that is writing to the port. So locking for exclusive write
             // access is not needed here.
 
             if (!TryDirectSend(previousConnection, false, new LogoutOperation(), out Exception? logoutError))
@@ -297,7 +297,7 @@ internal sealed class SessionGuard : IDisposable
             // for exclusive write access is not needed here.
             if (TryDirectSend(newConnection, true, new LoginOperation(), out connectError))
             {
-                // A KeepAlive response should be received shortly, so we'll set the lifetime to one 
+                // A KeepAlive response should be received shortly, so we'll set the lifetime to one
                 // second in the past, which leaves a single second for the mediator to respond.
                 lastRefreshTimeInUtc.Value = SystemContext.UtcNow().AddSeconds(-1);
             }
@@ -373,15 +373,15 @@ internal sealed class SessionGuard : IDisposable
         Log.Debug("Entering NewConnectionOnOperationReceived.");
 
         // To be compliant with the CIRCE spec, we should discard any incoming operations other than KeepAlive
-        // when in the process of establishing a session. But this may result in losing important information 
-        // during a competition run, so we silently assume that no protocol version mismatch occurs and allow 
-        // any incoming operation to be handled when we have not received a KeepAlive response to our 
+        // when in the process of establishing a session. But this may result in losing important information
+        // during a competition run, so we silently assume that no protocol version mismatch occurs and allow
+        // any incoming operation to be handled when we have not received a KeepAlive response to our
         // Login operation yet.
-        // On the other hand, once we have detected a protocol version mismatch, we discard any additional 
+        // On the other hand, once we have detected a protocol version mismatch, we discard any additional
         // incoming operations on that same connection.
 
         // This method is not expected to execute concurrently (due to an exclusive lock in System.Net.SerialPort
-        // around invocation of the DataReceived event), so we can safely apply sequential changes related to 
+        // around invocation of the DataReceived event), so we can safely apply sequential changes related to
         // version mismatches, without taking an exclusive lock. Furthermore, it seems unlikely we will get here
         // after connection has been closed (not sure if that's possible). Even then, the worst that can happen
         // is a reconnect due to incorrect logic regarding version or keep-alive, which is much less problematic

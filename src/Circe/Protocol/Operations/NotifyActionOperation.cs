@@ -50,7 +50,7 @@ public sealed class NotifyActionOperation : Operation
 
             double milliseconds = (double)sensorTimeParameter.Value;
 
-            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
+            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally
             // rounds the input value to whole milliseconds.
             return TimeSpan.FromMilliseconds(milliseconds);
         }

@@ -11,7 +11,7 @@ namespace DogAgilityCompetition.Circe.Controller;
 /// </summary>
 public sealed class CirceControllerSessionManager : IDisposable
 {
-    // When performance stagnates on high load, consider increasing Thread-pool size. 
+    // When performance stagnates on high load, consider increasing Thread-pool size.
     // Defaults for .exe are: Min=8, Max=1000
 
     private static readonly ISystemLogger Log = new Log4NetSystemLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);

@@ -82,7 +82,7 @@ public sealed class VisualizeOperation : Operation
 
             double milliseconds = (double)primaryTimerValueParameter.Value;
 
-            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
+            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally
             // rounds the input value to whole milliseconds.
             return TimeSpan.FromMilliseconds(milliseconds);
         }
@@ -114,7 +114,7 @@ public sealed class VisualizeOperation : Operation
 
             double milliseconds = (double)secondaryTimerValueParameter.Value;
 
-            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally 
+            // TimeSpan.FromMilliseconds() accepts a double as input, but it internally
             // rounds the input value to whole milliseconds.
             return TimeSpan.FromMilliseconds(milliseconds);
         }

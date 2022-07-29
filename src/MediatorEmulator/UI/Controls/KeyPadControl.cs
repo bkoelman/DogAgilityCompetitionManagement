@@ -225,10 +225,10 @@ public sealed partial class KeypadControl : UserControl
 
     private void KeyButton_MouseDown(object sender, MouseEventArgs e)
     {
-        // When user presses mouse button, leaves with Alt+Tab and releases the mouse button, then we do not 
-        // receive a matching MouseUp event. Even when multiple mice are connected, only one WinForms button 
-        // can be down at a time. To work around the missing MouseUp, we detect if any other buttons are down 
-        // in addition to the current one. And if that's the case, we catch up by handling the MouseUp events 
+        // When user presses mouse button, leaves with Alt+Tab and releases the mouse button, then we do not
+        // receive a matching MouseUp event. Even when multiple mice are connected, only one WinForms button
+        // can be down at a time. To work around the missing MouseUp, we detect if any other buttons are down
+        // in addition to the current one. And if that's the case, we catch up by handling the MouseUp events
         // we missed earlier before handling this MouseDown event.
         HandleMouseUpEventsPreviouslyMissed();
 

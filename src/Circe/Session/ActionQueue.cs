@@ -194,7 +194,7 @@ public sealed class ActionQueue : IDisposable
 
                     int taskId = workItem.TaskSource.Task.Id;
 
-                    // Perform action inside lock, so that state transitions will block 
+                    // Perform action inside lock, so that state transitions will block
                     // until the current action has completed.
                     try
                     {

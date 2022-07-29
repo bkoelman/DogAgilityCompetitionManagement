@@ -244,7 +244,7 @@ public sealed class RunResultTotalOrdering
 
         if ((xFinishTimeIsGreater && yOverrunTimeIsGreater) || (yFinishTimeIsGreater && xOverrunTimeIsGreater))
         {
-            // Because StandardCourseTime is a constant, greater finish time implies 
+            // Because StandardCourseTime is a constant, greater finish time implies
             // greater overrun time (or same when zero; lower is not possible).
             return true;
         }

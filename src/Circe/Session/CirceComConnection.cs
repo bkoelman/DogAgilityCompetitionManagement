@@ -42,7 +42,7 @@ public sealed class CirceComConnection : IDisposable
             Parity = Parity.None,
             PortName = comPortName,
 
-            // Specify timeouts before calling Open(), to prevent infinite hang on a call 
+            // Specify timeouts before calling Open(), to prevent infinite hang on a call
             // to Close() from different thread.
             ReadTimeout = 500,
             WriteTimeout = 500
@@ -97,7 +97,7 @@ public sealed class CirceComConnection : IDisposable
 
         if (hasClosed)
         {
-            // The receiver thread inside the .NET framework needs some time to perform 
+            // The receiver thread inside the .NET framework needs some time to perform
             // async cleanup after close, before another port can be opened.
             Thread.Sleep(200);
         }
@@ -224,7 +224,7 @@ public sealed class CirceComConnection : IDisposable
 
     private void ComPortOnErrorReceived(object? sender, SerialErrorReceivedEventArgs e)
     {
-        // When not all data is received, may need to increase SerialPort.ReadBufferSize / WriteBufferSize 
+        // When not all data is received, may need to increase SerialPort.ReadBufferSize / WriteBufferSize
         // (default value: 4096 bytes) or consider switching to hardware flow control.
         Log.Error($"Port {PortName} reported error {e.EventType}.");
     }
