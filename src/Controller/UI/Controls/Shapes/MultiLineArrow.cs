@@ -85,7 +85,12 @@ public sealed class MultiLineArrow : ArrowShape
         public Builder Down(float length)
         {
             PointF lastPoint = arrowPoints.Last();
-            arrowPoints.Add(new PointF(lastPoint.X, lastPoint.Y + length));
+
+            arrowPoints.Add(lastPoint with
+            {
+                Y = lastPoint.Y + length
+            });
+
             return this;
         }
 
@@ -97,7 +102,12 @@ public sealed class MultiLineArrow : ArrowShape
         public Builder Right(float length)
         {
             PointF lastPoint = arrowPoints.Last();
-            arrowPoints.Add(new PointF(lastPoint.X + length, lastPoint.Y));
+
+            arrowPoints.Add(lastPoint with
+            {
+                X = lastPoint.X + length
+            });
+
             return this;
         }
 

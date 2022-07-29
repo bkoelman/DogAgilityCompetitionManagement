@@ -35,7 +35,11 @@ public sealed partial class DisplayStatusControl : UserControl, ISimpleVisualiza
     {
         int centerX = displayGroupBox.ClientSize.Width / 2;
         int labelWidth = previousCompetitorPlacementLabel.Width;
-        previousCompetitorPlacementLabel.Location = new Point(centerX - labelWidth / 2, previousCompetitorPlacementLabel.Location.Y);
+
+        previousCompetitorPlacementLabel.Location = previousCompetitorPlacementLabel.Location with
+        {
+            X = centerX - labelWidth / 2
+        };
     }
 
     private void DisplayRefreshTimer_Tick(object? sender, EventArgs e)

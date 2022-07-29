@@ -44,8 +44,15 @@ public sealed partial class HardwareStatusControl : UserControl
             {
                 int offsetY = (value ? 1 : -1) * 64;
 
-                clockLabel.Location = new Point(clockLabel.Location.X, clockLabel.Location.Y + offsetY);
-                syncStateLabel.Location = new Point(syncStateLabel.Location.X, syncStateLabel.Location.Y + offsetY);
+                clockLabel.Location = clockLabel.Location with
+                {
+                    Y = clockLabel.Location.Y + offsetY
+                };
+
+                syncStateLabel.Location = syncStateLabel.Location with
+                {
+                    Y = syncStateLabel.Location.Y + offsetY
+                };
 
                 batteryStatusLabel.Visible = value;
                 batteryStatusTrackBar.Visible = value;

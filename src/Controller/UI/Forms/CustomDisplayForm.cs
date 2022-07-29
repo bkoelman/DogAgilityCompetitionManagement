@@ -46,10 +46,18 @@ public sealed partial class CustomDisplayForm : Form
         topPanel.Height = h;
 
         middlePanel.Height = h;
-        middlePanel.Location = new Point(middlePanel.Location.X, PaddingTop + h + CellSpacing);
+
+        middlePanel.Location = middlePanel.Location with
+        {
+            Y = PaddingTop + h + CellSpacing
+        };
 
         bottomPanel.Height = h;
-        bottomPanel.Location = new Point(bottomPanel.Location.X, PaddingTop + h + CellSpacing + h + CellSpacing);
+
+        bottomPanel.Location = bottomPanel.Location with
+        {
+            Y = PaddingTop + h + CellSpacing + h + CellSpacing
+        };
     }
 
     private void CustomDisplayForm_FormClosing(object? sender, FormClosingEventArgs e)

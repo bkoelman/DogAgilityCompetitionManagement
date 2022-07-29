@@ -579,7 +579,12 @@ public sealed partial class NetworkGrid : UserControl
             CheckBoxRenderer.DrawCheckBox(e.Graphics, drawPoint, checkState);
 
             int offsetX = checkBoxSize.Width + 2 * checkBoxOffset;
-            shiftingRect = new Rectangle(shiftingRect.X + offsetX, shiftingRect.Y, shiftingRect.Width - offsetX, shiftingRect.Height);
+
+            shiftingRect = shiftingRect with
+            {
+                X = shiftingRect.X + offsetX,
+                Width = shiftingRect.Width - offsetX
+            };
 
             string text = RoleToDisplayNameLookup[roleAssignment.Role];
 
@@ -587,7 +592,11 @@ public sealed partial class NetworkGrid : UserControl
             Size textSize = TextRenderer.MeasureText(e.Graphics, text, e.CellStyle.Font, shiftingRect.Size, TextFlags);
             TextRenderer.DrawText(e.Graphics, text, e.CellStyle.Font, shiftingRect, textColor, TextFlags);
 
-            shiftingRect = new Rectangle(shiftingRect.X + textSize.Width, shiftingRect.Y, shiftingRect.Width - textSize.Width, shiftingRect.Height);
+            shiftingRect = shiftingRect with
+            {
+                X = shiftingRect.X + textSize.Width,
+                Width = shiftingRect.Width - textSize.Width
+            };
         }
 
         e.Handled = true;
