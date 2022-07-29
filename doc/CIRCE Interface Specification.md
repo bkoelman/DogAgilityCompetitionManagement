@@ -1,4 +1,4 @@
-﻿# CIRCE Interface Specification - Version 0.2.3 [DRAFT]
+# CIRCE Interface Specification - Version 0.2.3 [DRAFT]
 
 **Table of Contents**
 
@@ -60,28 +60,28 @@
 
 # <a name="about"></a>About this document
 
-The Dog Agility Competition Management system is designed to facilitate in dog racing competitions, where one competitor at a time is challenged to complete a race course with obstacles. The system consists of hardware devices, such as wireless passage detection sensors and remote controls, and computer applications. The Dog Agility Competition Controller application directs the racing workflow and can be used to visualize progress. It handles real-time communication with a set of wireless devices via the Dog Agility Competition Mediator device.
+The Dog Agility Competition Management system is designed to facilitate dog racing competitions, where one competitor at a time is challenged to complete a race course with obstacles. The system consists of hardware devices, such as wireless passage detection sensors and remote controls, and computer applications. The Dog Agility Competition Controller application directs the racing workflow and can be used to visualize progress. It handles real-time communication with a set of wireless devices via the Dog Agility Competition Mediator device.
 
 This document describes the CIRCE interface, which transfers messages between the Dog Agility Competition Controller application and the Dog Agility Competition Mediator device. CIRCE, the Computer Interface to Race Course Equipment protocol, is used by the Dog Agility Competition Management system.
 
-This document is intended for developers and operator personnel involved in daily operations of the Dog Agility Competition Management system.
+This document is intended for developers and operator personnel involved in the daily operations of the Dog Agility Competition Management system.
 
 
 # <a name="interface-overview"></a>CIRCE interface overview
 
 The Dog Agility Competition Management system includes the CIRCE interface, which transfers messages between the Dog Agility Competition Controller application and the Dog Agility Competition Mediator device. CIRCE is the Computer Interface to Race Course Equipment protocol. The CIRCE interface is designed for sending and retrieving messages over RS-232.
 
-The Dog Agility Competition Controller application (referred to as “controller” in the rest of this document) is interconnected through the CIRCE connection to the Dog Agility Competition Mediator device (referred to as “mediator” in the rest of this document). The main purpose of this interconnection is for the controller to obtain readings from wireless devices, such as passage gates and remote controls. Other kinds of information can also be conveyed over the interconnection, for example, scanning for hardware devices to dynamically form a logical network configuration.
+The Dog Agility Competition Controller application (referred to as "controller" in the rest of this document) is interconnected through the CIRCE connection to the Dog Agility Competition Mediator device (referred to as "mediator" in the rest of this document). The main purpose of this interconnection is for the controller to obtain readings from wireless devices, such as passage gates and remote controls. Other kinds of information can also be conveyed over the interconnection, for example, scanning for hardware devices to dynamically form a logical network configuration.
 
 The system architecture discussed in this document thus consists of a controller and a mediator, and the purpose of this document is to specify the interface between the two.
 
-The CIRCE operations are specified in *[CIRCE operations](#circe-operations)* and *[Parameters related to CIRCE operations](#parameters-related-to-circe-operations)*. Each CIRCE operation carries a number of parameters with it, that is, data items specifying sensor data, some facts about the operation itself, and so on.
+The CIRCE operations are specified in *[CIRCE operations](#circe-operations)* and *[Parameters related to CIRCE operations](#parameters-related-to-circe-operations)*. Each CIRCE operation carries several parameters: data items specifying sensor data, some facts about the operation itself, and so on.
 
 The coding of information related to the operations and parameters, that is, how the controller communicates with the mediator, is introduced in *[CIRCE protocol messages](#circe-protocol-messages)*.
 
 The parameters are specified in *[Parameters related to CIRCE operations](#parameters-related-to-circe-operations)*.
 
-In this interface specification, the operations and the parameters specified for each operation represent the maximum amount of information the controller application and the mediator device may provide. It is very important to notice that in some cases it is not reasonable to send all the possible parameters.
+In this interface specification, the operations and the parameters specified for each operation represent the maximum amount of information the controller application and the mediator device may provide. It is very important to notice that it is not reasonable to send all the possible parameters in some cases.
 
 
 # <a name="circe-operations"></a>CIRCE operations
@@ -178,7 +178,7 @@ PPP:Value of the parameter<TAB>
 
 where `PPP` indicates the parameter type and consists of 3 bytes containing the ASCII values of the digits 0 to 9 (values 48 to 57). After the single byte containing the ASCII value for the colon (58) the value of the parameter is coded with a variable number of bytes. The parameter is terminated by a single byte containing the ASCII value for TAB (9).
 
-The coding of the parameter value is dependent on the type of the parameter and is explained in *[CIRCE parameters](#circe-parameters)*.
+The parameter value coding depends on the parameter type and is explained in *[CIRCE parameters](#circe-parameters)*.
 
 All parameters consist of the ASCII equivalents of digits or the characters of the alphabet. The reserved characters 0x00 (NUL) 0x02 (STX), 0x03 (ETX), 0x09 (TAB) are not allowed in any parameter.
 
@@ -227,7 +227,7 @@ All parts combined give the following typical message:
 <STX>ZZ<TAB>PPP:parameter1<TAB>QQQ:parameter2<TAB><ETX>
 ```
 
-When real values for `ZZ`, `PPP` and so on, are used, you get a message such as:
+When real values for `ZZ`, `PPP`, and so on, are used, you get a message such as:
 
 ```
 <STX>01<TAB><ETX>
@@ -253,7 +253,7 @@ The checksum is an optional field, but when it is used you can calculate it acco
 
 5.  If available, retrieve the next byte from the message and repeat from step 3. The process stops when the `<ETX>` field is found 2 bytes further in the message.
 
-All characters from the first character to the last character before the checksum characters are included in the sum. Thus, `<STX>` is the first character in the checksum calculation and the last `<TAB>` before the checksum is the last character. The checksum characters and the `<ETX>` are not included in the calculation.
+All characters from the first character to the last character before the checksum characters are included in the sum. Thus, `<STX>` is the first character in the checksum calculation, and the last `<TAB>` before the checksum is the last character. The checksum characters and the `<ETX>` are not included in the calculation.
 
 The following line indicates the characters included in the checksum calculation:
 
@@ -313,7 +313,7 @@ A controller sends this operation to instruct a wireless device to join or leave
 | 017    | Set Membership      | 1           |
 | 020    | Roles               | 1           |
 
-Although a controller should validate its logical network configuration before it allows starting a competition run, nothing prevents another mediator to “take over” a device in the middle of a run.
+Although a controller should validate its logical network configuration before it allows starting a competition run, nothing prevents another mediator from "taking over" a device in the middle of a run.
 
 A mediator must discard any changes in assigned roles when the Set Membership parameter indicates to leave the network, to prevent altering another logical network configuration.
 
@@ -334,7 +334,7 @@ A controller may send this operation after login. Upon receipt of this operation
 ## <a name="operation-synchronize-clocks"></a>Synchronize Clocks (06)
 
 This operation is periodically used by a controller to synchronize the hardware clocks of all wireless devices in the logical network. Each device is expected to respond with two Notify Status (52) operations within three seconds.
-The first status must not include the Clock Synchronization parameter, while the second status is expected to include the Clock Synchronization parameter with value Sync Succeeded.
+The first status must not include the Clock Synchronization parameter, while the second status is expected to include the Clock Synchronization parameter with the value Sync Succeeded.
 
 This operation does not contain any parameters.
 
@@ -346,7 +346,7 @@ Note that for bandwidth efficiency, only changes must be sent by a controller. F
 
 The controller may choose to include the Destination Address parameter multiple times, each time with the unique network address of the specific display device.
 
-The Eliminated parameter has lowest precedence. The Start Timer parameter has precedence over the Primary Timer Value parameter. The Primary Timer Value parameter has precedence over the Secondary Timer Value parameter. The controller must send parameters with lowest precedence first and prevent conflicts.
+The Eliminated parameter has the lowest precedence. The Start Timer parameter has precedence over the Primary Timer Value parameter. The Primary Timer Value parameter has precedence over the Secondary Timer Value parameter. The controller must send parameters with the lowest precedence first and prevent conflicts.
 
 ***Note:*** *Due to hardware constraints in packet length, currently this operation is sent for each destination individually.*
 
@@ -398,9 +398,9 @@ Besides device status display, it can be used by a controller for device discove
 | 023    | Is Aligned            | 0..1        |
 | 027    | Clock Synchronization | 0..1        |
 
-The capability Time Sensor is mutually exclusive with the Start Sensor, Intermediate Sensor, Finish Sensor and Keypad capabilities. A remote control typically reports the Control Keypad capability. A remote control that includes any of the Start/Intermediate/Finish buttons must include the corresponding capabilities Start/Intermediate/Finish Sensor. A passage gate typically only reports the Time Sensor capability, because it sends time values while being unaware of its meaning.
+The capability Time Sensor is mutually exclusive with the Start Sensor, Intermediate Sensor, Finish Sensor, and Keypad capabilities. A remote control typically reports the Control Keypad capability. A remote control that includes any of the Start/Intermediate/Finish buttons must include the corresponding capabilities Start/Intermediate/Finish Sensor. A passage gate typically only reports the Time Sensor capability, because it sends time values while being unaware of its meaning.
 
-When a wireless device powers up, after a reboot and when it has joined the logical network, it is expected to include the Clock Synchronization parameter set to Requires Sync until clock synchronization has succeeded. Once the mediator has sent a synchronization request, the wireless device must include the Clock Synchronization parameter with value Sync Succeeded for four seconds.
+When a wireless device powers up, after a reboot and when it has joined the logical network, it is expected to include the Clock Synchronization parameter set to Requires Sync until clock synchronization has succeeded. Once the mediator has sent a synchronization request, the wireless device must include the Clock Synchronization parameter with the value Sync Succeeded for four seconds.
 
 ## <a name="operation-notify-action"></a>Notify Action (53)
 
@@ -414,7 +414,7 @@ This operation is used by a mediator to notify about an activity that occurred i
 | 024    | Input Keys          | 0..1        |
 | 025    | Sensor Time         | 0..1        |
 
-Devices with Keypad capabilities must always include the Input Keys parameter. Devices with capability Time Sensor must always include the Sensor Time parameter. A remote control that includes the optional Start/Intermediate/Finish buttons must always include the Sensor Time parameter when any of these keys is pressed.
+Devices with Keypad capabilities must always include the Input Keys parameter. Devices with the capability Time Sensor must always include the Sensor Time parameter. A remote control that includes the optional Start/Intermediate/Finish buttons must always include the Sensor Time parameter when any of these keys is pressed.
 
 When a device has a certain capability but is not in a matching role in the current logical network configuration, then the controller must ignore the action. For example, when a remote control includes the capability to provide timings, but it is not configured in any timer role, then any Start/Intermediate/Finish key presses must be discarded by the controller.
 
@@ -473,7 +473,7 @@ The encoded value of an address indicates at which moment in time the associated
 
 **Version**
 
-The Version parameter type is used for exchanging version numbers in the form X.Y.Z where elements X, Y, and Z are whole numbers in range 0 - 999 (inclusive). This means that besides the values 48 to 57 (digits 0 to 9) also value 46 ('.') is allowed.
+The Version parameter type is used for exchanging version numbers in the form X.Y.Z where elements X, Y, and Z are whole numbers in the range 0 - 999 (inclusive). This means that besides the values 48 to 57 (digits 0 to 9) also value 46 ('.') is allowed.
 
 - Example: Version parameter
 
@@ -500,7 +500,7 @@ The table below specifies the CIRCE parameters and their values.
 | Name                      | ID  | Max Length | Type    | Values     | Description |
 |:--------------------------|:----|:-----------|:--------|:-----------|:------------|
 | Protocol Version          | 010 | 11         | Version | -          | The version number of the CIRCE protocol that is in use. |
-| Mediator Status           | 012 | 3          | Integer | 0 - 999    | Indicates internal status of the mediator device. See *[Status codes](#status-codes)* for possible values. |
+| Mediator Status           | 012 | 3          | Integer | 0 - 999    | Indicates the internal status of the mediator device. See *[Status codes](#status-codes)* for possible values. |
 | Destination Address       | 014 | 6          | Address | -          | Destination address of a device in the wireless network. |
 | Originating Address       | 015 | 6          | Address | -          | Originating address of a device in the wireless network. |
 | Get Membership            | 016 | 1          | Integer | 0 or 1     | Indicates whether a device is part of the logical network configuration. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - Not in network</li><li>1 - In network</li></ul> |
@@ -508,23 +508,23 @@ The table below specifies the CIRCE parameters and their values.
 | Capabilities              | 019 | 3          | Integer | 0 - 127    | The bitmask of capabilities that a device can perform. Possible flags: <ul style="list-style-type: none; padding: 0;"><li>1 - Control keypad</li><li>2 - Numeric keypad</li><li>4 - Start Sensor</li><li>8 - Finish Sensor</li><li>16 - Intermediate Sensor</li><li>32 - Time Sensor</li><li>64 - Display</li></ul> |
 | Roles                     | 020 | 3          | Integer | 0 - 127    | The bitmask of roles that are (being) assigned to a device in the logical network. Possible flags: <ul style="list-style-type: none; padding: 0;"><li>1 - Keypad</li><li>2 - Start Timer</li><li>4 - Finish Timer</li><li>8 - Intermediate Timer 1</li><li>16 - Intermediate Timer 2</li><li>32 - Intermediate Timer 3</li><li>64 - Display</li></ul> |
 | Signal Strength           | 021 | 3          | Integer | 0 - 255    | The wireless signal strength. Higher values indicate a better signal. |
-| Battery Status            | 022 | 3          | Integer | 0 - 255    | Battery status of a device. Higher values indicate longer battery lifetime. |
+| Battery Status            | 022 | 3          | Integer | 0 - 255    | Battery status of a device. Higher values indicate a longer battery lifetime. |
 | Is Aligned                | 023 | 1          | Integer | 0 or 1     | Indicates whether a passage gate is properly aligned. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - Misaligned</li><li>1 - Aligned properly</li></ul> |                                                                                                                          
 | Input Keys                | 024 | 5          | Integer | 0 - 65535  | The bitmask of input keys on a keypad that are currently pushed down. Possible flags: <ul style="list-style-type: none; padding: 0;"><li>1 - key 1 / Play Sound A</li><li>2 - key 2 / Pass Intermediate</li><li>4 - key 3 / Toggle Elimination</li><li>8 - key 4</li><li>16 - key 5 / Refusals-</li><li>32 - key 6 / Refusals+</li><li>64 - key 7</li><li>128 - key 8 / Faults-</li><li>256 - key 9 / Faults+</li><li>512 - key Enter Current Competitor</li><li>1024 - key Enter Next Competitor</li><li>2048 - key 0 / Mute Sound</li><li>4096 - key Pass Finish</li><li>8192 - key Pass Start</li><li>16384 - key Reset Run</li><li>32768 - key Ready</li></ul> |
 | Sensor Time               | 025 | 6          | Integer | 0 - 999999 | The time (in milliseconds) at which a time sensor detected passage. |
 | Assign Address            | 026 | 6          | Address | -          | Network address to be assigned to a new device in the wireless network. |
-| Clock Synchronization     | 027 | 1          | Integer | 1 - 2      | Indicates status of synchronization of the hardware clock in a wireless device. Values: <ul style="list-style-type: none; padding: 0;"><li>1 - Requires Sync</li><li>2 - Sync Succeeded</li></ul> |
+| Clock Synchronization     | 027 | 1          | Integer | 1 - 2      | Indicates the status of synchronization of the hardware clock in a wireless device. Values: <ul style="list-style-type: none; padding: 0;"><li>1 - Requires Sync</li><li>2 - Sync Succeeded</li></ul> |
 | Current Competitor Number | 028 | 4          | Integer | 0 - 999    | The value to display for current competitor number, or 0 to hide it. |
 | Next Competitor Number    | 029 | 4          | Integer | 0 - 999    | The value to display for next competitor number, or 0 to hide it. |
 | Start Timer               | 030 | 1          | Integer | 1          | Resets timer to zero and starts it. |
-| Primary Timer Value       | 031 | 6          | Integer | 0 - 999999 | The primary time value (in milliseconds) to display for current competitor, or 999999 to hide it. When used, implicitly stops running timer. |
+| Primary Timer Value       | 031 | 6          | Integer | 0 - 999999 | The primary time value (in milliseconds) to display for the current competitor, or 999999 to hide it. When used, implicitly stops the running timer. |
 | Fault Count               | 032 | 2          | Integer | 0 - 99     | The value to display for fault count, or 99 to hide it. |
 | Refusal Count             | 033 | 2          | Integer | 0 - 99     | The value to display for refusal count, or 99 to hide it. |
 | Eliminated                | 034 | 1          | Integer | 0 or 1     | Toggles display of the elimination indicator. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - Hide elimination indicator</li><li>1 - Display elimination indicator</li></ul> |
 | Previous Placement        | 035 | 3          | Integer | 0 - 999    | The value to display for placement of previous competitor, or 0 to hide it. |
 | Log Data                  | 036 | -          | Binary  |            | Contains encoded binary data to log. |
 | Has Version Mismatch      | 037 | 1          | Integer | 0 or 1     | Indicates whether the version of a device matches the mediator version. Values: <ul style="list-style-type: none; padding: 0;"><li>0 - False (versions match)</li><li>1 - True (versions do not match)</li></ul> |                                                                         
-| Secondary Timer Value     | 038 | 6          | Integer | 0 - 999999 | The secondary time value (in milliseconds) to display for current competitor, or 999999 to hide it. |
+| Secondary Timer Value     | 038 | 6          | Integer | 0 - 999999 | The secondary time value (in milliseconds) to display for the current competitor, or 999999 to hide it. |
 
 
 # <a name="status-codes"></a>Status codes
@@ -577,7 +577,7 @@ Controller <-connect-> Mediator
 
 ## <a name="example-forming-a-logical-network"></a>Forming a logical network
 
-The example session below shows how the mediator informs the controller about hardware devices in the network. The controller then instructs the mediator how to form its logical wireless network. It is assumed that devices have already been assigned unique network addresses as described in *[Assigning unique network addresses](#example-assigning-unique-network-addresses)*.
+The example session below shows how the mediator informs the controller about hardware devices in the network. The controller then instructs the mediator on how to form its logical wireless network. It is assumed that devices have already been assigned unique network addresses as described in *[Assigning unique network addresses](#example-assigning-unique-network-addresses)*.
 
 This example session contains the operations *[Login (01)](#operation-login)*, *[Alert (03)](#operation-alert)*, *[Network Setup (04)](#operation-network-setup)*, *[Keep Alive (51)](#operation-keep-alive)* and *[Notify Status (52)](#operation-notify-status)*.
 
@@ -605,10 +605,10 @@ Controller <-connect-> Mediator
 --> Network Setup (remote control joins logical network)
 <STX>04<TAB>014:AAAAAA<TAB>017:1<TAB>020:1<TAB><CC><ETX>
 
---> Network Setup (gate1 joins logical network as start timer)
+--> Network Setup (gate1 joins the logical network as start timer)
 <STX>04<TAB>014:E1E1E1<TAB>017:1<TAB>020:2<TAB><CC><ETX>
 
---> Network Setup (gate2 joins logical network as finish timer)
+--> Network Setup (gate2 joins the logical network as finish timer)
 <STX>04<TAB>014:E2E2E2<TAB>017:1<TAB>020:4<TAB><CC><ETX>
 ```
 
@@ -680,8 +680,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 2. When a major version number is incremented, the minor version and release version MUST be reset to zero. When a minor version number is incremented, the release version MUST be reset to zero. For instance: 1.1.3 -&gt; 2.0.0 and 2.1.7 -&gt; 2.2.0.
 3. Once a versioned specification has been released, the contents of that version MUST NOT be modified. Any modifications must be released as a new version.
 4. Major version zero (0.y.z) is for initial development. Anything may change at any time. The specification should not be considered stable.
-5. Version 1.0.0 defines the formal specification. The way in which the version number is incremented after this release is dependent on this specification and how it changes.
-6. Release version Z (x.y.Z | x &gt; 0) MUST be incremented if only backwards compatible changes are introduced. Such changes can be additional explanatory text or corrections in examples, without changing the packet format or definition of operations, parameters and their flow and timings.
-7. Minor version Y (x.Y.z | x &gt; 0) MUST be incremented if new, backwards compatible functionality is introduced to the specification. It MUST be incremented if any operations or parameters are marked as deprecated. It MUST be incremented if new operations or parameters are introduced. It MAY include release level changes. Release version MUST be reset to 0 when minor version is incremented.
+5. Version 1.0.0 defines the formal specification. How the version number is incremented after this release is dependent on this specification and how it changes.
+6. Release version Z (x.y.Z | x &gt; 0) MUST be incremented if only backwards compatible changes are introduced. Such changes can be additional explanatory text or corrections in examples, without changing the packet format or definition of operations, parameters, and their flow and timings.
+7. Minor version Y (x.Y.z | x &gt; 0) MUST be incremented if new, backwards compatible functionality is introduced to the specification. It MUST be incremented if any operations or parameters are marked as deprecated. It MUST be incremented if new operations or parameters are introduced. It MAY include release level changes. The release version MUST be reset to 0 when the minor version is incremented.
 8. Major version X (X.y.z | X &gt; 0) MUST be incremented if any backwards incompatible changes are introduced to the specification. It MAY include minor and release level changes. Release and minor version MUST be reset to 0 when major version is incremented.
-9. Precedence MUST be calculated by separating the version into major, minor and release identifiers in that order. Major, minor, and release versions are always compared numerically. Example: 1.0.0 &lt; 1.0.1 &lt; 1.1.0 &lt; 1.1.1 &lt; 12.1.1 &lt; 12.1.15.
+9. Precedence MUST be calculated by separating the version into major, minor, and release identifiers in that order. Major, minor, and release versions are always compared numerically. Example: 1.0.0 &lt; 1.0.1 &lt; 1.1.0 &lt; 1.1.1 &lt; 12.1.1 &lt; 12.1.15.
