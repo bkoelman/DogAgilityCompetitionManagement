@@ -28,17 +28,17 @@ public static class ColorConverter
     /// </remarks>
     public static Color FromAhsl(byte alpha, double hue, double saturation, double lightness)
     {
-        if (hue < 0.0 || hue > 360.0)
+        if (hue is < 0.0 or > 360.0)
         {
             throw new ArgumentOutOfRangeException(nameof(hue), hue, "hue must be in range [0-360].");
         }
 
-        if (saturation < 0.0 || saturation > 1.0)
+        if (saturation is < 0.0 or > 1.0)
         {
             throw new ArgumentOutOfRangeException(nameof(saturation), saturation, "saturation must be in range [0-1].");
         }
 
-        if (lightness < 0.0 || lightness > 1.0)
+        if (lightness is < 0.0 or > 1.0)
         {
             throw new ArgumentOutOfRangeException(nameof(lightness), lightness, "lightness must be in range [0-1].");
         }

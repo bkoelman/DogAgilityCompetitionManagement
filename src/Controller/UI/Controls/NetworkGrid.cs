@@ -421,7 +421,7 @@ public sealed partial class NetworkGrid : UserControl
                         if ((rowState.Status.Capabilities & DeviceCapabilities.TimeSensor) != 0)
                         {
                             // Do not allow multiple timer roles for a Gate (except Start + Finish).
-                            if (role == DeviceRoles.StartTimer || role == DeviceRoles.FinishTimer)
+                            if (role is DeviceRoles.StartTimer or DeviceRoles.FinishTimer)
                             {
                                 rolesToRemove = IntermediateRoles;
                             }

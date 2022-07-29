@@ -70,7 +70,7 @@ public class CompetitionRunResult
     [AssertionMethod]
     public static void AssertFaultCountIsValid(int faultCount)
     {
-        if (faultCount < 0 || faultCount > MaxFaultValue || faultCount % FaultStepSize != 0)
+        if (faultCount is < 0 or > MaxFaultValue || faultCount % FaultStepSize != 0)
         {
             throw new ArgumentOutOfRangeException(nameof(faultCount), faultCount,
                 $"faultCount must be in range [0-{MaxFaultValue}] and dividable by {FaultStepSize}.");
@@ -87,7 +87,7 @@ public class CompetitionRunResult
     [AssertionMethod]
     public static void AssertRefusalCountIsValid(int refusalCount)
     {
-        if (refusalCount < 0 || refusalCount > MaxRefusalsValue || refusalCount % RefusalStepSize != 0)
+        if (refusalCount is < 0 or > MaxRefusalsValue || refusalCount % RefusalStepSize != 0)
         {
             throw new ArgumentOutOfRangeException(nameof(refusalCount), refusalCount,
                 $"refusalCount must be in range [0-{MaxRefusalsValue}] and dividable by {RefusalStepSize}.");

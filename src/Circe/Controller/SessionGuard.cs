@@ -436,7 +436,7 @@ internal sealed class SessionGuard : IDisposable
             lastRefreshTimeInUtc.Value = SystemContext.UtcNow();
         }
 
-        if (seenProtocolVersionMismatchSnapshot == null || seenProtocolVersionMismatchSnapshot == false)
+        if (seenProtocolVersionMismatchSnapshot is null or false)
         {
             try
             {

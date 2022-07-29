@@ -411,7 +411,7 @@ public sealed class DelimitedValuesReader : IEnumerable<IDelimitedValuesReaderRo
                     return builder.Length > 0 ? builder.ToString() : null;
                 }
 
-                if (charCode == CarriageReturnCharCode || charCode == LineFeedCharCode)
+                if (charCode is CarriageReturnCharCode or LineFeedCharCode)
                 {
                     readerLineNumber++;
 

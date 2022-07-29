@@ -176,7 +176,7 @@ public sealed class NumberEntryFilter
 
             bool isCurrentCompetitor = modifier == RemoteKeyModifier.EnterCurrentCompetitor;
 
-            if (builtNumber == null || builtNumber == 0)
+            if (builtNumber is null or 0)
             {
                 var args = new CompetitorSelectionEventArgs(isCurrentCompetitor);
                 NotifyCompetitorSelectCanceled?.Invoke(this, args);
@@ -213,7 +213,7 @@ public sealed class NumberEntryFilter
 
         public bool AppendToNumber(int digit)
         {
-            if (digit < 0 || digit > 9)
+            if (digit is < 0 or > 9)
             {
                 throw new ArgumentOutOfRangeException(nameof(digit), digit, "digit must be in range [0-9].");
             }

@@ -55,7 +55,7 @@ public sealed class Highlighter : Component
         {
             if (value != highlightSpeed)
             {
-                if (value < 0 || value > 500)
+                if (value is < 0 or > 500)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "value must be in range [0-500].");
                 }

@@ -24,7 +24,7 @@ public class FormWithWindowStateChangeEvent : FormWithHandleManagement
         {
             int wParam = m.WParam.ToInt32() & 0xFFF0;
 
-            if (wParam == WinUserConstants.ScMinimize || wParam == WinUserConstants.ScMaximize || wParam == WinUserConstants.ScRestore)
+            if (wParam is WinUserConstants.ScMinimize or WinUserConstants.ScMaximize or WinUserConstants.ScRestore)
             {
                 newWindowState = TranslateWindowState(wParam);
             }
