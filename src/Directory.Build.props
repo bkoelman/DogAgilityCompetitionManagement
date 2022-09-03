@@ -10,8 +10,9 @@
   <PropertyGroup Condition="!$(MSBuildProjectName.EndsWith('Specs'))">
     <!--
       Using a shared output directory only works for local development. Dependent DLLs from NuGet packages aren't being
-	  copied (https://github.com/dotnet/sdk/issues/23342), but referenced via *runtimeconfig.dev.json files which point
-	  to the local NuGet cache. As a result, zipping up the shared directory for someone else won't work.
+	  copied (https://github.com/dotnet/sdk/issues/23342, https://github.com/dotnet/sdk/issues/17645), but referenced
+          via *runtimeconfig.dev.json files which point to the local NuGet cache. As a result, zipping up the shared
+          directory for someone else won't work.
 	-->
     <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
     <BaseOutputPath>$(MSBuildThisFileDirectory)\..\bin</BaseOutputPath>
